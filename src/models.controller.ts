@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('models')
 export class OmnipotentController {
   constructor(private readonly appService: AppService) {}
 
