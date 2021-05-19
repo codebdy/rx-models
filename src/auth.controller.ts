@@ -7,11 +7,11 @@ export class AuthController {
 
   @Post('login')
   login(): string {
-    return this.appService.getHello();
+    return 'login';
   }
 
   @Get('me')
   getMe(): string {
-    return '';
+    return 'me';
   }
 }
