@@ -396,4 +396,3 @@ Temporary Items
 # Local
 .env
 dist
-src/database/database.providers.ts
