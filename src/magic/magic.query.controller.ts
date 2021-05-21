@@ -10,9 +10,9 @@ export class MagicQueryController {
    * {
    *   "User":{
    *      "id":1,
-   *      "age@between":[18, 40],
+   *      "age @between":[18, 40],
    *      "where":{
-   *        "name@like":"%风%",
+   *        "name @like":"%风%",
    *        "orWhere":{
    *            "phone.type":"HUAWEI",
    *            "orWhere":{
@@ -20,7 +20,7 @@ export class MagicQueryController {
    *            }
    *         },
    *         "where":{
-   *           "email@notNull":true,
+   *           "email @notNull":true,
    *         }
    *      },
    *      "orWhere":{
