@@ -5,7 +5,7 @@
   "username": "root",
   "password": "RxDragDb",
   "database": "rxdrag",
-  "entities": ["src/entity/*.js"],
+  "entities": ["dist/entity/*.js"],
   "synchronize": true,
   "cli": {
     "entitiesDir": "src/entity"
