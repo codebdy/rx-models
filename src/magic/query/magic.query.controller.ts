@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, Param } from '@nestjs/common';
 import { MagicQueryService } from './magic.query.service';
 
 @Controller()
@@ -31,7 +31,18 @@ export class MagicQueryController {
    */
   //@UseGuards(AuthGuard())
   @Get('get/:json?')
-  getModels(@Param('json') json) {
-    return this.queryService.query(JSON.parse(json || '{}'));
+  async getModels(@Param('json') json) {
+    try {
+      return await this.queryService.query(JSON.parse(json || '{}'));
+    } catch (error: any) {
+      console.error('getModels error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 }
