@@ -23,6 +23,9 @@ export class MagicQueryController {
    *         "email @notNull":true,
    *       }
    *    },
+   *    'roles @relationship':{
+   *      'active': true,
+   *    },
    *    "orWhere":{
    *    },
    * }
