@@ -29,7 +29,10 @@
 ## Installation
 
 ```bash
+$ npm install -g ts-node
+$ npm install typeorm -g  
 $ npm install
+$ npm run typeorm migration:run  
 ```
 
 ## Running the app
