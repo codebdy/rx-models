@@ -7,6 +7,7 @@ export class MagicQueryController {
 
   /**
    * 通用查询接口，语法示例：
+   * {
    *   "User":{
    *      "id":1,
    *      "age@between":[18, 40],
