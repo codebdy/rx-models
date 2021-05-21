@@ -1,4 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { User } from 'src/entity/User';
+import { getRepository } from 'typeorm';
 import { MagicQueryService } from './magic.query.service';
 
 @Controller()
@@ -32,7 +34,8 @@ export class MagicQueryController {
    */
   //@UseGuards(AuthGuard())
   @Get('get/:json?')
-  getModels(@Param('json') json): string {
-    return json;
+  getModels(@Param('json') json) {
+    //return json;
+    return getRepository(User).findOne();
   }
 }
