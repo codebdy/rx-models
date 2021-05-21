@@ -8,24 +8,23 @@ export class MagicQueryController {
   /**
    * 通用查询接口，语法示例：
    * {
-   *   "User":{
-   *      "id":1,
-   *      "age @between":[18, 40],
-   *      "where":{
-   *        "name @like":"%风%",
-   *        "orWhere":{
-   *            "phone.type":"HUAWEI",
-   *            "orWhere":{
-   *              "cc":"XX",
-   *            }
-   *         },
-   *         "where":{
-   *           "email @notNull":true,
-   *         }
-   *      },
+   *   "model":"User"
+   *    "id":1,
+   *    "age @between":[18, 40],
+   *    "where":{
+   *      "name @like":"%风%",
    *      "orWhere":{
-   *      },
-   *   }
+   *          "phone.type":"HUAWEI",
+   *          "orWhere":{
+   *            "cc":"XX",
+   *          }
+   *       },
+   *       "where":{
+   *         "email @notNull":true,
+   *       }
+   *    },
+   *    "orWhere":{
+   *    },
    * }
    * @param json JSON格式的查询条件
    * @returns 查询结果
@@ -33,6 +32,6 @@ export class MagicQueryController {
   //@UseGuards(AuthGuard())
   @Get('get/:json?')
   getModels(@Param('json') json) {
-    return this.queryService.query(json);
+    return this.queryService.query(JSON.parse(json || '{}'));
   }
 }
