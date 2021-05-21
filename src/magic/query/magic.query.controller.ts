@@ -8,10 +8,11 @@ export class MagicQueryController {
   /**
    * 通用查询接口，语法示例：
    * {
-   *   "model":"User @count  @getOne",//@getMany @sum(ddd) as xx @having
+   *   "model":"User @count  @getOne",//@getMany, @sum(ddd) as xx, @skip(100), @take(10)
    *    "id":1,
-   *    "select":["*", "photosCount"]
+   *    "select":["*", "photosCount"],
    *    "age @between":[18, 40], //@IN
+   *    "roles.isRemoved": false,
    *    "where":{
    *      "name @like":"%风%",
    *      "orWhere":{
@@ -27,13 +28,17 @@ export class MagicQueryController {
    *    "andWhere":{
    *      "xxx":"xxx"
    *    },
-   *    "roles @relationship @count @sum(ddd) as xx":{
-   *      "select": ['name @toUpcase', 'id'],
+   *    "roles @relationship @count @sum(ddd) as xx, @toUpcase(name)":{
    *      "active": true,
+   *      "isRemoved": false,
    *    },
-   *    "orWhere":{
+   *    "orderBy":{
+   *      "name":"ASC",
+   *      "xxx" : "DESC",
+   *      "ddd" : "ASC"
    *    },
-   *    "orderBy":["name asc", "xxx desc", "ddd"]
+   *    except:["password"],
+   *    select:["name", "nn"],
    * }
    * @param json JSON格式的查询条件
    * @returns 查询结果
