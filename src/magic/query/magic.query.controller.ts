@@ -53,10 +53,10 @@ export class MagicQueryController {
    * @returns 查询结果
    */
   //@UseGuards(AuthGuard())
-  @Get('get/:json?')
-  async getModels(@Param('json') json) {
+  @Get('get/:jsonStr?')
+  async getModels(@Param('jsonStr') jsonStr) {
     try {
-      return await this.queryService.query(JSON.parse(json || '{}'));
+      return await this.queryService.query(jsonStr);
     } catch (error: any) {
       console.error('getModels error:', error);
       throw new HttpException(
