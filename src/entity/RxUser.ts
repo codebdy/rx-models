@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { RxRole } from './RxRole';
 
 @Entity()
 export class RxUser {
@@ -25,4 +28,8 @@ export class RxUser {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => RxRole)
+  @JoinTable()
+  categories: RxRole[];
 }

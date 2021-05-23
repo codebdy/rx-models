@@ -1,7 +1,7 @@
 import { CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class Role {
+export class RxRole {
   @CreateDateColumn()
   createdAt: Date;
 
