@@ -7,8 +7,12 @@ export class SeedUser1621583221642 implements MigrationInterface {
     await qureyRunner.manager.getRepository(RxUser).save(UserSeed);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public async down(_: QueryRunner): Promise<void> {
-    // do nothing
+  public async down(qureyRunner: QueryRunner): Promise<void> {
+    await qureyRunner.manager.connection
+      .createQueryBuilder()
+      .delete()
+      .from(RxUser)
+      .where('true')
+      .execute();
   }
 }
