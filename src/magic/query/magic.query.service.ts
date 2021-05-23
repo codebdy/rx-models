@@ -7,7 +7,7 @@ export class MagicQueryService {
   async query(params: MagicQueryParam) {
     return getRepository(params.model)
       .createQueryBuilder()
-      .where('rxuser.id = :id', { id: 1 })
+      .where('rxuser.loginName = :loginName', { loginName: 'admin' })
       .getOne();
   }
 }
