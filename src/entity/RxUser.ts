@@ -31,5 +31,5 @@ export class RxUser {
 
   @ManyToMany(() => RxRole)
   @JoinTable()
-  categories: RxRole[];
+  roles: RxRole[];
 }
