@@ -5,5 +5,6 @@ export class RelationMeta {
   name: string;
   model: string;
   commands: CommandMeta[];
+  relations: RelationMeta[];
   whereMeta: WhereMeta;
 }
