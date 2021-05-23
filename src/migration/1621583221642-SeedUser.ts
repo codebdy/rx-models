@@ -19,7 +19,9 @@ export class SeedUser1621583221642 implements MigrationInterface {
       .createQueryBuilder()
       .delete()
       .from(RxUser)
-      .where('true')
+      .where('rx_user.loginName IN(:...names)', {
+        names: UserSeed.map((user) => user.loginName),
+      })
       .execute();
   }
 }
