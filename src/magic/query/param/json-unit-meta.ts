@@ -1,7 +1,10 @@
 import { CommandMeta } from './command-meta';
 
-export class JsonUnitMeta {
-  name: string;
+export abstract class JsonUnitMeta {
+  key: string;
   commands: CommandMeta[] = [];
-  value: any;
+  constructor(key: string, commands: CommandMeta[]) {
+    this.key = key;
+    this.commands = commands;
+  }
 }
