@@ -12,7 +12,6 @@ export class MagicQueryParamsParser {
   private json: any;
   modelUnit: ModelUnitMeta;
   takeCommand = 'getMany';
-  rootCommands: CommandMeta[];
   fieldCommands: {
     [key: string]: CommandMeta[];
   };
@@ -23,11 +22,12 @@ export class MagicQueryParamsParser {
     this.json = JSON.parse(jsonStr || '{}');
     for (const keyStr in this.json) {
       const [key, commands] = parseCommands(keyStr);
-      if (key.toLowerCase() === TOKEN_MODEL) {
-        if (!this.json[keyStr]) {
-          throw new Error('Miss Model name');
-        }
-        this.modelUnit = new ModelUnitMeta(key, commands, this.json[keyStr]);
+      switch (key.toLowerCase()) {
+        case TOKEN_MODEL:
+          this.modelUnit = new ModelUnitMeta(key, commands, this.json[keyStr]);
+          break;
+        default:
+
       }
     }
   }
