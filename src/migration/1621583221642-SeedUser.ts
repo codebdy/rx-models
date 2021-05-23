@@ -9,7 +9,7 @@ export class SeedUser1621583221642 implements MigrationInterface {
     const userRepository = qureyRunner.manager.getRepository(RxUser);
     const role = await qureyRunner.manager.getRepository(RxRole).save(RoleSeed);
     await userRepository.save(UserSeed);
-    const demoUser = await userRepository.findOne({ loginName: 'admin' });
+    const demoUser = await userRepository.findOne({ loginName: 'demo' });
     demoUser.roles = [role[0]];
     await userRepository.save(demoUser);
   }
