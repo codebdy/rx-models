@@ -2,11 +2,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class RxTemplate {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

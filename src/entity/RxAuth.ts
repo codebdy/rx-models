@@ -1,7 +1,15 @@
-import { CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class RxAuth {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
