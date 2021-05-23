@@ -1,4 +1,4 @@
-import { RxUser } from 'src/entity/User';
+import { RxUser } from 'src/entity/RxUser';
 import { UserSeed } from 'src/seeds/user.seed';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
