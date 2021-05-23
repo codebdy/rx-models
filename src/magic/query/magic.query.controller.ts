@@ -28,9 +28,10 @@ export class MagicQueryController {
    *    "andWhere":{
    *      "xxx":"xxx"
    *    },
-   *    "roles @relation(Role) @count @sum(ddd) as xx, @toUpcase(name)":{
+   *    "roles @relation(Role) @count @sum(ddd) as xx, @toUpcase(name) take(10)":{
    *      "active": true,
    *      "isRemoved": false,
+   *      "orderBy":{"name":'ASC'},
    *    },
    *    "orderBy":{
    *      "name":"ASC",
@@ -39,6 +40,14 @@ export class MagicQueryController {
    *    },
    *    except:["password"],
    *    select:["name", "nn"],
+   * }
+   * 关系嵌套：文章与图片
+   * {
+   *    "model":"Post",
+   *    "images @relation(PostImage)":{
+   *      "media @relation(Media)":{
+   *      }
+   *    }
    * }
    * @param json JSON格式的查询条件
    * @returns 查询结果
