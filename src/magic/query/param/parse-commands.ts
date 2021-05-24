@@ -1,7 +1,11 @@
 import { CommandMeta } from './command-meta';
 
 function stringArrayToCommands(strArray: string[]): CommandMeta[] {
-  return [];
+  const commands = [];
+  for (const commandStr of strArray) {
+    commands.push(new CommandMeta(commandStr));
+  }
+  return commands;
 }
 
 export function parseCommands(str: string): [string?, CommandMeta[]?] {

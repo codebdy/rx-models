@@ -1,4 +1,5 @@
 import { CommandMeta } from './command-meta';
+import { TOKEN_RELATION } from './keyword_tokens';
 import { parseCommands } from './parse-commands';
 
 export class JsonUnitMeta {
@@ -18,5 +19,14 @@ export class JsonUnitMeta {
 
   get value() {
     return this._value;
+  }
+
+  isRlationShip() {
+    for (const command of this._commands) {
+      if (command.name?.toLowerCase() === TOKEN_RELATION) {
+        return true;
+      }
+    }
+    return false;
   }
 }
