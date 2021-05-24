@@ -1,4 +1,5 @@
 import { CommandMeta } from './command-meta';
+import { JsonUnitMeta } from './json-unit-meta';
 import { ModelUnitMeta } from './model-unit-meta';
 import { parseCommands } from './parse-commands';
 import { RelationMeta } from './relation-meta';
@@ -21,10 +22,11 @@ export class MagicQueryParamsParser {
   constructor(jsonStr: string) {
     this.json = JSON.parse(jsonStr || '{}');
     for (const keyStr in this.json) {
-      const [key, commands] = parseCommands(keyStr);
-      switch (key.toLowerCase()) {
+      const value = this.json[keyStr];
+      const jsonUnit = new JsonUnitMeta(keyStr, value);
+      switch (jsonUnit.key.toLowerCase()) {
         case TOKEN_MODEL:
-          this.modelUnit = new ModelUnitMeta(key, commands, this.json[keyStr]);
+          this.modelUnit = new ModelUnitMeta(jsonUnit);
           break;
         default:
 
