@@ -13,10 +13,13 @@ export class MagicQueryService {
       whereString,
       whereParams,
     ] = paramParser.whereMeta.getWhereStatement();
-    queryBulider
-      .leftJoinAndSelect(`${paramParser.modelUnit?.modelAlias}.roles`, 'RxRole')
-      .where(whereString, whereParams);
-    //.andWhere('rxuser.loginName = :loginName', { loginName: 'admin' })
+    for (const relation of paramParser.relations) {
+      queryBulider.leftJoinAndSelect(
+        `${paramParser.modelUnit?.modelAlias}.${relation.name}`,
+        relation.relationModel,
+      );
+    }
+    queryBulider.where(whereString, whereParams);
     return queryBulider[paramParser.takeCommand]();
   }
 }

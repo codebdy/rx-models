@@ -33,4 +33,8 @@ export class MagicQueryParamsParser {
   get takeCommand() {
     return this._modelUnit.takeCommand;
   }
+
+  get relations() {
+    return this._relations;
+  }
 }
