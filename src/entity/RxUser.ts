@@ -6,8 +6,6 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
-  AfterLoad,
-  BeforeUpdate,
 } from 'typeorm';
 import { RxRole } from './RxRole';
 
@@ -36,16 +34,4 @@ export class RxUser {
   @ManyToMany(() => RxRole)
   @JoinTable()
   roles: RxRole[];
-
-  @AfterLoad()
-  private loadTempPassword(): void {
-    this.tempPassword = this.password;
-  }
-
-  @BeforeUpdate()
-  private encryptPassword(): void {
-    if (this.tempPassword !== this.password) {
-      //
-    }
-  }
 }
