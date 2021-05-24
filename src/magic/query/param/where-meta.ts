@@ -17,12 +17,11 @@ export class WhereMeta {
     let whereRaw = '';
     const params = {};
     let paramIndex = 1;
-    for (let i = 0; i < this._conditions.length; i++) {
-      const condition = this._conditions[i];
+    for (const condition of this._conditions) {
       const paramName = `param${paramIndex}`;
       whereRaw =
         whereRaw +
-        `${i > 0 ? '&' : ''} ${condition.field} ${
+        `${whereRaw ? '&' : ''} ${condition.field} ${
           condition.operator
         } :${paramName}`;
       params[paramName] = condition.value;

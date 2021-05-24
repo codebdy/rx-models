@@ -21,6 +21,10 @@ export class JsonUnitMeta {
     return this._value;
   }
 
+  get commands() {
+    return this._commands;
+  }
+
   isRlationShip() {
     for (const command of this._commands) {
       if (command.name?.toLowerCase() === TOKEN_RELATION) {
