@@ -17,7 +17,7 @@ export class CommandMeta {
     return this._name;
   }
 
-  get params(){
+  get params() {
     return this._params;
   }
 }

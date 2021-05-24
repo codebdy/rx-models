@@ -4,6 +4,7 @@ import { ModelUnitMeta } from './model-unit-meta';
 import { RelationMeta } from './relation-meta';
 import { TOKEN_MODEL } from './keyword_tokens';
 import { WhereMeta } from './where-meta';
+import { ConditionMeta } from './condition-meta';
 
 export class MagicQueryParamsParser {
   private json: any;
@@ -13,7 +14,7 @@ export class MagicQueryParamsParser {
     [key: string]: CommandMeta[];
   };
   relations: RelationMeta[];
-  whereMeta: WhereMeta;
+  whereMeta: WhereMeta = new WhereMeta();
 
   constructor(jsonStr: string) {
     this.json = JSON.parse(jsonStr || '{}');
@@ -22,10 +23,9 @@ export class MagicQueryParamsParser {
       const jsonUnit = new JsonUnitMeta(keyStr, value);
       if (jsonUnit.key.toLowerCase() === TOKEN_MODEL) {
         this.modelUnit = new ModelUnitMeta(jsonUnit);
-        break;
-      }
-      if (jsonUnit.isRlationShip()) {
-        break;
+      } else if (jsonUnit.isRlationShip()) {
+      } else {
+        this.whereMeta.addCondition(new ConditionMeta(keyStr, value));
       }
     }
   }
