@@ -1,10 +1,17 @@
-import { CommandMeta } from './command-meta';
+import { JsonUnitMeta } from './json-unit-meta';
 import { WhereMeta } from './where-meta';
 
 export class RelationMeta {
-  name: string;
+  private _jsonUnit: JsonUnitMeta;
+
   model: string;
-  commands: CommandMeta[];
   relations: RelationMeta[];
   whereMeta: WhereMeta;
+  constructor(jsonUnit: JsonUnitMeta) {
+    this._jsonUnit = jsonUnit;
+  }
+
+  get name(){
+    return this._jsonUnit.key;
+  }
 }

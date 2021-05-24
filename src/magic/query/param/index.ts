@@ -8,7 +8,7 @@ import { ConditionMeta } from './condition-meta';
 export class MagicQueryParamsParser {
   private _json: any;
   private _modelUnit: ModelUnitMeta;
-  relations: RelationMeta[];
+  private _relations: RelationMeta[] = [];
   whereMeta: WhereMeta = new WhereMeta();
 
   constructor(jsonStr: string) {
@@ -19,6 +19,7 @@ export class MagicQueryParamsParser {
       if (jsonUnit.key.toLowerCase() === TOKEN_MODEL) {
         this._modelUnit = new ModelUnitMeta(jsonUnit);
       } else if (jsonUnit.isRlationShip()) {
+        this._relations.push(new RelationMeta(jsonUnit));
       } else {
         this.whereMeta.addCondition(new ConditionMeta(keyStr, value));
       }
