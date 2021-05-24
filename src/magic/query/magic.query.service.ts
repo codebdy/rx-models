@@ -13,6 +13,13 @@ export class MagicQueryService {
       whereString,
       whereParams,
     ] = paramParser.whereMeta.getWhereStatement();
+    if (paramParser.select?.length > 0) {
+      queryBulider.select(
+        paramParser.select.map(
+          (field) => paramParser.modelUnit?.modelAlias + '.' + field,
+        ),
+      );
+    }
     for (const relation of paramParser.relations) {
       queryBulider.leftJoinAndSelect(
         `${paramParser.modelUnit?.modelAlias}.${relation.name}`,

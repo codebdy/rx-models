@@ -1,5 +1,5 @@
 import { CommandMeta } from './command-meta';
-import { TOKEN_RELATION } from './keyword_tokens';
+import { TOKEN_RELATION, TOKEN_SELECT } from './keyword_tokens';
 import { parseCommands } from './parse-commands';
 
 export class JsonUnitMeta {
@@ -32,5 +32,9 @@ export class JsonUnitMeta {
       }
     }
     return false;
+  }
+
+  isSelect() {
+    return this._key?.toLowerCase() === TOKEN_SELECT;
   }
 }
