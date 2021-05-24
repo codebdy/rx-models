@@ -6,11 +6,15 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  AfterLoad,
+  BeforeUpdate,
 } from 'typeorm';
 import { RxRole } from './RxRole';
 
 @Entity()
 export class RxUser {
+  private tempPassword: string;
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,7 +24,7 @@ export class RxUser {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @CreateDateColumn()
@@ -32,4 +36,16 @@ export class RxUser {
   @ManyToMany(() => RxRole)
   @JoinTable()
   roles: RxRole[];
+
+  @AfterLoad()
+  private loadTempPassword(): void {
+    this.tempPassword = this.password;
+  }
+
+  @BeforeUpdate()
+  private encryptPassword(): void {
+    if (this.tempPassword !== this.password) {
+      //
+    }
+  }
 }
