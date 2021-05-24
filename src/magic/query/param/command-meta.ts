@@ -3,14 +3,15 @@ export class CommandMeta {
   private _params: string[] = [];
 
   constructor(commandStr: string) {
-    const takenArray = /\S*(\S*)/.exec(commandStr);
-    if (takenArray.length > 0) {
-      this._name = takenArray[0].trim();
-    }
-
-    if (takenArray.length > 2) {
-      this._params = takenArray[1].split(',').map((token) => token.trim());
-    }
+    const nameReg = /[^(]*/i;
+    this._name = nameReg.test(commandStr) ? commandStr.match(nameReg)[0] : '';
+    const paramReg = /\(\s*\S*\)/i;
+    const paramStr = paramReg.test(commandStr)
+      ? commandStr.match(paramReg)[0].replace('(', '').replace(')', '')
+      : '';
+    this._params = paramStr
+      ? paramStr.split(',').map((token) => token.trim())
+      : [];
   }
 
   get name() {

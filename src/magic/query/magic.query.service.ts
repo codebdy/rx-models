@@ -9,9 +9,13 @@ export class MagicQueryService {
     const queryBulider = getRepository(
       paramParser.modelUnit?.model,
     ).createQueryBuilder(paramParser.modelUnit?.modelAlias);
+    const [
+      whereString,
+      whereParams,
+    ] = paramParser.whereMeta.getWhereStatement();
     queryBulider
       .leftJoinAndSelect(`${paramParser.modelUnit?.modelAlias}.roles`, 'RxRole')
-      .where({ loginName: 'demo' });
+      .where(whereString, whereParams);
     //.andWhere('rxuser.loginName = :loginName', { loginName: 'admin' })
     return queryBulider[paramParser.takeCommand]();
   }
