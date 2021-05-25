@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { createId } from 'src/utils/create-id';
 import { getRepository } from 'typeorm';
 import { MagicQueryParamsParser } from './param';
 
@@ -21,9 +22,10 @@ export class MagicQueryService {
       );
     }
     for (const relation of paramParser.relations) {
+      const relationAlias = `relation${createId()}`;
       queryBulider.leftJoinAndSelect(
         `${paramParser.modelUnit?.modelAlias}.${relation.name}`,
-        relation.relationModel,
+        relationAlias,
       );
     }
     const orderMap = paramParser.orderBys.getpMap(

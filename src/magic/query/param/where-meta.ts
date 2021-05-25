@@ -1,3 +1,4 @@
+import { createId } from 'src/utils/create-id';
 import { ConditionMeta } from './condition-meta';
 
 export class WhereMeta {
@@ -16,16 +17,14 @@ export class WhereMeta {
   getWhereStatement(): [string, any] {
     let whereRaw = '';
     const params = {};
-    let paramIndex = 1;
     for (const condition of this._conditions) {
-      const paramName = `param${paramIndex}`;
+      const paramName = `param${createId()}`;
       whereRaw =
         whereRaw +
         `${whereRaw ? '&' : ''} ${condition.field} ${
           condition.operator
         } :${paramName}`;
       params[paramName] = condition.value;
-      paramIndex++;
     }
     return [whereRaw, params];
   }
