@@ -27,6 +27,7 @@ export class MagicQueryService {
       );
     }
     queryBulider.where(whereString, whereParams);
+    console.log(queryBulider.getSql(), whereParams);
     return queryBulider[paramParser.takeCommand]();
   }
 }

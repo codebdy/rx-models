@@ -9,9 +9,7 @@ export class ConditionMeta {
     }
 
     this._operator =
-      keyArray.length > 1 && keyArray.length[1]
-        ? keyArray.length[1].trim()
-        : '=';
+      keyArray.length > 1 && keyArray[1] ? keyArray[1].trim() : '=';
     this._value = value;
   }
 

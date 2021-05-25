@@ -17,7 +17,7 @@ export class MagicQueryParamsParser {
     for (const keyStr in this._json) {
       const value = this._json[keyStr];
       const jsonUnit = new JsonUnitMeta(keyStr, value);
-      console.log(jsonUnit);
+      //console.log(jsonUnit);
       if (jsonUnit.key.toLowerCase() === TOKEN_MODEL) {
         this._modelUnit = new ModelUnitMeta(jsonUnit);
       } else if (jsonUnit.isRlationShip()) {
