@@ -38,7 +38,6 @@ export class MagicQueryController {
    *      "xxx" : "DESC",
    *      "ddd" : "ASC"
    *    },
-   *    except:["password"],
    *    select:["name", "nn"],
    * }
    * 关系嵌套：文章与图片

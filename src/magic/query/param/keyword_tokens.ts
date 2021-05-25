@@ -6,3 +6,4 @@ export const TOKEN_GET_MANY = 'getMany';
 export const TOKEN_GET_ONE = 'getOne';
 export const TOKEN_GET_TAKE = 'take';
 export const TOKEN_SELECT = 'select';
+export const TOKEN_ORDER_BY = 'orderBy';

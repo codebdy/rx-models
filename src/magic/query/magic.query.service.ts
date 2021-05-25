@@ -26,8 +26,14 @@ export class MagicQueryService {
         relation.relationModel,
       );
     }
+    const orderMap = paramParser.orderBys.getpMap(
+      paramParser.modelUnit?.modelAlias,
+    );
+    if (orderMap) {
+      queryBulider.orderBy(orderMap);
+    }
     queryBulider.where(whereString, whereParams);
-    console.log(queryBulider.getSql(), whereParams);
+    console.log(queryBulider.getSql(), whereParams, paramParser.takeCommand);
     return queryBulider[paramParser.takeCommand]();
   }
 }

@@ -1,5 +1,5 @@
 import { CommandMeta } from './command-meta';
-import { TOKEN_RELATION, TOKEN_SELECT } from './keyword_tokens';
+import { TOKEN_ORDER_BY, TOKEN_RELATION, TOKEN_SELECT } from './keyword_tokens';
 import { parseCommands } from './parse-commands';
 
 export class JsonUnitMeta {
@@ -27,7 +27,7 @@ export class JsonUnitMeta {
 
   isRlationShip() {
     for (const command of this._commands) {
-      if (command.name?.toLowerCase() === TOKEN_RELATION) {
+      if (command.name?.toLowerCase() === TOKEN_RELATION.toLowerCase()) {
         return true;
       }
     }
@@ -35,6 +35,10 @@ export class JsonUnitMeta {
   }
 
   isSelect() {
-    return this._key?.toLowerCase() === TOKEN_SELECT;
+    return this._key?.toLowerCase() === TOKEN_SELECT.toLowerCase();
+  }
+
+  isOrderBy() {
+    return this._key?.toLowerCase() === TOKEN_ORDER_BY.toLowerCase();
   }
 }

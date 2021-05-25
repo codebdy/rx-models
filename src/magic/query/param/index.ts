@@ -4,12 +4,14 @@ import { RelationMeta } from './relation-meta';
 import { TOKEN_MODEL } from './keyword_tokens';
 import { WhereMeta } from './where-meta';
 import { ConditionMeta } from './condition-meta';
+import { OrderByMeta } from './order-by-meta';
 
 export class MagicQueryParamsParser {
   private _json: any;
   private _modelUnit: ModelUnitMeta;
   private _relations: RelationMeta[] = [];
   private _select: string[] = [];
+  private _orderBys: OrderByMeta;
   whereMeta: WhereMeta = new WhereMeta();
 
   constructor(jsonStr: string) {
@@ -24,6 +26,8 @@ export class MagicQueryParamsParser {
         this._relations.push(new RelationMeta(jsonUnit));
       } else if (jsonUnit.isSelect()) {
         this._select = jsonUnit.value;
+      } else if (jsonUnit.isOrderBy()) {
+        this._orderBys = new OrderByMeta(jsonUnit.value);
       } else {
         this.whereMeta.addCondition(new ConditionMeta(keyStr, value));
       }
@@ -44,5 +48,9 @@ export class MagicQueryParamsParser {
 
   get select() {
     return this._select;
+  }
+
+  get orderBys() {
+    return this._orderBys;
   }
 }
