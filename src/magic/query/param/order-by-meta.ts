@@ -6,7 +6,6 @@ export class OrderByMeta {
   }
 
   getpMap(modelAlias: string) {
-    console.log(this);
     if (this._orderArray.length === 0) {
       return undefined;
     }
