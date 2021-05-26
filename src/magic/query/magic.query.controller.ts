@@ -12,7 +12,6 @@ export class MagicQueryController {
    *    "id":1,
    *    "select":["*", "photosCount"],
    *    "age @between":[18, 40], //@IN
-   *    "roles.isRemoved": false,
    *    "where":{
    *      "name @like":"%风%",
    *      "orWhere":{
@@ -28,7 +27,7 @@ export class MagicQueryController {
    *    "andWhere":{
    *      "xxx":"xxx"
    *    },
-   *    "roles @relation(Role) @count @sum(ddd) as xx, @toUpcase(name) take(10)":{
+   *    "roles @relation(Role) @right @inner @count @skip(2) @take(5) @sum(ddd) as xx, @toUpcase(name)":{
    *      "active": true,
    *      "isRemoved": false,
    *      "orderBy":{"name":'ASC'},
