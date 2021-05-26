@@ -35,6 +35,15 @@ export class MagicQueryService {
       queryBulider.orderBy(orderMap);
     }
     queryBulider.where(whereString, whereParams);
+    const skipCommand = paramParser.modelUnit.getSkipCommand();
+    if (skipCommand) {
+      queryBulider.skip(parseInt(skipCommand.params[0]));
+    }
+    const takeCommand = paramParser.modelUnit.getTakeCommand();
+    if (takeCommand) {
+      queryBulider.take(parseInt(takeCommand.params[0]));
+    }
+    queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql(), whereParams, paramParser.takeCommand);
     return queryBulider[paramParser.takeCommand]();
   }

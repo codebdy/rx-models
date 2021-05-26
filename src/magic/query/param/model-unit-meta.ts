@@ -24,4 +24,12 @@ export class ModelUnitMeta {
     }
     return TOKEN_GET_MANY;
   }
+
+  getTakeCommand() {
+    return this._jsonUnit.getTakeCommand();
+  }
+
+  getSkipCommand() {
+    return this._jsonUnit.getSkipCommand();
+  }
 }

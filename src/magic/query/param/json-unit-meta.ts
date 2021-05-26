@@ -31,7 +31,7 @@ export class JsonUnitMeta {
     return this._commands;
   }
 
-  getCommand(commandName: string){
+  getCommand(commandName: string) {
     for (const command of this._commands) {
       if (command.name?.toLowerCase() === commandName.toLowerCase()) {
         return command;
