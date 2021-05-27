@@ -4,7 +4,9 @@ export class CommandMeta {
 
   constructor(commandStr: string) {
     const nameReg = /[^(]*/i;
-    this._name = nameReg.test(commandStr) ? commandStr.match(nameReg)[0] : '';
+    this._name = nameReg.test(commandStr)
+      ? commandStr.match(nameReg)[0].trim()
+      : '';
     const paramReg = /\(\s*\S*\)/i;
     const paramStr = paramReg.test(commandStr)
       ? commandStr.match(paramReg)[0].replace('(', '').replace(')', '')
