@@ -27,7 +27,7 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
-要使用TypeORM CLI创建Models，需要钱全局安装TypeORM:
+要使用TypeORM CLI创建Models，需要全局安装TypeORM:
 ```bash
 $ npm install -g ts-node
 $ npm install typeorm -g  
@@ -37,7 +37,20 @@ $ npm install typeorm -g
 ```bash
 $ npm install
 ```
-生成数据库
+配置数据库
+```
+cp ormconfig-example.json ormconfig.json
+```
+更新数据库配置 `ormconfig.json`
+```
+...
+  "username": "root",
+  "password": "",
+  "database": "rxdrag",
+...
+```
+
+生成数据库 (**需要执行两次**)
 ```bash
 $ npm run typeorm migration:run  
 ```
