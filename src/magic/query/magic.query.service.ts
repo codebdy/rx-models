@@ -40,6 +40,6 @@ export class MagicQueryService {
 
     queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql());
-    return queryBulider[paramParser.modelUnit.fetchString]();
+    return queryBulider[paramParser.modelUnit.excuteString]();
   }
 }

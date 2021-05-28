@@ -26,7 +26,7 @@ export class ModelUnit {
     return new SkipCommand(this._jsonUnit.getSkipCommand());
   }
 
-  get fetchString() {
+  get excuteString() {
     if (this._jsonUnit.getCommand(TOKEN_GET_ONE)) {
       return TOKEN_GET_ONE;
     }
