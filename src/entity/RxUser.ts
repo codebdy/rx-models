@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  AfterLoad,
 } from 'typeorm';
 import { RxRole } from './RxRole';
 
@@ -34,4 +35,10 @@ export class RxUser {
   @ManyToMany(() => RxRole)
   @JoinTable()
   roles: RxRole[];
+
+  @AfterLoad()
+  // keep the first 3 roles
+  limitRoles() {
+    this.roles = this.roles.slice(0, 3);
+  }
 }
