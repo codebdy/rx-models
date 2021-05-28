@@ -1,4 +1,4 @@
-import { CommandMeta } from './command-meta';
+import { Command } from './command';
 import {
   TOKEN_ORDER_BY,
   TOKEN_RELATION,
@@ -8,9 +8,9 @@ import {
 } from './keyword_tokens';
 import { parseCommands } from './parse-commands';
 
-export class JsonUnitMeta {
+export class JsonUnit {
   private _key = '';
-  private _commands: CommandMeta[] = [];
+  private _commands: Command[] = [];
   private _value: any;
   constructor(keyStr: string, value: any) {
     const [key, commands] = parseCommands(keyStr);

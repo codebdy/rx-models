@@ -1,4 +1,4 @@
-export class OrderByMeta {
+export class OrderBy {
   private _orderArray: string[];
 
   constructor(orderArray: string[]) {

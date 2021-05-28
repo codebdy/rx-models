@@ -8,3 +8,4 @@ export const TOKEN_TAKE = 'take';
 export const TOKEN_SKIP = 'skip';
 export const TOKEN_SELECT = 'select';
 export const TOKEN_ORDER_BY = 'orderBy';
+export const TOKEN_LARGE_RELATION = 'LargeRelation';

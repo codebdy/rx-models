@@ -1,16 +1,16 @@
 import { createId } from 'src/utils/create-id';
-import { ConditionMeta } from './condition-meta';
+import { Condition } from './condition';
 
-export class WhereMeta {
-  private _conditions: ConditionMeta[] = [];
-  private _andMetas: WhereMeta[];
-  private _orMetas: WhereMeta[];
+export class Where {
+  private _conditions: Condition[] = [];
+  private _andMetas: Where[];
+  private _orMetas: Where[];
 
   get conditions() {
     return this._conditions;
   }
 
-  addCondition(condition: ConditionMeta) {
+  addCondition(condition: Condition) {
     this._conditions.push(condition);
   }
 

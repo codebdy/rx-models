@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RxRole } from 'src/entity/RxRole';
 import { createId } from 'src/utils/create-id';
 import { getRepository } from 'typeorm';
 import { MagicQueryParamsParser } from './param';
@@ -14,13 +15,17 @@ export class MagicQueryService {
       whereString,
       whereParams,
     ] = paramParser.whereMeta.getWhereStatement();
-    if (paramParser.select?.length > 0) {
+    /*if (paramParser.select?.length > 0) {
       queryBulider.select(
         paramParser.select.map(
           (field) => paramParser.modelUnit?.modelAlias + '.' + field,
         ),
       );
-    }
+    }*/
+    //queryBulider.loadRelationCountAndMap(
+    //  `${paramParser.modelUnit?.modelAlias}.relationCount`,
+    //  `${paramParser.modelUnit?.modelAlias}.roles`,
+    //);
     for (const relation of paramParser.relations) {
       const relationAlias = `relation${createId()}`;
       queryBulider.leftJoinAndSelect(
@@ -28,6 +33,14 @@ export class MagicQueryService {
         relationAlias,
       );
     }
+
+   //queryBulider.from((subQuery) => {
+   //   return subQuery
+   //     .select('role.name', 'roleName')
+   //     .from(RxRole, 'role')
+   //     .limit(1);
+   // }, 'roleName');
+
     const orderMap = paramParser.orderBys.getpMap(
       paramParser.modelUnit?.modelAlias,
     );
@@ -37,14 +50,16 @@ export class MagicQueryService {
     queryBulider.where(whereString, whereParams);
     const skipCommand = paramParser.modelUnit.getSkipCommand();
     if (skipCommand) {
-      queryBulider.skip(parseInt(skipCommand.params[0]));
+      queryBulider.skip(skipCommand.count);
     }
     const takeCommand = paramParser.modelUnit.getTakeCommand();
     if (takeCommand) {
-      queryBulider.take(parseInt(takeCommand.params[0]));
+      queryBulider.take(takeCommand.count);
     }
-    queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
+    //queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql(), whereParams, paramParser.takeCommand);
-    return queryBulider[paramParser.takeCommand]();
+    //return queryBulider[paramParser.takeCommand]();
+    return queryBulider.getMany();
+    //return queryBulider.getManyAndCount();
   }
 }

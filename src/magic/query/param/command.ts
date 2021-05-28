@@ -1,4 +1,4 @@
-export class CommandMeta {
+export class Command {
   private _name: string;
   private _params: string[] = [];
 
@@ -22,5 +22,9 @@ export class CommandMeta {
 
   get params() {
     return this._params;
+  }
+
+  getFistNumberParam() {
+    return this._params.length ? parseInt(this._params[0]) : 0;
   }
 }

@@ -27,7 +27,7 @@ export class MagicQueryController {
    *    "andWhere":{
    *      "xxx":"xxx"
    *    },
-   *    "roles @relation(Role) @right @inner @count @skip(2) @take(5) @sum(ddd) as xx, @toUpcase(name)":{
+   *    "roles @relation(Role) @count @skip(2) @take(5) @toUpercase(name)":{
    *      "active": true,
    *      "isRemoved": false,
    *      "orderBy":{"name":'ASC'},
