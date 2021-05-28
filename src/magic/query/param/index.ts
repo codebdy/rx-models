@@ -38,10 +38,6 @@ export class MagicQueryParamsParser {
     return this._modelUnit;
   }
 
-  get takeCommand() {
-    return this._modelUnit.getTakeCommand;
-  }
-
   get relations() {
     return this._relations;
   }

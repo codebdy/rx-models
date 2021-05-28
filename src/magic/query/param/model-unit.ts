@@ -1,4 +1,5 @@
 import { JsonUnit } from './json-unit';
+import { TOKEN_COUNT, TOKEN_GET_MANY, TOKEN_GET_ONE } from './keyword_tokens';
 import { SkipCommand } from './skip-command';
 import { TakeCommand } from './take-command';
 
@@ -23,5 +24,15 @@ export class ModelUnit {
 
   getSkipCommand() {
     return new SkipCommand(this._jsonUnit.getSkipCommand());
+  }
+
+  get fetchString() {
+    if (this._jsonUnit.getCommand(TOKEN_GET_ONE)) {
+      return TOKEN_GET_ONE;
+    }
+    if (this._jsonUnit.getCommand(TOKEN_COUNT)) {
+      return 'getManyAndCount';
+    }
+    return TOKEN_GET_MANY;
   }
 }

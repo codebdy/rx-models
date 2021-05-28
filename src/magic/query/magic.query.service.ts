@@ -30,21 +30,13 @@ export class MagicQueryService {
       );
     }
 
-   //queryBulider.from((subQuery) => {
-   //   return subQuery
-   //     .select('role.name', 'roleName')
-   //     .from(RxRole, 'role')
-   //     .limit(1);
-   // }, 'roleName');
-
-    const orderMap = paramParser.orderBys.getpMap(
+    paramParser.orderBys?.makeQueryBuilder(
+      queryBulider,
       paramParser.modelUnit?.modelAlias,
     );
-    if (orderMap) {
-      queryBulider.orderBy(orderMap);
-    }
 
     paramParser.whereMeta?.makeQueryBuilder(queryBulider);
+
     const skipCommand = paramParser.modelUnit.getSkipCommand();
     if (skipCommand) {
       queryBulider.skip(skipCommand.count);
@@ -55,8 +47,6 @@ export class MagicQueryService {
     }
     queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql());
-    //return queryBulider[paramParser.takeCommand]();
-    return queryBulider.getMany();
-    //return queryBulider.getManyAndCount();
+    return queryBulider[paramParser.modelUnit.fetchString]();
   }
 }

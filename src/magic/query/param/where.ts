@@ -1,9 +1,8 @@
 import { createId } from 'src/utils/create-id';
 import { SelectQueryBuilder } from 'typeorm';
 import { Condition } from './condition';
-import { QueryBuilderMaker } from './query-builder-maker';
 
-export class Where implements QueryBuilderMaker {
+export class Where {
   private _conditions: Condition[] = [];
   private _andMetas: Where[];
   private _orMetas: Where[];

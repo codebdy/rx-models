@@ -1,8 +1,21 @@
+import { SelectQueryBuilder } from 'typeorm';
+
 export class OrderBy {
   private _orderArray: string[];
 
   constructor(orderArray: string[]) {
     this._orderArray = orderArray;
+  }
+
+  makeQueryBuilder(
+    qb: SelectQueryBuilder<any>,
+    modelAlias?: string,
+  ): SelectQueryBuilder<any> {
+    const orderMap = this.getpMap(modelAlias);
+    if (orderMap) {
+      qb.orderBy(orderMap);
+    }
+    return qb;
   }
 
   getpMap(modelAlias: string) {
