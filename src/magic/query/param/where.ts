@@ -1,13 +1,20 @@
 import { createId } from 'src/utils/create-id';
+import { SelectQueryBuilder } from 'typeorm';
 import { Condition } from './condition';
+import { QueryBuilderMaker } from './query-builder-maker';
 
-export class Where {
+export class Where implements QueryBuilderMaker {
   private _conditions: Condition[] = [];
   private _andMetas: Where[];
   private _orMetas: Where[];
 
   get conditions() {
     return this._conditions;
+  }
+
+  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+    const [whereString, whereParams] = this.getWhereStatement();
+    return qb.where(whereString, whereParams);
   }
 
   addCondition(condition: Condition) {

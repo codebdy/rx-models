@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { RxRole } from 'src/entity/RxRole';
 import { createId } from 'src/utils/create-id';
 import { getRepository } from 'typeorm';
 import { MagicQueryParamsParser } from './param';
@@ -11,17 +10,14 @@ export class MagicQueryService {
     const queryBulider = getRepository(
       paramParser.modelUnit?.model,
     ).createQueryBuilder(paramParser.modelUnit?.modelAlias);
-    const [
-      whereString,
-      whereParams,
-    ] = paramParser.whereMeta.getWhereStatement();
-    /*if (paramParser.select?.length > 0) {
+
+    if (paramParser.select?.length > 0) {
       queryBulider.select(
         paramParser.select.map(
           (field) => paramParser.modelUnit?.modelAlias + '.' + field,
         ),
       );
-    }*/
+    }
     //queryBulider.loadRelationCountAndMap(
     //  `${paramParser.modelUnit?.modelAlias}.relationCount`,
     //  `${paramParser.modelUnit?.modelAlias}.roles`,
@@ -47,7 +43,8 @@ export class MagicQueryService {
     if (orderMap) {
       queryBulider.orderBy(orderMap);
     }
-    queryBulider.where(whereString, whereParams);
+
+    paramParser.whereMeta?.makeQueryBuilder(queryBulider);
     const skipCommand = paramParser.modelUnit.getSkipCommand();
     if (skipCommand) {
       queryBulider.skip(skipCommand.count);
@@ -56,8 +53,8 @@ export class MagicQueryService {
     if (takeCommand) {
       queryBulider.take(takeCommand.count);
     }
-    //queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
-    console.log(queryBulider.getSql(), whereParams, paramParser.takeCommand);
+    queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
+    console.log(queryBulider.getSql());
     //return queryBulider[paramParser.takeCommand]();
     return queryBulider.getMany();
     //return queryBulider.getManyAndCount();
