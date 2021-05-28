@@ -34,17 +34,10 @@ export class MagicQueryService {
       queryBulider,
       paramParser.modelUnit?.modelAlias,
     );
-
     paramParser.whereMeta?.makeQueryBuilder(queryBulider);
+    paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
+    paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
-    const skipCommand = paramParser.modelUnit.getSkipCommand();
-    if (skipCommand) {
-      queryBulider.skip(skipCommand.count);
-    }
-    const takeCommand = paramParser.modelUnit.getTakeCommand();
-    if (takeCommand) {
-      queryBulider.take(takeCommand.count);
-    }
     queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql());
     return queryBulider[paramParser.modelUnit.fetchString]();

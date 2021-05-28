@@ -1,3 +1,4 @@
+import { SelectQueryBuilder } from 'typeorm';
 import { Command } from './command';
 
 export class SkipCommand {
@@ -12,5 +13,10 @@ export class SkipCommand {
 
   get count() {
     return this._commandMeta.getFistNumberParam();
+  }
+
+  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+    qb.skip(this.count);
+    return qb;
   }
 }

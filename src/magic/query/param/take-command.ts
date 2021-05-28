@@ -1,3 +1,4 @@
+import { SelectQueryBuilder } from 'typeorm';
 import { Command } from './command';
 
 export class TakeCommand {
@@ -16,5 +17,10 @@ export class TakeCommand {
 
   get count() {
     return this._commandMeta.getFistNumberParam();
+  }
+
+  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+    qb.take(this.count);
+    return qb;
   }
 }
