@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { createId } from 'src/utils/create-id';
 import { getRepository } from 'typeorm';
 import { MagicQueryParamsParser } from './param';
 
@@ -7,15 +6,14 @@ import { MagicQueryParamsParser } from './param';
 export class MagicQueryService {
   async query(jsonStr: string) {
     const paramParser = new MagicQueryParamsParser(jsonStr);
+    const modelAlias = paramParser.modelUnit?.modelAlias;
     const queryBulider = getRepository(
       paramParser.modelUnit?.model,
-    ).createQueryBuilder(paramParser.modelUnit?.modelAlias);
+    ).createQueryBuilder(modelAlias);
 
     if (paramParser.select?.length > 0) {
       queryBulider.select(
-        paramParser.select.map(
-          (field) => paramParser.modelUnit?.modelAlias + '.' + field,
-        ),
+        paramParser.select.map((field) => modelAlias + '.' + field),
       );
     }
     //queryBulider.loadRelationCountAndMap(
@@ -23,17 +21,10 @@ export class MagicQueryService {
     //  `${paramParser.modelUnit?.modelAlias}.roles`,
     //);
     for (const relation of paramParser.relations) {
-      const relationAlias = `relation${createId()}`;
-      queryBulider.leftJoinAndSelect(
-        `${paramParser.modelUnit?.modelAlias}.${relation.name}`,
-        relationAlias,
-      );
+      relation.makeQueryBuilder(queryBulider, modelAlias);
     }
 
-    paramParser.orderBys?.makeQueryBuilder(
-      queryBulider,
-      paramParser.modelUnit?.modelAlias,
-    );
+    paramParser.orderBys?.makeQueryBuilder(queryBulider, modelAlias);
     paramParser.whereMeta?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
