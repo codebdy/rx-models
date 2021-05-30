@@ -1,10 +1,11 @@
+import { RelationTakeCommand } from '../../param/relation-take-command';
 import { RelationFilter } from './relation-filter';
 
-export class TakeFilter extends RelationFilter {
-  private _count;
-  constructor(count: number) {
+export class RelationTakeFilter extends RelationFilter {
+  private _command;
+  constructor(command: RelationTakeCommand) {
     super();
-    this._count = count;
+    this._command = command;
   }
 
   filter(relations: any[]) {

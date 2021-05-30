@@ -6,6 +6,7 @@ import { Where } from './where';
 import { Condition } from './condition';
 import { OrderBy } from './order-by';
 import { RelationFilter } from '../filters/relation/relation-filter';
+import { RelationTakeFilter } from '../filters/relation/take-filter';
 
 export class MagicQueryParamsParser {
   private _json: any;
@@ -25,7 +26,12 @@ export class MagicQueryParamsParser {
       if (jsonUnit.key.toLowerCase() === TOKEN_MODEL) {
         this._modelUnit = new ModelUnit(jsonUnit);
       } else if (jsonUnit.isRlationShip()) {
-        this._relations.push(new Relation(jsonUnit));
+        const relation = new Relation(jsonUnit);
+        const takeCommand = relation.getTakeCommand();
+        if (takeCommand) {
+          this._relationFilters.push(new RelationTakeFilter(takeCommand));
+        }
+        this._relations.push(relation);
       } else if (jsonUnit.isSelect()) {
         this._select = jsonUnit.value;
       } else if (jsonUnit.isOrderBy()) {
