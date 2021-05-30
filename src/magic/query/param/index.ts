@@ -5,6 +5,7 @@ import { TOKEN_MODEL } from './keyword_tokens';
 import { Where } from './where';
 import { Condition } from './condition';
 import { OrderBy } from './order-by';
+import { RelationFilter } from '../filters/relation/relation-filter';
 
 export class MagicQueryParamsParser {
   private _json: any;
@@ -12,6 +13,7 @@ export class MagicQueryParamsParser {
   private _relations: Relation[] = [];
   private _select: string[] = [];
   private _orderBys: OrderBy;
+  private _relationFilters: RelationFilter[] = [];
   whereMeta: Where = new Where();
 
   constructor(jsonStr: string) {
