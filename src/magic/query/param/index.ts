@@ -29,7 +29,9 @@ export class MagicQueryParamsParser {
         const relation = new Relation(jsonUnit);
         const takeCommand = relation.getTakeCommand();
         if (takeCommand) {
-          this._relationFilters.push(new RelationTakeFilter(takeCommand));
+          this._relationFilters.push(
+            new RelationTakeFilter(relation.name, takeCommand.count),
+          );
         }
         this._relations.push(relation);
       } else if (jsonUnit.isSelect()) {
