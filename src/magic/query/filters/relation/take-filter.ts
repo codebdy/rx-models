@@ -9,7 +9,8 @@ export class RelationTakeFilter extends RelationFilter {
     this._count = count;
   }
 
-  filter(relations: any[]) {
-    return relations;
+  filter(model: any) {
+    model[this._relationName] = model[this._relationName].slice(0, this._count);
+    return model;
   }
 }

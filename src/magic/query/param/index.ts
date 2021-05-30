@@ -59,4 +59,8 @@ export class MagicQueryParamsParser {
   get orderBys() {
     return this._orderBys;
   }
+
+  get relationFilters() {
+    return this._relationFilters;
+  }
 }

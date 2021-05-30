@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { getRepository } from 'typeorm';
 import { MagicQueryParamsParser } from './param';
+import { TOKEN_GET_MANY, TOKEN_GET_ONE } from './param/keyword_tokens';
 
 @Injectable()
 export class MagicQueryService {
@@ -31,6 +32,19 @@ export class MagicQueryService {
 
     queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql());
-    return queryBulider[paramParser.modelUnit.excuteString]();
+    let result = (await queryBulider[
+      paramParser.modelUnit.excuteString
+    ]()) as any;
+    for (const relationFilter of paramParser.relationFilters) {
+      if (paramParser.modelUnit.excuteString === TOKEN_GET_ONE) {
+        result = relationFilter.filter(result);
+      }
+      if (paramParser.modelUnit.excuteString === TOKEN_GET_MANY) {
+        for (let i = 0; i < result.length; i++) {
+          result[i] = relationFilter.filter(result[i]);
+        }
+      }
+    }
+    return result;
   }
 }
