@@ -7,7 +7,7 @@ export class TakeFilter extends RelationFilter {
     this._count = count;
   }
 
-  filterIt(relations: any[]) {
+  filter(relations: any[]) {
     return relations;
   }
 }

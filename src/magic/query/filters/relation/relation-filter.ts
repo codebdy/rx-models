@@ -1,3 +1,3 @@
 export abstract class RelationFilter {
-  abstract filterIt(relations: any[]);
+  abstract filter(relations: any[]);
 }
