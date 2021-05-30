@@ -35,16 +35,21 @@ export class MagicQueryService {
     let result = (await queryBulider[
       paramParser.modelUnit.excuteString
     ]()) as any;
-    for (const relationFilter of paramParser.relationFilters) {
-      if (paramParser.modelUnit.excuteString === TOKEN_GET_ONE) {
-        result = relationFilter.filter(result);
-      }
-      if (paramParser.modelUnit.excuteString === TOKEN_GET_MANY) {
-        for (let i = 0; i < result.length; i++) {
-          result[i] = relationFilter.filter(result[i]);
-        }
-      }
-    }
+    result = filterRelations(paramParser, result);
     return result;
   }
+}
+
+function filterRelations(paramParser: MagicQueryParamsParser, result: any) {
+  for (const relationFilter of paramParser.relationFilters) {
+    if (paramParser.modelUnit.excuteString === TOKEN_GET_ONE) {
+      result = relationFilter.filter(result);
+    }
+    if (paramParser.modelUnit.excuteString === TOKEN_GET_MANY) {
+      for (let i = 0; i < result.length; i++) {
+        result[i] = relationFilter.filter(result[i]);
+      }
+    }
+  }
+  return result;
 }
