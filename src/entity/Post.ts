@@ -20,7 +20,7 @@ export class Post {
   @Column()
   content: string;
 
-  @OneToMany(() => PostMedia)
+  @OneToMany(() => PostMedia, (postMedia) => postMedia.post)
   medias: PostMedia[];
 
   @CreateDateColumn()
