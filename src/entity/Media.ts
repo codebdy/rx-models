@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -10,6 +11,9 @@ import {
 export class Media {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  fileName: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,15 +1,27 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PostMedia } from './PostMedia';
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  title: string;
+
+  @Column()
+  content: string;
+
+  @OneToMany(() => PostMedia)
+  medias: PostMedia[];
 
   @CreateDateColumn()
   createdAt: Date;
