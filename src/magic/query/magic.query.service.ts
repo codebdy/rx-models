@@ -16,6 +16,7 @@ export class MagicQueryService {
       queryBulider.select(
         paramParser.select.map((field) => modelAlias + '.' + field),
       );
+      queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     }
     //queryBulider.loadRelationCountAndMap(
     //  `${paramParser.modelUnit?.modelAlias}.relationCount`,
@@ -30,7 +31,6 @@ export class MagicQueryService {
     paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
-    queryBulider.addSelect([paramParser.modelUnit?.modelAlias + '.id']);
     console.log(queryBulider.getSql());
     let result = (await queryBulider[
       paramParser.modelUnit.excuteString
