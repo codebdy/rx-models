@@ -41,7 +41,7 @@ export class JsonUnit {
     return undefined;
   }
 
-  isModel(){
+  isModel() {
     return this._key.toLowerCase() === TOKEN_MODEL;
   }
 
