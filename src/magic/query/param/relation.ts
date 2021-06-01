@@ -1,15 +1,16 @@
 import { createId } from 'src/utils/create-id';
 import { SelectQueryBuilder } from 'typeorm';
 import { JsonUnit } from './json-unit';
+import { ModelParams } from './model-params';
 import { RelationTakeCommand } from './relation-take-command';
 
 export class Relation {
   private _jsonUnit: JsonUnit;
+  private _modelParams: ModelParams;
 
-  //relations: RelationMeta[];
-  //whereMeta: WhereMeta;
   constructor(jsonUnit: JsonUnit) {
     this._jsonUnit = jsonUnit;
+    this._modelParams = new ModelParams(jsonUnit.value);
   }
 
   get name() {
@@ -26,6 +27,9 @@ export class Relation {
   }
 
   getTakeCommand() {
-    return new RelationTakeCommand(this._jsonUnit.getTakeCommand());
+    const commandMeta = this._jsonUnit.getTakeCommand();
+    if (commandMeta) {
+      return new RelationTakeCommand(commandMeta);
+    }
   }
 }
