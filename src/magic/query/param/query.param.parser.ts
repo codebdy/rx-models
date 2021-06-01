@@ -1,7 +1,7 @@
 import { JsonUnit } from './json-unit';
 import { ModelUnit } from './model-unit';
 import { Relation } from './relation';
-import { TOKEN_MODEL } from './keyword_tokens';
+import { TOKEN_MODEL } from './keyword-tokens';
 import { Where } from './where';
 import { Condition } from './condition';
 import { OrderBy } from './order-by';

@@ -5,7 +5,7 @@ import {
   TOKEN_SELECT,
   TOKEN_SKIP,
   TOKEN_TAKE,
-} from './keyword_tokens';
+} from './keyword-tokens';
 import { parseCommands } from './parse-commands';
 
 export class JsonUnit {
