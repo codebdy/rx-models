@@ -1,6 +1,5 @@
 import { JsonUnit } from './json-unit';
 import { ModelUnit } from './model-unit';
-import { TOKEN_MODEL } from './keyword-tokens';
 import { ModelParams } from './model-params';
 
 export class MagicQueryParamsParser {
