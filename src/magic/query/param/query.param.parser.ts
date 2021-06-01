@@ -1,21 +1,12 @@
 import { JsonUnit } from './json-unit';
 import { ModelUnit } from './model-unit';
-import { Relation } from './relation';
 import { TOKEN_MODEL } from './keyword-tokens';
-import { Where } from './where';
-import { Condition } from './condition';
-import { OrderBy } from './order-by';
-import { RelationFilter } from '../filters/relation/relation-filter';
-import { RelationTakeFilter } from '../filters/relation/take-filter';
+import { ModelParams } from './model-params';
 
 export class MagicQueryParamsParser {
   private _json: any;
   private _modelUnit: ModelUnit;
-  private _relations: Relation[] = [];
-  private _select: string[] = [];
-  private _orderBys: OrderBy;
-  private _relationFilters: RelationFilter[] = [];
-  private _whereMeta: Where = new Where();
+  private _modelParams: ModelParams;
 
   constructor(jsonStr: string) {
     this._json = JSON.parse(jsonStr || '{}');
@@ -23,25 +14,13 @@ export class MagicQueryParamsParser {
       const value = this._json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       //console.log(jsonUnit);
-      if (jsonUnit.key.toLowerCase() === TOKEN_MODEL) {
+      if (jsonUnit.isModel()) {
         this._modelUnit = new ModelUnit(jsonUnit);
-      } else if (jsonUnit.isRlationShip()) {
-        const relation = new Relation(jsonUnit);
-        const takeCommand = relation.getTakeCommand();
-        if (takeCommand) {
-          this._relationFilters.push(
-            new RelationTakeFilter(relation.name, takeCommand.count),
-          );
-        }
-        this._relations.push(relation);
-      } else if (jsonUnit.isSelect()) {
-        this._select = jsonUnit.value;
-      } else if (jsonUnit.isOrderBy()) {
-        this._orderBys = new OrderBy(jsonUnit.value);
-      } else {
-        this._whereMeta.addCondition(new Condition(keyStr, value));
+        delete this._json[keyStr];
+        break;
       }
     }
+    this._modelParams = new ModelParams(this._json);
   }
 
   get modelUnit() {
@@ -49,22 +28,22 @@ export class MagicQueryParamsParser {
   }
 
   get relations() {
-    return this._relations;
+    return this._modelParams.relations;
   }
 
   get select() {
-    return this._select;
+    return this._modelParams.select;
   }
 
   get orderBys() {
-    return this._orderBys;
+    return this._modelParams.orderBys;
   }
 
   get relationFilters() {
-    return this._relationFilters;
+    return this._modelParams.relationFilters;
   }
 
   get whereMeta() {
-    return this._whereMeta;
+    return this._modelParams.whereMeta;
   }
 }

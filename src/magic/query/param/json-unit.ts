@@ -1,5 +1,6 @@
 import { Command } from './command';
 import {
+  TOKEN_MODEL,
   TOKEN_ORDER_BY,
   TOKEN_RELATION,
   TOKEN_SELECT,
@@ -38,6 +39,10 @@ export class JsonUnit {
       }
     }
     return undefined;
+  }
+
+  isModel(){
+    return this._key.toLowerCase() === TOKEN_MODEL;
   }
 
   isRlationShip() {
