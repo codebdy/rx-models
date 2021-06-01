@@ -15,7 +15,7 @@ export class MagicQueryParamsParser {
   private _select: string[] = [];
   private _orderBys: OrderBy;
   private _relationFilters: RelationFilter[] = [];
-  whereMeta: Where = new Where();
+  private _whereMeta: Where = new Where();
 
   constructor(jsonStr: string) {
     this._json = JSON.parse(jsonStr || '{}');
@@ -39,7 +39,7 @@ export class MagicQueryParamsParser {
       } else if (jsonUnit.isOrderBy()) {
         this._orderBys = new OrderBy(jsonUnit.value);
       } else {
-        this.whereMeta.addCondition(new Condition(keyStr, value));
+        this._whereMeta.addCondition(new Condition(keyStr, value));
       }
     }
   }
@@ -62,5 +62,9 @@ export class MagicQueryParamsParser {
 
   get relationFilters() {
     return this._relationFilters;
+  }
+
+  get whereMeta() {
+    return this._whereMeta;
   }
 }
