@@ -16,6 +16,7 @@ export class Where {
     modelAlias: string,
   ): SelectQueryBuilder<any> {
     const [whereString, whereParams] = this.getWhereStatement(modelAlias);
+    console.log('Where where:', whereString, whereParams);
     return qb.where(whereString, whereParams);
   }
 

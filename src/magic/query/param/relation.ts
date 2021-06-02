@@ -22,10 +22,20 @@ export class Relation {
     modelAlias?: string,
   ): SelectQueryBuilder<any> {
     const relationAlias = `relation${createId()}`;
-    qb.leftJoinAndSelect(`${modelAlias}.${this.name}`, relationAlias);
+    const [
+      whereString,
+      whereParams,
+    ] = this._modelParams.whereMeta?.getWhereStatement(relationAlias);
+    qb.leftJoinAndSelect(
+      `${modelAlias}.${this.name}`,
+      relationAlias,
+      whereString,
+      whereParams,
+    );
     for (const subRelation of this._modelParams.relations) {
       subRelation.makeQueryBuilder(qb, relationAlias);
     }
+    this._modelParams.orderBys?.makeQueryBuilder(qb, relationAlias);
     return qb;
   }
 

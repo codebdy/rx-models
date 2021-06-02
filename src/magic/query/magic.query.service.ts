@@ -22,12 +22,14 @@ export class MagicQueryService {
     //  `${paramParser.modelUnit?.modelAlias}.relationCount`,
     //  `${paramParser.modelUnit?.modelAlias}.roles`,
     //);
+    paramParser.whereMeta?.makeQueryBuilder(queryBulider, modelAlias);
+
     for (const relation of paramParser.relations) {
       relation.makeQueryBuilder(queryBulider, modelAlias);
     }
 
     paramParser.orderBys?.makeQueryBuilder(queryBulider, modelAlias);
-    paramParser.whereMeta?.makeQueryBuilder(queryBulider, modelAlias);
+
     paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
