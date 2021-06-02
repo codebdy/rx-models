@@ -23,6 +23,9 @@ export class Relation {
   ): SelectQueryBuilder<any> {
     const relationAlias = `relation${createId()}`;
     qb.leftJoinAndSelect(`${modelAlias}.${this.name}`, relationAlias);
+    for (const subRelation of this._modelParams.relations) {
+      subRelation.makeQueryBuilder(qb, relationAlias);
+    }
     return qb;
   }
 
