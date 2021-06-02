@@ -11,8 +11,11 @@ export class Where {
     return this._conditions;
   }
 
-  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
-    const [whereString, whereParams] = this.getWhereStatement();
+  makeQueryBuilder(
+    qb: SelectQueryBuilder<any>,
+    modelAlias: string,
+  ): SelectQueryBuilder<any> {
+    const [whereString, whereParams] = this.getWhereStatement(modelAlias);
     return qb.where(whereString, whereParams);
   }
 
@@ -20,14 +23,14 @@ export class Where {
     this._conditions.push(condition);
   }
 
-  getWhereStatement(): [string, any] {
+  getWhereStatement(modelAlias: string): [string, any] {
     let whereRaw = '';
     const params = {};
     for (const condition of this._conditions) {
       const paramName = `param${createId()}`;
       whereRaw =
         whereRaw +
-        `${whereRaw ? '&' : ''} ${condition.field} ${
+        `${whereRaw ? '&' : ''} ${modelAlias}.${condition.field} ${
           condition.operator
         } :${paramName}`;
       params[paramName] = condition.value;

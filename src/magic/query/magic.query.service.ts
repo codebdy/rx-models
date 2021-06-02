@@ -27,7 +27,7 @@ export class MagicQueryService {
     }
 
     paramParser.orderBys?.makeQueryBuilder(queryBulider, modelAlias);
-    paramParser.whereMeta?.makeQueryBuilder(queryBulider);
+    paramParser.whereMeta?.makeQueryBuilder(queryBulider, modelAlias);
     paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
