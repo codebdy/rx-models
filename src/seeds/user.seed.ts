@@ -7,6 +7,6 @@ export const UserSeed = [
   {
     name: 'demo',
     loginName: 'demo',
-    password: '123456',
+    password: 'demo',
   },
 ];
