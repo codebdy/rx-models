@@ -3,7 +3,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,7 +36,7 @@ export class RxApp {
   @OneToMany(() => RxPage, (page) => page.app)
   pages: RxPage[];
 
-  @Column('simple-json')
+  @Column('simple-json', { nullable: true })
   navigationTtems: any;
 
   @OneToMany(() => RxAuth, (auth) => auth.app)
@@ -43,8 +45,9 @@ export class RxApp {
   @OneToMany(() => RxNotification, (notification) => notification.app)
   notifications?: RxNotification[];
 
-  @Column({ nullable: true })
-  entryPageId?: number;
+  @OneToOne(() => RxPage)
+  @JoinColumn()
+  entryPage: RxPage;
 
   @CreateDateColumn()
   createdAt: Date;

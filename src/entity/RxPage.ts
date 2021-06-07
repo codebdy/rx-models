@@ -19,19 +19,19 @@ export class RxPage {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   maxWidth: string;
 
-  @Column()
+  @Column({ nullable: true })
   width: number;
 
-  @Column('simple-json')
+  @Column('simple-json', { nullable: true })
   schema: any;
 
   @ManyToMany(() => RxAuth)
   auths: RxAuth[];
 
-  @Column()
+  @Column({ nullable: true })
   query: string;
 
   @ManyToOne(() => RxApp, (app) => app.notifications)
