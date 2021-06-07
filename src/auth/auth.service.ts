@@ -8,12 +8,13 @@ export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
+    console.log('AuthService*****');
     const user = await getRepository(RxUser)
       .createQueryBuilder('user')
       .addSelect('user.password')
       .where({ loginName: username })
       .getOne();
-
+    console.log('AuthService', user);
     if (user && user.password === pass) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
