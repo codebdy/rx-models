@@ -34,8 +34,8 @@ export class RxApp {
   @OneToMany(() => RxPage, (page) => page.app)
   pages: RxPage[];
 
-  @Column({ nullable: true })
-  navigationTtems?: string;
+  @Column('simple-json')
+  navigationTtems: any;
 
   @OneToMany(() => RxAuth, (auth) => auth.app)
   auths: RxAuth[];

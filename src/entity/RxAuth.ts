@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -11,6 +12,19 @@ import { RxApp } from './RxApp';
 export class RxAuth {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  rxSlug: string;
+
+  @Column()
+  name: string;
+
+  //预定义权限不可编辑和删除
+  @Column({ default: false })
+  predefined: boolean;
+
+  @Column({ nullable: true })
+  groupName: string;
 
   @ManyToOne(() => RxApp, (app) => app.notifications)
   app: RxApp;
