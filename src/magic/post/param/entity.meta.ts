@@ -2,7 +2,7 @@ import { JsonUnit } from 'src/magic/base/json-unit';
 import { EntityMetaCollection } from './entity.meta.colletion';
 
 export class EntityMeta {
-  private _meta: any;
+  private _meta: any = {};
   private _relations: { [key: string]: EntityMetaCollection } = {};
   private _model: string;
   private _json: any;
@@ -17,12 +17,14 @@ export class EntityMeta {
       if (relationCommand) {
         console.assert(
           relationCommand.params.length,
-          'Must give relation model',
+          'Must give relation model name',
         );
         this._relations[jsonUnit.key] = new EntityMetaCollection(
           relationCommand.params[0],
           jsonUnit,
         );
+      } else {
+        this._meta[keyStr] = value;
       }
     }
   }
