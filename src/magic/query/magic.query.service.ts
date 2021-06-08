@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { getRepository } from 'typeorm';
 import { MagicQueryParamsParser } from './param/query.param.parser';
-import { TOKEN_GET_MANY, TOKEN_GET_ONE } from './param/keyword-tokens';
+import { TOKEN_GET_MANY, TOKEN_GET_ONE } from '../base/keyword-tokens';
 
 @Injectable()
 export class MagicQueryService {

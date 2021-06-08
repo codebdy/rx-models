@@ -1,5 +1,5 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { Command } from './command';
+import { Command } from '../../base/command';
 
 export class TakeCommand {
   protected _commandMeta: Command;
