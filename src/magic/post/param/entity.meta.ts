@@ -1,18 +1,13 @@
-import { JsonUnit } from 'src/magic/base/json-unit';
+import { EntityMetaCollection } from './entity.meta.colletion';
 
 export class EntityMeta {
-  private _entities: any = [];
-  private _relations: EntityMeta[] = [];
-  private _jsonUnit: JsonUnit;
-  constructor(jsonUnit: JsonUnit) {
-    this._jsonUnit = jsonUnit;
-  }
+  private _meta: any;
+  private _relations: { [key: string]: EntityMetaCollection } = {};
+  private _model: string;
+  private _json: any;
 
-  get model(){
-    return this._jsonUnit.key;
-  }
-
-  get commands() {
-    return this._jsonUnit.commands;
+  constructor(model: string, json: any) {
+    this._model = model;
+    this._json = json;
   }
 }

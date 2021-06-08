@@ -1,16 +1,16 @@
 import { JsonUnit } from '../../base/json-unit';
-import { EntityMeta } from './entity.meta';
+import { EntityMetaCollection } from './entity.meta.colletion';
 
 export class MagicPostParamsParser {
   private _json: any;
-  private _entityMetas: EntityMeta[] = [];
+  private _entityMetas: EntityMetaCollection[] = [];
 
   constructor(json: any) {
     this._json = json;
     for (const keyStr in this._json) {
       const value = this._json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      this._entityMetas.push(new EntityMeta(jsonUnit));
+      this._entityMetas.push(new EntityMetaCollection(jsonUnit));
     }
   }
 
