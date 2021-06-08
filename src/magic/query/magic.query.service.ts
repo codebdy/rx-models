@@ -33,7 +33,7 @@ export class MagicQueryService {
     paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
-    console.log(queryBulider.getSql());
+    console.debug(queryBulider.getSql());
     let result = (await queryBulider[
       paramParser.modelUnit.excuteString
     ]()) as any;

@@ -19,6 +19,9 @@ export class RxApp {
   id: number;
 
   @Column()
+  uuid: string;
+
+  @Column()
   name: string;
 
   @Column({ nullable: true })

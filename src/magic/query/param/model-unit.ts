@@ -1,4 +1,4 @@
-import { JsonUnit } from './json-unit';
+import { JsonUnit } from '../../base/json-unit';
 import { TOKEN_COUNT, TOKEN_GET_MANY, TOKEN_GET_ONE } from './keyword-tokens';
 import { SkipCommand } from './skip-command';
 import { TakeCommand } from './take-command';

@@ -1,6 +1,6 @@
 import { createId } from 'src/utils/create-id';
 import { SelectQueryBuilder } from 'typeorm';
-import { JsonUnit } from './json-unit';
+import { JsonUnit } from '../../base/json-unit';
 import { ModelParams } from './model-params';
 import { RelationTakeCommand } from './relation-take-command';
 

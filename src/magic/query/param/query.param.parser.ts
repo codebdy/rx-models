@@ -1,4 +1,4 @@
-import { JsonUnit } from './json-unit';
+import { JsonUnit } from '../../base/json-unit';
 import { ModelUnit } from './model-unit';
 import { ModelParams } from './model-params';
 

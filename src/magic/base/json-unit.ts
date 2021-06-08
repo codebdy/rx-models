@@ -1,4 +1,4 @@
-import { Command } from './command';
+import { Command } from '../query/param/command';
 import {
   TOKEN_MODEL,
   TOKEN_ORDER_BY,
@@ -6,8 +6,8 @@ import {
   TOKEN_SELECT,
   TOKEN_SKIP,
   TOKEN_TAKE,
-} from './keyword-tokens';
-import { parseCommands } from './parse-commands';
+} from '../query/param/keyword-tokens';
+import { parseCommands } from '../query/param/parse-commands';
 
 export class JsonUnit {
   private _key = '';

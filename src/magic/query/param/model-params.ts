@@ -1,7 +1,7 @@
 import { RelationFilter } from '../filters/relation/relation-filter';
 import { RelationTakeFilter } from '../filters/relation/take-filter';
 import { Condition } from './condition';
-import { JsonUnit } from './json-unit';
+import { JsonUnit } from '../../base/json-unit';
 import { OrderBy } from './order-by';
 import { Relation } from './relation';
 import { Where } from './where';
