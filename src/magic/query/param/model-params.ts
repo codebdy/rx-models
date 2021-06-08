@@ -17,7 +17,7 @@ export class ModelParams {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      if (jsonUnit.isRlationShip()) {
+      if (jsonUnit.getRlationCommand()) {
         const relation = new Relation(jsonUnit);
         const takeCommand = relation.getTakeCommand();
         if (takeCommand) {

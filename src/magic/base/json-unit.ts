@@ -45,7 +45,7 @@ export class JsonUnit {
     return this._key.toLowerCase() === TOKEN_MODEL;
   }
 
-  isRlationShip() {
+  getRlationCommand() {
     return this.getCommand(TOKEN_RELATION);
   }
 

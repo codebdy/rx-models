@@ -10,7 +10,7 @@ export class MagicPostParamsParser {
     for (const keyStr in this._json) {
       const value = this._json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      this._entityMetas.push(new EntityMetaCollection(jsonUnit));
+      this._entityMetas.push(new EntityMetaCollection(jsonUnit.key, jsonUnit));
     }
   }
 
