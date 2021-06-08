@@ -55,6 +55,7 @@ export class MagicQueryController {
   @Get('get/:jsonStr?')
   async getModels(@Param('jsonStr') jsonStr) {
     try {
+      console.debug('JSON QUERY String', jsonStr);
       return await this.queryService.query(jsonStr);
     } catch (error: any) {
       console.error('getModels error:', error);

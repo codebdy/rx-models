@@ -19,11 +19,15 @@ export class ModelUnit {
   }
 
   getTakeCommand() {
-    return new TakeCommand(this._jsonUnit.getTakeCommand());
+    return this._jsonUnit.getTakeCommand()
+      ? new TakeCommand(this._jsonUnit.getTakeCommand())
+      : undefined;
   }
 
   getSkipCommand() {
-    return new SkipCommand(this._jsonUnit.getSkipCommand());
+    return this._jsonUnit.getSkipCommand()
+      ? new SkipCommand(this._jsonUnit.getSkipCommand())
+      : undefined;
   }
 
   get excuteString() {
