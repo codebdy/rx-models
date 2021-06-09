@@ -12,6 +12,7 @@ export class MagicPostParamsParser {
       const jsonUnit = new JsonUnit(keyStr, value);
       this._entityMetas.push(new EntityMetaCollection(jsonUnit.key, jsonUnit));
     }
+    console.debug('MagicPostParamsParser', this._entityMetas);
   }
 
   get entityMetas() {

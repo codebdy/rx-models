@@ -28,7 +28,6 @@ export class MagicPostController {
   @Post('post')
   async postModels(@Body() body: any) {
     try {
-      console.debug('postModels', body);
       return await this.postService.post(body || {});
     } catch (error: any) {
       console.error('postModels error:', error);

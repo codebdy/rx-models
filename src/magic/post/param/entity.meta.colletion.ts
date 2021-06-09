@@ -10,10 +10,10 @@ export class EntityMetaCollection {
     this._model = model;
     if (Array.isArray(jsonUnit.value)) {
       for (const meta of jsonUnit.value) {
-        this._entities.push(new EntityMeta(jsonUnit.key, meta));
+        this._entities.push(new EntityMeta(model, meta));
       }
     } else {
-      this._entities.push(new EntityMeta(jsonUnit.key, jsonUnit.value));
+      this._entities.push(new EntityMeta(model, jsonUnit.value));
     }
   }
 
@@ -23,5 +23,9 @@ export class EntityMetaCollection {
 
   get commands() {
     return this._jsonUnit.commands;
+  }
+
+  get entites() {
+    return this._entities;
   }
 }

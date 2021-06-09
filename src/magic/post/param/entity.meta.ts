@@ -4,6 +4,7 @@ import { EntityMetaCollection } from './entity.meta.colletion';
 export class EntityMeta {
   private _meta: any = {};
   private _relations: { [key: string]: EntityMetaCollection } = {};
+  private _savedRelasions: { [key: string]: any } = {};
   private _model: string;
   private _json: any;
 
@@ -29,7 +30,19 @@ export class EntityMeta {
     }
   }
 
+  get meta() {
+    return this._meta;
+  }
+
   get model() {
     return this._model;
+  }
+
+  get relations() {
+    return this._relations;
+  }
+
+  get savedRelations() {
+    return this._savedRelasions;
   }
 }
