@@ -7,10 +7,12 @@ import { MagicPostParamsParser } from './param/post.param.parser';
 @Injectable()
 export class MagicPostService {
   async post(json: any) {
-    const savedEntites = [];
+    let savedEntites = [];
     const entities = new MagicPostParamsParser(json).entityMetas;
     for (const entityGroup of entities) {
-      savedEntites.concat(await this.saveEntityGroup(entityGroup));
+      savedEntites = savedEntites.concat(
+        await this.saveEntityGroup(entityGroup),
+      );
     }
     return savedEntites;
   }
@@ -33,7 +35,6 @@ export class MagicPostService {
         relationShip,
       );
     }
-    console.debug('saveEntity', entityMeta);
     const repository = getRepository(entityMeta.model);
     const entity = await repository.save(entityMeta.meta);
     for (const relationKey in entityMeta.savedRelations) {
