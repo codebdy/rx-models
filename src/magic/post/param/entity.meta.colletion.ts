@@ -5,6 +5,8 @@ export class EntityMetaCollection {
   private _entities: EntityMeta[] = [];
   private _jsonUnit: JsonUnit;
   private _model: string;
+  private _isSingleEntity = false;
+
   constructor(model: string, jsonUnit: JsonUnit) {
     this._jsonUnit = jsonUnit;
     this._model = model;
@@ -13,6 +15,7 @@ export class EntityMetaCollection {
         this._entities.push(new EntityMeta(model, meta));
       }
     } else {
+      this._isSingleEntity = true;
       this._entities.push(new EntityMeta(model, jsonUnit.value));
     }
   }
@@ -27,5 +30,9 @@ export class EntityMetaCollection {
 
   get entites() {
     return this._entities;
+  }
+
+  get isSingleEntity() {
+    return this._isSingleEntity;
   }
 }
