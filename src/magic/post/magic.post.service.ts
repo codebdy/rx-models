@@ -29,7 +29,7 @@ export class MagicPostService {
     const relations = entityMeta.relations;
     for (const relationKey in relations) {
       const relationShip: EntityMetaCollection = relations[relationKey];
-      entityMeta.savedRelations[relationKey] = this.saveEntityGroup(
+      entityMeta.savedRelations[relationKey] = await this.saveEntityGroup(
         relationShip,
       );
     }
