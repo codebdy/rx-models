@@ -2,25 +2,28 @@ import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { MagicDeleteService } from './magic.delete.service';
 
 @Controller()
-export class MagicPostController {
+export class MagicDeleteController {
   constructor(private readonly deleteService: MagicDeleteService) {}
 
   /**
    * 通用提交接口，语法示例：
    * {
-   *    "RxApp":[
-   *      2,3,5,
-   *      {
-   *        "id": 1,
-   *        "auths @relation(RxAuth)":[
-   *          2,3,4,
-   *          {
-   *            id:9,
-   *            xxxs:[...]
-   *          }
-   *        ]
-   *      }
-   *    ]
+   *    "RxApp":{
+   *      "models":[
+   *        2,3,5,
+   *        {
+   *          "id": 1,
+   *          "auths @relation(RxAuth)":[
+   *            2,3,4,
+   *            {
+   *              id:9,
+   *              xxxs:[...]
+   *            }
+   *          ]
+   *        }
+   *      ],
+   *     "relations":["auths","roles"]
+   *   }
    * }
    * @returns
    */

@@ -2,7 +2,7 @@ import { RxApp } from 'src/entity/RxApp';
 import { RxAuth } from 'src/entity/RxAuth';
 import { RxPage } from 'src/entity/RxPage';
 import rxAppSeed from 'src/seeds/rx/app.seed';
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { IsNull, MigrationInterface, Not, QueryRunner } from 'typeorm';
 
 export class SeedRxApp1623036507146 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -26,24 +26,21 @@ export class SeedRxApp1623036507146 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.manager.connection
-      .createQueryBuilder()
-      .delete()
-      .from(RxAuth)
-      .where('true')
-      .execute();
+    const appRep = queryRunner.manager.getRepository(RxApp);
+    const apps = await appRep.find();
+    for (const app of apps) {
+      app.entryPage = null;
+      app.auths = null;
+      app.pages = null;
+      await appRep.save(app);
+    }
 
-    await queryRunner.manager.connection
-      .createQueryBuilder()
-      .delete()
-      .from(RxPage)
-      .where('true')
-      .execute();
-    await queryRunner.manager.connection
-      .createQueryBuilder()
-      .delete()
-      .from(RxApp)
-      .where('true')
-      .execute();
+    await queryRunner.manager
+      .getRepository(RxAuth)
+      .delete({ id: Not(IsNull()) });
+    await queryRunner.manager
+      .getRepository(RxPage)
+      .delete({ id: Not(IsNull()) });
+    await appRep.delete({ id: Not(IsNull()) });
   }
 }

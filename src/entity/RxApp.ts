@@ -18,7 +18,7 @@ export class RxApp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   uuid: string;
 
   @Column()
