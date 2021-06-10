@@ -6,24 +6,10 @@ export class MagicDeleteController {
   constructor(private readonly deleteService: MagicDeleteService) {}
 
   /**
-   * 通用提交接口，语法示例：
+   * 通用删除接口，语法示例：
    * {
-   *    "RxApp":{
-   *      "models":[
-   *        2,3,5,
-   *        {
-   *          "id": 1,
-   *          "auths @relation(RxAuth)":[
-   *            2,3,4,
-   *            {
-   *              id:9,
-   *              xxxs:[...]
-   *            }
-   *          ]
-   *        }
-   *      ],
-   *     "relations":["auths","roles"]
-   *   }
+   *    "RxApp @cascade(pages, auths)":[2,3,5],
+   *    "RxAuth":7
    * }
    * @returns
    */
