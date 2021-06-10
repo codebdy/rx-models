@@ -33,6 +33,8 @@ export class MagicDeleteService {
       }
     }
 
+    await entityRepository.delete(meta.ids);
+
     return entites.map((entity: any) => entity.id);
   }
 }

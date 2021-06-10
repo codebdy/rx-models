@@ -12,7 +12,7 @@ export class MagicPostController {
    *      {
    *        "id": 1,
    *        "name":"XXX",
-   *        "auths @relation(RxAuth) @add":[
+   *        "auths @relation":[// @add
    *          {
    *            "id":2,
    *          },
