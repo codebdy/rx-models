@@ -34,7 +34,7 @@ export class MagicPostService {
       );
     }
     const repository = getRepository(entityMeta.model);
-    const entity = await repository.save(entityMeta.meta);
+    const entity = repository.create(entityMeta.meta);
     for (const relationKey in entityMeta.savedRelations) {
       entity[relationKey] = entityMeta.savedRelations[relationKey];
     }
