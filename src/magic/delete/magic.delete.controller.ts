@@ -19,7 +19,7 @@ export class MagicDeleteController {
       console.debug(body);
       return await this.deleteService.delete(body || {});
     } catch (error: any) {
-      console.error('postModels error:', error);
+      console.error('deleteModels error:', error);
       throw new HttpException(
         {
           status: 500,

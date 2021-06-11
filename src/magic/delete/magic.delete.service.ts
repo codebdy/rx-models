@@ -18,12 +18,15 @@ export class MagicDeleteService {
 
   private async deleteOne(meta: ModelDeleteMeta) {
     const entityRepository = getRepository(meta.model);
-    const relationMetas = entityRepository.metadata.relations;
-    const entites = await entityRepository.findByIds(meta.ids);
+    const relationMetas = entityRepository.metadata.ownRelations;
+    const qb = entityRepository.createQueryBuilder(meta.model);
+    meta.cascades?.forEach((relationName) => {
+      qb.leftJoinAndSelect(`${meta.model}.${relationName}`, relationName);
+    });
+    const entites = await qb.whereInIds(meta.ids).getMany();
     const cascadeMetas: ModelDeleteMeta[] = [];
     if (relationMetas && relationMetas.length > 0) {
       for (const entity of entites) {
-        //解除所有关联关系，防止外键约束
         for (const relationMeta of relationMetas) {
           if (meta.isCascade(relationMeta.propertyName)) {
             const relationObjs = entity[relationMeta.propertyName];
@@ -31,7 +34,7 @@ export class MagicDeleteService {
               cascadeMetas.push(
                 new ModelDeleteMeta(
                   new JsonUnit(
-                    relationMeta.entityMetadata.name,
+                    relationMeta.inverseEntityMetadata.name,
                     Array.isArray(relationObjs)
                       ? relationObjs.filter((obj) => obj.id)
                       : relationObjs.id,
@@ -39,6 +42,7 @@ export class MagicDeleteService {
                 ),
               );
           }
+          //解除所有关联关系，防止外键约束
           entity[relationMeta.propertyName] = null;
         }
         await entityRepository.save(entity);
@@ -46,11 +50,10 @@ export class MagicDeleteService {
     }
 
     await entityRepository.delete(meta.ids);
-
     for (const cascadeMeta of cascadeMetas) {
       const deletedIds = await this.deleteOne(cascadeMeta);
       this._deletedModels[cascadeMeta.model] = [
-        ...this._deletedModels[cascadeMeta.model],
+        ...(this._deletedModels[cascadeMeta.model] || []),
         ...deletedIds,
       ];
     }

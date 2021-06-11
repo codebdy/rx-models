@@ -24,7 +24,9 @@ export class ModelDeleteMeta {
   }
 
   isCascade(relationName: string) {
-    console.debug('isCascade', this._jsonUnit.commands);
+    if (!this.cascades) {
+      return false;
+    }
     for (const relation of this.cascades) {
       if (relation === relationName) {
         return true;

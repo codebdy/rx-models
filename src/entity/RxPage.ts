@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -29,6 +30,7 @@ export class RxPage {
   schema: any;
 
   @ManyToMany(() => RxAuth)
+  @JoinTable()
   auths: RxAuth[];
 
   @Column({ nullable: true })
