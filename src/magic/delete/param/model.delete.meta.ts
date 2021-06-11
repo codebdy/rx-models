@@ -22,4 +22,14 @@ export class ModelDeleteMeta {
     const cascadeCommand = this._jsonUnit.getCommand(TOKEN_CASCADE);
     return cascadeCommand ? cascadeCommand.params : undefined;
   }
+
+  isCascade(relationName: string) {
+    for (const relation of this.cascades) {
+      if (relation === relationName) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
