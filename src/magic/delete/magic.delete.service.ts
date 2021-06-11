@@ -27,16 +27,17 @@ export class MagicDeleteService {
         for (const relationMeta of relationMetas) {
           if (meta.isCascade(relationMeta.propertyName)) {
             const relationObjs = entity[relationMeta.propertyName];
-            cascadeMetas.push(
-              new ModelDeleteMeta(
-                new JsonUnit(
-                  relationMeta.entityMetadata.name,
-                  relationObjs && Array.isArray(relationObjs)
-                    ? relationObjs.filter((obj) => obj.id)
-                    : relationObjs.id,
+            relationObjs &&
+              cascadeMetas.push(
+                new ModelDeleteMeta(
+                  new JsonUnit(
+                    relationMeta.entityMetadata.name,
+                    Array.isArray(relationObjs)
+                      ? relationObjs.filter((obj) => obj.id)
+                      : relationObjs.id,
+                  ),
                 ),
-              ),
-            );
+              );
           }
           entity[relationMeta.propertyName] = null;
         }
@@ -47,10 +48,11 @@ export class MagicDeleteService {
     await entityRepository.delete(meta.ids);
 
     for (const cascadeMeta of cascadeMetas) {
-      console.debug('cascades:', cascadeMeta);
-      this._deletedModels[cascadeMeta.model] = await this.deleteOne(
-        cascadeMeta,
-      );
+      const deletedIds = await this.deleteOne(cascadeMeta);
+      this._deletedModels[cascadeMeta.model] = [
+        ...this._deletedModels[cascadeMeta.model],
+        ...deletedIds,
+      ];
     }
 
     return entites.map((entity: any) => entity.id);

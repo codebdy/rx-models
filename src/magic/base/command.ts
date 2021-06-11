@@ -7,7 +7,7 @@ export class Command {
     this._name = nameReg.test(commandStr)
       ? commandStr.match(nameReg)[0].trim()
       : '';
-    const paramReg = /\(\s*\S*\)/i;
+    const paramReg = /\([\s\S,]*\)/i;
     const paramStr = paramReg.test(commandStr)
       ? commandStr.match(paramReg)[0].replace('(', '').replace(')', '')
       : '';
