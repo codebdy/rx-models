@@ -1,6 +1,6 @@
-import { RelationFilter } from './relation-filter';
+import { RelationCommand } from './relation-command';
 
-export class RelationTakeFilter extends RelationFilter {
+export class RelationTakeCommand extends RelationCommand {
   private _relationName;
   private _count;
   constructor(relationName: string, count: number) {
@@ -9,7 +9,7 @@ export class RelationTakeFilter extends RelationFilter {
     this._count = count;
   }
 
-  filter(model: any) {
+  do(model: any) {
     model[this._relationName] = model[this._relationName].slice(0, this._count);
     return model;
   }

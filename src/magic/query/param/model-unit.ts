@@ -1,5 +1,10 @@
 import { JsonUnit } from '../../base/json-unit';
-import { TOKEN_COUNT, TOKEN_GET_MANY, TOKEN_GET_ONE } from '../../base/keyword-tokens';
+import {
+  TOKEN_COUNT,
+  TOKEN_GET_MANY,
+  TOKEN_GET_ONE,
+  TOKEN_TREE,
+} from '../../base/keyword-tokens';
 import { SkipCommand } from './skip-command';
 import { TakeCommand } from './take-command';
 
@@ -28,6 +33,10 @@ export class ModelUnit {
     return this._jsonUnit.getSkipCommand()
       ? new SkipCommand(this._jsonUnit.getSkipCommand())
       : undefined;
+  }
+
+  needBuildTree() {
+    return !!this._jsonUnit.getCommand(TOKEN_TREE);
   }
 
   get excuteString() {

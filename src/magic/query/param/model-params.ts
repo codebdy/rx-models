@@ -1,5 +1,5 @@
-import { RelationFilter } from '../filters/relation/relation-filter';
-import { RelationTakeFilter } from '../filters/relation/take-filter';
+import { RelationCommand } from '../commands/relation/relation-command';
+import { RelationTakeCommand } from '../commands/relation/take-command';
 import { Condition } from './condition';
 import { JsonUnit } from '../../base/json-unit';
 import { OrderBy } from './order-by';
@@ -12,7 +12,7 @@ export class ModelParams {
   private _select: string[] = [];
   private _orderBys: OrderBy;
   private _whereMeta: Where = new Where();
-  private _relationFilters: RelationFilter[] = [];
+  private _relationFilters: RelationCommand[] = [];
 
   constructor(model: string, json: any) {
     for (const keyStr in json) {
@@ -24,7 +24,7 @@ export class ModelParams {
         const takeCommand = relation.getTakeCommand();
         if (takeCommand) {
           this._relationFilters.push(
-            new RelationTakeFilter(relation.name, takeCommand.count),
+            new RelationTakeCommand(relation.name, takeCommand.count),
           );
         }
         this._relations.push(relation);

@@ -10,3 +10,4 @@ export const TOKEN_ORDER_BY = 'orderBy';
 export const TOKEN_LARGE_RELATION = 'LargeRelation';
 export const TOKEN_COUNT = 'count';
 export const TOKEN_CASCADE = 'cascade';
+export const TOKEN_TREE = 'tree';

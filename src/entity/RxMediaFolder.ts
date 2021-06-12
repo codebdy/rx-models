@@ -4,14 +4,12 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
-  Tree,
-  TreeChildren,
-  TreeParent,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { RxUser } from './RxUser';
 
 @Entity()
-@Tree('closure-table')
 export class RxMediaFolder {
   @PrimaryGeneratedColumn()
   id: number;
@@ -26,9 +24,9 @@ export class RxMediaFolder {
   @JoinColumn()
   user: RxUser;
 
-  @TreeChildren()
-  children: RxMediaFolder[];
-
-  @TreeParent()
+  @ManyToOne(() => RxMediaFolder, (folder) => folder.children)
   parent: RxMediaFolder;
+
+  @OneToMany(() => RxMediaFolder, (folder) => folder.parent)
+  children: RxMediaFolder[];
 }
