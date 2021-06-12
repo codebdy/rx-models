@@ -5,6 +5,7 @@ import { JsonUnit } from '../../base/json-unit';
 import { OrderBy } from './order-by';
 import { Relation } from './relation';
 import { Where } from './where';
+import { getRelationModel } from 'src/magic/base/getRelationModel';
 
 export class ModelParams {
   private _relations: Relation[] = [];
@@ -13,12 +14,13 @@ export class ModelParams {
   private _whereMeta: Where = new Where();
   private _relationFilters: RelationFilter[] = [];
 
-  constructor(json: any) {
+  constructor(model: string, json: any) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      if (jsonUnit.getRlationCommand()) {
-        const relation = new Relation(jsonUnit);
+      const relationModel = getRelationModel(jsonUnit.key, model);
+      if (relationModel) {
+        const relation = new Relation(relationModel, jsonUnit);
         const takeCommand = relation.getTakeCommand();
         if (takeCommand) {
           this._relationFilters.push(

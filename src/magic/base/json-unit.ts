@@ -2,7 +2,6 @@ import { Command } from './command';
 import {
   TOKEN_MODEL,
   TOKEN_ORDER_BY,
-  TOKEN_RELATION,
   TOKEN_SELECT,
   TOKEN_SKIP,
   TOKEN_TAKE,
@@ -45,9 +44,9 @@ export class JsonUnit {
     return this._key.toLowerCase() === TOKEN_MODEL;
   }
 
-  getRlationCommand() {
-    return this.getCommand(TOKEN_RELATION);
-  }
+  //getRlationCommand() {
+  //  return this.getCommand(TOKEN_RELATION);
+  //}
 
   isSelect() {
     return this._key?.toLowerCase() === TOKEN_SELECT.toLowerCase();

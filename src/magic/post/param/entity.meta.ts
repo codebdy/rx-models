@@ -1,5 +1,6 @@
 import { JsonUnit } from 'src/magic/base/json-unit';
 import { EntityMetaCollection } from './entity.meta.colletion';
+import { getRelationModel } from '../../base/getRelationModel';
 
 export class EntityMeta {
   private _meta: any = {};
@@ -14,14 +15,11 @@ export class EntityMeta {
     for (const keyStr in this._json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      const relationCommand = jsonUnit.getRlationCommand();
-      if (relationCommand) {
-        console.assert(
-          relationCommand.params.length,
-          'Must give relation model name',
-        );
+
+      const relationModel = getRelationModel(jsonUnit.key, model);
+      if (relationModel) {
         this._relations[jsonUnit.key] = new EntityMetaCollection(
-          relationCommand.params[0],
+          relationModel,
           jsonUnit,
         );
       } else {

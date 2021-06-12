@@ -8,9 +8,9 @@ export class Relation {
   private _jsonUnit: JsonUnit;
   private _modelParams: ModelParams;
 
-  constructor(jsonUnit: JsonUnit) {
+  constructor(model: string, jsonUnit: JsonUnit) {
     this._jsonUnit = jsonUnit;
-    this._modelParams = new ModelParams(jsonUnit.value);
+    this._modelParams = new ModelParams(model, jsonUnit.value);
   }
 
   get name() {
