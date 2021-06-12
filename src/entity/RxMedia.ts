@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Media {
+export class RxMedia {
   @PrimaryGeneratedColumn()
   id: number;
 

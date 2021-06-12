@@ -1,4 +1,4 @@
-import { Media } from 'src/entity/Media';
+import { RxMedia } from 'src/entity/RxMedia';
 import { Post } from 'src/entity/Post';
 import { PostMedia } from 'src/entity/PostMedia';
 import { MediaSeed } from 'src/seeds/media.seed';
@@ -10,7 +10,7 @@ export class SeedPostAndMedia1622444090199 implements MigrationInterface {
     const postRepository = queryRunner.manager.getRepository(Post);
     const poseMediaRepostory = queryRunner.manager.getRepository(PostMedia);
     const medias = await queryRunner.manager
-      .getRepository(Media)
+      .getRepository(RxMedia)
       .save(MediaSeed);
     const posts = await postRepository.save(PostSeed);
     for (const post of posts) {
@@ -58,7 +58,7 @@ export class SeedPostAndMedia1622444090199 implements MigrationInterface {
     await queryRunner.manager.connection
       .createQueryBuilder()
       .delete()
-      .from(Media)
+      .from(RxMedia)
       .where('true')
       .execute();
   }

@@ -28,7 +28,7 @@ export class MagicQueryController {
    *      "xxx":"xxx"
    *    },
    *    #LargeRelation功能暂时不实现
-   *    "roles @relation(Role) @count @take(5, LargeRelation) @toUpercase(name)":{
+   *    "roles @count @take(5, LargeRelation) @toUpercase(name)":{
    *      "active": true,
    *      "isRemoved": false,
    *      "orderBy":{"name":'ASC'},

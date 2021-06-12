@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Media } from './Media';
+import { RxMedia } from './RxMedia';
 import { Post } from './Post';
 
 @Entity()
@@ -13,6 +13,6 @@ export class PostMedia {
   @ManyToOne(() => Post, (post) => post.medias)
   post: Post;
 
-  @ManyToOne(() => Media)
-  media: Media;
+  @ManyToOne(() => RxMedia)
+  media: RxMedia;
 }
