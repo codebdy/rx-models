@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RxUser } from './RxUser';
 
 @Entity()
 export class RxMedia {
@@ -23,4 +26,8 @@ export class RxMedia {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @OneToOne(() => RxUser)
+  @JoinColumn()
+  user: RxUser;
 }
