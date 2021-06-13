@@ -53,9 +53,17 @@ export class MagicPostService {
       );
     }
     const repository = getRepository(entityMeta.model);
-    const entity = entityMeta.meta?.id
-      ? await repository.update(entityMeta.meta?.id, entityMeta.meta)
-      : repository.create(entityMeta.meta);
+    let entity: any = repository.create();
+    if (entityMeta.meta?.id) {
+      entity = await repository.findOne(entityMeta.meta?.id);
+    }
+
+    for (const attrKey in entityMeta.meta) {
+      if (attrKey !== 'id') {
+        entity[attrKey] = entityMeta.meta[attrKey];
+      }
+    }
+
     for (const relationKey in entityMeta.savedRelations) {
       entity[relationKey] = entityMeta.savedRelations[relationKey];
     }
