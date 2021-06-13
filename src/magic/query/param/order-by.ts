@@ -1,10 +1,10 @@
 import { SelectQueryBuilder } from 'typeorm';
 
 export class OrderBy {
-  private _orderArray: string[];
+  private _orderBy: any;
 
-  constructor(orderArray: string[]) {
-    this._orderArray = orderArray;
+  constructor(orderArray: any) {
+    this._orderBy = orderArray;
   }
 
   makeQueryBuilder(
@@ -19,12 +19,13 @@ export class OrderBy {
   }
 
   getpMap(modelAlias: string) {
-    if (this._orderArray.length === 0) {
+    if (this._orderBy.length === 0) {
       return undefined;
     }
     const orderMap = {} as any;
-    for (const oneOrder of this._orderArray) {
-      const oneOrderArray = oneOrder.split(' ').filter((key) => key.trim());
+    for (const key in this._orderBy) {
+      orderMap[`${modelAlias}.${key}`] = this._orderBy[key];
+      /*const oneOrderArray = oneOrder.split(' ').filter((key) => key.trim());
       if (oneOrderArray.length > 0) {
         orderMap[modelAlias + '.' + oneOrderArray[0]] = 'ASC';
       }
@@ -32,7 +33,7 @@ export class OrderBy {
         orderMap[
           modelAlias + '.' + oneOrderArray[0]
         ] = oneOrderArray[1].toUpperCase();
-      }
+      }*/
     }
     return orderMap;
   }
