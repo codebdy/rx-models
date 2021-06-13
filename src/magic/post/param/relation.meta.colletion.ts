@@ -15,6 +15,7 @@ export class RelationMetaCollection {
       for (const meta of jsonUnit.value) {
         this.processOneElement(meta);
       }
+    } else if (jsonUnit.value === null) {
     } else {
       this._isSingleEntity = true;
       this.processOneElement(jsonUnit.value);

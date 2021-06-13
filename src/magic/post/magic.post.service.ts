@@ -48,9 +48,10 @@ export class MagicPostService {
     const relations = entityMeta.relations;
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
-      entityMeta.savedRelations[relationKey] = await this.proceRelationGroup(
-        relationShip,
-      );
+      entityMeta.savedRelations[relationKey] =
+        relationShip.ids.length === 0
+          ? null
+          : await this.proceRelationGroup(relationShip);
     }
     const repository = getRepository(entityMeta.model);
     let entity: any = repository.create();
@@ -65,7 +66,8 @@ export class MagicPostService {
     }
 
     for (const relationKey in entityMeta.savedRelations) {
-      entity[relationKey] = entityMeta.savedRelations[relationKey];
+      const relationValue = entityMeta.savedRelations[relationKey];
+      entity[relationKey] = relationValue;
     }
 
     return await repository.save(entity);

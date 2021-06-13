@@ -21,7 +21,8 @@ export class MagicPostController {
    *            "name":"xxx",
    *          },
    *          4,5,6
-   *        ]
+   *        ],
+   *       "author":null,
    *      }
    *    ]
    * }
