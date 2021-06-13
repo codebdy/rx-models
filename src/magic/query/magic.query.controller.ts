@@ -8,14 +8,14 @@ export class MagicQueryController {
   /**
    * 通用查询接口，语法示例：
    * {
-   *   "model":"User @count  @getOne",//@getMany, @sum(ddd) as xx, @skip(100), @take(10)
+   *   "model":"User @count  @getOne",//@getMany, @sum(ddd) as xx, @skip(100), @take(10) @paginate(25,0)
    *    "id":1,
    *    "select":["*", "photosCount"],
    *    "age @between":[18, 40], //@IN
    *    "where":{
    *      "name @like":"%风%",
    *      "orWhere":{
-   *          "phone.type":"HUAWEI",
+   *          "type":"HUAWEI",
    *          "orWhere":{
    *            "cc":"XX",
    *          }

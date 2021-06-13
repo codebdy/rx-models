@@ -41,14 +41,14 @@ export class MagicQueryService {
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
     console.debug(queryBulider.getSql());
-    let result = (await queryBulider[modelUnit.excuteString]()) as any;
-    result = filterRelations(paramParser, result);
+    let data = (await queryBulider[modelUnit.excuteString]()) as any;
+    data = filterRelations(paramParser, data);
 
     //构建树
     if (modelUnit.needBuildTree()) {
-      result = new TreeCommand().do(result);
+      data = new TreeCommand().do(data);
     }
-    return result;
+    return { data };
   }
 }
 
