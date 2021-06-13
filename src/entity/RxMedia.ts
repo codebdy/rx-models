@@ -16,7 +16,7 @@ export class RxMedia {
   id: number;
 
   @Column()
-  fileName: string;
+  file: string;
 
   @CreateDateColumn()
   createdAt: Date;

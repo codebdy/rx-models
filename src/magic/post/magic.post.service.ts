@@ -7,8 +7,10 @@ import { RelationMetaCollection } from './param/relation.meta.colletion';
 
 @Injectable()
 export class MagicPostService {
-  async post(json: any) {
+  async post(json: any, file?: File) {
     const savedEntites = {};
+    if (file) {
+    }
     const entities = new MagicPostParamsParser(json).entityMetas;
     for (const entityGroup of entities) {
       savedEntites[entityGroup.model] = await this.saveEntityGroup(entityGroup);

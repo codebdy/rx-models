@@ -1,26 +1,26 @@
 export const MediaSeed = [
   {
-    fileName: '1.jpg',
+    file: '1.jpg',
   },
   {
-    fileName: '2.jpg',
+    file: '2.jpg',
   },
   {
-    fileName: '3.jpg',
+    file: '3.jpg',
   },
   {
-    fileName: '4.jpg',
+    file: '4.jpg',
   },
   {
-    fileName: '5.jpg',
+    file: '5.jpg',
   },
   {
-    fileName: '6.jpg',
+    file: '6.jpg',
   },
   {
-    fileName: '7.jpg',
+    file: '7.jpg',
   },
   {
-    fileName: '8.jpg',
+    file: '8.jpg',
   },
 ];
