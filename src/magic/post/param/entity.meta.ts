@@ -1,10 +1,10 @@
 import { JsonUnit } from 'src/magic/base/json-unit';
-import { EntityMetaCollection } from './entity.meta.colletion';
 import { getRelationModel } from '../../base/getRelationModel';
+import { RelationMetaCollection } from './relation.meta.colletion';
 
 export class EntityMeta {
   private _meta: any = {};
-  private _relations: { [key: string]: EntityMetaCollection } = {};
+  private _relations: { [key: string]: RelationMetaCollection } = {};
   private _savedRelasions: { [key: string]: any } = {};
   private _model: string;
   private _json: any;
@@ -18,7 +18,7 @@ export class EntityMeta {
 
       const relationModel = getRelationModel(jsonUnit.key, model);
       if (relationModel) {
-        this._relations[jsonUnit.key] = new EntityMetaCollection(
+        this._relations[jsonUnit.key] = new RelationMetaCollection(
           relationModel,
           jsonUnit,
         );

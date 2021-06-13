@@ -12,13 +12,15 @@ export class MagicPostController {
    *      {
    *        "id": 1,
    *        "name":"XXX",
-   *        "auths":[// @add
+   *        "auths":[
    *          {
    *            "id":2,
+   *            "name":"xxx",
    *          },
    *          {
-   *            "id":3,
-   *          }
+   *            "name":"xxx",
+   *          },
+   *          4,5,6
    *        ]
    *      }
    *    ]

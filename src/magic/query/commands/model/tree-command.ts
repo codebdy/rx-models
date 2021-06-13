@@ -20,7 +20,7 @@ export class TreeCommand {
     parentModel.children = [];
     const leftModels = [];
     for (const model of models) {
-      if (model.parent.id && model.parent.id === parentModel.id) {
+      if (model.parent?.id && model.parent.id === parentModel.id) {
         parentModel.children.push(model);
         delete model.parent;
       } else {
