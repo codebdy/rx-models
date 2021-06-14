@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpException,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { MagicPostService } from './magic.post.service';
 
 @Controller()
@@ -37,11 +29,10 @@ export class MagicPostController {
    * @returns
    */
   @Post('post')
-  @UseInterceptors(FileInterceptor('file'))
-  async postModels(@UploadedFile() file, @Body() body: any) {
+  async postModels(@Body() body: any) {
     try {
       console.debug(body);
-      return await this.postService.post(body || {}, file);
+      return await this.postService.post(body || {});
     } catch (error: any) {
       console.error('postModels error:', error);
       throw new HttpException(

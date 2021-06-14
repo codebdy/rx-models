@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { getRepository } from 'typeorm';
-import { EntityMeta } from './param/entity.meta';
-import { EntityMetaCollection } from './param/entity.meta.colletion';
-import { MagicPostParamsParser } from './param/post.param.parser';
-import { RelationMetaCollection } from './param/relation.meta.colletion';
+import { EntityMeta } from '../post/param/entity.meta';
+import { EntityMetaCollection } from '../post/param/entity.meta.colletion';
+import { MagicPostParamsParser } from '../post/param/post.param.parser';
+import { RelationMetaCollection } from '../post/param/relation.meta.colletion';
 
 @Injectable()
-export class MagicPostService {
+export class MagicUploadService {
   async post(json: any) {
     const savedEntites = {};
     const entities = new MagicPostParamsParser(json).entityMetas;
