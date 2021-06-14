@@ -3,10 +3,10 @@ import {
   Controller,
   HttpException,
   Post,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { fileName, fileFilter } from './file-upload.utils';
 import { UploadService } from './upload.service';
@@ -26,7 +26,7 @@ export class UploadController {
    */
   @Post('upload')
   @UseInterceptors(
-    FileInterceptor('file', {
+    AnyFilesInterceptor({
       storage: diskStorage({
         destination: './public/uploads',
         filename: fileName,
@@ -34,16 +34,18 @@ export class UploadController {
       fileFilter: fileFilter,
     }),
   )
-  async postWithUpload(@UploadedFile() file, @Body() body: any) {
+  async postWithUpload(@UploadedFiles() files, @Body() body: any) {
     try {
-      console.debug(file);
-      /*const fileInfo = {} as any;
-      fileInfo.originalname = file.originalname;
-      fileInfo.filename = file.filename;
-      fileInfo.mimetype = file.mimetype;
-      fileInfo.path = file.path;
-      fileInfo.size = file.size;
-      body[file.fieldname] = fileInfo;*/
+      for (const file of files) {
+        console.debug(file);
+        const fileInfo = {} as any;
+        fileInfo.originalname = file.originalname;
+        fileInfo.filename = file.filename;
+        fileInfo.mimetype = file.mimetype;
+        fileInfo.path = file.path;
+        fileInfo.size = file.size;
+        body[file.fieldname] = fileInfo;
+      }
       console.debug(body);
       //return await this.uploadService.post(body || {});
     } catch (error: any) {

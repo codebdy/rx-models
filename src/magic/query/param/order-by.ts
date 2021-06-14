@@ -25,15 +25,6 @@ export class OrderBy {
     const orderMap = {} as any;
     for (const key in this._orderBy) {
       orderMap[`${modelAlias}.${key}`] = this._orderBy[key];
-      /*const oneOrderArray = oneOrder.split(' ').filter((key) => key.trim());
-      if (oneOrderArray.length > 0) {
-        orderMap[modelAlias + '.' + oneOrderArray[0]] = 'ASC';
-      }
-      if (oneOrderArray.length > 1) {
-        orderMap[
-          modelAlias + '.' + oneOrderArray[0]
-        ] = oneOrderArray[1].toUpperCase();
-      }*/
     }
     return orderMap;
   }
