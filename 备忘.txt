@@ -1,0 +1,7 @@
+
+查看npm config get msvs_version
+要使用node-gyp需要安装Python跟VS C++开发工具包：
+https://visualstudio.microsoft.com/zh-hans/thank-you-downloading-visual-studio/?sku=BuildTools
+
+设置：
+npm config set msvs_version 2019
