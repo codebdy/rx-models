@@ -15,23 +15,8 @@ export class RxMedia {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
-  name: string;
-
-  @Column({ nullable: true })
-  mimetype: string;
-
   @Column()
-  filename: string;
-
-  @Column()
-  path: string;
-
-  @Column()
-  size: number;
-
-  @Column()
-  thumbnail: string;
+  file: string;
 
   @CreateDateColumn()
   createdAt: Date;

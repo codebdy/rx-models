@@ -23,5 +23,6 @@ export const fileFilter = (req: any, file: any, cb: any) => {
 };
 
 export const fileName = (req: any, file: any, cb: any) => {
+  console.log('diskStorage', file);
   cb(null, `${uuid()}${extname(file.originalname)}`);
 };
