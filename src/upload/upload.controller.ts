@@ -9,11 +9,11 @@ import {
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { fileName, fileFilter } from './file-upload.utils';
-import { MagicUploadService } from './magic.upload.service';
+import { UploadService } from './upload.service';
 
 @Controller()
-export class MagicUploadController {
-  constructor(private readonly uploadService: MagicUploadService) {}
+export class UploadController {
+  constructor(private readonly uploadService: UploadService) {}
 
   /**
    * 通用提交接口，语法示例：
