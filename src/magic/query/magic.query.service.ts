@@ -7,6 +7,7 @@ import { TreeCommand } from './commands/model/tree-command';
 @Injectable()
 export class MagicQueryService {
   async query(jsonStr: string) {
+    let totalCount = 0;
     const paramParser = new MagicQueryParamsParser(jsonStr);
     const modelUnit = paramParser.modelUnit;
     const modelAlias = modelUnit?.modelAlias;
@@ -30,16 +31,20 @@ export class MagicQueryService {
       relation.makeQueryBuilder(queryBulider, modelAlias);
     }
 
-    //如果需要构建树，则需要去父节点
+    //如果需要构建树，则需要取父节点
     if (modelUnit.needBuildTree()) {
       queryBulider.leftJoinAndSelect(`${modelAlias}.parent`, 'parent');
     }
 
     paramParser.orderBys?.makeQueryBuilder(queryBulider, modelAlias);
 
+    const paginateCommand = paramParser.modelUnit.getPaginateCommand();
+    if (paginateCommand) {
+      totalCount = await queryBulider.getCount();
+      paginateCommand.makeQueryBuilder(queryBulider);
+    }
     paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
-    paramParser.modelUnit.getPaginateCommand()?.makeQueryBuilder(queryBulider);
 
     console.debug(queryBulider.getSql());
     let data = (await queryBulider[modelUnit.excuteString]()) as any;
@@ -49,7 +54,15 @@ export class MagicQueryService {
     if (modelUnit.needBuildTree()) {
       data = new TreeCommand().do(data);
     }
-    return { data };
+    const result = { data } as any;
+    if (paginateCommand) {
+      result.pagination = {
+        pageSize: paginateCommand.pageSize,
+        pageIndex: paginateCommand.pageIndex,
+        totalCount: totalCount,
+      }
+    }
+    return result;
   }
 }
 
