@@ -5,6 +5,7 @@ import {
   TOKEN_GET_ONE,
   TOKEN_TREE,
 } from '../../base/keyword-tokens';
+import { PaginateCommand } from './panigate-command';
 import { SkipCommand } from './skip-command';
 import { TakeCommand } from './take-command';
 
@@ -32,6 +33,12 @@ export class ModelUnit {
   getSkipCommand() {
     return this._jsonUnit.getSkipCommand()
       ? new SkipCommand(this._jsonUnit.getSkipCommand())
+      : undefined;
+  }
+
+  getPaginateCommand() {
+    return this._jsonUnit.getPaginateCommand()
+      ? new PaginateCommand(this._jsonUnit.getPaginateCommand())
       : undefined;
   }
 

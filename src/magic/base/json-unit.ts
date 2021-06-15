@@ -2,6 +2,7 @@ import { Command } from './command';
 import {
   TOKEN_MODEL,
   TOKEN_ORDER_BY,
+  TOKEN_PAGINATE,
   TOKEN_SELECT,
   TOKEN_SKIP,
   TOKEN_TAKE,
@@ -62,5 +63,9 @@ export class JsonUnit {
 
   getSkipCommand() {
     return this.getCommand(TOKEN_SKIP);
+  }
+
+  getPaginateCommand() {
+    return this.getCommand(TOKEN_PAGINATE);
   }
 }
