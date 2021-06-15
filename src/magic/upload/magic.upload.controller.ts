@@ -43,7 +43,7 @@ export class MagicUploadController {
       this.uploadService.saveThumbnail(file);
 
       const { model: modelName, ...modelData } = body;
-      modelData.filenNme = file.filename;
+      modelData.fileName = file.filename;
       modelData.mimetype = file.mimetype;
       modelData.path = file.path;
       modelData.size = file.size;
