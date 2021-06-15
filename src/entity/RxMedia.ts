@@ -30,9 +30,6 @@ export class RxMedia {
   @Column()
   size: number;
 
-  @Column()
-  thumbnail: string;
-
   @CreateDateColumn()
   createdAt: Date;
 

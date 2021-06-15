@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import * as sharp from 'sharp';
 
 @Injectable()
-export class UploadService {
+export class MagicUploadService {
   async saveThumbnail(file: any) {
-    const thumbnailPath = `./public/thumbnails/${file.filename}`;
+    const thumbnail = `/thumbnails/${file.filename}`;
     if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
       sharp(file.path)
         .resize(200, 200)
-        .toFile(thumbnailPath, (err, info) => {
+        .toFile('./public' + thumbnail, (err, info) => {
           console.debug('Resize Success', info);
           if (err) {
             console.error('Resize Error', err);
@@ -17,6 +17,6 @@ export class UploadService {
       console.debug('上传图像', file);
     }
 
-    return thumbnailPath;
+    return thumbnail;
   }
 }

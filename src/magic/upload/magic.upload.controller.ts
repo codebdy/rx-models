@@ -8,12 +8,16 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { MagicPostService } from 'src/magic/post/magic.post.service';
 import { fileName, fileFilter } from './file-upload.utils';
-import { UploadService } from './upload.service';
+import { MagicUploadService } from './magic.upload.service';
 
 @Controller()
-export class UploadController {
-  constructor(private readonly uploadService: UploadService) {}
+export class MagicUploadController {
+  constructor(
+    private readonly uploadService: MagicUploadService,
+    private readonly postService: MagicPostService,
+  ) {}
 
   /**
    * 通用提交接口，语法示例：
@@ -37,16 +41,15 @@ export class UploadController {
   async uploadMedia(@UploadedFile() file, @Body() body: any) {
     try {
       this.uploadService.saveThumbnail(file);
-      const fileInfo = {} as any;
-      fileInfo.originalname = file.originalname;
-      fileInfo.filename = file.filename;
-      fileInfo.mimetype = file.mimetype;
-      fileInfo.path = file.path;
-      fileInfo.size = file.size;
-      body[file.fieldname] = fileInfo;
 
-      console.debug(body);
-      //return await this.uploadService.post(body || {});
+      const { model: modelName, ...modelData } = body;
+      modelData.filename = file.filename;
+      modelData.mimetype = file.mimetype;
+      modelData.path = file.path;
+      modelData.size = file.size;
+
+      console.debug(modelData);
+      return await this.postService.post({ [modelName]: modelData });
     } catch (error: any) {
       console.error('Upload error:', error);
       throw new HttpException(
