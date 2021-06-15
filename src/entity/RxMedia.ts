@@ -22,7 +22,7 @@ export class RxMedia {
   mimetype: string;
 
   @Column()
-  filename: string;
+  fileName: string;
 
   @Column()
   path: string;
