@@ -14,7 +14,6 @@ export class MagicUploadService {
             console.error('Resize Error', err);
           }
         });
-      console.debug('上传图像', file);
     }
 
     return thumbnail;
