@@ -1,5 +1,6 @@
 import { Controller, Get, HttpException, Param } from '@nestjs/common';
 import { MagicQueryService } from './magic.query.service';
+import { sleep } from './sleep';
 
 @Controller()
 export class MagicQueryController {
@@ -56,6 +57,7 @@ export class MagicQueryController {
   async getModels(@Param('jsonStr') jsonStr) {
     try {
       console.debug('JSON QUERY String', jsonStr);
+      await sleep(500);
       return await this.queryService.query(jsonStr);
     } catch (error: any) {
       console.error('getModels error:', error);

@@ -9,6 +9,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { MagicPostService } from 'src/magic/post/magic.post.service';
+import { sleep } from '../query/sleep';
 import { fileName, fileFilter } from './file-upload.utils';
 import { MagicUploadService } from './magic.upload.service';
 
@@ -40,8 +41,9 @@ export class MagicUploadController {
   )
   async uploadMedia(@UploadedFile() file, @Body() body: any) {
     try {
+      await sleep(500);
       this.uploadService.saveThumbnail(file);
-
+      console.debug(file, body);
       const { model: modelName, ...modelData } = body;
       modelData.fileName = file.filename;
       modelData.mimetype = file.mimetype;

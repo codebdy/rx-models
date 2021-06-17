@@ -60,7 +60,7 @@ export class MagicQueryService {
         pageSize: paginateCommand.pageSize,
         pageIndex: paginateCommand.pageIndex,
         totalCount: totalCount,
-      }
+      };
     }
     return result;
   }
