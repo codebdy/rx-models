@@ -4,10 +4,12 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RxMediaFolder } from './RxMediaFolder';
 import { RxUser } from './RxUser';
 
 @Entity()
@@ -42,4 +44,7 @@ export class RxMedia {
   @OneToOne(() => RxUser)
   @JoinColumn()
   user: RxUser;
+
+  @ManyToOne(() => RxMediaFolder)
+  folder: RxMediaFolder;
 }

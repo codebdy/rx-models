@@ -19,7 +19,11 @@ export class MagicQueryParamsParser {
         break;
       }
     }
-    this._modelParams = new ModelParams(this._modelUnit.model, this._json);
+    this._modelParams = new ModelParams(
+      this._modelUnit.model,
+      this._json,
+      this._modelUnit.modelAlias,
+    );
   }
 
   get modelUnit() {

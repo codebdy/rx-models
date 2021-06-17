@@ -14,13 +14,18 @@ export class ModelParams {
   private _whereMeta: Where = new Where();
   private _relationFilters: RelationCommand[] = [];
 
-  constructor(model: string, json: any) {
+  constructor(model: string, json: any, modelAlias: string) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       const relationModel = getRelationModel(jsonUnit.key, model);
       if (relationModel) {
-        const relation = new Relation(relationModel, jsonUnit);
+        const relation = new Relation(
+          relationModel,
+          jsonUnit,
+          model,
+          modelAlias,
+        );
         const takeCommand = relation.getTakeCommand();
         if (takeCommand) {
           this._relationFilters.push(
@@ -33,9 +38,14 @@ export class ModelParams {
       } else if (jsonUnit.isOrderBy()) {
         this._orderBys = new OrderBy(jsonUnit.value);
       } else {
-        this._whereMeta.addCondition(new Condition(keyStr, value));
+        this._whereMeta.addCondition(
+          new Condition(keyStr, value, model, modelAlias),
+        );
       }
     }
+    this._whereMeta.discriminateConditionsThatBelongsToRelation(
+      this._relations,
+    );
   }
 
   get relations() {

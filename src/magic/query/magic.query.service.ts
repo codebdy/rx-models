@@ -25,7 +25,7 @@ export class MagicQueryService {
     //  `${paramParser.modelUnit?.modelAlias}.relationCount`,
     //  `${paramParser.modelUnit?.modelAlias}.roles`,
     //);
-    paramParser.whereMeta?.makeQueryBuilder(queryBulider, modelAlias);
+    paramParser.whereMeta?.makeQueryBuilder(queryBulider);
 
     for (const relation of paramParser.relations) {
       relation.makeQueryBuilder(queryBulider, modelAlias);
