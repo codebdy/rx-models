@@ -1,4 +1,5 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { sleep } from '../query/sleep';
 import { MagicDeleteService } from './magic.delete.service';
 
 @Controller()
@@ -16,6 +17,7 @@ export class MagicDeleteController {
   @Post('delete')
   async deleteModels(@Body() body: any) {
     try {
+      await sleep(500);
       console.debug(body);
       return await this.deleteService.delete(body || {});
     } catch (error: any) {

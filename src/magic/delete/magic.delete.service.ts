@@ -48,8 +48,9 @@ export class MagicDeleteService {
         await entityRepository.save(entity);
       }
     }
-
-    await entityRepository.delete(meta.ids);
+    meta.ids &&
+      meta.ids.length > 0 &&
+      (await entityRepository.delete(meta.ids));
     for (const cascadeMeta of cascadeMetas) {
       const deletedIds = await this.deleteOne(cascadeMeta);
       this._deletedModels[cascadeMeta.model] = [

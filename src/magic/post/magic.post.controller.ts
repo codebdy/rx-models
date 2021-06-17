@@ -1,4 +1,5 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { sleep } from '../query/sleep';
 import { MagicPostService } from './magic.post.service';
 
 @Controller()
@@ -31,6 +32,7 @@ export class MagicPostController {
   @Post('post')
   async postModels(@Body() body: any) {
     try {
+      await sleep(500);
       console.debug('postModels', body);
       return await this.postService.post(body || {});
     } catch (error: any) {
