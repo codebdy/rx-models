@@ -20,7 +20,7 @@ export class Where {
       let relation = relatons.find(
         (relation) => relation.name === condition.belongsToRelationName,
       );
-      if (!relation) {
+      if (condition.belongsToRelationName && !relation) {
         const relationModel = getRelationModel(
           condition.belongsToRelationName,
           condition.model,
@@ -33,13 +33,14 @@ export class Where {
         );
         relatons.push(relation);
       }
-      condition.relationAlias = relation.alias;
+      condition.belongsToRelationName &&
+        (condition.relationAlias = relation.alias);
     }
   }
 
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const [whereString, whereParams] = this.getWhereStatement();
-    console.log('Where where:', whereString, whereParams);
+    console.debug('Where where:', whereString, whereParams);
     return qb.where(whereString, whereParams);
   }
 
