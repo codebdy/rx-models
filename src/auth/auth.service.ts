@@ -14,17 +14,17 @@ export class AuthService {
       .addSelect('user.password')
       .where({ loginName: username })
       .getOne();
-    console.debug('AuthService', user);
     if (user && user.password === pass) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
+      console.debug('AuthService', user);
       return result;
     }
     return null;
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { username: user.name, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
