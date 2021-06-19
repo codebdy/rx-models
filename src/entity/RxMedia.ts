@@ -29,7 +29,7 @@ export class RxMedia {
   @Column()
   path: string;
 
-  @Column()
+  @Column({ nullable: true })
   size: number;
 
   @CreateDateColumn()

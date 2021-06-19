@@ -9,6 +9,7 @@ export class SeedPostAndMedia1622444090199 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const postRepository = queryRunner.manager.getRepository(Post);
     const poseMediaRepostory = queryRunner.manager.getRepository(PostMedia);
+    console.debug(MediaSeed);
     const medias = await queryRunner.manager
       .getRepository(RxMedia)
       .save(MediaSeed);
