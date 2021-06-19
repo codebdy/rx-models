@@ -33,7 +33,7 @@ export default [
               rxText: '新建',
               onClick: {
                 name: OPEN_PAGE_ACTION,
-                pageJumper: { openStyle: 'POPUP', pageId: 'guid-p-u-2' },
+                pageJumper: { openStyle: 'POPUP', pageId: '' },
               },
             },
           },
