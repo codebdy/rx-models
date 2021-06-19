@@ -103,7 +103,7 @@ export default [
               itemName: 'name',
               multiple: true,
               fullWidth: true,
-              query: '',
+              query: '{"model":"RxRole"}',
             },
           },
         ],
