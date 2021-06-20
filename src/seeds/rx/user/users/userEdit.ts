@@ -15,7 +15,7 @@ export default [
         children: [
           {
             name: 'TextBox',
-            field: 'login_name',
+            field: 'loginName',
             props: {
               label: '登录名',
               variant: 'outlined',
