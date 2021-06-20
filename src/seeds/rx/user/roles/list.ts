@@ -9,13 +9,7 @@ export default {
   withNode: true,
   props: {
     variant: 'outlined',
-    query: 'rxRoles',
-    remove: 'removeRxRoles',
-    update: {
-      name: 'updateRxRoles',
-      variableType: 'RxRoleInput',
-      variableName: 'role',
-    },
+    query: '',
   },
   children: [
     {

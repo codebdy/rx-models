@@ -9,13 +9,7 @@ export default {
   withNode: true,
   props: {
     variant: 'outlined',
-    query: 'rxUsers',
-    remove: 'removeRxUsers',
-    update: {
-      name: 'updateRxUsers',
-      variableType: 'RxUserInput',
-      variableName: 'user',
-    },
+    query: '{"model":"RxUser", "roles":{}}',
   },
   children: [
     {
@@ -82,7 +76,7 @@ export default {
           name: 'TableColumn',
           props: {
             label: '登录名',
-            field: 'login_name',
+            field: 'loginName',
             searchable: true,
             sortable: true,
           },
@@ -90,7 +84,7 @@ export default {
           children: [
             {
               name: 'TextView',
-              field: 'login_name',
+              field: 'loginName',
             },
           ],
         },
@@ -178,14 +172,14 @@ export default {
           name: 'TableColumn',
           props: {
             label: '时间',
-            field: 'created_at',
+            field: 'createdAt',
             searchable: true,
             sortable: true,
           },
           children: [
             {
               name: 'DayView',
-              field: 'created_at',
+              field: 'createdAt',
             },
           ],
         },
@@ -203,7 +197,7 @@ export default {
                 tooltip: '编辑',
                 onClick: {
                   name: OPEN_PAGE_ACTION,
-                  pageJumper: { openStyle: 'POPUP', pageId: 'guid-p-u-2' },
+                  pageJumper: { openStyle: 'POPUP', pageId: '' },
                 },
               },
             },

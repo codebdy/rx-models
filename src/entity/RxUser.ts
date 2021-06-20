@@ -33,6 +33,9 @@ export class RxUser {
   @Column({ default: false })
   isDemo: boolean;
 
+  @Column({ default: 'NORMAL' })
+  status: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
