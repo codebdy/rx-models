@@ -22,6 +22,9 @@ export class RxUser {
   loginName: string;
 
   @Column()
+  email: string;
+
+  @Column()
   name: string;
 
   @Column({ select: false })
