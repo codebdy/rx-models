@@ -111,9 +111,7 @@ export default [
           onClick: {
             name: SUBMIT_MUTATION,
             mutation: {
-              name: 'saveRxRole',
-              variableName: 'role',
-              variableType: 'RxRoleInput',
+              model: '',
               submitNode: '',
               refreshNode: '',
               goback: true,

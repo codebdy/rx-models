@@ -171,9 +171,7 @@ export default [
           onClick: {
             name: SUBMIT_MUTATION,
             mutation: {
-              name: 'saveRxUser',
-              variableName: 'user',
-              variableType: 'RxUserInput',
+              model: 'RxUser',
               submitNode: '',
               refreshNode: '',
               goback: true,
