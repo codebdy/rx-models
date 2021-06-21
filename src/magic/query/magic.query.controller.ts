@@ -1,6 +1,7 @@
 import { Controller, Get, HttpException, Param } from '@nestjs/common';
 import { MagicQueryService } from './magic.query.service';
 import { sleep } from './sleep';
+import SqlWhereParser from './SqlWhereParser';
 
 @Controller()
 export class MagicQueryController {
@@ -13,20 +14,20 @@ export class MagicQueryController {
    *    "id":1,
    *    "select":["*", "photosCount"],
    *    "age @between":[18, 40], //@IN
-   *    "where":{
+   *    "andGroup":{
    *      "name @like":"%风%",
-   *      "orWhere":{
+   *      "orGroup":{
    *          "type":"HUAWEI",
-   *          "orWhere":{
+   *          "andGroup":{
    *            "cc":"XX",
    *          }
    *       },
-   *       "where":{
+   *       "andGroup":{
    *         "email @notNull":true,
+   *         "orGroup":{
+   *            "xxx":"xxx"
+   *          }
    *       }
-   *    },
-   *    "andWhere":{
-   *      "xxx":"xxx"
    *    },
    *    #LargeRelation功能暂时不实现
    *    "roles @count @take(5, LargeRelation) @toUpercase(name)":{
@@ -57,6 +58,11 @@ export class MagicQueryController {
   async getModels(@Param('jsonStr') jsonStr) {
     try {
       console.debug('JSON QUERY String', jsonStr);
+      const sql = 'name = "Shaun Persad" AND age >= 27';
+      const parser = new SqlWhereParser();
+      const parsed = parser.parse(sql);
+      console.log('哈哈', parsed);
+
       await sleep(500);
       return await this.queryService.query(jsonStr);
     } catch (error: any) {
