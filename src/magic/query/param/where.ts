@@ -7,8 +7,11 @@ import { Relation } from './relation';
 
 export class Where {
   private _conditions: Condition[] = [];
-  private _andMetas: Where[];
-  private _orMetas: Where[];
+  private _whereString = '';
+
+  set whereString(whereString: string) {
+    this._whereString = whereString;
+  }
 
   get conditions() {
     return this._conditions;
@@ -40,7 +43,7 @@ export class Where {
 
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const [whereString, whereParams] = this.getWhereStatement();
-    console.debug('Where where:', whereString, whereParams);
+    console.debug('Where:', whereString, whereParams);
     return qb.where(whereString, whereParams);
   }
 
