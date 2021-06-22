@@ -56,15 +56,8 @@ export class MagicQueryController {
         if (operatorValue === OPERATOR_UNARY_MINUS) {
           operatorValue = '-';
         }
-        /**
-         * This is a trick to avoid the problem of inconsistent comma usage in SQL.
-         */
         if (operatorValue === ',') {
           return [].concat(operands[0], operands[1]);
-        }
-
-        if (operatorValue === 'OR') {
-          return operands.join(' OR ');
         }
 
         const paramName = `param${createId()}`;
@@ -74,17 +67,10 @@ export class MagicQueryController {
             return `(${operands.join(' OR ')})`;
           case 'AND':
             return `(${operands.join(' AND ')})`;
-          case 'IN':
-            params[paramName] = operands[1];
-            return `${operands[0]} IN :${paramName}`;
           default:
             params[paramName] = operands[1];
             return `${operands[0]} ${operatorValue} :${paramName}`;
         }
-
-        //return {
-        //  [operatorValue]: operands,
-        //};
       });
       console.log('哈哈', parsed, params);
 
