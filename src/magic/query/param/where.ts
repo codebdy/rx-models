@@ -82,7 +82,6 @@ export class Where {
       params[paramName] = condition.value;
     }
     const [whereRaw2, params2] = this.parseWhereString();
-    console.log('嘿嘿', whereRaw);
     return [whereRaw + whereRaw2, { ...params, ...params2 }];
   }
 
