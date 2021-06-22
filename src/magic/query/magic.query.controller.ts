@@ -1,10 +1,6 @@
 import { Controller, Get, HttpException, Param } from '@nestjs/common';
-import { createId } from 'src/utils/create-id';
 import { MagicQueryService } from './magic.query.service';
 import { sleep } from './sleep';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const SqlWhereParser = require('sql-where-parser');
-const OPERATOR_UNARY_MINUS = Symbol('-');
 
 @Controller()
 export class MagicQueryController {
@@ -48,32 +44,6 @@ export class MagicQueryController {
   async getModels(@Param('jsonStr') jsonStr) {
     try {
       console.debug('JSON QUERY String', jsonStr);
-      const sql =
-        "(name = 'Shaun Persad' AND age >= 27) OR (name like '%xx%' and id in (1,2,3,4))";
-      const parser = new SqlWhereParser();
-      const params = {} as any;
-      const parsed = parser.parse(sql, (operatorValue, operands) => {
-        if (operatorValue === OPERATOR_UNARY_MINUS) {
-          operatorValue = '-';
-        }
-        if (operatorValue === ',') {
-          return [].concat(operands[0], operands[1]);
-        }
-
-        const paramName = `param${createId()}`;
-
-        switch (operatorValue) {
-          case 'OR':
-            return `(${operands.join(' OR ')})`;
-          case 'AND':
-            return `(${operands.join(' AND ')})`;
-          default:
-            params[paramName] = operands[1];
-            return `${operands[0]} ${operatorValue} :${paramName}`;
-        }
-      });
-      console.log('哈哈', parsed, params);
-
       await sleep(500);
       return await this.queryService.query(jsonStr);
     } catch (error: any) {

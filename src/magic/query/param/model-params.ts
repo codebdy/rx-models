@@ -11,10 +11,11 @@ export class ModelParams {
   private _relations: Relation[] = [];
   private _select: string[] = [];
   private _orderBys: OrderBy;
-  private _whereMeta: Where = new Where();
+  private _whereMeta: Where;
   private _relationFilters: RelationCommand[] = [];
 
   constructor(model: string, json: any, modelAlias: string) {
+    this._whereMeta = new Where(model, modelAlias);
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -37,15 +38,15 @@ export class ModelParams {
         this._select = jsonUnit.value;
       } else if (jsonUnit.isOrderBy()) {
         this._orderBys = new OrderBy(jsonUnit.value);
+      } else if (jsonUnit.isWhere() || jsonUnit.isOn()) {
+        this._whereMeta.whereString = jsonUnit.value;
       } else {
         this._whereMeta.addCondition(
           new Condition(keyStr, value, model, modelAlias),
         );
       }
     }
-    this._whereMeta.discriminateConditionsThatBelongsToRelation(
-      this._relations,
-    );
+    this._whereMeta.relations = this._relations;
   }
 
   get relations() {

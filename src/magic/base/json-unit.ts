@@ -1,11 +1,13 @@
 import { Command } from './command';
 import {
   TOKEN_MODEL,
+  TOKEN_ON,
   TOKEN_ORDER_BY,
   TOKEN_PAGINATE,
   TOKEN_SELECT,
   TOKEN_SKIP,
   TOKEN_TAKE,
+  TOKEN_WHERE,
 } from './keyword-tokens';
 import { parseCommands } from './parse-commands';
 
@@ -55,6 +57,14 @@ export class JsonUnit {
 
   isOrderBy() {
     return this._key?.toLowerCase() === TOKEN_ORDER_BY.toLowerCase();
+  }
+
+  isWhere() {
+    return this._key?.toLowerCase() === TOKEN_WHERE.toLowerCase();
+  }
+
+  isOn() {
+    return this._key?.toLowerCase() === TOKEN_ON.toLowerCase();
   }
 
   getTakeCommand() {
