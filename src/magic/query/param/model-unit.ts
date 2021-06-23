@@ -4,7 +4,7 @@ import {
   TOKEN_GET_MANY,
   TOKEN_GET_ONE,
   TOKEN_TREE,
-} from '../../base/keyword-tokens';
+} from '../../base/tokens';
 import { PaginateCommand } from './panigate-command';
 import { SkipCommand } from './skip-command';
 import { TakeCommand } from './take-command';

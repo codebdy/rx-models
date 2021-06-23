@@ -7,6 +7,8 @@ import { MagicDeleteController } from './delete/magic.delete.controller';
 import { MagicDeleteService } from './delete/magic.delete.service';
 import { MagicUploadService } from './upload/magic.upload.service';
 import { MagicUploadController } from './upload/magic.upload.controller';
+import { MagicUpdateService } from './update/magic.update.service';
+import { MagicUpdateController } from './update/magic.update.controller';
 
 @Module({
   providers: [
@@ -14,12 +16,14 @@ import { MagicUploadController } from './upload/magic.upload.controller';
     MagicPostService,
     MagicDeleteService,
     MagicUploadService,
+    MagicUpdateService,
   ],
   controllers: [
     MagicQueryController,
     MagicPostController,
     MagicDeleteController,
     MagicUploadController,
+    MagicUpdateController,
   ],
 })
 export class MagicModule {}

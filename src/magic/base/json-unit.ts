@@ -8,7 +8,7 @@ import {
   TOKEN_SKIP,
   TOKEN_TAKE,
   TOKEN_WHERE,
-} from './keyword-tokens';
+} from './tokens';
 import { parseCommands } from './parse-commands';
 
 export class JsonUnit {

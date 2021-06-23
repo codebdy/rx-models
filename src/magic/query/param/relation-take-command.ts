@@ -1,5 +1,5 @@
 import { Command } from '../../base/command';
-import { TOKEN_LARGE_RELATION } from '../../base/keyword-tokens';
+import { TOKEN_LARGE_RELATION } from '../../base/tokens';
 import { TakeCommand } from './take-command';
 
 export class RelationTakeCommand extends TakeCommand {
