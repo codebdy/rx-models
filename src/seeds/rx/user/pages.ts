@@ -12,7 +12,7 @@ const userPages = [
   {
     name: '用户编辑',
     maxWidth: 'sm',
-    query: '{"model":"RxUser", "roles":{}, "avatar":{}}',
+    query: '{"model @getOne":"RxUser", "roles":{}, "avatar":{}}',
     schema: userEdit,
   },
   {

@@ -203,7 +203,6 @@ export default {
             },
             {
               name: 'JsxTemplateParser',
-              fieldsGql: ' is_supper ',
               props: {
                 actions: {
                   remove: {
@@ -214,7 +213,7 @@ export default {
                 //暂时不支持这种写法：!model.is_supper
                 template: `
                 {
-                  model.is_supper !== true &&
+                  model.isSupper !== true &&
                   <IconButton icon='mdi-delete' tooltip='删除' onClick={remove} />
                 }
                 `,
