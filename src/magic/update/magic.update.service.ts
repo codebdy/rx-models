@@ -8,14 +8,15 @@ export class MagicUpdateService {
     const metas = new MagicUpdateParamsParser(json).metas;
     const result = {} as any;
     for (const meta of metas) {
-      console.log('哈哈', meta.params);
-      const oneReslut = await getConnection()
-        .createQueryBuilder()
-        .update(meta.model)
-        .set(meta.params)
-        .where('id = :ids', { ids: 5 })
-        .execute();
-      result[meta.model] = oneReslut;
+      if (meta.ids.length > 0) {
+        await getConnection()
+          .createQueryBuilder()
+          .update(meta.model)
+          .set(meta.params)
+          .where('id IN (:...ids)', { ids: meta.ids })
+          .execute();
+        result[meta.model] = meta.ids;
+      }
     }
     return result;
   }
