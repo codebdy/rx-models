@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getConnection } from 'typeorm';
+import { getConnection, getRepository } from 'typeorm';
 import { MagicUpdateParamsParser } from './param/update.param.parser';
 
 @Injectable()
@@ -15,7 +15,10 @@ export class MagicUpdateService {
           .set(meta.params)
           .where('id IN (:...ids)', { ids: meta.ids })
           .execute();
-        result[meta.model] = meta.ids;
+        result[meta.model] = await getRepository(meta.model)
+          .createQueryBuilder(meta.model)
+          .whereInIds(meta.ids)
+          .getMany();
       }
     }
     return result;
