@@ -121,6 +121,9 @@ export class Where {
           }
           operands[0] = `${modelAlias}.${operands[0]}`;
           params[paramName] = operands[1];
+          if (operatorValue === 'IN') {
+            return `${operands[0]} ${operatorValue} (:...${paramName})`;
+          }
           return `${operands[0]} ${operatorValue} :${paramName}`;
       }
     };
