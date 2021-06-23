@@ -2,7 +2,7 @@ import { RxRole } from 'src/entity/RxRole';
 import { RxUser } from 'src/entity/RxUser';
 import { RoleSeed } from 'src/seeds/role.seed';
 import { UserSeed } from 'src/seeds/user.seed';
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { IsNull, MigrationInterface, Not, QueryRunner } from 'typeorm';
 
 export class SeedUser1621583221642 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -15,13 +15,11 @@ export class SeedUser1621583221642 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.manager.connection
-      .createQueryBuilder()
-      .delete()
-      .from(RxUser)
-      .where('rx_user.loginName IN(:...names)', {
-        names: UserSeed.map((user) => user.loginName),
-      })
-      .execute();
+    await queryRunner.manager
+      .getRepository(RxRole)
+      .delete({ id: Not(IsNull()) });
+    await queryRunner.manager
+      .getRepository(RxUser)
+      .delete({ id: Not(IsNull()) });
   }
 }

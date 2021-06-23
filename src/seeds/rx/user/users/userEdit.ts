@@ -97,6 +97,7 @@ export default [
           {
             name: 'MultiSelectBox',
             field: 'roles',
+            isSelect: true,
             props: {
               label: '角色',
               variant: 'outlined',
@@ -135,6 +136,7 @@ export default [
           {
             name: 'MediaSelect',
             field: 'avatar',
+            isSelect: true,
             props: {
               width: '120px',
               label: '头像',
