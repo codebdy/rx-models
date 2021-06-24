@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RxUser } from 'src/entity/RxUser';
-import { getRepository } from 'typeorm';
+import { Connection } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly connection: Connection,
+  ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
     console.debug('AuthService*****');
-    const user = await getRepository(RxUser)
+    const user = await this.connection
+      .getRepository(RxUser)
       .createQueryBuilder('user')
       .addSelect('user.password')
       .where({ loginName: username })

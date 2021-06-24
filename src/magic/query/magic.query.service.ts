@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { getRepository } from 'typeorm';
+import { Connection } from 'typeorm';
 import { MagicQueryParamsParser } from './param/query.param.parser';
 import { TOKEN_GET_MANY, TOKEN_GET_ONE } from '../base/tokens';
 import { TreeCommand } from './commands/model/tree-command';
 
 @Injectable()
 export class MagicQueryService {
+  constructor(private readonly connection: Connection) {}
   async query(jsonStr: string) {
     let totalCount = 0;
     const paramParser = new MagicQueryParamsParser(jsonStr);
     const modelUnit = paramParser.modelUnit;
     const modelAlias = modelUnit?.modelAlias;
-    const queryBulider = getRepository(
-      paramParser.modelUnit?.model,
-    ).createQueryBuilder(modelAlias);
+    const queryBulider = this.connection
+      .getRepository(paramParser.modelUnit?.model)
+      .createQueryBuilder(modelAlias);
 
     if (paramParser.select?.length > 0) {
       queryBulider.select(
