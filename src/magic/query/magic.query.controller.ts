@@ -31,8 +31,8 @@ export class MagicQueryController {
    * 关系嵌套：文章与图片
    * {
    *    "model":"Post",
-   *    "images @relation(PostImage)":{
-   *      "media @relation(Media)":{
+   *    "images":{
+   *      "media":{
    *      }
    *    }
    * }
