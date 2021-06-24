@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class RxAttribute {
+export class RxMrgration {
   @PrimaryGeneratedColumn()
   id: number;
 
