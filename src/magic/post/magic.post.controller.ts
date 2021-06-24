@@ -9,7 +9,7 @@ export class MagicPostController {
   /**
    * 通用提交接口，语法示例：
    * {
-   *    "RxApp":[
+   *    "RxApp @ignoreUndefined(password)":[
    *      {
    *        "id": 1,
    *        "name":"XXX",
