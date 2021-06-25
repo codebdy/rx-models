@@ -1,9 +1,7 @@
-import { CommandType } from 'src/command/query-command';
-import { QueryBuilderCommand } from 'src/command/query-builder-command';
+import { CommandType, QueryCommand } from 'src/command/query-command';
 import { SelectQueryBuilder } from 'typeorm';
-import { CommandMeta } from 'src/command/command.meta';
 
-export class QueryModelPaginateCommand implements QueryBuilderCommand {
+export class QueryModelPaginateCommand extends QueryCommand {
   static description = `
     Magic query command, Paginate the results.
   `;
@@ -13,8 +11,6 @@ export class QueryModelPaginateCommand implements QueryBuilderCommand {
   static commandType = CommandType.QUERY_MODEL_COMMAND;
 
   static commandName = 'paginate';
-
-  constructor(private readonly commandMeta: CommandMeta) {}
 
   get params() {
     return this.commandMeta.params;

@@ -1,9 +1,7 @@
-import { CommandType } from 'src/command/query-command';
-import { QueryBuilderCommand } from 'src/command/query-builder-command';
+import { CommandType, QueryCommand } from 'src/command/query-command';
 import { SelectQueryBuilder } from 'typeorm';
-import { CommandMeta } from 'src/command/command.meta';
 
-export class QueryModelTakeCommand implements QueryBuilderCommand {
+export class QueryModelTakeCommand extends QueryCommand {
   static description = `
     Magic query command, set take(count) to QueryBuilder.
   `;
@@ -15,8 +13,6 @@ export class QueryModelTakeCommand implements QueryBuilderCommand {
   static commandName = 'take';
 
   isEffectResultCount = true;
-
-  constructor(private readonly commandMeta: CommandMeta) {}
 
   get params() {
     return this.commandMeta.params;

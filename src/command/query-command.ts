@@ -14,7 +14,7 @@ export class QueryCommand {
    */
   isEffectResultCount?: boolean;
 
-  constructor(protected readonly commmandMeta: CommandMeta) {}
+  constructor(protected readonly commandMeta: CommandMeta) {}
 
   /**
    * 构建QueryBuilder

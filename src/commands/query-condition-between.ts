@@ -1,6 +1,6 @@
-import { QueryConditionCommand } from 'src/command/query-condition-command';
+import { QueryCommand } from 'src/command/query-command';
 
-export class QueryConditionBetweenCommand implements QueryConditionCommand {
+export class QueryConditionBetweenCommand extends QueryCommand {
   getWhereStatement(): { whereSql: string; params: any } {
     throw new Error('Method not implemented.');
   }

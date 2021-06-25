@@ -1,9 +1,7 @@
-import { CommandType } from 'src/command/query-command';
-import { QueryBuilderCommand } from 'src/command/query-builder-command';
+import { CommandType, QueryCommand } from 'src/command/query-command';
 import { SelectQueryBuilder } from 'typeorm';
-import { CommandMeta } from 'src/command/command.meta';
 
-export class QueryModelSkipCommand implements QueryBuilderCommand {
+export class QueryModelSkipCommand extends QueryCommand {
   static description = `
     Magic query command, set skip(count) to QueryBuilder.
   `;
@@ -13,7 +11,7 @@ export class QueryModelSkipCommand implements QueryBuilderCommand {
 
   static commandName = 'skip';
 
-  constructor(private readonly commandMeta: CommandMeta) {}
+  isEffectResultCount = true;
 
   get params() {
     return this.commandMeta.params;
