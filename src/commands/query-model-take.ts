@@ -1,7 +1,7 @@
-import { CommandType } from 'src/command/magic-command';
+import { CommandType } from 'src/command/query-command';
 import { QueryBuilderCommand } from 'src/command/query-builder-command';
-import { CommandMeta } from 'src/command/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
+import { CommandMeta } from 'src/command/command.meta';
 
 export class QueryModelTakeCommand implements QueryBuilderCommand {
   static description = `
@@ -10,7 +10,7 @@ export class QueryModelTakeCommand implements QueryBuilderCommand {
 
   static version = '1.0';
 
-  static commandType = CommandType.QUERY_BUILDER_COMMAND;
+  static commandType = CommandType.QUERY_MODEL_COMMAND;
 
   static commandName = 'take';
 

@@ -1,4 +1,3 @@
-import { CommandMeta } from '../../command/command-meta';
 import {
   TOKEN_MODEL,
   TOKEN_ON,
@@ -10,6 +9,7 @@ import {
   TOKEN_WHERE,
 } from './tokens';
 import { parseCommands } from './parse-commands';
+import { CommandMeta } from 'src/command/command.meta';
 
 export class JsonUnit {
   private _key = '';

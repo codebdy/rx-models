@@ -1,4 +1,4 @@
-import { CommandClass } from 'src/command/magic-command';
+import { CommandClass } from "src/command/command.class";
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require('glob');

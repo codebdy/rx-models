@@ -1,4 +1,4 @@
-import { CommandMeta } from '../../../command/command-meta';
+import { CommandMeta } from 'src/command/command.meta';
 import { TOKEN_LARGE_RELATION } from '../../base/tokens';
 import { TakeCommand } from '../meta/take-command';
 

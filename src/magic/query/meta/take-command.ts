@@ -1,5 +1,5 @@
+import { CommandMeta } from 'src/command/command.meta';
 import { SelectQueryBuilder } from 'typeorm';
-import { CommandMeta } from '../../../command/command-meta';
 
 export class TakeCommand {
   protected _commandMeta: CommandMeta;

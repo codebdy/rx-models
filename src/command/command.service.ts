@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { importCommandsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
-import { CommandClass, CommandType } from './magic-command';
+import { CommandType } from './query-command';
+import { CommandClass } from './command.class';
 
 @Injectable()
 export class CommandService implements OnModuleInit {
@@ -18,7 +19,7 @@ export class CommandService implements OnModuleInit {
       'commands/*/*.js',
     ]);
     commandClasses.forEach((commandClass) => {
-      if (commandClass.commandType === CommandType.QUERY_BUILDER_COMMAND) {
+      if (commandClass.commandType === CommandType.QUERY_MODEL_COMMAND) {
         console.assert(
           !this.qbCommandClasses[commandClass.commandName],
           `Command ${commandClass.commandName} duplicated!`,

@@ -1,5 +1,5 @@
-import { CommandType } from 'src/command/magic-command';
-import { CommandMeta } from 'src/command/command-meta';
+import { CommandMeta } from 'src/command/command.meta';
+import { CommandType } from 'src/command/query-command';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryRelationTakeCommand {
