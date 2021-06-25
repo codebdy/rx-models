@@ -12,6 +12,7 @@ export class CommandService implements OnModuleInit {
 
   async loadCommandClasses() {
     const commandClasses: CommandClass[] = importCommandsFromDirectories([
+      'dist/commands/*.js',
       'dist/commands/*/*.js',
     ]);
     commandClasses.forEach((commandClass) => {
