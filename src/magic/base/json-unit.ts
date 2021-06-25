@@ -1,4 +1,4 @@
-import { Command } from './command';
+import { CommandMeta } from './command-meta';
 import {
   TOKEN_MODEL,
   TOKEN_ON,
@@ -13,7 +13,7 @@ import { parseCommands } from './parse-commands';
 
 export class JsonUnit {
   private _key = '';
-  private _commands: Command[] = [];
+  private _commands: CommandMeta[] = [];
   private _value: any;
   constructor(keyStr: string, value: any) {
     const [key, commands] = parseCommands(keyStr);

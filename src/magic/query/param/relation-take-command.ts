@@ -1,10 +1,10 @@
-import { Command } from '../../base/command';
+import { CommandMeta } from '../../base/command-meta';
 import { TOKEN_LARGE_RELATION } from '../../base/tokens';
-import { TakeCommand } from './take-command';
+import { TakeCommand } from '../meta/take-command';
 
 export class RelationTakeCommand extends TakeCommand {
-  protected _commandMeta: Command;
-  constructor(commandMeta: Command) {
+  protected _commandMeta: CommandMeta;
+  constructor(commandMeta: CommandMeta) {
     super(commandMeta);
   }
 

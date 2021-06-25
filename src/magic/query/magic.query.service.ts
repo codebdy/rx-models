@@ -49,7 +49,7 @@ export class MagicQueryService {
     paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
 
     console.debug(queryBulider.getSql());
-    let data = (await queryBulider[modelUnit.excuteString]()) as any;
+    let data = (await queryBulider[modelUnit.fetchString]()) as any;
     data = filterRelations(paramParser, data);
 
     //构建树
@@ -70,10 +70,10 @@ export class MagicQueryService {
 
 function filterRelations(paramParser: MagicQueryParamsParser, result: any) {
   for (const relationFilter of paramParser.relationFilters) {
-    if (paramParser.modelUnit.excuteString === TOKEN_GET_ONE) {
+    if (paramParser.modelUnit.fetchString === TOKEN_GET_ONE) {
       result = relationFilter.do(result);
     }
-    if (paramParser.modelUnit.excuteString === TOKEN_GET_MANY) {
+    if (paramParser.modelUnit.fetchString === TOKEN_GET_MANY) {
       for (let i = 0; i < result.length; i++) {
         result[i] = relationFilter.do(result[i]);
       }

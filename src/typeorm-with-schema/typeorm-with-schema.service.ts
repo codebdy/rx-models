@@ -40,10 +40,12 @@ export class TypeOrmWithSchemaService
     return this._connection;
   }
 
-  public getRepository<Entity>(target: string): Repository<Entity> {
-    return this.connection.getRepository(
-      this._entitySchemas.get(target) || target,
-    );
+  public getEntitySchema(name: string) {
+    return this._entitySchemas.get(name);
+  }
+
+  public getRepository<Entity>(name: string): Repository<Entity> {
+    return this.connection.getRepository(this.getEntitySchema(name) || name);
   }
 
   async restart() {

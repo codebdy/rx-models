@@ -6,8 +6,8 @@ import {
   TOKEN_TREE,
 } from '../../base/tokens';
 import { PaginateCommand } from './panigate-command';
-import { SkipCommand } from './skip-command';
-import { TakeCommand } from './take-command';
+import { SkipCommand } from '../meta/skip-command';
+import { TakeCommand } from '../meta/take-command';
 
 export class ModelUnit {
   private _jsonUnit: JsonUnit;
@@ -46,7 +46,7 @@ export class ModelUnit {
     return !!this._jsonUnit.getCommand(TOKEN_TREE);
   }
 
-  get excuteString() {
+  get fetchString() {
     if (this._jsonUnit.getCommand(TOKEN_GET_ONE)) {
       return TOKEN_GET_ONE;
     }

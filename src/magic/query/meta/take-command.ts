@@ -1,9 +1,9 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { Command } from '../../base/command';
+import { CommandMeta } from '../../base/command-meta';
 
 export class TakeCommand {
-  protected _commandMeta: Command;
-  constructor(commandMeta: Command) {
+  protected _commandMeta: CommandMeta;
+  constructor(commandMeta: CommandMeta) {
     this._commandMeta = commandMeta;
   }
 

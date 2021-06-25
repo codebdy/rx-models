@@ -1,14 +1,14 @@
-import { Command } from './command';
+import { CommandMeta } from './command-meta';
 
-function stringArrayToCommands(strArray: string[]): Command[] {
+function stringArrayToCommands(strArray: string[]): CommandMeta[] {
   const commands = [];
   for (const commandStr of strArray) {
-    commands.push(new Command(commandStr));
+    commands.push(new CommandMeta(commandStr));
   }
   return commands;
 }
 
-export function parseCommands(str: string): [string?, Command[]?] {
+export function parseCommands(str: string): [string?, CommandMeta[]?] {
   const strArray: string[] = str.split('@');
   const key = strArray[0]?.trim();
   return [key, stringArrayToCommands(strArray.splice(1))];
