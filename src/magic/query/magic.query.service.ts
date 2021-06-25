@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Connection } from 'typeorm';
 import { MagicQueryParamsParser } from './param/query.param.parser';
 import { TOKEN_GET_MANY, TOKEN_GET_ONE } from '../base/tokens';
 import { TreeCommand } from './commands/model/tree-command';
+import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 
 @Injectable()
 export class MagicQueryService {
-  constructor(private readonly connection: Connection) {}
+  constructor(private readonly typeormSerivce: TypeOrmWithSchemaService) {}
+
+  private get connection() {
+    return this.typeormSerivce.connection;
+  }
+
   async query(jsonStr: string) {
     let totalCount = 0;
     const paramParser = new MagicQueryParamsParser(jsonStr);

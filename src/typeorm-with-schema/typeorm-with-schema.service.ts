@@ -4,25 +4,40 @@ import {
   OnApplicationShutdown,
   OnModuleInit,
 } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { Connection, createConnection, getConnectionOptions } from 'typeorm';
+
+export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 
 @Injectable()
 export class TypeOrmWithSchemaService
   implements OnModuleInit, OnApplicationShutdown {
-  private readonly logger = new Logger('TypeOrmService');
+  private readonly logger = new Logger('TypeOrmWithSchemaService');
+  private _connection: Connection;
+  constructor(private readonly originalConnection: Connection) {}
 
-  public readonly connection: Connection;
-  constructor(private readonly originalConnection: Connection) {
-    this.connection = originalConnection;
+  async createConnection() {
+    const connectionOptions = await getConnectionOptions();
+
+    this._connection = await createConnection({
+      ...connectionOptions,
+      name: CONNECTION_WITH_SCHEMA_NAME,
+    });
   }
 
-  async onModuleInit() {
-    console.debug('TypeOrmWithSchemaService Init');
+  public get connection() {
+    return this._connection;
+  }
+
+  async restart() {
+    this.closeConection();
+    await this.createConnection();
     await this.loadEntitySchemas();
   }
 
-  public restart() {
-    this.closeConection();
+  async onModuleInit() {
+    await this.createConnection();
+    await this.loadEntitySchemas();
+    console.debug('TypeOrmWithSchemaService initializated');
   }
 
   async onApplicationShutdown() {
