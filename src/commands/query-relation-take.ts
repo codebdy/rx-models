@@ -9,7 +9,7 @@ export class QueryRelationTakeCommand {
   `;
   version = '1.0';
 
-  commandType = CommandType.QUERY_QB_COMMAND;
+  commandType = CommandType.QUERY_RELATION_COMMAND;
   name = 'take';
 
   constructor(private readonly commandMeta: CommandMeta) {}

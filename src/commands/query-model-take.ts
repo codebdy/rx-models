@@ -9,7 +9,7 @@ export class QueryModelTakeCommand implements QueryBuilderCommand {
   `;
   version = '1.0';
 
-  commandType = CommandType.QUERY_QB_COMMAND;
+  commandType = CommandType.QUERY_BUILDER_COMMAND;
   name = 'take';
 
   constructor(private readonly commandMeta: CommandMeta) {}
