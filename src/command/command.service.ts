@@ -14,6 +14,8 @@ export class CommandService implements OnModuleInit {
     const commandClasses: CommandClass[] = importCommandsFromDirectories([
       'dist/commands/*.js',
       'dist/commands/*/*.js',
+      'commands/*.js',
+      'commands/*/*.js',
     ]);
     commandClasses.forEach((commandClass) => {
       if (commandClass.commandType === CommandType.QUERY_BUILDER_COMMAND) {

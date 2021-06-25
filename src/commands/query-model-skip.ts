@@ -1,5 +1,5 @@
 import { CommandType } from 'src/command/magic-command';
-import { QueryBuilderCommand } from 'src/command/querybuilder-command';
+import { QueryBuilderCommand } from 'src/command/query-builder-command';
 import { CommandMeta } from 'src/command/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 

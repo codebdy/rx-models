@@ -1,4 +1,4 @@
-import { QueryBuilderCommand } from 'src/command/querybuilder-command';
+import { QueryBuilderCommand } from 'src/command/query-builder-command';
 import { EntitySchema } from 'typeorm';
 import { WhereMeta } from './where-meta';
 
