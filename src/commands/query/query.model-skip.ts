@@ -1,18 +1,17 @@
 import { CommandType } from 'src/command/magic-command';
 import { QueryBuilderCommand } from 'src/command/querybuilder-command';
-import { CommandMeta } from 'src/magic/base/command-meta';
+import { CommandMeta } from 'src/command/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTakeCommand implements QueryBuilderCommand {
+export class QueryModelSkipCommand implements QueryBuilderCommand {
   static description = `
-    Magic query command, set take(count) to QueryBuilder.
+    Magic query command, set skip(count) to QueryBuilder.
   `;
-
   static version = '1.0';
 
   static commandType = CommandType.QUERY_BUILDER_COMMAND;
 
-  static commandName = 'take';
+  static commandName = 'skip';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 

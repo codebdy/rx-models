@@ -1,4 +1,4 @@
-import { CommandMeta } from './command-meta';
+import { CommandMeta } from '../../command/command-meta';
 
 function stringArrayToCommands(strArray: string[]): CommandMeta[] {
   const commands = [];

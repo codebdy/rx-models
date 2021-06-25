@@ -4,19 +4,23 @@ import { CommandClass, CommandType } from './magic-command';
 
 @Injectable()
 export class CommandService implements OnModuleInit {
-  private qbCommands: { [key: string]: CommandClass } = {} as any;
+  private qbCommandClasses: { [key: string]: CommandClass } = {} as any;
 
   async onModuleInit() {
+    await this.loadCommandClasses();
+  }
+
+  async loadCommandClasses() {
     const commandClasses: CommandClass[] = importCommandsFromDirectories([
-      'dist/commands/*.js',
+      'dist/commands/*/*.js',
     ]);
     commandClasses.forEach((commandClass) => {
       if (commandClass.commandType === CommandType.QUERY_BUILDER_COMMAND) {
         console.assert(
-          !this.qbCommands[commandClass.commandName],
+          !this.qbCommandClasses[commandClass.commandName],
           `Command ${commandClass.commandName} duplicated!`,
         );
-        this.qbCommands[commandClass.commandName] = commandClass;
+        this.qbCommandClasses[commandClass.commandName] = commandClass;
       }
     });
     console.debug('Commands loaded');

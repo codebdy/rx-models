@@ -1,4 +1,4 @@
-import { CommandMeta } from './command-meta';
+import { CommandMeta } from '../../command/command-meta';
 import {
   TOKEN_MODEL,
   TOKEN_ON,

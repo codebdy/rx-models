@@ -1,6 +1,6 @@
 import { CommandType } from 'src/command/magic-command';
 import { QueryBuilderCommand } from 'src/command/querybuilder-command';
-import { CommandMeta } from 'src/magic/base/command-meta';
+import { CommandMeta } from 'src/command/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelPaginateCommand implements QueryBuilderCommand {
