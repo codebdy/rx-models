@@ -6,6 +6,8 @@ export enum CommandType {
 }
 
 export interface MagicCommand {
+  description?: string;
+  version?: string;
   commandType: CommandType;
   name: string;
 }

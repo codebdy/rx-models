@@ -3,7 +3,7 @@ import { QueryBuilderCommand } from 'src/command/querybuilder-command';
 import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTakeCommand implements QueryBuilderCommand {
+export class QueryRelationTakeCommand {
   description = `
     Magic query command, set take(count) to QueryBuilder.
   `;
@@ -22,7 +22,7 @@ export class QueryModelTakeCommand implements QueryBuilderCommand {
     return this.commandMeta.getFistNumberParam();
   }
 
-  addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     qb.take(this.count);
     return qb;
   }

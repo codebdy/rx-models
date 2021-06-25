@@ -3,14 +3,14 @@ import { QueryBuilderCommand } from 'src/command/querybuilder-command';
 import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTakeCommand implements QueryBuilderCommand {
+export class QueryModelSkipCommand implements QueryBuilderCommand {
   description = `
-    Magic query command, set take(count) to QueryBuilder.
+    Magic query command, set skip(count) to QueryBuilder.
   `;
   version = '1.0';
 
   commandType = CommandType.QUERY_QB_COMMAND;
-  name = 'take';
+  name = 'skip';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 

@@ -3,14 +3,14 @@ import { QueryBuilderCommand } from 'src/command/querybuilder-command';
 import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTakeCommand implements QueryBuilderCommand {
+export class QueryModelSkipCommand implements QueryBuilderCommand {
   description = `
-    Magic query command, set take(count) to QueryBuilder.
+    Magic query command, Paginate the results.
   `;
   version = '1.0';
 
   commandType = CommandType.QUERY_QB_COMMAND;
-  name = 'take';
+  name = 'paginate';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 
@@ -22,8 +22,20 @@ export class QueryModelTakeCommand implements QueryBuilderCommand {
     return this.commandMeta.getFistNumberParam();
   }
 
+  get pageSize(): number {
+    return parseInt(this.commandMeta.params[0]);
+  }
+
+  get pageIndex() {
+    return parseInt(this.commandMeta.params[1]);
+  }
+
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
-    qb.take(this.count);
+    console.assert(
+      this.commandMeta.params.length > 0,
+      'Too few pagination parmas',
+    );
+    qb.skip(this.pageSize * this.pageIndex).take(this.pageSize);
     return qb;
   }
 }

@@ -10,9 +10,10 @@ import { MagicUploadController } from './upload/magic.upload.controller';
 import { MagicUpdateService } from './update/magic.update.service';
 import { MagicUpdateController } from './update/magic.update.controller';
 import { TypeOrmWithSchemaModule } from 'src/typeorm-with-schema/typeorm-with-schema.module';
+import { CommandModule } from 'src/command/command.module';
 
 @Module({
-  imports: [TypeOrmWithSchemaModule],
+  imports: [TypeOrmWithSchemaModule, CommandModule],
   providers: [
     MagicQueryService,
     MagicPostService,
