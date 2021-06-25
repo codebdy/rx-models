@@ -4,13 +4,14 @@ import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelSkipCommand implements QueryBuilderCommand {
-  description = `
+  static description = `
     Magic query command, set skip(count) to QueryBuilder.
   `;
-  version = '1.0';
+  static version = '1.0';
 
-  commandType = CommandType.QUERY_BUILDER_COMMAND;
-  name = 'skip';
+  static commandType = CommandType.QUERY_BUILDER_COMMAND;
+
+  static commandName = 'skip';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 

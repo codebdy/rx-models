@@ -1,6 +1,6 @@
 import { getRelationModel } from 'src/magic/base/getRelationModel';
 import { JsonUnit } from 'src/magic/base/json-unit';
-import { createId } from 'src/utils/create-id';
+import { createId } from 'src/util/create-id';
 import { SelectQueryBuilder } from 'typeorm';
 import { Condition } from './condition';
 import { Relation } from './relation';

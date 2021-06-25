@@ -3,14 +3,16 @@ import { QueryBuilderCommand } from 'src/command/querybuilder-command';
 import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelSkipCommand implements QueryBuilderCommand {
-  description = `
+export class QueryModelPaginateCommand implements QueryBuilderCommand {
+  static description = `
     Magic query command, Paginate the results.
   `;
-  version = '1.0';
 
-  commandType = CommandType.QUERY_BUILDER_COMMAND;
-  name = 'paginate';
+  static version = '1.0';
+
+  static commandType = CommandType.QUERY_BUILDER_COMMAND;
+
+  static commandName = 'paginate';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 

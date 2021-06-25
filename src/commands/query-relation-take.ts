@@ -1,16 +1,17 @@
 import { CommandType } from 'src/command/magic-command';
-import { QueryBuilderCommand } from 'src/command/querybuilder-command';
 import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryRelationTakeCommand {
-  description = `
+  static description = `
     Magic query command, set take(count) to QueryBuilder.
   `;
-  version = '1.0';
 
-  commandType = CommandType.QUERY_RELATION_COMMAND;
-  name = 'take';
+  static version = '1.0';
+
+  static commandType = CommandType.QUERY_RELATION_COMMAND;
+
+  static commandName = 'take';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 

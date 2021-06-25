@@ -1,4 +1,4 @@
-import { createId } from 'src/utils/create-id';
+import { createId } from 'src/util/create-id';
 import { SelectQueryBuilder } from 'typeorm';
 import { JsonUnit } from '../../base/json-unit';
 import { ModelParams } from './model-params';

@@ -4,13 +4,15 @@ import { CommandMeta } from 'src/magic/base/command-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelTakeCommand implements QueryBuilderCommand {
-  description = `
+  static description = `
     Magic query command, set take(count) to QueryBuilder.
   `;
-  version = '1.0';
 
-  commandType = CommandType.QUERY_BUILDER_COMMAND;
-  name = 'take';
+  static version = '1.0';
+
+  static commandType = CommandType.QUERY_BUILDER_COMMAND;
+
+  static commandName = 'take';
 
   constructor(private readonly commandMeta: CommandMeta) {}
 

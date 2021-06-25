@@ -1,6 +1,5 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { MagicCommand } from './magic-command';
 
-export interface QueryBuilderCommand extends MagicCommand {
+export interface QueryBuilderCommand {
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any>;
 }
