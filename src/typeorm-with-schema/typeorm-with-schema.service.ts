@@ -30,7 +30,7 @@ export class TypeOrmWithSchemaService
     const entitySchemas = this.loadEntitySchemas();
     this._connection = await createConnection({
       ...connectionOptions,
-      entities: entitySchemas,
+      entities: [...connectionOptions.entities, ...entitySchemas],
       name: CONNECTION_WITH_SCHEMA_NAME,
       synchronize: true,
     });
