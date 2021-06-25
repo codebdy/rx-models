@@ -8,16 +8,12 @@ import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-s
 export class MagicQueryService {
   constructor(private readonly typeormSerivce: TypeOrmWithSchemaService) {}
 
-  private get connection() {
-    return this.typeormSerivce.connection;
-  }
-
   async query(jsonStr: string) {
     let totalCount = 0;
     const paramParser = new MagicQueryParamsParser(jsonStr);
     const modelUnit = paramParser.modelUnit;
     const modelAlias = modelUnit?.modelAlias;
-    const queryBulider = this.connection
+    const queryBulider = this.typeormSerivce
       .getRepository(paramParser.modelUnit?.model)
       .createQueryBuilder(modelAlias);
 
