@@ -14,6 +14,8 @@ export class QueryModelTakeCommand implements QueryBuilderCommand {
 
   static commandName = 'take';
 
+  isEffectResultCount = true;
+
   constructor(private readonly commandMeta: CommandMeta) {}
 
   get params() {
