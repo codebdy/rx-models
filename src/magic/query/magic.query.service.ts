@@ -18,20 +18,16 @@ export class MagicQueryService {
       .getRepository(meta.model)
       .createQueryBuilder(meta.alias);
 
-    //paramParser.whereMeta?.makeQueryBuilder(qb);
-
-    //for (const relation of paramParser.relations) {
-    //  relation.makeQueryBuilder(qb, modelAlias);
-    //}
+    meta.addNotEffetCountCommandsToQueryBuilder(qb);
 
     totalCount = await qb.getCount();
 
+    meta.addEffetCountCommandsToQueryBuilder(qb);
+
     console.debug(qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
-    //data = filterRelations(paramParser, data);
-
     const result = { data, totalCount } as QueryResult;
 
-    return result;
+    return meta.filterResult(result);
   }
 }

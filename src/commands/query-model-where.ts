@@ -1,5 +1,5 @@
 import { CommandType, QueryCommand } from 'src/command/query-command';
-import { parseWhereString } from 'src/meta/query/parseWhereString';
+import { parseWhereSql } from 'src/meta/query/parse-where-sql';
 
 export class QueryModelWhereCommand extends QueryCommand {
   static description = `
@@ -13,6 +13,6 @@ export class QueryModelWhereCommand extends QueryCommand {
   static commandName = 'where';
 
   getWhereStatement(): [string, any] | void {
-    return parseWhereString(this.commandMeta.params[0], this.queryMeta);
+    return parseWhereSql(this.commandMeta.params[0], this.queryMeta);
   }
 }

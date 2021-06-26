@@ -1,6 +1,6 @@
 import { SelectQueryBuilder } from 'typeorm';
 
-export class OrderBy {
+export class OrderByMeta {
   private _orderBy: any;
 
   constructor(orderArray: any) {

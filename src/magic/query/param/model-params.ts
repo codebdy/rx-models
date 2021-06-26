@@ -2,7 +2,7 @@ import { RelationCommand } from './commands/relation/relation-command';
 import { RelationTakeCommand } from './commands/relation/take-command';
 import { Condition } from './condition';
 import { JsonUnit } from '../../base/json-unit';
-import { OrderBy } from '../../../meta/query/order-by';
+import { OrderByMeta } from './orderby-meta';
 import { Relation } from './relation';
 import { Where } from './where';
 import { getRelationModel } from 'src/magic/base/getRelationModel';
@@ -10,7 +10,7 @@ import { getRelationModel } from 'src/magic/base/getRelationModel';
 export class ModelParams {
   private _relations: Relation[] = [];
   private _select: string[] = [];
-  private _orderBys: OrderBy;
+  private _orderBys: OrderByMeta;
   private _whereMeta: Where;
   private _relationFilters: RelationCommand[] = [];
 
@@ -37,7 +37,7 @@ export class ModelParams {
       } else if (jsonUnit.isSelect()) {
         this._select = jsonUnit.value;
       } else if (jsonUnit.isOrderBy()) {
-        this._orderBys = new OrderBy(jsonUnit.value);
+        this._orderBys = new OrderByMeta(jsonUnit.value);
       } else if (jsonUnit.isWhere() || jsonUnit.isOn()) {
         this._whereMeta.whereString = jsonUnit.value;
       } else {

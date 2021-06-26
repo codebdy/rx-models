@@ -6,7 +6,7 @@ import { RelationMeta } from './relation-meta';
 const SqlWhereParser = require('sql-where-parser');
 const OPERATOR_UNARY_MINUS = Symbol('-');
 
-export function parseWhereString(
+export function parseWhereSql(
   sqlStr: string,
   rootMeta: QueryMeta | RelationMeta,
 ): [string, any] {
@@ -14,8 +14,6 @@ export function parseWhereString(
     throw new Error('Not assign param to where command');
   }
 
-  //const sql =
-  //  "(name = 'Shaun Persad' AND age >= 27) OR (name like '%xx%' and id in (1,2,3,4))";
   const parser = new SqlWhereParser();
   const params = {} as any;
   const evaluator = (operatorValue, operands) => {

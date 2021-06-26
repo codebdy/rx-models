@@ -1,6 +1,6 @@
 import { CommandType } from 'src/command/query-command';
 import { QueryRelationCommand } from 'src/command/query-relation-command';
-import { parseWhereString } from 'src/meta/query/parseWhereString';
+import { parseWhereSql } from 'src/meta/query/parse-where-sql';
 
 export class QueryModelOrderByCommand extends QueryRelationCommand {
   static description = `
@@ -18,6 +18,6 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
   }
 
   getWhereStatement(): [string, any] | void {
-    return parseWhereString(this.commandMeta.params[0], this.relationMeta);
+    return parseWhereSql(this.commandMeta.params[0], this.relationMeta);
   }
 }
