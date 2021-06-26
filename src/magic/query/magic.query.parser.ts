@@ -76,13 +76,28 @@ export class MagicQueryParser {
       keyWithoutAt === TOKEN_ORDER_BY ||
       jsonUnit.key.startsWith('@')
     ) {
-      this.parseCommand(keyWithoutAt, jsonUnit, meta);
+      this.parseModelOrRelationCommand(keyWithoutAt, jsonUnit, meta);
     } else {
       //剩下的全是条件行
+      this.paseConditionCommand(jsonUnit, meta);
     }
   }
 
-  private parseCommand(
+  private paseConditionCommand(
+    jsonUnit: JsonUnit,
+    meta: QueryMeta | RelationMeta,
+  ) {
+    let commanName = 'equal';
+    if (jsonUnit.commands && jsonUnit.commands.length > 0) {
+      commanName = jsonUnit.commands[0].name;
+    }
+    const commandClass = this.commandService.findConditionCommandOrFailed(
+      commanName,
+    );
+    meta.pushCommand(commandClass(new CommandMeta(commanName), this.querMeta));
+  }
+
+  private parseModelOrRelationCommand(
     name: string,
     jsonUnit: JsonUnit,
     meta: QueryMeta | RelationMeta,
