@@ -24,6 +24,10 @@ export class RelationMeta {
     return 'relation' + this.id;
   }
 
+  pushCommand(command: QueryCommand) {
+    this.relationCommands.push(command);
+  }
+
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const whereStringArray: string[] = [];
     let whereParams: any = {};

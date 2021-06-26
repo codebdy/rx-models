@@ -24,6 +24,12 @@ export class QueryMeta {
     return this.model?.toLowerCase() + this.id;
   }
 
+  pushCommand(command: QueryCommand) {
+    command.isEffectResultCount
+      ? this.effectCountModelCommands.push(command)
+      : this.notEffectCountModelCommands.push(command);
+  }
+
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     this.notEffectCountModelCommands.forEach((command) =>
       command.addToQueryBuilder(qb),

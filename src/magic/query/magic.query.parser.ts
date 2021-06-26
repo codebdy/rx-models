@@ -1,10 +1,16 @@
+import { CommandMeta } from 'src/command/command.meta';
 import { CommandService } from 'src/command/command.service';
-import { QueryCommand } from 'src/command/query-command';
 import { RelationMeta } from 'src/meta/query/relation-meta';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 import { QueryMeta } from '../../meta/query/query-meta';
 import { JsonUnit } from '../base/json-unit';
-import { TOKEN_GET_ONE } from '../base/tokens';
+import {
+  TOKEN_GET_ONE,
+  TOKEN_ON,
+  TOKEN_ORDER_BY,
+  TOKEN_SELECT,
+  TOKEN_WHERE,
+} from '../base/tokens';
 
 export class MagicQueryParser {
   private querMeta: QueryMeta;
@@ -35,13 +41,8 @@ export class MagicQueryParser {
             const commandClass = this.commandService.findModelCommandOrFailed(
               commandMeta.name,
             );
-            const command = commandClass(
-              commandMeta,
-              this.querMeta,
-            ) as QueryCommand;
-            command.isEffectResultCount
-              ? meta.effectCountModelCommands.push(command)
-              : meta.notEffectCountModelCommands.push(command);
+            const command = commandClass(commandMeta, this.querMeta);
+            meta.pushCommand(command);
           }
         });
 
@@ -54,27 +55,63 @@ export class MagicQueryParser {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      const relationEntitySchemaOptions = this.typeOrmService.findRelationEntitySchema(
-        meta.model,
-        jsonUnit.key,
-      );
-      //如果是关联
-      if (relationEntitySchemaOptions) {
-        const relation = new RelationMeta();
-        relation.name = jsonUnit.key;
-        relation.entitySchema = this.typeOrmService.findEntitySchemaOrFailed(
-          relationEntitySchemaOptions.target.toString(),
-        );
-        jsonUnit.commands.forEach((commandMeta) => {
-          const commandClass = this.commandService.findRelationCommandOrFailed(
-            commandMeta.name,
-          );
-          relation.relationCommands.push(
-            commandClass(commandMeta, this.querMeta),
-          );
-        });
-        this.parseMeta(value, relation);
-      }
+      this.parseOneLine(jsonUnit, meta);
     }
+  }
+
+  parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta | RelationMeta) {
+    const relationEntitySchemaOptions = this.typeOrmService.findRelationEntitySchema(
+      meta.model,
+      jsonUnit.key,
+    );
+    const keyWithoutAt = jsonUnit.key.replace('@', '');
+    //如果是关联
+    if (relationEntitySchemaOptions) {
+      this.parseRelation(jsonUnit, relationEntitySchemaOptions);
+    } else if (
+      //如果是model指令或者relation指令
+      keyWithoutAt === TOKEN_ON ||
+      keyWithoutAt === TOKEN_WHERE ||
+      keyWithoutAt === TOKEN_SELECT ||
+      keyWithoutAt === TOKEN_ORDER_BY ||
+      jsonUnit.key.startsWith('@')
+    ) {
+      this.parseCommand(keyWithoutAt, jsonUnit, meta);
+    } else {
+      //剩下的全是条件行
+    }
+  }
+
+  private parseCommand(
+    name: string,
+    jsonUnit: JsonUnit,
+    meta: QueryMeta | RelationMeta,
+  ) {
+    const cmdMeta = new CommandMeta(name);
+    cmdMeta.params = Array.isArray(jsonUnit.value)
+      ? jsonUnit.value
+      : [jsonUnit.value];
+    if (meta instanceof QueryMeta) {
+      const cmdClass = this.commandService.findModelCommandOrFailed(name);
+      meta.pushCommand(cmdClass(cmdMeta, this.querMeta));
+    } else {
+      const cmdClass = this.commandService.findRelationCommandOrFailed(name);
+      meta.pushCommand(cmdClass(cmdMeta, this.querMeta));
+    }
+  }
+
+  private parseRelation(jsonUnit: JsonUnit, relationEntitySchemaOptions) {
+    const relation = new RelationMeta();
+    relation.name = jsonUnit.key;
+    relation.entitySchema = this.typeOrmService.findEntitySchemaOrFailed(
+      relationEntitySchemaOptions.target.toString(),
+    );
+    jsonUnit.commands.forEach((commandMeta) => {
+      const commandClass = this.commandService.findRelationCommandOrFailed(
+        commandMeta.name,
+      );
+      relation.pushCommand(commandClass(commandMeta, this.querMeta));
+    });
+    this.parseMeta(jsonUnit.value, relation);
   }
 }
