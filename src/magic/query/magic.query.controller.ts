@@ -1,6 +1,6 @@
 import { Controller, Get, HttpException, Param } from '@nestjs/common';
 import { MagicQueryService } from './magic.query.service';
-import { sleep } from './sleep';
+import { sleep } from '../../util/sleep';
 
 @Controller()
 export class MagicQueryController {

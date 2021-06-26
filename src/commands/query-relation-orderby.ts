@@ -17,10 +17,6 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
     return this.commandMeta.params;
   }
 
-  get count() {
-    return this.commandMeta.getFistNumberParam();
-  }
-
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const orderMap = this.getpMap();
     if (orderMap) {
@@ -36,7 +32,7 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
     }
     const orderBy = this.commandMeta.params[0] as any;
     for (const key in orderBy) {
-      orderMap[`${this.queryMeta.modelAlias}.${key}`] = orderBy[key];
+      orderMap[`${this.queryMeta.alias}.${key}`] = orderBy[key];
     }
     return orderMap;
   }

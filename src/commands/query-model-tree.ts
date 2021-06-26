@@ -17,7 +17,7 @@ export class QueryModelTreeCommand extends QueryCommand {
       throw Error('Tree command can not use getOne command');
     }
     return qb.leftJoinAndSelect(
-      `${this.queryMeta.modelAlias}.parent`,
+      `${this.queryMeta.alias}.parent`,
       'parent',
     );
   }

@@ -5,9 +5,9 @@ import { CommandClass } from './command.class';
 
 @Injectable()
 export class CommandService implements OnModuleInit {
-  private modelCommandClasses: { [key: string]: CommandClass } = {} as any;
-  private relationCommandClasses: { [key: string]: CommandClass } = {} as any;
-  private conditionCommandClasses: { [key: string]: CommandClass } = {} as any;
+  modelCommandClasses: { [key: string]: CommandClass } = {} as any;
+  relationCommandClasses: { [key: string]: CommandClass } = {} as any;
+  conditionCommandClasses: { [key: string]: CommandClass } = {} as any;
 
   async onModuleInit() {
     await this.loadCommandClasses();
@@ -21,28 +21,29 @@ export class CommandService implements OnModuleInit {
       'commands/*/*.js',
     ]);
     commandClasses.forEach((commandClass) => {
+      const commandName = commandClass.commandName;
       if (commandClass.commandType === CommandType.QUERY_MODEL_COMMAND) {
         console.assert(
-          !this.modelCommandClasses[commandClass.commandName],
-          `Model command ${commandClass.commandName} duplicated!`,
+          !this.modelCommandClasses[commandName],
+          `Model command ${commandName} duplicated!`,
         );
-        this.modelCommandClasses[commandClass.commandName] = commandClass;
+        this.modelCommandClasses[commandName] = commandClass;
       }
 
       if (commandClass.commandType === CommandType.QUERY_RELATION_COMMAND) {
         console.assert(
-          !this.relationCommandClasses[commandClass.commandName],
-          `Relation command ${commandClass.commandName} duplicated!`,
+          !this.relationCommandClasses[commandName],
+          `Relation command ${commandName} duplicated!`,
         );
-        this.relationCommandClasses[commandClass.commandName] = commandClass;
+        this.relationCommandClasses[commandName] = commandClass;
       }
 
       if (commandClass.commandType === CommandType.QUERY_CONDITION_COMMAND) {
         console.assert(
-          !this.conditionCommandClasses[commandClass.commandName],
-          `Condition command ${commandClass.commandName} duplicated!`,
+          !this.conditionCommandClasses[commandName],
+          `Condition command ${commandName} duplicated!`,
         );
-        this.conditionCommandClasses[commandClass.commandName] = commandClass;
+        this.conditionCommandClasses[commandName] = commandClass;
       }
     });
     console.debug('Commands loaded');

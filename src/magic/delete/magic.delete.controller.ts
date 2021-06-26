@@ -1,5 +1,5 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
-import { sleep } from '../query/sleep';
+import { sleep } from '../../util/sleep';
 import { MagicDeleteService } from './magic.delete.service';
 
 @Controller()

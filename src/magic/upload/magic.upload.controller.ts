@@ -9,7 +9,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { MagicPostService } from 'src/magic/post/magic.post.service';
-import { sleep } from '../query/sleep';
+import { sleep } from '../../util/sleep';
 import { fileName, fileFilter } from './file-upload.utils';
 import { MagicUploadService } from './magic.upload.service';
 
