@@ -1,56 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { MagicQueryParamsParser } from './param/query.param.parser';
-import { TOKEN_GET_MANY, TOKEN_GET_ONE } from '../base/tokens';
 import { TreeCommand } from './param/commands/model/tree-command';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { MagicQueryParser } from './magic.query.parser';
+import { MagicQuerySQLWhereParser } from './magic.query.sql-where-parser';
 
 @Injectable()
 export class MagicQueryService {
-  constructor(private readonly typeormSerivce: TypeOrmWithSchemaService) {}
+  constructor(
+    private readonly typeormSerivce: TypeOrmWithSchemaService,
+    private readonly queryParser: MagicQueryParser,
+    private readonly sqlWhereParser: MagicQuerySQLWhereParser,
+  ) {}
 
   async query(jsonStr: string) {
     let totalCount = 0;
-    const paramParser = new MagicQueryParamsParser(jsonStr);
-    const modelUnit = paramParser.modelUnit;
-    const modelAlias = modelUnit?.modelAlias;
-    const queryBulider = this.typeormSerivce
-      .getRepository(paramParser.modelUnit?.model)
-      .createQueryBuilder(modelAlias);
 
-    if (paramParser.select?.length > 0) {
-      queryBulider.select(
-        paramParser.select.map((field) => modelAlias + '.' + field),
-      );
-      queryBulider.addSelect([modelUnit?.modelAlias + '.id']);
+    const meta = this.queryParser.parse(jsonStr);
+    const qb = this.typeormSerivce
+      .getRepository(meta.model)
+      .createQueryBuilder(meta.modelAlias);
+    if (meta.select?.length > 0) {
+      qb.select(meta.select.map((field) => meta.modelAlias + '.' + field));
+      qb.addSelect([meta.modelAlias + '.id']);
     }
-    //queryBulider.loadRelationCountAndMap(
-    //  `${paramParser.modelUnit?.modelAlias}.relationCount`,
-    //  `${paramParser.modelUnit?.modelAlias}.roles`,
-    //);
-    paramParser.whereMeta?.makeQueryBuilder(queryBulider);
+
+    paramParser.whereMeta?.makeQueryBuilder(qb);
 
     for (const relation of paramParser.relations) {
-      relation.makeQueryBuilder(queryBulider, modelAlias);
+      relation.makeQueryBuilder(qb, modelAlias);
     }
 
     //如果需要构建树，则需要取父节点
     if (modelUnit.needBuildTree()) {
-      queryBulider.leftJoinAndSelect(`${modelAlias}.parent`, 'parent');
+      qb.leftJoinAndSelect(`${modelAlias}.parent`, 'parent');
     }
 
-    paramParser.orderBys?.makeQueryBuilder(queryBulider, modelAlias);
+    paramParser.orderBys?.makeQueryBuilder(qb, modelAlias);
 
     const paginateCommand = paramParser.modelUnit.getPaginateCommand();
     if (paginateCommand) {
-      totalCount = await queryBulider.getCount();
-      paginateCommand.makeQueryBuilder(queryBulider);
+      totalCount = await qb.getCount();
+      paginateCommand.makeQueryBuilder(qb);
     }
-    paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(queryBulider);
-    paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(queryBulider);
+    paramParser.modelUnit.getSkipCommand()?.makeQueryBuilder(qb);
+    paramParser.modelUnit.getTakeCommand()?.makeQueryBuilder(qb);
 
-    console.debug(queryBulider.getSql());
-    let data = (await queryBulider[modelUnit.fetchString]()) as any;
-    data = filterRelations(paramParser, data);
+    console.debug(qb.getSql());
+    let data = (await qb[modelUnit.fetchString]()) as any;
+    //data = filterRelations(paramParser, data);
 
     //构建树
     if (modelUnit.needBuildTree()) {
@@ -66,18 +63,4 @@ export class MagicQueryService {
     }
     return result;
   }
-}
-
-function filterRelations(paramParser: MagicQueryParamsParser, result: any) {
-  for (const relationFilter of paramParser.relationFilters) {
-    if (paramParser.modelUnit.fetchString === TOKEN_GET_ONE) {
-      result = relationFilter.do(result);
-    }
-    if (paramParser.modelUnit.fetchString === TOKEN_GET_MANY) {
-      for (let i = 0; i < result.length; i++) {
-        result[i] = relationFilter.do(result[i]);
-      }
-    }
-  }
-  return result;
 }

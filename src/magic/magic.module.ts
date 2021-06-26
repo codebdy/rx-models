@@ -11,10 +11,14 @@ import { MagicUpdateService } from './update/magic.update.service';
 import { MagicUpdateController } from './update/magic.update.controller';
 import { TypeOrmWithSchemaModule } from 'src/typeorm-with-schema/typeorm-with-schema.module';
 import { CommandModule } from 'src/command/command.module';
+import { MagicQueryParser } from './query/magic.query.parser';
+import { MagicQuerySQLWhereParser } from './query/magic.query.sql-where-parser';
 
 @Module({
   imports: [TypeOrmWithSchemaModule, CommandModule],
   providers: [
+    MagicQueryParser,
+    MagicQuerySQLWhereParser,
     MagicQueryService,
     MagicPostService,
     MagicDeleteService,

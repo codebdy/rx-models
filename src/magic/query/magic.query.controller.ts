@@ -9,7 +9,7 @@ export class MagicQueryController {
   /**
    * 通用查询接口，语法示例：
    * {
-   *   "model":"User @count  @getOne",//@getMany, @sum(ddd) as xx, @skip(100), @take(10) @paginate(25,0)
+   *   "model @count @getOne":"User",//@getMany, @sum(ddd) as xx, @skip(100), @take(10) @paginate(25,0)
    *    "id":1,
    *    "select":["*", "photosCount"],
    *    "age @between":[18, 40], //@IN
@@ -27,6 +27,20 @@ export class MagicQueryController {
    *      "ddd" : "ASC"
    *    },
    *    select:["name", "nn"],
+   *    "@count":true,
+   *    "@sum":"price",
+   *    "@tree":true
+   * }
+   * {
+   *   "model @sum(price) @count @tree":"Order"
+   * }
+   * {
+   *    "model":"Order",
+   *    "@count":true,
+   *    "@commands":{
+   *      "sum":"price",
+   *      "tree":true
+   *    }
    * }
    * 关系嵌套：文章与图片
    * {
