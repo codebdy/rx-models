@@ -12,7 +12,7 @@ export class QueryMeta {
   relationMetas: RelationMeta[] = [];
   notEffectCountModelCommands: QueryCommand[] = [];
   effectCountModelCommands: QueryCommand[] = [];
-  conditionCommands: QueryCommand[] = [];
+  //conditionCommands: QueryCommand[] = [];
 
   fetchString: 'getOne' | 'getMany' = TOKEN_GET_MANY;
 
@@ -24,29 +24,47 @@ export class QueryMeta {
     return this.model?.toLowerCase() + this.id;
   }
 
-  addNotEffetCountCommandsToQueryBuilder(
-    qb: SelectQueryBuilder<any>,
-  ): SelectQueryBuilder<any> {
+  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+    this.notEffectCountModelCommands.forEach((command) =>
+      command.addToQueryBuilder(qb),
+    );
+    this.relationMetas.forEach((relation) => relation.makeQueryBuilder(qb));
     return qb;
   }
 
   addEffetCountCommandsToQueryBuilder(
     qb: SelectQueryBuilder<any>,
   ): SelectQueryBuilder<any> {
+    this.effectCountModelCommands.forEach((command) =>
+      command.addToQueryBuilder(qb),
+    );
     return qb;
   }
 
   filterResult(result: QueryResult): QueryResult {
+    this.relationMetas.forEach((relation) => {
+      relation.filterResult(result);
+    });
+    this.notEffectCountModelCommands.forEach(
+      (command) => (result = command.filterResult(result)),
+    );
+    this.effectCountModelCommands.forEach(
+      (command) => (result = command.filterResult(result)),
+    );
+    //this.conditionCommands.forEach(
+    //  (command) => (result = command.filterResult(result)),
+    //);
     return result;
   }
-      //paramParser.whereMeta?.makeQueryBuilder(qb);
 
-    //for (const relation of paramParser.relations) {
-    //  relation.makeQueryBuilder(qb, modelAlias);
-    //}
-
-
-  findOrRepairRelation(relationName: string): RelationMeta {
-    return;
+  findRelatiOrFailed(relationName: string): RelationMeta {
+    for (const relationMeta of this.relationMetas) {
+      if (relationMeta.name === relationName) {
+        return relationMeta;
+      }
+    }
+    throw new Error(
+      `Please add relation ${relationName} of ${this.model} to query meta`,
+    );
   }
 }

@@ -24,7 +24,7 @@ export class QueryModelTakeCommand extends QueryCommand {
     if (!this.params || this.params.length === 0) {
       throw new Error('Select command no params');
     }
-    qb.select(
+    qb.addSelect(
       this.params.map((field) => {
         if (!field?.trim || typeof field !== 'string') {
           throw new Error(`Select command no param"${field}" is illegal`);

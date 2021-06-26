@@ -18,7 +18,7 @@ export class MagicQueryService {
       .getRepository(meta.model)
       .createQueryBuilder(meta.alias);
 
-    meta.addNotEffetCountCommandsToQueryBuilder(qb);
+    meta.makeQueryBuilder(qb);
 
     totalCount = await qb.getCount();
 

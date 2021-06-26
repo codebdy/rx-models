@@ -35,7 +35,7 @@ export function parseWhereSql(
         const arr = operands[0].split('.');
         let modelAlias = rootMeta.alias;
         if (arr.length > 1) {
-          const relation = rootMeta.findOrRepairRelation(arr[0]);
+          const relation = rootMeta.findRelatiOrFailed(arr[0]);
           if (relation) {
             operands[0] = arr[1];
             modelAlias = relation.alias;

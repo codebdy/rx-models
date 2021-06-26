@@ -23,7 +23,7 @@ export class QueryModelOrderByCommand extends QueryCommand {
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const orderMap = this.getpMap();
     if (orderMap) {
-      qb.orderBy(orderMap);
+      qb.addOrderBy(orderMap);
     }
     return qb;
   }
