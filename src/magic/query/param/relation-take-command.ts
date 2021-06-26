@@ -1,6 +1,6 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { TOKEN_LARGE_RELATION } from '../../base/tokens';
-import { TakeCommand } from '../meta/take-command';
+import { TakeCommand } from './take-command';
 
 export class RelationTakeCommand extends TakeCommand {
   protected _commandMeta: CommandMeta;

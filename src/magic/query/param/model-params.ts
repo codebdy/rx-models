@@ -1,8 +1,8 @@
-import { RelationCommand } from '../commands/relation/relation-command';
-import { RelationTakeCommand } from '../commands/relation/take-command';
+import { RelationCommand } from './commands/relation/relation-command';
+import { RelationTakeCommand } from './commands/relation/take-command';
 import { Condition } from './condition';
 import { JsonUnit } from '../../base/json-unit';
-import { OrderBy } from './order-by';
+import { OrderBy } from '../meta/order-by';
 import { Relation } from './relation';
 import { Where } from './where';
 import { getRelationModel } from 'src/magic/base/getRelationModel';

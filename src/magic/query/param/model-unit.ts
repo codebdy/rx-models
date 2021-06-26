@@ -6,8 +6,8 @@ import {
   TOKEN_TREE,
 } from '../../base/tokens';
 import { PaginateCommand } from './panigate-command';
-import { SkipCommand } from '../meta/skip-command';
-import { TakeCommand } from '../meta/take-command';
+import { SkipCommand } from './skip-command';
+import { TakeCommand } from './take-command';
 
 export class ModelUnit {
   private _jsonUnit: JsonUnit;

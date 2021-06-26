@@ -1,6 +1,14 @@
-import { QueryCommand } from 'src/command/query-command';
+import { CommandType, QueryCommand } from 'src/command/query-command';
 
 export class QueryModelTreeCommand extends QueryCommand {
+  static description = `Magic query command, make result to a tree struct.`;
+
+  static version = '1.0';
+
+  static commandType = CommandType.QUERY_MODEL_COMMAND;
+
+  static commandName = 'tree';
+
   do(models: any[]) {
     const roots = [];
     const leftModels = [];
