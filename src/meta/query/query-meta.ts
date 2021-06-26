@@ -10,10 +10,10 @@ export class QueryMeta {
   id: number;
   entitySchema: EntitySchema<any>;
   model: string;
-  select: string[] = [];
+  //select: string[] = [];
   relationMetas: RelationMeta[] = [];
-  where: WhereMeta;
-  orderBys: OrderBy;
+  //where: WhereMeta;
+  //orderBys: OrderBy;
   qbCommands: QueryCommand[] = [];
   fetchString: 'getOne' | 'getMany' = TOKEN_GET_MANY;
 

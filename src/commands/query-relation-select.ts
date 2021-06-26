@@ -1,7 +1,8 @@
-import { CommandType, QueryCommand } from 'src/command/query-command';
+import { CommandType } from 'src/command/query-command';
+import { QueryRelationCommand } from 'src/command/query-relation-command';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTakeCommand extends QueryCommand {
+export class QueryModelTakeCommand extends QueryRelationCommand {
   static description = `
     Magic query command, select command, to filter selected field.
   `;
