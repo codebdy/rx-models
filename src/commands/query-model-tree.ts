@@ -1,4 +1,7 @@
 import { CommandType, QueryCommand } from 'src/command/query-command';
+import { QueryResult } from 'src/common/query-result';
+import { TOKEN_GET_ONE } from 'src/magic/base/tokens';
+import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelTreeCommand extends QueryCommand {
   static description = `Magic query command, make result to a tree struct.`;
@@ -9,7 +12,22 @@ export class QueryModelTreeCommand extends QueryCommand {
 
   static commandName = 'tree';
 
-  do(models: any[]) {
+  addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+    if (this.queryMeta.fetchString === TOKEN_GET_ONE) {
+      throw Error('Tree command can not use getOne command');
+    }
+    return qb.leftJoinAndSelect(
+      `${this.queryMeta.modelAlias}.parent`,
+      'parent',
+    );
+  }
+
+  filterResult(result: QueryResult): QueryResult {
+    result.data = this.do(result.data);
+    return result;
+  }
+
+  private do(models: any[]) {
     const roots = [];
     const leftModels = [];
     for (const model of models) {

@@ -1,7 +1,7 @@
 import { QueryConditionCommand } from 'src/command/query-condition-command';
 import { QueryConditionEqualCommand } from 'src/commands/query-condition-equal';
 
-export class Condition {
+export class ConditionMeta {
   /**
    * 条件名称
    */

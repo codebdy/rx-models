@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { QueryResult } from 'src/common/query-result';
+import { QueryMeta } from 'src/meta/query/query-meta';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CommandMeta } from './command.meta';
 
@@ -14,7 +16,10 @@ export class QueryCommand {
    */
   isEffectResultCount?: boolean;
 
-  constructor(protected readonly commandMeta?: CommandMeta) {}
+  constructor(
+    protected readonly commandMeta?: CommandMeta,
+    protected readonly queryMeta?: QueryMeta,
+  ) {}
 
   /**
    * 构建QueryBuilder
@@ -27,9 +32,11 @@ export class QueryCommand {
 
   /**
    * 构建条件SQL，请不要包含where
+   * @param field 字段，可省略
+   * @param value 值，可省略
    * @returns 返回构建好的SQL语句跟参数
    */
-  getWhereStatement(): [string, any] | void {
+  getWhereStatement(field?: string, value?: string): [string, any] | void {
     return;
   }
 

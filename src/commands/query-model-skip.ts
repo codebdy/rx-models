@@ -22,7 +22,7 @@ export class QueryModelSkipCommand extends QueryCommand {
   }
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
-    qb.take(this.count);
+    qb.skip(this.count);
     return qb;
   }
 }

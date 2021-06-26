@@ -1,4 +1,5 @@
 import { CommandType, QueryCommand } from 'src/command/query-command';
+import { QueryResult } from 'src/common/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelPaginateCommand extends QueryCommand {
@@ -11,6 +12,8 @@ export class QueryModelPaginateCommand extends QueryCommand {
   static commandType = CommandType.QUERY_MODEL_COMMAND;
 
   static commandName = 'paginate';
+
+  isEffectResultCount = true;
 
   get params() {
     return this.commandMeta.params;
@@ -35,5 +38,14 @@ export class QueryModelPaginateCommand extends QueryCommand {
     );
     qb.skip(this.pageSize * this.pageIndex).take(this.pageSize);
     return qb;
+  }
+
+  filterResult(result: QueryResult): QueryResult {
+    result.pagination = {
+      pageSize: this.pageSize,
+      pageIndex: this.pageIndex,
+      totalCount: result.totalCount,
+    };
+    return result;
   }
 }
