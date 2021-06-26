@@ -12,30 +12,18 @@ import { parseCommands } from './parse-commands';
 import { CommandMeta } from 'src/command/command.meta';
 
 export class JsonUnit {
-  private _key = '';
-  private _commands: CommandMeta[] = [];
-  private _value: any;
+  key = '';
+  commands: CommandMeta[] = [];
+  value: any;
   constructor(keyStr: string, value: any) {
     const [key, commands] = parseCommands(keyStr);
-    this._key = key;
-    this._commands = commands;
-    this._value = value;
-  }
-
-  get key() {
-    return this._key;
-  }
-
-  get value() {
-    return this._value;
-  }
-
-  get commands() {
-    return this._commands;
+    this.key = key;
+    this.commands = commands;
+    this.value = value;
   }
 
   getCommand(commandName: string) {
-    for (const command of this._commands) {
+    for (const command of this.commands) {
       if (command.name?.toLowerCase() === commandName.toLowerCase()) {
         return command;
       }
@@ -44,27 +32,23 @@ export class JsonUnit {
   }
 
   isModel() {
-    return this._key.toLowerCase() === TOKEN_MODEL;
+    return this.key.toLowerCase() === TOKEN_MODEL;
   }
 
-  //getRlationCommand() {
-  //  return this.getCommand(TOKEN_RELATION);
-  //}
-
   isSelect() {
-    return this._key?.toLowerCase() === TOKEN_SELECT.toLowerCase();
+    return this.key?.toLowerCase() === TOKEN_SELECT.toLowerCase();
   }
 
   isOrderBy() {
-    return this._key?.toLowerCase() === TOKEN_ORDER_BY.toLowerCase();
+    return this.key?.toLowerCase() === TOKEN_ORDER_BY.toLowerCase();
   }
 
   isWhere() {
-    return this._key?.toLowerCase() === TOKEN_WHERE.toLowerCase();
+    return this.key?.toLowerCase() === TOKEN_WHERE.toLowerCase();
   }
 
   isOn() {
-    return this._key?.toLowerCase() === TOKEN_ON.toLowerCase();
+    return this.key?.toLowerCase() === TOKEN_ON.toLowerCase();
   }
 
   getTakeCommand() {

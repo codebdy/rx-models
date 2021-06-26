@@ -9,6 +9,30 @@ export class CommandService implements OnModuleInit {
   relationCommandClasses: { [key: string]: CommandClass } = {} as any;
   conditionCommandClasses: { [key: string]: CommandClass } = {} as any;
 
+  findModelCommandOrFailed(name: string) {
+    const commandClass = this.modelCommandClasses[name];
+    if (!commandClass) {
+      throw new Error(`No model command "${name}"`);
+    }
+    return commandClass;
+  }
+
+  findRelationCommandOrFailed(name: string) {
+    const commandClass = this.relationCommandClasses[name];
+    if (!commandClass) {
+      throw new Error(`No relation command "${name}"`);
+    }
+    return commandClass;
+  }
+
+  findConditionCommandOrFailed(name: string) {
+    const commandClass = this.conditionCommandClasses[name];
+    if (!commandClass) {
+      throw new Error(`No condition command "${name}"`);
+    }
+    return commandClass;
+  }
+
   async onModuleInit() {
     await this.loadCommandClasses();
   }

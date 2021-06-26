@@ -40,12 +40,26 @@ export class TypeOrmWithSchemaService
     return this._connection;
   }
 
-  public getEntitySchema(name: string) {
-    return this._entitySchemas.get(name);
+  public findEntitySchemaOrFailed(name: string) {
+    const schema = this._entitySchemas.get(name);
+    if (!schema) {
+      throw new Error(`Can not find model "${name}"`);
+    }
+    return schema;
+  }
+
+  public findRelationEntitySchema(model: string, relationName: string) {
+    const entitySchema = this._entitySchemas.get(model);
+    if (entitySchema.options.relations) {
+      return entitySchema.options.relations[relationName];
+    }
+    return;
   }
 
   public getRepository<Entity>(name: string): Repository<Entity> {
-    return this.connection.getRepository(this.getEntitySchema(name) || name);
+    return this.connection.getRepository(
+      this.findEntitySchemaOrFailed(name) || name,
+    );
   }
 
   async restart() {

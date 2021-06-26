@@ -1,17 +1,28 @@
 import { QueryCommand } from 'src/command/query-command';
 import { QueryResult } from 'src/common/query-result';
+import { createId } from 'src/util/create-id';
 import { EntitySchema, SelectQueryBuilder } from 'typeorm';
 import { QueryMeta } from './query-meta';
 
 export class RelationMeta {
-  alias: string;
+  private id: number;
   name: string;
-  baseModelMeta: QueryMeta | RelationMeta;
+  parentModelMeta: QueryMeta | RelationMeta;
   entitySchema: EntitySchema<any>;
   relationMetas: RelationMeta[] = [];
   relationCommands: QueryCommand[] = [];
-  //conditonCommands主要用于ON条件
-  //conditionCommands: QueryCommand[] = [];
+
+  constructor() {
+    this.id = createId();
+  }
+
+  get model() {
+    return this.entitySchema.options.name;
+  }
+
+  get alias() {
+    return 'relation' + this.id;
+  }
 
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const whereStringArray: string[] = [];
@@ -27,7 +38,7 @@ export class RelationMeta {
     });
 
     qb.leftJoinAndSelect(
-      `${this.baseModelMeta.alias}.${this.name}`,
+      `${this.parentModelMeta.alias}.${this.name}`,
       this.alias,
       whereStringArray.join(' AND '),
       whereParams,
