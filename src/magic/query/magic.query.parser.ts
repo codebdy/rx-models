@@ -62,7 +62,7 @@ export class MagicQueryParser {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      this.parseOneLine(jsonUnit, meta, keyStr);
+      this.parseOneLine(jsonUnit, meta, keyStr.trim());
     }
   }
 

@@ -10,6 +10,12 @@ export const schemas = [
       name: {
         type: String,
       },
+      content: {
+        type: String,
+      },
+      title: {
+        type: String,
+      },
     },
   },
 ];
