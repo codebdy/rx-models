@@ -30,7 +30,9 @@ export class QueryMeta {
       : this.notEffectCountModelCommands.push(command);
   }
 
-  makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+  makeNotEffectCountQueryBuilder(
+    qb: SelectQueryBuilder<any>,
+  ): SelectQueryBuilder<any> {
     this.notEffectCountModelCommands.forEach((command) =>
       command.addToQueryBuilder(qb),
     );
@@ -38,7 +40,7 @@ export class QueryMeta {
     return qb;
   }
 
-  addEffetCountCommandsToQueryBuilder(
+  makeEffectCountQueryBuilder(
     qb: SelectQueryBuilder<any>,
   ): SelectQueryBuilder<any> {
     this.effectCountModelCommands.forEach((command) =>

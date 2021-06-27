@@ -18,11 +18,11 @@ export class MagicQueryService {
       .getRepository(meta.model)
       .createQueryBuilder(meta.alias);
 
-    meta.makeQueryBuilder(qb);
+    meta.makeNotEffectCountQueryBuilder(qb);
 
     totalCount = await qb.getCount();
 
-    meta.addEffetCountCommandsToQueryBuilder(qb);
+    meta.makeEffectCountQueryBuilder(qb);
 
     console.debug(qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;

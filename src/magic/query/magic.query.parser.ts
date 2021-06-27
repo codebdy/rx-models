@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { CommandMeta } from 'src/command/command.meta';
 import { CommandService } from 'src/command/command.service';
 import { RelationMeta } from 'src/meta/query/relation-meta';
@@ -5,6 +6,7 @@ import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-s
 import { QueryMeta } from '../../meta/query/query-meta';
 import { JsonUnit } from '../base/json-unit';
 import {
+  TOKEN_GET_MANY,
   TOKEN_GET_ONE,
   TOKEN_ON,
   TOKEN_ORDER_BY,
@@ -12,6 +14,7 @@ import {
   TOKEN_WHERE,
 } from '../base/tokens';
 
+@Injectable()
 export class MagicQueryParser {
   private querMeta: QueryMeta;
   constructor(
@@ -33,10 +36,12 @@ export class MagicQueryParser {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       if (jsonUnit.isModel()) {
-        meta.model = json.value;
+        meta.model = jsonUnit.value;
         jsonUnit.commands.forEach((commandMeta) => {
-          if (commandMeta.name?.toLowerCase() === TOKEN_GET_ONE) {
+          if (commandMeta.name === TOKEN_GET_ONE) {
             meta.fetchString = TOKEN_GET_ONE;
+          } else if (commandMeta.name === TOKEN_GET_MANY) {
+            meta.fetchString = TOKEN_GET_MANY;
           } else {
             const commandClass = this.commandService.findModelCommandOrFailed(
               commandMeta.name,
