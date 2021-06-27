@@ -62,16 +62,16 @@ export class MagicQueryParser {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      this.parseOneLine(jsonUnit, meta);
+      this.parseOneLine(jsonUnit, meta, keyStr);
     }
   }
 
-  parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta) {
+  parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
     const relationEntitySchemaOptions = this.typeOrmService.findRelationEntitySchema(
       meta.model,
       jsonUnit.key,
     );
-    const keyWithoutAt = jsonUnit.key.replace('@', '');
+    const keyWithoutAt = keyStr.replace('@', '');
     //如果是关联
     if (relationEntitySchemaOptions) {
       this.parseRelation(jsonUnit, relationEntitySchemaOptions);
@@ -81,7 +81,7 @@ export class MagicQueryParser {
       keyWithoutAt === TOKEN_WHERE ||
       keyWithoutAt === TOKEN_SELECT ||
       keyWithoutAt === TOKEN_ORDER_BY ||
-      jsonUnit.key.startsWith('@')
+      keyStr.startsWith('@')
     ) {
       this.parseModelOrRelationCommand(keyWithoutAt, jsonUnit, meta);
     } else {
