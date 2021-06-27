@@ -43,10 +43,10 @@ export class MagicQueryParser {
           } else if (commandMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
           } else {
-            const commandClass = this.commandService.findModelCommandOrFailed(
+            const CommandClass = this.commandService.findModelCommandOrFailed(
               commandMeta.name,
             );
-            const command = commandClass(commandMeta, this.querMeta);
+            const command = new CommandClass(commandMeta, this.querMeta);
             meta.pushCommand(command);
           }
         });
@@ -96,10 +96,12 @@ export class MagicQueryParser {
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
       commanName = jsonUnit.commands[0].name;
     }
-    const commandClass = this.commandService.findConditionCommandOrFailed(
+    const CommandClass = this.commandService.findConditionCommandOrFailed(
       commanName,
     );
-    meta.pushCommand(commandClass(new CommandMeta(commanName), this.querMeta));
+    meta.pushCommand(
+      new CommandClass(new CommandMeta(commanName), this.querMeta),
+    );
   }
 
   private parseModelOrRelationCommand(
@@ -111,13 +113,11 @@ export class MagicQueryParser {
     cmdMeta.params = Array.isArray(jsonUnit.value)
       ? jsonUnit.value
       : [jsonUnit.value];
-    if (meta instanceof QueryMeta) {
-      const cmdClass = this.commandService.findModelCommandOrFailed(name);
-      meta.pushCommand(cmdClass(cmdMeta, this.querMeta));
-    } else {
-      const cmdClass = this.commandService.findRelationCommandOrFailed(name);
-      meta.pushCommand(cmdClass(cmdMeta, this.querMeta));
-    }
+    const CmdClass =
+      meta instanceof QueryMeta
+        ? this.commandService.findModelCommandOrFailed(name)
+        : this.commandService.findRelationCommandOrFailed(name);
+    meta.pushCommand(new CmdClass(cmdMeta, this.querMeta));
   }
 
   private parseRelation(jsonUnit: JsonUnit, relationEntitySchemaOptions) {
@@ -127,10 +127,10 @@ export class MagicQueryParser {
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.commands.forEach((commandMeta) => {
-      const commandClass = this.commandService.findRelationCommandOrFailed(
+      const CommandClass = this.commandService.findRelationCommandOrFailed(
         commandMeta.name,
       );
-      relation.pushCommand(commandClass(commandMeta, this.querMeta));
+      relation.pushCommand(new CommandClass(commandMeta, this.querMeta));
     });
     this.parseMeta(jsonUnit.value, relation);
   }
