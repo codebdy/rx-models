@@ -15,5 +15,5 @@ export class ConditionMeta {
   /**
    * 条件命令，一个条件有且仅有一个命令，默认是equal命令
    */
-  command: QueryConditionCommand = new QueryConditionEqualCommand();
+  command: QueryConditionCommand;
 }

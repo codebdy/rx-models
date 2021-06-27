@@ -30,10 +30,10 @@ export class QueryModelTakeCommand extends QueryRelationCommand {
         if (!field?.trim || typeof field !== 'string') {
           throw new Error(`Select command no param"${field}" is illegal`);
         }
-        return this.queryMeta.alias + '.' + field;
+        return this.relationMeta.alias + '.' + field;
       }),
     );
-    qb.addSelect([this.queryMeta.alias + '.id']);
+    qb.addSelect([this.relationMeta.alias + '.id']);
     return qb;
   }
 }

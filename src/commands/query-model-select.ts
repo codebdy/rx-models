@@ -29,10 +29,10 @@ export class QueryModelTakeCommand extends QueryCommand {
         if (!field?.trim || typeof field !== 'string') {
           throw new Error(`Select command no param"${field}" is illegal`);
         }
-        return this.queryMeta.alias + '.' + field;
+        return this.rootMeta.alias + '.' + field;
       }),
     );
-    qb.addSelect([this.queryMeta.alias + '.id']);
+    qb.addSelect([this.rootMeta.alias + '.id']);
     return qb;
   }
 }

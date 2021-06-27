@@ -14,10 +14,6 @@ export class QueryRelationMeta extends QueryMeta {
     return this.entitySchema.options.name;
   }
 
-  get alias() {
-    return 'relation' + this.id;
-  }
-
   pushCommand(command: QueryCommand) {
     this.relationCommands.push(command);
   }
@@ -50,6 +46,9 @@ export class QueryRelationMeta extends QueryMeta {
 
   filterResult(result: QueryResult): QueryResult {
     this.relationCommands.forEach(
+      (command) => (result = command.filterResult(result)),
+    );
+    this.conditionCommands.forEach(
       (command) => (result = command.filterResult(result)),
     );
     return result;

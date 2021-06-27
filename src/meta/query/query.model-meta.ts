@@ -46,9 +46,9 @@ export class QueryModelMeta extends QueryMeta {
     this.effectCountModelCommands.forEach(
       (command) => (result = command.filterResult(result)),
     );
-    //this.conditionCommands.forEach(
-    //  (command) => (result = command.filterResult(result)),
-    //);
+    this.conditionCommands.forEach(
+      (command) => (result = command.filterResult(result)),
+    );
     return result;
   }
 }

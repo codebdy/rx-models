@@ -44,10 +44,10 @@ export class MagicQueryParser {
           } else if (commandMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
           } else {
-            const CommandClass = this.commandService.findModelCommandOrFailed(
+            const commandClass = this.commandService.findModelCommandOrFailed(
               commandMeta.name,
             );
-            const command = new CommandClass(commandMeta, this.querMeta);
+            const command = new commandClass(commandMeta, this.querMeta);
             meta.pushCommand(command);
           }
         });
@@ -94,11 +94,15 @@ export class MagicQueryParser {
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
       commanName = jsonUnit.commands[0].name;
     }
-    const CommandClass = this.commandService.findConditionCommandOrFailed(
+    const commandClass = this.commandService.findConditionCommandOrFailed(
       commanName,
     );
-    meta.pushCommand(
-      new CommandClass(new CommandMeta(commanName), this.querMeta),
+    meta.pushCondition(
+      new commandClass(
+        new CommandMeta(commanName, jsonUnit.value),
+        this.querMeta,
+        meta,
+      ),
     );
   }
 
@@ -111,11 +115,15 @@ export class MagicQueryParser {
     cmdMeta.params = Array.isArray(jsonUnit.value)
       ? jsonUnit.value
       : [jsonUnit.value];
-    const CmdClass =
-      meta instanceof QueryModelMeta
-        ? this.commandService.findModelCommandOrFailed(name)
-        : this.commandService.findRelationCommandOrFailed(name);
-    meta.pushCommand(new CmdClass(cmdMeta, this.querMeta));
+    if (meta instanceof QueryModelMeta) {
+      const cmdClass = this.commandService.findModelCommandOrFailed(name);
+      meta.pushCommand(new cmdClass(cmdMeta, this.querMeta));
+    } else {
+      const cmdClass = this.commandService.findRelationCommandOrFailed(name);
+      meta.pushCommand(
+        new cmdClass(cmdMeta, this.querMeta, meta as QueryRelationMeta),
+      );
+    }
   }
 
   private parseRelation(jsonUnit: JsonUnit, relationEntitySchemaOptions) {
@@ -125,10 +133,10 @@ export class MagicQueryParser {
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.commands.forEach((commandMeta) => {
-      const CommandClass = this.commandService.findRelationCommandOrFailed(
+      const commandClass = this.commandService.findRelationCommandOrFailed(
         commandMeta.name,
       );
-      relation.pushCommand(new CommandClass(commandMeta, this.querMeta));
+      relation.pushCommand(new commandClass(commandMeta, this.querMeta));
     });
     this.parseMeta(jsonUnit.value, relation);
   }

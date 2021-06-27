@@ -25,7 +25,11 @@ export abstract class QueryMeta {
     return this.model?.toLowerCase() + this.id;
   }
 
-  abstract pushCommand(command: QueryCommand);
+  abstract pushCommand(command: QueryCommand): void;
+
+  pushCondition(command: QueryCommand) {
+    this.conditionCommands.push(command);
+  }
 
   findRelatiOrFailed(relationName: string): QueryRelationMeta {
     for (const relationMeta of this.relationMetas) {

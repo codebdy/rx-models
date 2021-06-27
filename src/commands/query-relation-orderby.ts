@@ -32,7 +32,7 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
     }
     const orderBy = this.commandMeta.params[0] as any;
     for (const key in orderBy) {
-      orderMap[`${this.queryMeta.alias}.${key}`] = orderBy[key];
+      orderMap[`${this.relationMeta.alias}.${key}`] = orderBy[key];
     }
     return orderMap;
   }

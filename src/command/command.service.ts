@@ -2,6 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { importCommandsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
 import { CommandType } from './query-command';
 import { CommandClass } from './command.class';
+import { ConditionCommandClass } from './command.class.condition';
+import { RelationCommandClass } from './command.class.relation';
 
 @Injectable()
 export class CommandService implements OnModuleInit {
@@ -9,7 +11,7 @@ export class CommandService implements OnModuleInit {
   relationCommandClasses: { [key: string]: CommandClass } = {} as any;
   conditionCommandClasses: { [key: string]: CommandClass } = {} as any;
 
-  findModelCommandOrFailed(name: string) {
+  findModelCommandOrFailed(name: string): CommandClass {
     const commandClass = this.modelCommandClasses[name];
     if (!commandClass) {
       throw new Error(`No model command "${name}"`);
@@ -17,7 +19,7 @@ export class CommandService implements OnModuleInit {
     return commandClass;
   }
 
-  findRelationCommandOrFailed(name: string) {
+  findRelationCommandOrFailed(name: string): RelationCommandClass {
     const commandClass = this.relationCommandClasses[name];
     if (!commandClass) {
       throw new Error(`No relation command "${name}"`);
@@ -25,7 +27,7 @@ export class CommandService implements OnModuleInit {
     return commandClass;
   }
 
-  findConditionCommandOrFailed(name: string) {
+  findConditionCommandOrFailed(name: string): ConditionCommandClass {
     const commandClass = this.conditionCommandClasses[name];
     if (!commandClass) {
       throw new Error(`No condition command "${name}"`);

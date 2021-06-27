@@ -35,7 +35,7 @@ export class QueryModelOrderByCommand extends QueryCommand {
     }
     const orderBy = this.commandMeta.params[0] as any;
     for (const key in orderBy) {
-      orderMap[`${this.queryMeta.alias}.${key}`] = orderBy[key];
+      orderMap[`${this.rootMeta.alias}.${key}`] = orderBy[key];
     }
     return orderMap;
   }

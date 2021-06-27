@@ -11,7 +11,9 @@ export class QueryConditionBetweenCommand extends QueryConditionCommand {
 
   static commandName = 'between';
 
-  getWhereStatement(field?: string, value?: string): [string, any] {
+  getWhereStatement(): [string, any] {
+    const field = this.field;
+    const value = this.value;
     if (!value || !value.length || value.length < 2) {
       throw new Error(
         `Field "${field}" value "${value}" can not be used to between command`,

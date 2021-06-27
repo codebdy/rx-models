@@ -18,8 +18,8 @@ export class QueryCommand {
   isEffectResultCount?: boolean;
 
   constructor(
-    protected readonly commandMeta?: CommandMeta,
-    protected readonly queryMeta?: QueryModelMeta,
+    protected readonly commandMeta: CommandMeta,
+    protected readonly rootMeta: QueryModelMeta,
   ) {}
 
   /**
@@ -33,11 +33,9 @@ export class QueryCommand {
 
   /**
    * 构建条件SQL，请不要包含where
-   * @param field 字段，可省略
-   * @param value 值，可省略
    * @returns 返回构建好的SQL语句跟参数
    */
-  getWhereStatement(field?: string, value?: string): [string, any] | void {
+  getWhereStatement(): [string, any] | void {
     return;
   }
 

@@ -11,12 +11,12 @@ export class QueryConditionEqualCommand extends QueryConditionCommand {
 
   static commandName = 'equal';
 
-  getWhereStatement(field?: string, value?: string): [string, any] {
+  getWhereStatement(): [string, any] {
     const paramName = 'param' + createId();
     return [
-      ` ${field} = :${paramName} `,
+      ` ${this.field} = :${paramName} `,
       {
-        [paramName]: value,
+        [paramName]: this.value,
       },
     ];
   }

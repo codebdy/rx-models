@@ -13,13 +13,10 @@ export class QueryModelTreeCommand extends QueryCommand {
   static commandName = 'tree';
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
-    if (this.queryMeta.fetchString === TOKEN_GET_ONE) {
+    if (this.rootMeta.fetchString === TOKEN_GET_ONE) {
       throw Error('Tree command can not use getOne command');
     }
-    return qb.leftJoinAndSelect(
-      `${this.queryMeta.alias}.parent`,
-      'parent',
-    );
+    return qb.leftJoinAndSelect(`${this.rootMeta.alias}.parent`, 'parent');
   }
 
   filterResult(result: QueryResult): QueryResult {
