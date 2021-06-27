@@ -19,6 +19,7 @@ export class MagicQueryService {
       .getRepository(meta.model)
       .createQueryBuilder(meta.alias);
 
+    meta.makeConditionQueryBuilder(qb);
     meta.makeNotEffectCountQueryBuilder(qb);
 
     if (meta.fetchString === TOKEN_GET_MANY) {

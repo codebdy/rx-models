@@ -27,7 +27,7 @@ export abstract class QueryMeta {
 
   abstract pushCommand(command: QueryCommand): void;
 
-  pushCondition(command: QueryCommand) {
+  pushConditionCommand(command: QueryCommand) {
     this.conditionCommands.push(command);
   }
 

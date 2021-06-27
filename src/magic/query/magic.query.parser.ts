@@ -97,11 +97,12 @@ export class MagicQueryParser {
     const commandClass = this.commandService.findConditionCommandOrFailed(
       commanName,
     );
-    meta.pushCondition(
+    meta.pushConditionCommand(
       new commandClass(
         new CommandMeta(commanName, jsonUnit.value),
         this.querMeta,
         meta,
+        jsonUnit.key,
       ),
     );
   }

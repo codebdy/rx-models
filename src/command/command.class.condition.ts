@@ -9,5 +9,6 @@ export interface ConditionCommandClass extends CommandClass {
     commandMeta: CommandMeta,
     rootMeta: QueryModelMeta,
     ownerMeta: QueryMeta,
+    field: string,
   ): QueryCommand;
 }

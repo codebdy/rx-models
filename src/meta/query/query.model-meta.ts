@@ -19,11 +19,31 @@ export class QueryModelMeta extends QueryMeta {
   makeNotEffectCountQueryBuilder(
     qb: SelectQueryBuilder<any>,
   ): SelectQueryBuilder<any> {
-    console.log('嘿嘿', this.notEffectCountModelCommands);
     this.notEffectCountModelCommands.forEach((command) =>
       command.addToQueryBuilder(qb),
     );
+
     this.relationMetas.forEach((relation) => relation.makeQueryBuilder(qb));
+    return qb;
+  }
+
+  makeConditionQueryBuilder(
+    qb: SelectQueryBuilder<any>,
+  ): SelectQueryBuilder<any> {
+    const whereStringArray: string[] = [];
+    let whereParams: any = {};
+    this.conditionCommands.forEach((command) => {
+      const [whereStr, param] = command.getWhereStatement() || [];
+      if (whereStr) {
+        whereStringArray.push(whereStr);
+        whereParams = { ...whereParams, ...param };
+      }
+    });
+
+    if (whereStringArray.length > 0) {
+      qb.where(whereStringArray.join(' AND '), whereParams);
+    }
+
     return qb;
   }
 

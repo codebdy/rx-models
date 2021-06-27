@@ -7,13 +7,10 @@ export class QueryConditionCommand extends QueryCommand {
   constructor(
     protected readonly commandMeta: CommandMeta,
     protected readonly rootMeta: QueryModelMeta,
-    protected readonly ownerMeta?: QueryMeta,
+    protected readonly ownerMeta: QueryMeta,
+    protected readonly field: string,
   ) {
     super(commandMeta, rootMeta);
-  }
-
-  get field() {
-    return this.commandMeta?.name;
   }
 
   get value() {
