@@ -13,6 +13,6 @@ export class QueryModelWhereCommand extends QueryCommand {
   static commandName = 'where';
 
   getWhereStatement(): [string, any] | void {
-    return parseWhereSql(this.commandMeta.params[0], this.rootMeta);
+    return parseWhereSql(this.commandMeta.value, this.rootMeta);
   }
 }

@@ -15,25 +15,17 @@ export class QueryModelPaginateCommand extends QueryCommand {
 
   isEffectResultCount = true;
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
-  get count() {
-    return this.commandMeta.getFistNumberParam();
-  }
-
   get pageSize(): number {
-    return parseInt(this.commandMeta.params[0]);
+    return parseInt(this.commandMeta.value[0]);
   }
 
   get pageIndex() {
-    return parseInt(this.commandMeta.params[1]);
+    return parseInt(this.commandMeta.value[1]);
   }
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     console.assert(
-      this.commandMeta.params.length > 0,
+      this.commandMeta.value?.length > 0,
       'Too few pagination parmas',
     );
     qb.skip(this.pageSize * this.pageIndex).take(this.pageSize);

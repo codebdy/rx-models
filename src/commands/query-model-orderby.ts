@@ -12,14 +12,6 @@ export class QueryModelOrderByCommand extends QueryCommand {
 
   static commandName = 'orderBy';
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
-  get count() {
-    return this.commandMeta.getFistNumberParam();
-  }
-
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const orderMap = this.getpMap();
     if (orderMap) {
@@ -30,10 +22,10 @@ export class QueryModelOrderByCommand extends QueryCommand {
 
   getpMap() {
     const orderMap = {} as any;
-    if (!this.commandMeta.params || this.commandMeta.params.length === 0) {
+    if (!this.commandMeta.value) {
       throw new Error('Not assign params to "select" command');
     }
-    const orderBy = this.commandMeta.params[0] as any;
+    const orderBy = this.commandMeta.value;
     for (const key in orderBy) {
       orderMap[`${this.rootMeta.alias}.${key}`] = orderBy[key];
     }

@@ -12,10 +12,6 @@ export class QueryRelationCountCommand extends QueryRelationCommand {
 
   static commandName = 'count';
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     //queryBulider.loadRelationCountAndMap(
     //  `${paramParser.modelUnit?.modelAlias}.relationCount`,

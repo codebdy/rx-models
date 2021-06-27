@@ -22,10 +22,10 @@ export class QueryConditionBetweenCommand extends QueryConditionCommand {
     const paramName1 = 'param' + createId();
     const paramName2 = 'param' + createId();
     return [
-      ` ${field} BETWEEN :${paramName1} AND ${paramName2} `,
+      ` ${field} BETWEEN (:${paramName1} AND :${paramName2}) `,
       {
         [paramName1]: value[0],
-        [paramName1]: value[1],
+        [paramName2]: value[1],
       },
     ];
   }

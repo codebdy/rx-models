@@ -1,6 +1,6 @@
 export class CommandMeta {
   name: string;
-  params: string[] = [];
+  value: any | any[];
 
   /**
    *
@@ -16,19 +16,12 @@ export class CommandMeta {
     const paramStr = paramReg.test(commandStr)
       ? commandStr.match(paramReg)[0].replace('(', '').replace(')', '')
       : '';
-    this.params = paramStr
+    const params = paramStr
       ? paramStr.split(',').map((token) => token.trim())
-      : [];
-    if (value) {
-      if (Array.isArray(value)) {
-        this.params = value;
-      } else {
-        this.params.push(value);
-      }
+      : undefined;
+    this.value = params && params.length === 1 ? params[0] : params;
+    if (this.value !== undefined) {
+      this.value = value;
     }
-  }
-
-  getFistNumberParam() {
-    return this.params.length ? parseInt(this.params[0]) : 0;
   }
 }

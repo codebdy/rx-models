@@ -14,6 +14,6 @@ export class QueryConditionCommand extends QueryCommand {
   }
 
   get value() {
-    return this.commandMeta?.params[0];
+    return this.commandMeta?.value;
   }
 }

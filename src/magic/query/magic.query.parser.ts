@@ -53,6 +53,7 @@ export class MagicQueryParser {
         });
 
         delete json[keyStr];
+        return;
       }
     }
   }
@@ -91,15 +92,19 @@ export class MagicQueryParser {
 
   private paseConditionCommand(jsonUnit: JsonUnit, meta: QueryMeta) {
     let commanName = 'equal';
+    let commandMeta: CommandMeta;
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
       commanName = jsonUnit.commands[0].name;
+      commandMeta = jsonUnit.commands[0];
+      commandMeta.value = jsonUnit.value;
     }
     const commandClass = this.commandService.findConditionCommandOrFailed(
       commanName,
     );
+
     meta.pushConditionCommand(
       new commandClass(
-        new CommandMeta(commanName, jsonUnit.value),
+        commandMeta ? commandMeta : new CommandMeta(commanName, jsonUnit.value),
         this.querMeta,
         meta,
         jsonUnit.key,
@@ -113,7 +118,7 @@ export class MagicQueryParser {
     meta: QueryMeta,
   ) {
     const cmdMeta = new CommandMeta(name);
-    cmdMeta.params = Array.isArray(jsonUnit.value)
+    cmdMeta.value = Array.isArray(jsonUnit.value)
       ? jsonUnit.value
       : [jsonUnit.value];
     if (meta instanceof QueryModelMeta) {

@@ -13,10 +13,6 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
 
   static commandName = 'orderBy';
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const orderMap = this.getpMap();
     if (orderMap) {
@@ -27,10 +23,10 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
 
   getpMap() {
     const orderMap = {} as any;
-    if (!this.commandMeta.params || this.commandMeta.params.length === 0) {
+    if (!this.commandMeta.value) {
       throw new Error('Not assign params to "select" command');
     }
-    const orderBy = this.commandMeta.params[0] as any;
+    const orderBy = this.commandMeta.value as any;
     for (const key in orderBy) {
       orderMap[`${this.relationMeta.alias}.${key}`] = orderBy[key];
     }

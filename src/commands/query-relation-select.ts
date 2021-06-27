@@ -14,11 +14,7 @@ export class QueryModelTakeCommand extends QueryRelationCommand {
   static commandName = 'select';
 
   get params() {
-    return this.commandMeta.params;
-  }
-
-  get count() {
-    return this.commandMeta.getFistNumberParam();
+    return this.commandMeta.value;
   }
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
@@ -26,7 +22,7 @@ export class QueryModelTakeCommand extends QueryRelationCommand {
       throw new Error('Select command no params');
     }
     qb.select(
-      this.params.map((field) => {
+      this.params.map((field: string) => {
         if (!field?.trim || typeof field !== 'string') {
           throw new Error(`Select command no param"${field}" is illegal`);
         }

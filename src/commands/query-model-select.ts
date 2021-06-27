@@ -12,20 +12,12 @@ export class QueryModelTakeCommand extends QueryCommand {
 
   static commandName = 'select';
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
-  get count() {
-    return this.commandMeta.getFistNumberParam();
-  }
-
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
-    if (!this.params || this.params.length === 0) {
+    if (!this.commandMeta.value) {
       throw new Error('Select command no params');
     }
     qb.addSelect(
-      this.params.map((field) => {
+      this.commandMeta.value.map((field: string) => {
         if (!field?.trim || typeof field !== 'string') {
           throw new Error(`Select command no param"${field}" is illegal`);
         }

@@ -14,12 +14,8 @@ export class QueryModelTakeCommand extends QueryCommand {
 
   isEffectResultCount = true;
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
   get count() {
-    return this.commandMeta.getFistNumberParam();
+    return this.commandMeta.value;
   }
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {

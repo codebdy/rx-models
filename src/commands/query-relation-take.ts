@@ -11,12 +11,8 @@ export class QueryRelationTakeCommand extends QueryRelationCommand {
 
   static commandName = 'take';
 
-  get params() {
-    return this.commandMeta.params;
-  }
-
   get count() {
-    return this.commandMeta.getFistNumberParam();
+    return this.commandMeta.value;
   }
 
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
