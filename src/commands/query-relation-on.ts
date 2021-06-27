@@ -14,6 +14,6 @@ export class QueryModelOrderByCommand extends QueryRelationCommand {
   static commandName = 'on';
 
   getWhereStatement(): [string, any] | void {
-    return parseWhereSql(this.commandMeta.value, this.relationMeta);
+    return parseWhereSql(this.commandMeta, this.relationMeta);
   }
 }

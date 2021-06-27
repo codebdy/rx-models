@@ -22,6 +22,10 @@ export class QueryModelMeta extends QueryMeta {
     this.notEffectCountModelCommands.forEach((command) =>
       command.addToQueryBuilder(qb),
     );
+    const [sql, params] = this.getCommandsWhereStatement(
+      this.notEffectCountModelCommands,
+    );
+    sql && qb.andWhere(sql, params);
 
     this.relationMetas.forEach((relation) => relation.makeQueryBuilder(qb));
     return qb;
@@ -30,20 +34,10 @@ export class QueryModelMeta extends QueryMeta {
   makeConditionQueryBuilder(
     qb: SelectQueryBuilder<any>,
   ): SelectQueryBuilder<any> {
-    const whereStringArray: string[] = [];
-    let whereParams: any = {};
-    this.conditionCommands.forEach((command) => {
-      const [whereStr, param] = command.getWhereStatement() || [];
-      if (whereStr) {
-        whereStringArray.push(whereStr);
-        whereParams = { ...whereParams, ...param };
-      }
-    });
-
-    if (whereStringArray.length > 0) {
-      qb.where(whereStringArray.join(' AND '), whereParams);
-    }
-
+    const [sql, params] = this.getCommandsWhereStatement(
+      this.conditionCommands,
+    );
+    qb.where(sql, params);
     return qb;
   }
 
@@ -53,6 +47,10 @@ export class QueryModelMeta extends QueryMeta {
     this.effectCountModelCommands.forEach((command) =>
       command.addToQueryBuilder(qb),
     );
+    const [sql, params] = this.getCommandsWhereStatement(
+      this.effectCountModelCommands,
+    );
+    sql && qb.andWhere(sql, params);
     return qb;
   }
 

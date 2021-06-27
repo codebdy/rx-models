@@ -118,9 +118,8 @@ export class MagicQueryParser {
     meta: QueryMeta,
   ) {
     const cmdMeta = new CommandMeta(name);
-    cmdMeta.value = Array.isArray(jsonUnit.value)
-      ? jsonUnit.value
-      : [jsonUnit.value];
+    cmdMeta.value = jsonUnit.value;
+
     if (meta instanceof QueryModelMeta) {
       const cmdClass = this.commandService.findModelCommandOrFailed(name);
       meta.pushCommand(new cmdClass(cmdMeta, this.querMeta));

@@ -1,3 +1,4 @@
+import { CommandMeta } from 'src/command/command.meta';
 import { createId } from 'src/util/create-id';
 import { QueryModelMeta } from './query.model-meta';
 import { QueryRelationMeta } from './query.relation-meta';
@@ -7,10 +8,10 @@ const SqlWhereParser = require('sql-where-parser');
 const OPERATOR_UNARY_MINUS = Symbol('-');
 
 export function parseWhereSql(
-  sqlStr: string,
-  rootMeta: QueryModelMeta | QueryRelationMeta,
+  commandMeta: CommandMeta,
+  ownerMeta: QueryModelMeta | QueryRelationMeta,
 ): [string, any] {
-  if (!this.commandMeta.params || this.commandMeta.params.length === 0) {
+  if (!commandMeta.value) {
     throw new Error('Not assign param to where command');
   }
 
@@ -33,9 +34,9 @@ export function parseWhereSql(
         return `(${operands.join(' AND ')})`;
       default:
         const arr = operands[0].split('.');
-        let modelAlias = rootMeta.alias;
+        let modelAlias = ownerMeta.alias;
         if (arr.length > 1) {
-          const relation = rootMeta.findRelatiOrFailed(arr[0]);
+          const relation = ownerMeta.findRelatiOrFailed(arr[0]);
           if (relation) {
             operands[0] = arr[1];
             modelAlias = relation.alias;
@@ -50,7 +51,7 @@ export function parseWhereSql(
     }
   };
 
-  const parsed = parser.parse(sqlStr, evaluator);
+  const parsed = parser.parse(commandMeta.value, evaluator);
 
   return [parsed, params];
 }
