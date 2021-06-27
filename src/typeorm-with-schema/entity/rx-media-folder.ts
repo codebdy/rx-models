@@ -26,6 +26,7 @@ export const RxMediaFolderEntity = new EntitySchema<any>({
     parent: {
       type: MANY_TO_ONE,
       target: 'RxMediaFolder',
+      joinColumn: true,
     },
     children: {
       type: ONE_TO_MANY,
