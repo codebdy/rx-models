@@ -11,7 +11,7 @@ import {
   getConnectionOptions,
   Repository,
 } from 'typeorm';
-import { schemas } from './schemas';
+import { predefinedEntities } from './entity';
 
 export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 
@@ -26,11 +26,11 @@ export class TypeOrmWithSchemaService
 
   async createConnection() {
     const connectionOptions = await getConnectionOptions();
-
-    const entitySchemas = this.loadEntitySchemas();
+    this.cachePredefinedEntities();
+    const entitiesInDatabase = this.loadEntityEntities();
     this._connection = await createConnection({
       ...connectionOptions,
-      entities: [...connectionOptions.entities, ...entitySchemas],
+      entities: [...predefinedEntities, ...entitiesInDatabase],
       name: CONNECTION_WITH_SCHEMA_NAME,
       synchronize: true,
     });
@@ -84,11 +84,18 @@ export class TypeOrmWithSchemaService
     }
   }
 
-  private /*async*/ loadEntitySchemas(): EntitySchema<any>[] {
-    return schemas.map((schemaMeta: any) => {
-      const entitySchema = new EntitySchema(schemaMeta);
-      this._entitySchemas.set(schemaMeta.name, entitySchema);
-      return entitySchema;
+  private cachePredefinedEntities() {
+    predefinedEntities.forEach((entity: EntitySchema) => {
+      this._entitySchemas.set(entity.options.name, entity)
     });
+  }
+
+  private /*async*/ loadEntityEntities(): EntitySchema<any>[] {
+    //return schemas.map((schemaMeta: any) => {
+    //  const entitySchema = new EntitySchema(schemaMeta);
+    //  this._entitySchemas.set(schemaMeta.name, entitySchema);
+    //  return entitySchema;
+    //});
+    return [];
   }
 }
