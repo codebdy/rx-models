@@ -3,7 +3,7 @@ import { QueryConditionCommand } from 'src/command/query-condition-command';
 import { createId } from 'src/util/create-id';
 
 export class QueryConditionBetweenCommand extends QueryConditionCommand {
-  static description = `Between condition command.`;
+  static description = `Condition between command.`;
 
   static version = '1.0';
 
