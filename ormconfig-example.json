@@ -5,7 +5,6 @@
   "username": "your_username",
   "password": "your_password",
   "database": "rxdrag",
-  "entities": ["dist/entity/*.js"],
   "synchronize": true,
   "migrations": ["dist/migration/*.js"],
   "cli": {
