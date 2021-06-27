@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CommandMeta } from 'src/command/command.meta';
 import { CommandService } from 'src/command/command.service';
-import { RelationMeta } from 'src/meta/query/relation-meta';
+import { QueryMeta } from 'src/meta/query/query.meta';
+import { QueryRelationMeta } from 'src/meta/query/query.relation-meta';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
-import { QueryMeta } from '../../meta/query/query-meta';
+import { QueryModelMeta } from '../../meta/query/query.model-meta';
 import { JsonUnit } from '../base/json-unit';
 import {
   TOKEN_GET_MANY,
@@ -16,22 +17,22 @@ import {
 
 @Injectable()
 export class MagicQueryParser {
-  private querMeta: QueryMeta;
+  private querMeta: QueryModelMeta;
   constructor(
     private readonly commandService: CommandService,
     private readonly typeOrmService: TypeOrmWithSchemaService,
   ) {}
 
-  parse(jsonStr: string): QueryMeta {
+  parse(jsonStr: string): QueryModelMeta {
     const json = JSON.parse(jsonStr || '{}');
-    const meta = new QueryMeta();
+    const meta = new QueryModelMeta();
     this.querMeta = meta;
     this.parseModelLine(json, meta);
     this.parseMeta(json, meta);
     return meta;
   }
 
-  parseModelLine(json: any, meta: QueryMeta) {
+  parseModelLine(json: any, meta: QueryModelMeta) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -56,7 +57,7 @@ export class MagicQueryParser {
     }
   }
 
-  parseMeta(json: any, meta: QueryMeta | RelationMeta) {
+  parseMeta(json: any, meta: QueryMeta) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -64,7 +65,7 @@ export class MagicQueryParser {
     }
   }
 
-  parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta | RelationMeta) {
+  parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta) {
     const relationEntitySchemaOptions = this.typeOrmService.findRelationEntitySchema(
       meta.model,
       jsonUnit.key,
@@ -88,10 +89,7 @@ export class MagicQueryParser {
     }
   }
 
-  private paseConditionCommand(
-    jsonUnit: JsonUnit,
-    meta: QueryMeta | RelationMeta,
-  ) {
+  private paseConditionCommand(jsonUnit: JsonUnit, meta: QueryMeta) {
     let commanName = 'equal';
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
       commanName = jsonUnit.commands[0].name;
@@ -107,21 +105,21 @@ export class MagicQueryParser {
   private parseModelOrRelationCommand(
     name: string,
     jsonUnit: JsonUnit,
-    meta: QueryMeta | RelationMeta,
+    meta: QueryMeta,
   ) {
     const cmdMeta = new CommandMeta(name);
     cmdMeta.params = Array.isArray(jsonUnit.value)
       ? jsonUnit.value
       : [jsonUnit.value];
     const CmdClass =
-      meta instanceof QueryMeta
+      meta instanceof QueryModelMeta
         ? this.commandService.findModelCommandOrFailed(name)
         : this.commandService.findRelationCommandOrFailed(name);
     meta.pushCommand(new CmdClass(cmdMeta, this.querMeta));
   }
 
   private parseRelation(jsonUnit: JsonUnit, relationEntitySchemaOptions) {
-    const relation = new RelationMeta();
+    const relation = new QueryRelationMeta();
     relation.name = jsonUnit.key;
     relation.entitySchema = this.typeOrmService.findEntitySchemaOrFailed(
       relationEntitySchemaOptions.target.toString(),

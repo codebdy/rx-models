@@ -1,5 +1,6 @@
 import { CommandType } from 'src/command/query-command';
 import { QueryConditionCommand } from 'src/command/query-condition-command';
+import { createId } from 'src/util/create-id';
 
 export class QueryConditionEqualCommand extends QueryConditionCommand {
   static description = `Equal condition command.`;
@@ -10,7 +11,13 @@ export class QueryConditionEqualCommand extends QueryConditionCommand {
 
   static commandName = 'equal';
 
-  getWhereStatement(): [string, any] {
-    throw new Error('Method not implemented.');
+  getWhereStatement(field?: string, value?: string): [string, any] {
+    const paramName = 'param' + createId();
+    return [
+      ` ${field} = :${paramName} `,
+      {
+        [paramName]: value,
+      },
+    ];
   }
 }

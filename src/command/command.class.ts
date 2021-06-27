@@ -1,4 +1,4 @@
-import { QueryMeta } from 'src/meta/query/query-meta';
+import { QueryModelMeta } from 'src/meta/query/query.model-meta';
 import { CommandMeta } from './command.meta';
 import { CommandType, QueryCommand } from './query-command';
 
@@ -9,5 +9,5 @@ export interface CommandClass extends Function {
 
   commandType: CommandType;
   commandName: string;
-  new (commandMeta?: CommandMeta, queryMeta?: QueryMeta): QueryCommand;
+  new (commandMeta?: CommandMeta, queryMeta?: QueryModelMeta): QueryCommand;
 }

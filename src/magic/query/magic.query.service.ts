@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/common/query-result';
+import { TOKEN_GET_MANY } from '../base/tokens';
 
 @Injectable()
 export class MagicQueryService {
@@ -20,13 +21,19 @@ export class MagicQueryService {
 
     meta.makeNotEffectCountQueryBuilder(qb);
 
-    totalCount = await qb.getCount();
+    if (meta.fetchString === TOKEN_GET_MANY) {
+      totalCount = await qb.getCount();
+    }
 
     meta.makeEffectCountQueryBuilder(qb);
 
     console.debug(qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
-    const result = { data, totalCount } as QueryResult;
+
+    const result =
+      meta.fetchString === TOKEN_GET_MANY
+        ? ({ data, totalCount } as QueryResult)
+        : ({ data } as QueryResult);
 
     return meta.filterResult(result);
   }

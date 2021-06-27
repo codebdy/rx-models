@@ -1,20 +1,14 @@
 import { QueryCommand } from 'src/command/query-command';
 import { QueryResult } from 'src/common/query-result';
-import { createId } from 'src/util/create-id';
 import { EntitySchema, SelectQueryBuilder } from 'typeorm';
-import { QueryMeta } from './query-meta';
+import { QueryMeta } from './query.meta';
+import { QueryModelMeta } from './query.model-meta';
 
-export class RelationMeta {
-  private id: number;
+export class QueryRelationMeta extends QueryMeta {
   name: string;
-  parentModelMeta: QueryMeta | RelationMeta;
+  parentModelMeta: QueryModelMeta | QueryRelationMeta;
   entitySchema: EntitySchema<any>;
-  relationMetas: RelationMeta[] = [];
   relationCommands: QueryCommand[] = [];
-
-  constructor() {
-    this.id = createId();
-  }
 
   get model() {
     return this.entitySchema.options.name;
@@ -61,7 +55,7 @@ export class RelationMeta {
     return result;
   }
 
-  findRelatiOrFailed(relationName: string): RelationMeta {
+  findRelatiOrFailed(relationName: string): QueryRelationMeta {
     for (const relationMeta of this.relationMetas) {
       if (relationMeta.name === relationName) {
         return relationMeta;

@@ -1,28 +1,14 @@
 import { QueryCommand } from 'src/command/query-command';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_MANY } from 'src/magic/base/tokens';
-import { createId } from 'src/util/create-id';
-import { EntitySchema, SelectQueryBuilder } from 'typeorm';
-import { RelationMeta } from './relation-meta';
+import { SelectQueryBuilder } from 'typeorm';
+import { QueryMeta } from './query.meta';
 
-export class QueryMeta {
-  id: number;
-  entitySchema: EntitySchema<any>;
-  model: string;
-  relationMetas: RelationMeta[] = [];
+export class QueryModelMeta extends QueryMeta {
   notEffectCountModelCommands: QueryCommand[] = [];
   effectCountModelCommands: QueryCommand[] = [];
-  //conditionCommands: QueryCommand[] = [];
 
   fetchString: 'getOne' | 'getMany' = TOKEN_GET_MANY;
-
-  constructor() {
-    this.id = createId();
-  }
-
-  get alias() {
-    return this.model?.toLowerCase() + this.id;
-  }
 
   pushCommand(command: QueryCommand) {
     command.isEffectResultCount
@@ -33,6 +19,7 @@ export class QueryMeta {
   makeNotEffectCountQueryBuilder(
     qb: SelectQueryBuilder<any>,
   ): SelectQueryBuilder<any> {
+    console.log('嘿嘿', this.notEffectCountModelCommands);
     this.notEffectCountModelCommands.forEach((command) =>
       command.addToQueryBuilder(qb),
     );
@@ -63,16 +50,5 @@ export class QueryMeta {
     //  (command) => (result = command.filterResult(result)),
     //);
     return result;
-  }
-
-  findRelatiOrFailed(relationName: string): RelationMeta {
-    for (const relationMeta of this.relationMetas) {
-      if (relationMeta.name === relationName) {
-        return relationMeta;
-      }
-    }
-    throw new Error(
-      `Please add relation ${relationName} of ${this.model} to query meta`,
-    );
   }
 }
