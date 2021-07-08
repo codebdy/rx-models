@@ -6,9 +6,11 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MagicModule } from './magic/magic.module';
 import { TypeOrmWithSchemaModule } from './typeorm-with-schema/typeorm-with-schema.module';
+import { InstallModule } from './install/install.module';
 
 @Module({
   imports: [
+    InstallModule,
     TypeOrmModule.forRoot(),
     TypeOrmWithSchemaModule,
     AuthModule,
