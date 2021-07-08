@@ -8,14 +8,36 @@ export const UserEntity = new EntitySchema<any>({
       primary: true,
       generated: true,
     },
+    loginName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
     name: {
       type: String,
     },
-    content: {
+    password: {
       type: String,
+      select: false,
     },
-    title: {
+    isSupper: {
+      type: Boolean,
+    },
+    isDemo: {
+      type: Boolean,
+    },
+    status: {
       type: String,
+      default: 'NORMAL',
+    },
+    createdAt: {
+      type: Date,
+      createDate: true,
+    },
+    updatedAt: {
+      type: Date,
+      createDate: true,
     },
   },
 });

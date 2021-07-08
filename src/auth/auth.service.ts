@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RxUser } from 'src/entity/RxUser';
-import { Connection } from 'typeorm';
+import { RxUser } from 'src/entity-interface/RxUser';
+import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly connection: Connection,
+    private readonly typeormSerivce: TypeOrmWithSchemaService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
     console.debug('AuthService*****');
-    const user = await this.connection
-      .getRepository(RxUser)
+    const user = (await this.typeormSerivce.connection
+      .getRepository('RxUser')
       .createQueryBuilder('user')
       .addSelect('user.password')
       .where({ loginName: username })
-      .getOne();
+      .getOne()) as RxUser;
     if (user && user.password === pass) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
