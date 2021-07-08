@@ -1,5 +1,4 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
-import { sleep } from 'src/util/sleep';
 import { InstallService } from './install.service';
 
 @Controller()
@@ -8,7 +7,6 @@ export class InstallController {
 
   @Post('install')
   async intstall(@Body() body) {
-    sleep(3000);
     return await this.installService.install(body);
   }
 
