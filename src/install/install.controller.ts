@@ -20,6 +20,6 @@ export class InstallController {
   @Get('is-installed')
   async isInstalled() {
     const fs = require('fs');
-    return !!fs.existsSync(DB_CONFIG_FILE);
+    return fs.existsSync(DB_CONFIG_FILE);
   }
 }
