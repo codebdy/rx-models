@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable, Logger } from '@nestjs/common';
 import { DB_CONFIG_FILE } from 'src/util/consts';
 import { Connection, EntitySchema } from 'typeorm';
@@ -16,7 +15,6 @@ export class InstallService {
   constructor(private readonly originalConnection: Connection) {}
 
   public async install(data: InstallData) {
-    //const fs = require('fs');
     const dbConfigData = {
       type: data.type,
       host: data.host,
@@ -32,7 +30,6 @@ export class InstallService {
   }
 
   public async isInstalled() {
-    const fs = require('fs');
-    return { installed: fs.existsSync(DB_CONFIG_FILE) };
+    return { installed: PlatformTools.fileExist(DB_CONFIG_FILE) };
   }
 }
