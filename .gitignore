@@ -399,3 +399,4 @@ dist
 ormconfig.json
 uploads
 thumbnails
+dbconfig.json

@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Controller, Request, Post, Get } from '@nestjs/common';
+import { DB_CONFIG_FILE } from 'src/util/consts';
 import { InstallService } from './install.service';
 
 @Controller()
@@ -7,11 +9,17 @@ export class InstallController {
 
   @Post('install')
   async intstall(@Request() req) {
+    const fs = require('fs');
+
+    fs.stat(DB_CONFIG_FILE, (err) => {
+      console.log(err);
+    });
     //return this.authService.login(req.user);
   }
 
-  @Get('me')
-  isInstalled(@Request() req) {
-    //return req.user;
+  @Get('is-installed')
+  async isInstalled() {
+    const fs = require('fs');
+    return !!fs.existsSync(DB_CONFIG_FILE);
   }
 }
