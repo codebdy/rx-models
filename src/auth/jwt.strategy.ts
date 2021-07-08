@@ -1,6 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
 import { RxUser } from 'src/entity/RxUser';
 import { getRepository } from 'typeorm';
@@ -16,12 +16,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.debug('JwtStrategy payload', payload);
-    const userId = payload.sub;
-    return await getRepository(RxUser)
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.avatar', 'avatar')
-      .where({ id: userId })
-      .getOne();
+    try {
+      console.debug('JwtStrategy payload', payload);
+      const userId = payload.sub;
+      return await getRepository(RxUser)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.avatar', 'avatar')
+        .where({ id: userId })
+        .getOne();
+    } catch (error: any) {
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 }
