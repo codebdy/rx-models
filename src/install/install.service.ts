@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable, Logger } from '@nestjs/common';
+import { DB_CONFIG_FILE } from 'src/util/consts';
 import { Connection, EntitySchema } from 'typeorm';
+import { InstallData } from './install.data';
 
 export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 
@@ -11,19 +14,12 @@ export class InstallService {
 
   constructor(private readonly originalConnection: Connection) {}
 
-  public findEntitySchemaOrFailed(name: string) {
-    const schema = this._entitySchemas.get(name);
-    if (!schema) {
-      throw new Error(`Can not find model "${name}"`);
-    }
-    return schema;
+  public async install(data: InstallData) {
+
   }
 
-  public findRelationEntitySchema(model: string, relationName: string) {
-    const entitySchema = this._entitySchemas.get(model);
-    if (entitySchema.options.relations) {
-      return entitySchema.options.relations[relationName];
-    }
-    return;
+  public async isInstalled() {
+    const fs = require('fs');
+    return { installed: fs.existsSync(DB_CONFIG_FILE) };
   }
 }

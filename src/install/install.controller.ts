@@ -1,25 +1,19 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { Controller, Request, Post, Get } from '@nestjs/common';
-import { DB_CONFIG_FILE } from 'src/util/consts';
+import { Controller, Post, Get, Body } from '@nestjs/common';
+import { sleep } from 'src/util/sleep';
 import { InstallService } from './install.service';
 
 @Controller()
 export class InstallController {
-  constructor(private readonly authService: InstallService) {}
+  constructor(private readonly installService: InstallService) {}
 
   @Post('install')
-  async intstall(@Request() req) {
-    const fs = require('fs');
-
-    fs.stat(DB_CONFIG_FILE, (err) => {
-      console.log(err);
-    });
-    //return this.authService.login(req.user);
+  async intstall(@Body() body) {
+    sleep(3000);
+    return await this.installService.install(body);
   }
 
   @Get('is-installed')
   async isInstalled() {
-    const fs = require('fs');
-    return { installed: fs.existsSync(DB_CONFIG_FILE) };
+    return await this.installService.isInstalled();
   }
 }
