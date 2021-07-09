@@ -13,10 +13,12 @@ import {
   Connection,
   createConnection,
   EntitySchema,
+  EntitySchemaColumnOptions,
   Repository,
 } from 'typeorm';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
+import { convertType } from './convert-type';
 import { predefinedEntities } from './entity';
 
 const CONNECTION_WITH_SCHEMA_NAME = 'WithSchema';
@@ -105,7 +107,7 @@ export class TypeOrmWithSchemaService
   private loadEntityEntities(): EntitySchema<any>[] {
     const entityMetas: EntityMeta[] = [];
     const relationMetas: RelationMeta[] = [];
-    const entitySchemas: EntitySchemaOptions<any>[] = [];
+    const entitySchemaOptions: EntitySchemaOptions<any>[] = [];
     const packages: PackageMeta[] = importJsonsFromDirectories([
       SCHEMAS_DIR + '*.json',
     ]);
@@ -114,11 +116,30 @@ export class TypeOrmWithSchemaService
       entityMetas.push(...(aPackage.entities || []));
       relationMetas.push(...(aPackage.relations || []));
     });
+
+    entityMetas.forEach((entityMeta) => {
+      const columns: { [key: string]: EntitySchemaColumnOptions } = {};
+      for (const column of entityMeta.columns) {
+        columns[column.name] = {
+          type: convertType(column.type),
+          primary: column.primary,
+          generated: column.generated,
+        };
+      }
+      const entitySchemaOption: EntitySchemaOptions<any> = {
+        name: entityMeta.name,
+        columns: columns,
+      };
+
+      entitySchemaOptions.push(entitySchemaOption);
+    });
     //return schemas.map((schemaMeta: any) => {
     //  const entitySchema = new EntitySchema(schemaMeta);
     //  this._entitySchemas.set(schemaMeta.name, entitySchema);
     //  return entitySchema;
     //});
-    return entitySchemas.map((entityMeta) => new EntitySchema<any>(entityMeta));
+    return entitySchemaOptions.map(
+      (entityMeta) => new EntitySchema<any>(entityMeta),
+    );
   }
 }

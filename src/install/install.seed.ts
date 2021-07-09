@@ -1,11 +1,11 @@
 import { ColumnType } from 'src/meta/entity/column-type';
+import { PackageMeta } from 'src/meta/entity/package-meta';
 import { PackageStatus } from 'src/meta/entity/package-status';
 import { RelationType } from 'src/meta/entity/relation-type';
 
-export const packageSeed = {
+export const packageSeed: PackageMeta = {
   uuid: 'system-package-1',
   name: 'System',
-  parent: undefined,
   status: PackageStatus.SYNCED,
   entities: [
     {

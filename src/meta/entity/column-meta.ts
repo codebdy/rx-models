@@ -8,5 +8,5 @@ export interface ColumnMeta {
   name: string;
   type: ColumnType;
   primary?: boolean;
-  generated?: boolean;
+  generated?: true | 'uuid' | 'rowid' | 'increment';
 }
