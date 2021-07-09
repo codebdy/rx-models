@@ -9,7 +9,7 @@ export const PackageEntity = new EntitySchema<any>({
       generated: true,
     },
     uuid: {
-      type: Number,
+      type: String,
     },
     name: {
       type: String,

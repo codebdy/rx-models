@@ -42,6 +42,7 @@ export class InstallService {
     if (!systemPackage) {
       systemPackage = packageRepository.create();
     }
+
     systemPackage.uuid = packageSeed.uuid;
     systemPackage.name = packageSeed.name;
     systemPackage.status = packageSeed.status;
@@ -49,8 +50,7 @@ export class InstallService {
     systemPackage.diagrams = packageSeed.diagrams;
     systemPackage.relations = packageSeed.relations;
 
-    packageRepository.save(systemPackage);
-
+    await packageRepository.save(systemPackage);
     await this.typeormSerivce.restart();
     return {
       success: true,
