@@ -4,6 +4,7 @@ import {
   OnApplicationShutdown,
   OnModuleInit,
 } from '@nestjs/common';
+import { DB_CONFIG_FILE, NOT_INSTALL_ERROR } from 'src/util/consts';
 import {
   Connection,
   createConnection,
@@ -11,6 +12,7 @@ import {
   getConnectionOptions,
   Repository,
 } from 'typeorm';
+import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { predefinedEntities } from './entity';
 
 export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
@@ -23,15 +25,19 @@ export class TypeOrmWithSchemaService
   private _entitySchemas = new Map<string, EntitySchema>();
 
   async createConnection() {
-   /* const connectionOptions = await getConnectionOptions();
+    if (!PlatformTools.fileExist(DB_CONFIG_FILE)) {
+      throw new Error(NOT_INSTALL_ERROR);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const dbConfig = require(PlatformTools.pathResolve(DB_CONFIG_FILE));
     this.cachePredefinedEntities();
     const entitiesInDatabase = this.loadEntityEntities();
     this._connection = await createConnection({
-      ...connectionOptions,
+      ...dbConfig,
       entities: [...predefinedEntities, ...entitiesInDatabase],
       name: CONNECTION_WITH_SCHEMA_NAME,
       synchronize: true,
-    });*/
+    });
   }
 
   public get connection() {
@@ -66,7 +72,7 @@ export class TypeOrmWithSchemaService
   }
 
   async onModuleInit() {
-    //await this.createConnection();
+    await this.createConnection();
     console.debug('TypeOrmWithSchemaService initializated');
   }
 
@@ -84,7 +90,7 @@ export class TypeOrmWithSchemaService
 
   private cachePredefinedEntities() {
     predefinedEntities.forEach((entity: EntitySchema) => {
-      this._entitySchemas.set(entity.options.name, entity)
+      this._entitySchemas.set(entity.options.name, entity);
     });
   }
 

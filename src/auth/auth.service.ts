@@ -1,7 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RxUser } from 'src/entity-interface/RxUser';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { NOT_INSTALL_ERROR } from 'src/util/consts';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     if (!this.typeormSerivce.connection) {
-      throw new Error('Not installed yet, please install first');
+      throw new Error(NOT_INSTALL_ERROR);
     }
     console.debug('AuthService*****');
     const user = (await this.typeormSerivce.connection
