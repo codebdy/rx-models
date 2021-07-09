@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RxUser } from 'src/entity-interface/RxUser';
+import { RxUser } from 'src/meta/entity/rx-user';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 import { NOT_INSTALL_ERROR } from 'src/util/consts';
 

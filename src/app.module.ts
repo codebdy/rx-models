@@ -6,9 +6,16 @@ import { AuthModule } from './auth/auth.module';
 import { MagicModule } from './magic/magic.module';
 import { TypeOrmWithSchemaModule } from './typeorm-with-schema/typeorm-with-schema.module';
 import { InstallModule } from './install/install.module';
+import { PackageManageModule } from './package-manage/package-manage.module';
 
 @Module({
-  imports: [InstallModule, TypeOrmWithSchemaModule, AuthModule, MagicModule],
+  imports: [
+    PackageManageModule,
+    InstallModule,
+    TypeOrmWithSchemaModule,
+    AuthModule,
+    MagicModule,
+  ],
   controllers: [AppController, AuthController],
   providers: [AppService],
 })

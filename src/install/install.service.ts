@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PackageMeta } from 'src/meta/entity/package-meta';
+import { PackageManageService } from 'src/package-manage/package-manage.service';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 import { DB_CONFIG_FILE } from 'src/util/consts';
 import { EntitySchema } from 'typeorm';
@@ -14,7 +14,10 @@ export class InstallService {
   private readonly _logger = new Logger('TypeOrmWithSchemaService');
   private _entitySchemas = new Map<string, EntitySchema>();
 
-  constructor(private readonly typeormSerivce: TypeOrmWithSchemaService) {}
+  constructor(
+    private readonly typeormSerivce: TypeOrmWithSchemaService,
+    private readonly packageManage: PackageManageService,
+  ) {}
 
   public async install(data: InstallData) {
     const dbConfigData = {
@@ -25,33 +28,15 @@ export class InstallService {
       username: data.username,
       password: data.password,
     };
-    PlatformTools.writeFile(
+    await PlatformTools.writeFile(
       DB_CONFIG_FILE,
       JSON.stringify(dbConfigData, null, 2),
     );
 
+    await this.packageManage.publishPackage(packageSeed);
     await this.typeormSerivce.restart();
+    await this.packageManage.savePackage(packageSeed);
 
-    const packageRepository = this.typeormSerivce.connection.getRepository<PackageMeta>(
-      'RxPackage',
-    );
-    let systemPackage = await packageRepository.findOne({
-      where: { uuid: packageSeed.uuid },
-    });
-
-    if (!systemPackage) {
-      systemPackage = packageRepository.create();
-    }
-
-    systemPackage.uuid = packageSeed.uuid;
-    systemPackage.name = packageSeed.name;
-    systemPackage.status = packageSeed.status;
-    systemPackage.entities = packageSeed.entities;
-    systemPackage.diagrams = packageSeed.diagrams;
-    systemPackage.relations = packageSeed.relations;
-
-    await packageRepository.save(systemPackage);
-    await this.typeormSerivce.restart();
     return {
       success: true,
     };

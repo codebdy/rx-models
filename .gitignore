@@ -400,3 +400,5 @@ ormconfig.json
 uploads
 thumbnails
 dbconfig.json
+schemas
+
