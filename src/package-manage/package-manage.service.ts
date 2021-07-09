@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PackageMeta } from 'src/meta/entity/package-meta';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
-import { RxPackage } from 'src/util/consts';
+import { RxPackage, SCHEMAS_DIR } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
-
-const schemasDir = 'schemas/';
-
 @Injectable()
 export class PackageManageService {
   constructor(private readonly typeormSerivce: TypeOrmWithSchemaService) {}
@@ -33,19 +30,24 @@ export class PackageManageService {
   }
 
   public async publishPackages(packages: PackageMeta[]) {
-    if (!PlatformTools.fileExist(schemasDir)) {
+    if (!PlatformTools.fileExist(SCHEMAS_DIR)) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const fs = require('fs');
-      await fs.promises.mkdir(PlatformTools.pathResolve(schemasDir));
+      await fs.promises.mkdir(PlatformTools.pathResolve(SCHEMAS_DIR));
     }
 
     packages.forEach((aPackage) => {
       PlatformTools.writeFile(
-        schemasDir + aPackage.uuid + '.json',
+        SCHEMAS_DIR + aPackage.uuid + '.json',
         JSON.stringify(aPackage, null, 2),
       );
     });
 
     await this.typeormSerivce.restart();
   }
+
+  //public getAllPublishedPackages(): PackageMeta[] {
+  //  const packages = importJsonsFromDirectories([SCHEMAS_DIR]);
+  //  return packages;
+  //}
 }

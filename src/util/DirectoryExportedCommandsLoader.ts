@@ -54,3 +54,16 @@ export function importCommandsFromDirectories(
 
   return loadFileClasses(dirs, []);
 }
+
+export function importJsonsFromDirectories(
+  directories: string[],
+  format = '.json',
+): any[] {
+  const allFiles = directories.reduce((allDirs, dir) => {
+    return allDirs.concat(glob.sync(PlatformTools.pathNormalize(dir)));
+  }, [] as string[]);
+
+  return allFiles
+    .filter((file) => PlatformTools.pathExtname(file) === format)
+    .map((file) => require(PlatformTools.pathResolve(file)));
+}

@@ -4,13 +4,18 @@ import {
   OnApplicationShutdown,
   OnModuleInit,
 } from '@nestjs/common';
-import { DB_CONFIG_FILE } from 'src/util/consts';
+import { EntityMeta } from 'src/meta/entity/entity-meta';
+import { PackageMeta } from 'src/meta/entity/package-meta';
+import { RelationMeta } from 'src/meta/entity/relation-meta';
+import { DB_CONFIG_FILE, SCHEMAS_DIR } from 'src/util/consts';
+import { importJsonsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
 import {
   Connection,
   createConnection,
   EntitySchema,
   Repository,
 } from 'typeorm';
+import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { predefinedEntities } from './entity';
 
@@ -32,10 +37,10 @@ export class TypeOrmWithSchemaService
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const dbConfig = require(PlatformTools.pathResolve(DB_CONFIG_FILE));
     this.cachePredefinedEntities();
-    const entitiesInDatabase = this.loadEntityEntities();
+    const publishedEntities = this.loadEntityEntities();
     this._connection = await createConnection({
       ...dbConfig,
-      entities: [...predefinedEntities, ...entitiesInDatabase],
+      entities: [...predefinedEntities, ...publishedEntities],
       name: CONNECTION_WITH_SCHEMA_NAME + this._connectionNumber,
       synchronize: true,
     });
@@ -97,12 +102,23 @@ export class TypeOrmWithSchemaService
     });
   }
 
-  private /*async*/ loadEntityEntities(): EntitySchema<any>[] {
+  private loadEntityEntities(): EntitySchema<any>[] {
+    const entityMetas: EntityMeta[] = [];
+    const relationMetas: RelationMeta[] = [];
+    const entitySchemas: EntitySchemaOptions<any>[] = [];
+    const packages: PackageMeta[] = importJsonsFromDirectories([
+      SCHEMAS_DIR + '*.json',
+    ]);
+
+    packages.forEach((aPackage) => {
+      entityMetas.push(...(aPackage.entities || []));
+      relationMetas.push(...(aPackage.relations || []));
+    });
     //return schemas.map((schemaMeta: any) => {
     //  const entitySchema = new EntitySchema(schemaMeta);
     //  this._entitySchemas.set(schemaMeta.name, entitySchema);
     //  return entitySchema;
     //});
-    return [];
+    return entitySchemas.map((entityMeta) => new EntitySchema<any>(entityMeta));
   }
 }

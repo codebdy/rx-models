@@ -6,7 +6,7 @@ export const packageSeed = {
   uuid: 'system-package-1',
   name: 'System',
   parent: undefined,
-  status: PackageStatus.EDITING,
+  status: PackageStatus.SYNCED,
   entities: [
     {
       uuid: 'system-entity-1',
