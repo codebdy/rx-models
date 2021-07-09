@@ -122,8 +122,10 @@ export class TypeOrmWithSchemaService
       const columns: { [key: string]: EntitySchemaColumnOptions } = {};
       const relations: { [key: string]: EntitySchemaRelationOptions } = {};
       for (const column of entityMeta.columns) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { name, type, uuid, ...rest } = column;
         columns[column.name] = {
-          ...column,
+          ...rest,
           type: convertType(column.type),
         };
       }
