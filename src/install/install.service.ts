@@ -1,9 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { PackageMeta } from 'src/meta/entity/package-meta';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 import { DB_CONFIG_FILE } from 'src/util/consts';
 import { EntitySchema } from 'typeorm';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { InstallData } from './install.data';
+import { packageSeed } from './install.seed';
 
 export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 
@@ -27,7 +29,29 @@ export class InstallService {
       DB_CONFIG_FILE,
       JSON.stringify(dbConfigData, null, 2),
     );
-    this.typeormSerivce.restart();
+
+    await this.typeormSerivce.restart();
+
+    const packageRepository = this.typeormSerivce.connection.getRepository<PackageMeta>(
+      'RxPackage',
+    );
+    let systemPackage = await packageRepository.findOne({
+      where: { uuid: packageSeed.uuid },
+    });
+
+    if (!systemPackage) {
+      systemPackage = packageRepository.create();
+    }
+    systemPackage.uuid = packageSeed.uuid;
+    systemPackage.name = packageSeed.name;
+    systemPackage.status = packageSeed.status;
+    systemPackage.entities = packageSeed.entities;
+    systemPackage.diagrams = packageSeed.diagrams;
+    systemPackage.relations = packageSeed.relations;
+
+    packageRepository.save(systemPackage);
+
+    await this.typeormSerivce.restart();
     return {
       success: true,
     };
