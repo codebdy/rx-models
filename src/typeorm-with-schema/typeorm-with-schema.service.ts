@@ -19,13 +19,11 @@ export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 export class TypeOrmWithSchemaService
   implements OnModuleInit, OnApplicationShutdown {
   private readonly _logger = new Logger('TypeOrmWithSchemaService');
-  private _connection: Connection;
+  private _connection?: Connection;
   private _entitySchemas = new Map<string, EntitySchema>();
 
-  constructor(private readonly originalConnection: Connection) {}
-
   async createConnection() {
-    const connectionOptions = await getConnectionOptions();
+   /* const connectionOptions = await getConnectionOptions();
     this.cachePredefinedEntities();
     const entitiesInDatabase = this.loadEntityEntities();
     this._connection = await createConnection({
@@ -33,7 +31,7 @@ export class TypeOrmWithSchemaService
       entities: [...predefinedEntities, ...entitiesInDatabase],
       name: CONNECTION_WITH_SCHEMA_NAME,
       synchronize: true,
-    });
+    });*/
   }
 
   public get connection() {
@@ -68,7 +66,7 @@ export class TypeOrmWithSchemaService
   }
 
   async onModuleInit() {
-    await this.createConnection();
+    //await this.createConnection();
     console.debug('TypeOrmWithSchemaService initializated');
   }
 

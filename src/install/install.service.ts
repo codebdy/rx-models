@@ -12,8 +12,6 @@ export class InstallService {
   private _connection: Connection;
   private _entitySchemas = new Map<string, EntitySchema>();
 
-  constructor(private readonly originalConnection: Connection) {}
-
   public async install(data: InstallData) {
     const dbConfigData = {
       type: data.type,
