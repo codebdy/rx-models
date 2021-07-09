@@ -14,6 +14,7 @@ import {
   createConnection,
   EntitySchema,
   EntitySchemaColumnOptions,
+  EntitySchemaRelationOptions,
   Repository,
 } from 'typeorm';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
@@ -119,16 +120,17 @@ export class TypeOrmWithSchemaService
 
     entityMetas.forEach((entityMeta) => {
       const columns: { [key: string]: EntitySchemaColumnOptions } = {};
+      const relations: { [key: string]: EntitySchemaRelationOptions } = {};
       for (const column of entityMeta.columns) {
         columns[column.name] = {
+          ...column,
           type: convertType(column.type),
-          primary: column.primary,
-          generated: column.generated,
         };
       }
       const entitySchemaOption: EntitySchemaOptions<any> = {
         name: entityMeta.name,
         columns: columns,
+        relations: relations,
       };
 
       entitySchemaOptions.push(entitySchemaOption);
