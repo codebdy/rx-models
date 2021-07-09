@@ -4,7 +4,7 @@ import {
   OnApplicationShutdown,
   OnModuleInit,
 } from '@nestjs/common';
-import { DB_CONFIG_FILE, NOT_INSTALL_ERROR } from 'src/util/consts';
+import { DB_CONFIG_FILE } from 'src/util/consts';
 import {
   Connection,
   createConnection,
@@ -14,7 +14,7 @@ import {
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { predefinedEntities } from './entity';
 
-export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
+const CONNECTION_WITH_SCHEMA_NAME = 'WithSchema';
 
 @Injectable()
 export class TypeOrmWithSchemaService
@@ -22,10 +22,12 @@ export class TypeOrmWithSchemaService
   private readonly _logger = new Logger('TypeOrmWithSchemaService');
   private _connection?: Connection;
   private _entitySchemas = new Map<string, EntitySchema>();
+  private _connectionNumber = 1;
 
   async createConnection() {
     if (!PlatformTools.fileExist(DB_CONFIG_FILE)) {
-      throw new Error(NOT_INSTALL_ERROR);
+      return;
+      //throw new Error(NOT_INSTALL_ERROR);
     }
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const dbConfig = require(PlatformTools.pathResolve(DB_CONFIG_FILE));
@@ -34,7 +36,7 @@ export class TypeOrmWithSchemaService
     this._connection = await createConnection({
       ...dbConfig,
       entities: [...predefinedEntities, ...entitiesInDatabase],
-      name: CONNECTION_WITH_SCHEMA_NAME,
+      name: CONNECTION_WITH_SCHEMA_NAME + this._connectionNumber,
       synchronize: true,
     });
   }
@@ -65,8 +67,10 @@ export class TypeOrmWithSchemaService
     );
   }
 
+  //会关闭旧连接，并且以新名字创建一个新连接
   async restart() {
     this.closeConection();
+    this._connectionNumber++;
     await this.createConnection();
   }
 
@@ -81,7 +85,7 @@ export class TypeOrmWithSchemaService
 
   private async closeConection() {
     try {
-      this.connection?.isConnected && (await this.connection.close());
+      await this.connection?.close();
     } catch (e) {
       this._logger.error(e?.message);
     }
