@@ -28,6 +28,9 @@ export class InstallService {
       JSON.stringify(dbConfigData, null, 2),
     );
     this.typeormSerivce.restart();
+    return {
+      success: true,
+    };
   }
 
   public async isInstalled() {
