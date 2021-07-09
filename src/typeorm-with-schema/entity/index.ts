@@ -1,27 +1,5 @@
-import { EntitySchema } from 'typeorm';
-import { RxMediaFolderEntity } from './rx-media-folder';
+import { PackageEntity } from './rx-package';
+import { RoleEntity } from './rx-role';
 import { UserEntity } from './rx-user';
 
-export const predefinedEntities = [
-  new EntitySchema<any>({
-    name: 'RxTest',
-    columns: {
-      id: {
-        type: Number,
-        primary: true,
-        generated: true,
-      },
-      name: {
-        type: String,
-      },
-      order: {
-        type: Number,
-      },
-      title: {
-        type: String,
-      },
-    },
-  }),
-  UserEntity,
-  RxMediaFolderEntity,
-];
+export const predefinedEntities = [PackageEntity, RoleEntity, UserEntity];

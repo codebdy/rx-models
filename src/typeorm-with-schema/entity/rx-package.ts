@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-export const UserEntity = new EntitySchema<any>({
+export const PackageEntity = new EntitySchema<any>({
   name: 'RxPackage',
   columns: {
     id: {
