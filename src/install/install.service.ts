@@ -34,7 +34,6 @@ export class InstallService {
     );
 
     await this.packageManage.publishPackage(packageSeed);
-    await this.typeormSerivce.restart();
     await this.packageManage.savePackage(packageSeed);
 
     return {

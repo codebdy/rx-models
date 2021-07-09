@@ -43,5 +43,7 @@ export class PackageManageService {
       schemasDir + aPackage.uuid + '.json',
       JSON.stringify(aPackage, null, 2),
     );
+
+    await this.typeormSerivce.restart();
   }
 }
