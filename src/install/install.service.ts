@@ -33,7 +33,7 @@ export class InstallService {
       JSON.stringify(dbConfigData, null, 2),
     );
 
-    await this.packageManage.publishPackage(packageSeed);
+    await this.packageManage.publishPackages([packageSeed]);
     await this.packageManage.savePackage(packageSeed);
 
     return {

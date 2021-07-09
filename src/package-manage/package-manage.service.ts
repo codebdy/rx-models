@@ -32,17 +32,19 @@ export class PackageManageService {
     await packageRepository.save(systemPackage);
   }
 
-  public async publishPackage(aPackage: PackageMeta) {
+  public async publishPackages(packages: PackageMeta[]) {
     if (!PlatformTools.fileExist(schemasDir)) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const fs = require('fs');
       await fs.promises.mkdir(PlatformTools.pathResolve(schemasDir));
     }
 
-    PlatformTools.writeFile(
-      schemasDir + aPackage.uuid + '.json',
-      JSON.stringify(aPackage, null, 2),
-    );
+    packages.forEach((aPackage) => {
+      PlatformTools.writeFile(
+        schemasDir + aPackage.uuid + '.json',
+        JSON.stringify(aPackage, null, 2),
+      );
+    });
 
     await this.typeormSerivce.restart();
   }
