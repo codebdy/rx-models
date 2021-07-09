@@ -9,7 +9,6 @@ import {
   Connection,
   createConnection,
   EntitySchema,
-  getConnectionOptions,
   Repository,
 } from 'typeorm';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
