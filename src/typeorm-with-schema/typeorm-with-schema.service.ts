@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { EntityMeta } from 'src/meta/entity/entity-meta';
 import { PackageMeta } from 'src/meta/entity/package-meta';
-import { RelationMeta } from 'src/meta/entity/relation-meta';
+import { RelationMeta, RelationType } from 'src/meta/entity/relation-meta';
 import { DB_CONFIG_FILE, SCHEMAS_DIR } from 'src/util/consts';
 import { importJsonsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
 import {
@@ -127,6 +127,49 @@ export class TypeOrmWithSchemaService
           type: convertType(column.type),
         };
       }
+
+      for (const relation of relationMetas) {
+        if (relation.sourceId === entityMeta.uuid) {
+          relations[relation.roleOnSource] = {
+            target: entityMeta.name,
+            type: relation.relationType,
+            joinTable:
+              relation.relationType === RelationType.MANY_TO_MANY &&
+              relation.ownerId === entityMeta.uuid
+                ? true
+                : undefined,
+            joinColumn:
+              relation.relationType === RelationType.ONE_TO_ONE &&
+              relation.ownerId === entityMeta.uuid
+                ? true
+                : undefined,
+          };
+        }
+        if (relation.targetId === entityMeta.uuid) {
+          let relationType = relation.relationType;
+          if (relation.relationType === RelationType.ONE_TO_MANY) {
+            relationType = RelationType.MANY_TO_ONE;
+          }
+          if (relation.relationType === RelationType.MANY_TO_ONE) {
+            relationType = RelationType.ONE_TO_MANY;
+          }
+          relations[relation.roleOnSource] = {
+            target: entityMeta.name,
+            type: relationType,
+            joinTable:
+              relationType === RelationType.MANY_TO_MANY &&
+              relation.ownerId === entityMeta.uuid
+                ? true
+                : undefined,
+            joinColumn:
+              relationType === RelationType.ONE_TO_ONE &&
+              relation.ownerId === entityMeta.uuid
+                ? true
+                : undefined,
+          };
+        }
+      }
+
       const entitySchemaOption: EntitySchemaOptions<any> = {
         name: entityMeta.name,
         columns: columns,
@@ -135,11 +178,7 @@ export class TypeOrmWithSchemaService
 
       entitySchemaOptions.push(entitySchemaOption);
     });
-    //return schemas.map((schemaMeta: any) => {
-    //  const entitySchema = new EntitySchema(schemaMeta);
-    //  this._entitySchemas.set(schemaMeta.name, entitySchema);
-    //  return entitySchema;
-    //});
+
     return entitySchemaOptions.map(
       (entityMeta) => new EntitySchema<any>(entityMeta),
     );
