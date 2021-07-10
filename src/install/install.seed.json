@@ -1,0 +1,152 @@
+{
+  "uuid": "system-package-1",
+  "name": "System",
+  "entities": [
+    {
+      "uuid": "system-entity-1",
+      "name": "RxUser",
+      "columns": [
+        {
+          "uuid": "system-column-1-3",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "system-column-1-4",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-1-5",
+          "name": "loginName",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-1-6",
+          "name": "email",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-1-7",
+          "name": "password",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-1-8",
+          "name": "isSupper",
+          "type": "Boolean"
+        },
+        {
+          "uuid": "system-column-1-9",
+          "name": "isDemo",
+          "type": "Boolean"
+        },
+        {
+          "uuid": "system-column-1-10",
+          "name": "status",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-1-11",
+          "name": "createdAt",
+          "type": "Date"
+        },
+        {
+          "uuid": "system-column-1-12",
+          "name": "updatedAt",
+          "type": "Date"
+        }
+      ]
+    },
+    {
+      "uuid": "system-entity-2",
+      "name": "RxRole",
+      "columns": [
+        {
+          "uuid": "system-column-2-1",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "system-column-2-2",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-2-3",
+          "name": "description",
+          "type": "String"
+        },
+        {
+          "uuid": "system-column-2-4",
+          "name": "createdAt",
+          "type": "Date"
+        },
+        {
+          "uuid": "system-column-2-5",
+          "name": "updatedAt",
+          "type": "Date"
+        }
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "uuid": "system-diagram-1",
+      "name": "ER Dragram",
+      "nodes": [
+        {
+          "id": "system-entity-1",
+          "x": 469.9999999999966,
+          "y": 5,
+          "width": 200,
+          "height": 310
+        },
+        {
+          "id": "",
+          "x": 30,
+          "y": 30,
+          "width": 180,
+          "height": 200
+        },
+        {
+          "id": "system-entity-2",
+          "x": 70,
+          "y": 60,
+          "width": 180,
+          "height": 200
+        }
+      ],
+      "edges": [
+        {
+          "id": "system-relation-1",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": -40,
+            "offset": 20
+          }
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "uuid": "system-relation-1",
+      "relationType": "many-to-many",
+      "sourceId": "system-entity-1",
+      "targetId": "system-entity-2",
+      "roleOnSource": "roles",
+      "roleOnTarget": "users",
+      "ownerId": "system-entity-1"
+    }
+  ],
+  "status": "SYNCED"
+}
