@@ -41,6 +41,7 @@ export class TypeOrmWithSchemaService
     const dbConfig = require(PlatformTools.pathResolve(DB_CONFIG_FILE));
     this.cachePredefinedEntities();
     const publishedEntities = this.loadEntityEntities();
+
     this._connection = await createConnection({
       ...dbConfig,
       entities: [...predefinedEntities, ...publishedEntities],
@@ -70,9 +71,7 @@ export class TypeOrmWithSchemaService
   }
 
   public getRepository<Entity>(name: string): Repository<Entity> {
-    return this.connection.getRepository(
-      this.findEntitySchemaOrFailed(name) || name,
-    );
+    return this.connection.getRepository(name);
   }
 
   //会关闭旧连接，并且以新名字创建一个新连接

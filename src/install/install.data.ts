@@ -7,4 +7,5 @@ export interface InstallData {
   password: string;
   admin: string;
   adminPassword: string;
+  withDemo: boolean;
 }

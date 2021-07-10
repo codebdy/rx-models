@@ -1,12 +1,12 @@
 export interface RxUser {
-  id: number;
+  id?: number;
   loginName: string;
-  email: string;
-  name: string;
+  email?: string;
+  name?: string;
   password: string;
-  isSupper: boolean;
-  isDemo: boolean;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;
+  isSupper?: boolean;
+  isDemo?: boolean;
+  status?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

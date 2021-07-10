@@ -33,6 +33,7 @@ export const packageSeed: PackageMeta = {
           uuid: 'system-column-1-6',
           name: 'email',
           type: ColumnType.String,
+          nullable: true,
         },
         {
           uuid: 'system-column-1-7',
@@ -44,11 +45,13 @@ export const packageSeed: PackageMeta = {
           uuid: 'system-column-1-8',
           name: 'isSupper',
           type: ColumnType.Boolean,
+          nullable: true,
         },
         {
           uuid: 'system-column-1-9',
           name: 'isDemo',
           type: ColumnType.Boolean,
+          nullable: true,
         },
         {
           uuid: 'system-column-1-10',
@@ -90,6 +93,7 @@ export const packageSeed: PackageMeta = {
           uuid: 'system-column-2-3',
           name: 'description',
           type: ColumnType.String,
+          nullable: true,
         },
         {
           uuid: 'system-column-2-4',

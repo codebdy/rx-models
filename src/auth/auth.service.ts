@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RxUser } from 'src/meta/entity/rx-user';
 import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
 import { NOT_INSTALL_ERROR } from 'src/util/consts';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
       .addSelect('user.password')
       .where({ loginName: username })
       .getOne()) as RxUser;
-    if (user && user.password === pass) {
+    if (user && (await bcrypt.compare(user.password, pass))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       console.debug('AuthService', user);
