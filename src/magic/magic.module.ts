@@ -12,9 +12,10 @@ import { MagicUpdateController } from './update/magic.update.controller';
 import { TypeOrmModule } from 'src/typeorm/typeorm.module';
 import { CommandModule } from 'src/command/command.module';
 import { MagicQueryParser } from './query/magic.query.parser';
+import { SchemaModule } from 'src/schema/schema.module';
 
 @Module({
-  imports: [TypeOrmModule, CommandModule],
+  imports: [SchemaModule, TypeOrmModule, CommandModule],
   providers: [
     MagicQueryParser,
     MagicQueryService,

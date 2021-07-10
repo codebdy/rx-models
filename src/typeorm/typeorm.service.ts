@@ -46,22 +46,6 @@ export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
     return this._connection;
   }
 
-  public findEntitySchemaOrFailed(name: string) {
-    const schema = this.schemaService.getSchema(name);
-    if (!schema) {
-      throw new Error(`Can not find model "${name}"`);
-    }
-    return schema;
-  }
-
-  public findRelationEntitySchema(model: string, relationName: string) {
-    const entitySchema = this.schemaService.getSchema(model);
-    if (entitySchema.relations) {
-      return entitySchema.relations[relationName];
-    }
-    return;
-  }
-
   public getRepository<Entity>(name: string): Repository<Entity> {
     return this.connection.getRepository(name);
   }

@@ -24,6 +24,21 @@ export class SchemaService {
   public get entitySchemas() {
     return this._entitySchemas;
   }
+  public findEntitySchemaOrFailed(name: string) {
+    const schema = this.getSchema(name);
+    if (!schema) {
+      throw new Error(`Can not find model "${name}"`);
+    }
+    return schema;
+  }
+
+  public findRelationEntitySchema(model: string, relationName: string) {
+    const entitySchema = this.getSchema(model);
+    if (entitySchema.relations) {
+      return entitySchema.relations[relationName];
+    }
+    return;
+  }
 
   public getSchema(name: string) {
     return this._entitySchemas.find((schema) => schema.name === name);

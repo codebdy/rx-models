@@ -3,6 +3,7 @@ import { CommandMeta } from 'src/command/command.meta';
 import { CommandService } from 'src/command/command.service';
 import { QueryMeta } from 'src/meta/query/query.meta';
 import { QueryRelationMeta } from 'src/meta/query/query.relation-meta';
+import { SchemaService } from 'src/schema/schema.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { QueryModelMeta } from '../../meta/query/query.model-meta';
 import { JsonUnit } from '../base/json-unit';
@@ -21,6 +22,7 @@ export class MagicQueryParser {
   constructor(
     private readonly commandService: CommandService,
     private readonly typeOrmService: TypeOrmService,
+    private readonly schemaService: SchemaService,
   ) {}
 
   parse(jsonStr: string): QueryModelMeta {
@@ -67,7 +69,7 @@ export class MagicQueryParser {
   }
 
   parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
-    const relationEntitySchemaOptions = this.typeOrmService.findRelationEntitySchema(
+    const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
       meta.model,
       jsonUnit.key,
     );
@@ -134,7 +136,7 @@ export class MagicQueryParser {
   private parseRelation(jsonUnit: JsonUnit, relationEntitySchemaOptions) {
     const relation = new QueryRelationMeta();
     relation.name = jsonUnit.key;
-    relation.entitySchema = this.typeOrmService.findEntitySchemaOrFailed(
+    relation.entitySchema = this.schemaService.findEntitySchemaOrFailed(
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.commands.forEach((commandMeta) => {
