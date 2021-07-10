@@ -36,12 +36,12 @@ export class PackageManageService {
       await fs.promises.mkdir(PlatformTools.pathResolve(SCHEMAS_DIR));
     }
 
-    packages.forEach((aPackage) => {
-      PlatformTools.writeFile(
+    for (const aPackage of packages) {
+      await PlatformTools.writeFile(
         SCHEMAS_DIR + aPackage.uuid + '.json',
         JSON.stringify(aPackage, null, 2),
       );
-    });
+    }
 
     await this.typeormSerivce.restart();
   }
