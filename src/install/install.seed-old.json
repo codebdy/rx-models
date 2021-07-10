@@ -21,7 +21,8 @@
         {
           "uuid": "system-column-1-5",
           "name": "loginName",
-          "type": "String"
+          "type": "String",
+          "unique": true
         },
         {
           "uuid": "system-column-1-6",
