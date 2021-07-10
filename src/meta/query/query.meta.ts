@@ -1,11 +1,11 @@
 import { QueryCommand } from 'src/command/query-command';
 import { createId } from 'src/util/create-id';
-import { EntitySchema } from 'typeorm';
+import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { QueryRelationMeta } from './query.relation-meta';
 
 export abstract class QueryMeta {
   id: number;
-  entitySchema: EntitySchema<any>;
+  entitySchema: EntitySchemaOptions<any>;
   private _model: string;
   relationMetas: QueryRelationMeta[] = [];
   conditionCommands: QueryCommand[] = [];

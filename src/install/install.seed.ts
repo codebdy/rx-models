@@ -1,7 +1,9 @@
-import { ColumnType } from 'src/meta/entity/column-type';
-import { PackageMeta } from 'src/meta/entity/package-meta';
-import { PackageStatus } from 'src/meta/entity/package-status';
-import { RelationType } from 'src/meta/entity/relation-type';
+import { ColumnType } from 'src/schema/meta-interface/column-type';
+import {
+  PackageMeta,
+  PackageStatus,
+} from 'src/schema/meta-interface/package-meta';
+import { RelationType } from 'src/schema/meta-interface/relation-meta';
 
 export const packageSeed: PackageMeta = {
   uuid: 'system-package-1',

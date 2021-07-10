@@ -1,17 +1,18 @@
 import { QueryCommand } from 'src/command/query-command';
 import { QueryResult } from 'src/common/query-result';
-import { EntitySchema, SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm';
+import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { QueryMeta } from './query.meta';
 import { QueryModelMeta } from './query.model-meta';
 
 export class QueryRelationMeta extends QueryMeta {
   name: string;
   parentModelMeta: QueryModelMeta | QueryRelationMeta;
-  entitySchema: EntitySchema<any>;
+  entitySchema: EntitySchemaOptions<any>;
   relationCommands: QueryCommand[] = [];
 
   get model() {
-    return this.entitySchema.options.name;
+    return this.entitySchema.name;
   }
 
   pushCommand(command: QueryCommand) {
@@ -61,7 +62,7 @@ export class QueryRelationMeta extends QueryMeta {
       }
     }
     throw new Error(
-      `Please add relation ${relationName} of ${this.entitySchema.options.name} to query meta`,
+      `Please add relation ${relationName} of ${this.entitySchema.name} to query meta`,
     );
   }
 }

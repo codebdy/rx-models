@@ -7,6 +7,7 @@ export enum EntityType {
 export interface EntityMeta {
   uuid: string;
   name: string;
+  tableName?: string;
   entityType?: EntityType;
   columns: ColumnMeta[];
 }
