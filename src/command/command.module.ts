@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CommandService } from './command.service';
+import { QueryCommandService } from './query/query.command.service';
 
 @Module({
-  providers: [CommandService],
-  exports: [CommandService],
+  providers: [QueryCommandService],
+  exports: [QueryCommandService],
 })
 export class CommandModule {}

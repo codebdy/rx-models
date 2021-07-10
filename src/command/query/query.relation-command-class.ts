@@ -1,10 +1,10 @@
 import { QueryModelMeta } from 'src/meta/query/query.model-meta';
 import { QueryRelationMeta } from 'src/meta/query/query.relation-meta';
-import { CommandClass } from './command.class';
-import { CommandMeta } from './command.meta';
-import { QueryCommand } from './query-command';
+import { CommandMeta } from '../command.meta';
+import { QueryCommandClass } from './query.command.class';
+import { QueryCommand } from './query.command';
 
-export interface RelationCommandClass extends CommandClass {
+export interface QueryRelationCommandClass extends QueryCommandClass {
   new (
     commandMeta: CommandMeta,
     rootMeta: QueryModelMeta,

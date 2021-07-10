@@ -1,5 +1,5 @@
-import { CommandType } from 'src/command/query-command';
-import { QueryRelationCommand } from 'src/command/query-relation-command';
+import { CommandType } from 'src/command/query/query.command';
+import { QueryRelationCommand } from 'src/command/query/query.relation-command';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryRelationTakeCommand extends QueryRelationCommand {

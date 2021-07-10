@@ -1,4 +1,4 @@
-import { QueryCommand } from 'src/command/query-command';
+import { QueryCommand } from 'src/command/query/query.command';
 import { QueryResult } from 'src/common/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';

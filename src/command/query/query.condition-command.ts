@@ -1,7 +1,7 @@
 import { QueryMeta } from 'src/meta/query/query.meta';
 import { QueryModelMeta } from 'src/meta/query/query.model-meta';
-import { CommandMeta } from './command.meta';
-import { QueryCommand } from './query-command';
+import { CommandMeta } from '../command.meta';
+import { QueryCommand } from './query.command';
 
 export class QueryConditionCommand extends QueryCommand {
   constructor(

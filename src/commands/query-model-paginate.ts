@@ -1,4 +1,4 @@
-import { CommandType, QueryCommand } from 'src/command/query-command';
+import { QueryCommand, CommandType } from 'src/command/query/query.command';
 import { QueryResult } from 'src/common/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 

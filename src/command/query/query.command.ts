@@ -2,7 +2,7 @@
 import { QueryResult } from 'src/common/query-result';
 import { QueryModelMeta } from 'src/meta/query/query.model-meta';
 import { Connection, SelectQueryBuilder } from 'typeorm';
-import { CommandMeta } from './command.meta';
+import { CommandMeta } from '../command.meta';
 
 export enum CommandType {
   QUERY_MODEL_COMMAND = 1,

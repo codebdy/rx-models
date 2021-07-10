@@ -1,4 +1,4 @@
-import { QueryCommand } from 'src/command/query-command';
+import { QueryCommand } from 'src/command/query/query.command';
 import { createId } from 'src/util/create-id';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { QueryRelationMeta } from './query.relation-meta';

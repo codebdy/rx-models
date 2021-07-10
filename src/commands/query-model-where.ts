@@ -1,4 +1,4 @@
-import { CommandType, QueryCommand } from 'src/command/query-command';
+import { QueryCommand, CommandType } from 'src/command/query/query.command';
 import { parseWhereSql } from 'src/meta/query/parse-where-sql';
 
 export class QueryModelWhereCommand extends QueryCommand {
