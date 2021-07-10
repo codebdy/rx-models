@@ -23,7 +23,7 @@ export class AuthService {
       .addSelect('user.password')
       .where({ loginName: username })
       .getOne()) as RxUser;
-    if (user && (await bcrypt.compare(user.password, pass))) {
+    if (user && (await bcrypt.compare(pass, user.password))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       console.debug('AuthService', user);
