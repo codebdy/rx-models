@@ -7,9 +7,9 @@ import {
 } from 'typeorm';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { convertType } from './convert-type';
-import { EntityMeta } from './meta-interface/entity-meta';
-import { PackageMeta } from './meta-interface/package-meta';
-import { RelationMeta, RelationType } from './meta-interface/relation-meta';
+import { EntityMeta } from './graph-meta-interface/entity-meta';
+import { PackageMeta } from './graph-meta-interface/package-meta';
+import { RelationMeta, RelationType } from './graph-meta-interface/relation-meta';
 import { predefinedSchemas } from './predefined';
 
 @Injectable()

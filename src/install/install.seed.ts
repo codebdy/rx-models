@@ -1,9 +1,9 @@
-import { ColumnType } from 'src/schema/meta-interface/column-type';
+import { ColumnType } from 'src/schema/graph-meta-interface/column-type';
 import {
   PackageMeta,
   PackageStatus,
-} from 'src/schema/meta-interface/package-meta';
-import { RelationType } from 'src/schema/meta-interface/relation-meta';
+} from 'src/schema/graph-meta-interface/package-meta';
+import { RelationType } from 'src/schema/graph-meta-interface/relation-meta';
 
 export const packageSeed: PackageMeta = {
   uuid: 'system-package-1',

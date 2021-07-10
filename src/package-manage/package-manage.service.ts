@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PackageMeta } from 'src/schema/meta-interface/package-meta';
+import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { RxPackage, SCHEMAS_DIR } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
