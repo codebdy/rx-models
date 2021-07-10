@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RxUser } from 'src/meta/entity/rx-user';
-import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { NOT_INSTALL_ERROR } from 'src/util/consts';
 import * as bcrypt from 'bcrypt';
 
@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly typeormSerivce: TypeOrmWithSchemaService,
+    private readonly typeormSerivce: TypeOrmService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {

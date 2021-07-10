@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getRepository } from 'typeorm';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EntityMeta } from './param/entity.meta';
 import { EntityMetaCollection } from './param/entity.meta.colletion';
 import { MagicPostParamsParser } from './param/post.param.parser';
@@ -7,6 +7,7 @@ import { RelationMetaCollection } from './param/relation.meta.colletion';
 
 @Injectable()
 export class MagicPostService {
+  constructor(private readonly typeormSerivce: TypeOrmService) {}
   async post(json: any) {
     const savedEntites = {};
     const entities = new MagicPostParamsParser(json).entityMetas;
@@ -34,7 +35,9 @@ export class MagicPostService {
     }
 
     if (relationCollection.ids.length > 0) {
-      const repository = getRepository(relationCollection.model);
+      const repository = this.typeormSerivce.getRepository(
+        relationCollection.model,
+      );
       const relationEntities = await repository.findByIds(
         relationCollection.ids,
       );
@@ -53,7 +56,7 @@ export class MagicPostService {
           ? null
           : await this.proceRelationGroup(relationShip);
     }
-    const repository = getRepository(entityMeta.model);
+    const repository = this.typeormSerivce.getRepository(entityMeta.model);
     let entity: any = repository.create();
     if (entityMeta.meta?.id) {
       entity = await repository.findOne(entityMeta.meta?.id);

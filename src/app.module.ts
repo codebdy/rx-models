@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { MagicModule } from './magic/magic.module';
-import { TypeOrmWithSchemaModule } from './typeorm-with-schema/typeorm-with-schema.module';
+import { TypeOrmModule } from './typeorm/typeorm.module';
 import { InstallModule } from './install/install.module';
 import { PackageManageModule } from './package-manage/package-manage.module';
 
@@ -12,7 +12,7 @@ import { PackageManageModule } from './package-manage/package-manage.module';
   imports: [
     PackageManageModule,
     InstallModule,
-    TypeOrmWithSchemaModule,
+    TypeOrmModule,
     AuthModule,
     MagicModule,
   ],

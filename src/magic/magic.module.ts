@@ -9,12 +9,12 @@ import { MagicUploadService } from './upload/magic.upload.service';
 import { MagicUploadController } from './upload/magic.upload.controller';
 import { MagicUpdateService } from './update/magic.update.service';
 import { MagicUpdateController } from './update/magic.update.controller';
-import { TypeOrmWithSchemaModule } from 'src/typeorm-with-schema/typeorm-with-schema.module';
+import { TypeOrmModule } from 'src/typeorm/typeorm.module';
 import { CommandModule } from 'src/command/command.module';
 import { MagicQueryParser } from './query/magic.query.parser';
 
 @Module({
-  imports: [TypeOrmWithSchemaModule, CommandModule],
+  imports: [TypeOrmModule, CommandModule],
   providers: [
     MagicQueryParser,
     MagicQueryService,

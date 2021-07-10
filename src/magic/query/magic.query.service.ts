@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
@@ -7,7 +7,7 @@ import { TOKEN_GET_MANY } from '../base/tokens';
 @Injectable()
 export class MagicQueryService {
   constructor(
-    private readonly typeormSerivce: TypeOrmWithSchemaService,
+    private readonly typeormSerivce: TypeOrmService,
     private readonly queryParser: MagicQueryParser,
   ) {}
 

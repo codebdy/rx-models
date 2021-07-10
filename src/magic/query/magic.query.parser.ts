@@ -3,7 +3,7 @@ import { CommandMeta } from 'src/command/command.meta';
 import { CommandService } from 'src/command/command.service';
 import { QueryMeta } from 'src/meta/query/query.meta';
 import { QueryRelationMeta } from 'src/meta/query/query.relation-meta';
-import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { QueryModelMeta } from '../../meta/query/query.model-meta';
 import { JsonUnit } from '../base/json-unit';
 import {
@@ -20,7 +20,7 @@ export class MagicQueryParser {
   private querMeta: QueryModelMeta;
   constructor(
     private readonly commandService: CommandService,
-    private readonly typeOrmService: TypeOrmWithSchemaService,
+    private readonly typeOrmService: TypeOrmService,
   ) {}
 
   parse(jsonStr: string): QueryModelMeta {

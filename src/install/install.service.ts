@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RxUser } from 'src/meta/entity/rx-user';
 import { PackageManageService } from 'src/package-manage/package-manage.service';
-import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { DB_CONFIG_FILE, SALT_OR_ROUNDS } from 'src/util/consts';
 import { EntitySchema } from 'typeorm';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
@@ -21,7 +21,7 @@ export class InstallService {
   private _entitySchemas = new Map<string, EntitySchema>();
 
   constructor(
-    private readonly typeormSerivce: TypeOrmWithSchemaService,
+    private readonly typeormSerivce: TypeOrmService,
     private readonly packageManage: PackageManageService,
   ) {}
 

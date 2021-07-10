@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PackageMeta } from 'src/meta/entity/package-meta';
-import { TypeOrmWithSchemaService } from 'src/typeorm-with-schema/typeorm-with-schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { RxPackage, SCHEMAS_DIR } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 @Injectable()
 export class PackageManageService {
-  constructor(private readonly typeormSerivce: TypeOrmWithSchemaService) {}
+  constructor(private readonly typeormSerivce: TypeOrmService) {}
 
   public async savePackage(aPackage: PackageMeta) {
     const packageRepository = this.typeormSerivce.connection.getRepository<PackageMeta>(

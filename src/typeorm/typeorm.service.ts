@@ -25,8 +25,7 @@ import { predefinedEntities } from './entity';
 const CONNECTION_WITH_SCHEMA_NAME = 'WithSchema';
 
 @Injectable()
-export class TypeOrmWithSchemaService
-  implements OnModuleInit, OnApplicationShutdown {
+export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
   private readonly _logger = new Logger('TypeOrmWithSchemaService');
   private _connection?: Connection;
   private _entitySchemas = new Map<string, EntitySchema>();
