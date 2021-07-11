@@ -35,13 +35,13 @@ export class MagicPostService {
   private async proceRelationGroup(relationCollection: RelationMetaCollection) {
     let savedEntites = [];
 
-    for (const entity of relationCollection.entites) {
+    for (const entity of relationCollection.entities) {
       savedEntites.push(await this.saveEntity(entity));
     }
 
     if (relationCollection.ids.length > 0) {
       const repository = this.typeormSerivce.getRepository(
-        relationCollection.model,
+        relationCollection.entity,
       );
       const relationEntities = await repository.findByIds(
         relationCollection.ids,
@@ -61,7 +61,7 @@ export class MagicPostService {
           ? null
           : await this.proceRelationGroup(relationShip);
     }
-    const repository = this.typeormSerivce.getRepository(entityMeta.model);
+    const repository = this.typeormSerivce.getRepository(entityMeta.entity);
     let entity: any = repository.create();
     if (entityMeta.meta?.id) {
       entity = await repository.findOne(entityMeta.meta?.id);

@@ -9,7 +9,10 @@ import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { convertType } from './convert-type';
 import { EntityMeta } from './graph-meta-interface/entity-meta';
 import { PackageMeta } from './graph-meta-interface/package-meta';
-import { RelationMeta, RelationType } from './graph-meta-interface/relation-meta';
+import {
+  RelationMeta,
+  RelationType,
+} from './graph-meta-interface/relation-meta';
 import { predefinedSchemas } from './predefined';
 
 @Injectable()
@@ -42,6 +45,17 @@ export class SchemaService {
 
   public getSchema(name: string) {
     return this._entitySchemas.find((schema) => schema.name === name);
+  }
+
+  public getRelationSchemaName(relationName: string, entityName: string) {
+    const relations = this.getSchema(entityName).relations;
+    if (!relations) {
+      return undefined;
+    }
+
+    if (relations[relationName]) {
+      return relations[relationName].target?.toString();
+    }
   }
 
   private loadPredefinedSchemas() {
