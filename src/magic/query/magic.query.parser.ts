@@ -4,7 +4,6 @@ import { QueryCommandService } from 'src/command/query/query.command.service';
 import { QueryMeta } from 'src/magic-meta/query/query.meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { QueryModelMeta } from '../../magic-meta/query/query.model-meta';
 import { JsonUnit } from '../base/json-unit';
 import {
@@ -21,7 +20,6 @@ export class MagicQueryParser {
   private querMeta: QueryModelMeta;
   constructor(
     private readonly commandService: QueryCommandService,
-    private readonly typeOrmService: TypeOrmService,
     private readonly schemaService: SchemaService,
   ) {}
 

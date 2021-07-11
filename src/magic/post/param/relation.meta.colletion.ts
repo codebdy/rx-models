@@ -1,8 +1,8 @@
 import { JsonUnit } from 'src/magic/base/json-unit';
-import { EntityMeta } from './entity.meta';
+import { InstanceMeta } from './instance.meta';
 
 export class RelationMetaCollection {
-  private _entities: EntityMeta[] = [];
+  private _entities: InstanceMeta[] = [];
   private _ids: number[] = [];
   private _jsonUnit: JsonUnit;
   private _model: string;
@@ -44,7 +44,7 @@ export class RelationMetaCollection {
 
   private processOneElement(entityOrId: any) {
     if (Number.isNaN(entityOrId)) {
-      this._entities.push(new EntityMeta(this._model, entityOrId));
+      this._entities.push(new InstanceMeta(this._model, entityOrId));
     } else {
       this._ids.push(entityOrId);
     }

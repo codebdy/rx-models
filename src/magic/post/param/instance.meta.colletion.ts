@@ -1,22 +1,22 @@
 import { JsonUnit } from 'src/magic/base/json-unit';
-import { EntityMeta } from './entity.meta';
+import { InstanceMeta } from './instance.meta';
 
-export class EntityMetaCollection {
-  private _entities: EntityMeta[] = [];
+export class InstanceMetaCollection {
+  private _instances: InstanceMeta[] = [];
   private _jsonUnit: JsonUnit;
   private _model: string;
-  private _isSingleEntity = false;
+  private _isSingle = false;
 
   constructor(model: string, jsonUnit: JsonUnit) {
     this._jsonUnit = jsonUnit;
     this._model = model;
     if (Array.isArray(jsonUnit.value)) {
       for (const meta of jsonUnit.value) {
-        this._entities.push(new EntityMeta(model, meta));
+        this._instances.push(new InstanceMeta(model, meta));
       }
     } else {
-      this._isSingleEntity = true;
-      this._entities.push(new EntityMeta(model, jsonUnit.value));
+      this._isSingle = true;
+      this._instances.push(new InstanceMeta(model, jsonUnit.value));
     }
   }
 
@@ -28,11 +28,11 @@ export class EntityMetaCollection {
     return this._jsonUnit.commands;
   }
 
-  get entites() {
-    return this._entities;
+  get instances() {
+    return this._instances;
   }
 
-  get isSingleEntity() {
-    return this._isSingleEntity;
+  get isSingle() {
+    return this._isSingle;
   }
 }

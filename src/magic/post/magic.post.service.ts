@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { EntityMeta } from './param/entity.meta';
-import { EntityMetaCollection } from './param/entity.meta.colletion';
+import { InstanceMeta } from './param/instance.meta';
+import { InstanceMetaCollection } from './param/instance.meta.colletion';
 import { MagicPostParamsParser } from './param/post.param.parser';
 import { RelationMetaCollection } from './param/relation.meta.colletion';
 
@@ -17,14 +17,14 @@ export class MagicPostService {
     return savedEntites;
   }
 
-  private async saveEntityGroup(entityGroup: EntityMetaCollection) {
+  private async saveEntityGroup(entityGroup: InstanceMetaCollection) {
     const savedEntites = [];
 
-    for (const entity of entityGroup.entites) {
+    for (const entity of entityGroup.instances) {
       savedEntites.push(await this.saveEntity(entity));
     }
 
-    return entityGroup.isSingleEntity ? savedEntites[0] : savedEntites;
+    return entityGroup.isSingle ? savedEntites[0] : savedEntites;
   }
 
   private async proceRelationGroup(relationCollection: RelationMetaCollection) {
@@ -47,7 +47,7 @@ export class MagicPostService {
     return relationCollection.isSingleEntity ? savedEntites[0] : savedEntites;
   }
 
-  private async saveEntity(entityMeta: EntityMeta) {
+  private async saveEntity(entityMeta: InstanceMeta) {
     const relations = entityMeta.relations;
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];

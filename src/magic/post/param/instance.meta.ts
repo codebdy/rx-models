@@ -2,17 +2,15 @@ import { JsonUnit } from 'src/magic/base/json-unit';
 import { getRelationModel } from '../../base/getRelationModel';
 import { RelationMetaCollection } from './relation.meta.colletion';
 
-export class EntityMeta {
+export class InstanceMeta {
   private _meta: any = {};
   private _relations: { [key: string]: RelationMetaCollection } = {};
   private _savedRelasions: { [key: string]: any } = {};
   private _model: string;
-  private _json: any;
 
   constructor(model: string, json: any) {
     this._model = model;
-    this._json = json;
-    for (const keyStr in this._json) {
+    for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
 
