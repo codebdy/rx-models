@@ -1,5 +1,5 @@
 import { JsonUnit } from 'src/magic/base/json-unit';
-import { getRelationModel } from '../../base/getRelationModel';
+import { getRelationModel } from '../../magic/base/getRelationModel';
 import { RelationMetaCollection } from './relation.meta.colletion';
 
 export class InstanceMeta {

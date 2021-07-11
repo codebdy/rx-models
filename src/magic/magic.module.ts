@@ -13,11 +13,13 @@ import { TypeOrmModule } from 'src/typeorm/typeorm.module';
 import { CommandModule } from 'src/command/command.module';
 import { MagicQueryParser } from './query/magic.query.parser';
 import { SchemaModule } from 'src/schema/schema.module';
+import { MagicPostParser } from './post/magic.post.parser';
 
 @Module({
   imports: [SchemaModule, TypeOrmModule, CommandModule],
   providers: [
     MagicQueryParser,
+    MagicPostParser,
     MagicQueryService,
     MagicPostService,
     MagicDeleteService,

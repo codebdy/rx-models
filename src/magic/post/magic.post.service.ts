@@ -1,30 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
+import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { InstanceMeta } from './param/instance.meta';
-import { InstanceMetaCollection } from './param/instance.meta.colletion';
-import { MagicPostParamsParser } from './param/post.param.parser';
-import { RelationMetaCollection } from './param/relation.meta.colletion';
+import { InstanceMeta } from '../../magic-meta/post/instance.meta';
+import { MagicPostParser } from './magic.post.parser';
 
 @Injectable()
 export class MagicPostService {
-  constructor(private readonly typeormSerivce: TypeOrmService) {}
+  constructor(
+    private readonly typeormSerivce: TypeOrmService,
+    private readonly parser: MagicPostParser,
+  ) {}
   async post(json: any) {
     const savedEntites = {};
-    const entities = new MagicPostParamsParser(json).entityMetas;
-    for (const entityGroup of entities) {
-      savedEntites[entityGroup.model] = await this.saveEntityGroup(entityGroup);
+    const instances = this.parser.parse(json);
+    for (const instanceGroup of instances) {
+      savedEntites[instanceGroup.model] = await this.saveInstanceGroup(
+        instanceGroup,
+      );
     }
     return savedEntites;
   }
 
-  private async saveEntityGroup(entityGroup: InstanceMetaCollection) {
+  private async saveInstanceGroup(instanceGroup: InstanceMetaCollection) {
     const savedEntites = [];
 
-    for (const entity of entityGroup.instances) {
+    for (const entity of instanceGroup.instances) {
       savedEntites.push(await this.saveEntity(entity));
     }
 
-    return entityGroup.isSingle ? savedEntites[0] : savedEntites;
+    return instanceGroup.isSingle ? savedEntites[0] : savedEntites;
   }
 
   private async proceRelationGroup(relationCollection: RelationMetaCollection) {

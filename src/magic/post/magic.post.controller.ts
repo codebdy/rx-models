@@ -9,11 +9,11 @@ export class MagicPostController {
   /**
    * 通用提交接口，语法示例：
    * {
-   *    "RxApp @ignoreUndefined(password)":[
+   *    "RxApp @ignoreEmperty(password) @sendEmail(title, content, attachments, template, sign)":[
    *      {
    *        "id": 1,
    *        "name":"XXX",
-   *        "auths":[
+   *        "auths @ignoreEmperty(password)":[
    *          {
    *            "id":2,
    *            "name":"xxx",
