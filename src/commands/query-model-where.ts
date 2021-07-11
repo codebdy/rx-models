@@ -1,5 +1,5 @@
 import { QueryCommand, CommandType } from 'src/command/query/query.command';
-import { parseWhereSql } from 'src/meta/query/parse-where-sql';
+import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
 
 export class QueryModelWhereCommand extends QueryCommand {
   static description = `

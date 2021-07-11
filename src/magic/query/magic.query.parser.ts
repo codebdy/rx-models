@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query/query.command.service';
-import { QueryMeta } from 'src/meta/query/query.meta';
-import { QueryRelationMeta } from 'src/meta/query/query.relation-meta';
+import { QueryMeta } from 'src/magic-meta/query/query.meta';
+import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { QueryModelMeta } from '../../meta/query/query.model-meta';
+import { QueryModelMeta } from '../../magic-meta/query/query.model-meta';
 import { JsonUnit } from '../base/json-unit';
 import {
   TOKEN_GET_MANY,

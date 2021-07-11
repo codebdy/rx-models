@@ -1,6 +1,6 @@
 import { CommandType } from 'src/command/query/query.command';
 import { QueryRelationCommand } from 'src/command/query/query.relation-command';
-import { parseWhereSql } from 'src/meta/query/parse-where-sql';
+import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
 
 export class QueryModelOrderByCommand extends QueryRelationCommand {
   static description = `

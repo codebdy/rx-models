@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { QueryResult } from 'src/common/query-result';
-import { QueryModelMeta } from 'src/meta/query/query.model-meta';
+import { QueryModelMeta } from 'src/magic-meta/query/query.model-meta';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CommandMeta } from '../command.meta';
 

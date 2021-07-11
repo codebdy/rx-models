@@ -1,5 +1,5 @@
-import { QueryMeta } from 'src/meta/query/query.meta';
-import { QueryModelMeta } from 'src/meta/query/query.model-meta';
+import { QueryMeta } from 'src/magic-meta/query/query.meta';
+import { QueryModelMeta } from 'src/magic-meta/query/query.model-meta';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
 
