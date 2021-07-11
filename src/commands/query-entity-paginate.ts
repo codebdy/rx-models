@@ -3,14 +3,14 @@ import { CommandType } from 'src/command/command-type';
 import { QueryResult } from 'src/common/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelPaginateCommand extends QueryCommand {
+export class QueryEntityPaginateCommand extends QueryCommand {
   static description = `
     Magic query command, Paginate the results.
   `;
 
   static version = '1.0';
 
-  static commandType = CommandType.QUERY_MODEL_COMMAND;
+  static commandType = CommandType.QUERY_ENTITY_COMMAND;
 
   static commandName = 'paginate';
 

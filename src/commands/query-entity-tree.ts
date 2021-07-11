@@ -4,12 +4,12 @@ import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_ONE } from 'src/magic/base/tokens';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTreeCommand extends QueryCommand {
+export class QueryEntityTreeCommand extends QueryCommand {
   static description = `Magic query command, make result to a tree struct.`;
 
   static version = '1.0';
 
-  static commandType = CommandType.QUERY_MODEL_COMMAND;
+  static commandType = CommandType.QUERY_ENTITY_COMMAND;
 
   static commandName = 'tree';
 

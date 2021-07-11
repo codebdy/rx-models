@@ -9,7 +9,7 @@ export class QueryMutationReadCommand extends QueryCommand {
 
   static version = '1.0';
 
-  static commandType = CommandType.QUERY_MODEL_COMMAND;
+  static commandType = CommandType.QUERY_ENTITY_COMMAND;
 
   static commandName = 'read';
 

@@ -2,14 +2,14 @@ import { QueryCommand } from 'src/command/query/query.command';
 import { CommandType } from 'src/command/command-type';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelSelectCommand extends QueryCommand {
+export class QueryEntitySelectCommand extends QueryCommand {
   static description = `
     Magic query command, select command, to filter selected field.
   `;
 
   static version = '1.0';
 
-  static commandType = CommandType.QUERY_MODEL_COMMAND;
+  static commandType = CommandType.QUERY_ENTITY_COMMAND;
 
   static commandName = 'select';
 

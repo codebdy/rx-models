@@ -2,16 +2,15 @@ import { QueryCommand } from 'src/command/query/query.command';
 import { CommandType } from 'src/command/command-type';
 import { SelectQueryBuilder } from 'typeorm';
 
-export class QueryModelTakeCommand extends QueryCommand {
+export class QueryEntitySkipCommand extends QueryCommand {
   static description = `
-    Magic query command, set take(count) to QueryBuilder.
+    Magic query command, set skip(count) to QueryBuilder.
   `;
-
   static version = '1.0';
 
-  static commandType = CommandType.QUERY_MODEL_COMMAND;
+  static commandType = CommandType.QUERY_ENTITY_COMMAND;
 
-  static commandName = 'take';
+  static commandName = 'skip';
 
   isEffectResultCount = true;
 
@@ -20,7 +19,7 @@ export class QueryModelTakeCommand extends QueryCommand {
   }
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
-    qb.take(this.count);
+    qb.skip(this.count);
     return qb;
   }
 }

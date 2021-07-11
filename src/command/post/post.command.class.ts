@@ -1,3 +1,4 @@
+import { SchemaService } from 'src/schema/schema.service';
 import { CommandType } from '../command-type';
 import { CommandMeta } from '../command.meta';
 import { PostCommand } from './post.command';
@@ -8,5 +9,5 @@ export interface PostCommandClass extends Function {
 
   commandType: CommandType;
   commandName: string;
-  new (commandMeta: CommandMeta): PostCommand;
+  new (commandMeta: CommandMeta, schemaService: SchemaService): PostCommand;
 }
