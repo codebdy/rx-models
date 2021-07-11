@@ -1,6 +1,6 @@
-import { QueryModelMeta } from 'src/magic-meta/query/query.model-meta';
+import { CommandType } from '../command-type';
 import { CommandMeta } from '../command.meta';
-import { CommandType, PostCommand } from './post.command';
+import { PostCommand } from './post.command';
 
 export interface PostCommandClass extends Function {
   description?: string;
@@ -8,5 +8,5 @@ export interface PostCommandClass extends Function {
 
   commandType: CommandType;
   commandName: string;
-  new (commandMeta: CommandMeta, rootMeta: QueryModelMeta): PostCommand;
+  new (commandMeta: CommandMeta): PostCommand;
 }
