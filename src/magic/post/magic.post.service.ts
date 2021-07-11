@@ -53,9 +53,7 @@ export class MagicPostService {
     }
 
     if (relationCollection.ids.length > 0) {
-      const repository = this.typeormSerivce.getRepository(
-        relationCollection.entity,
-      );
+      const repository = entityManger.getRepository(relationCollection.entity);
       const relationEntities = await repository.findByIds(
         relationCollection.ids,
       );
