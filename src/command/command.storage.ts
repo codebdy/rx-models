@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { importCommandsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
 import { CommandType } from './command-type';
+import { PostCommandClass } from './post/post.command.class';
 import { QueryCommandClass } from './query/query.command.class';
 
 @Injectable()
@@ -11,12 +12,17 @@ export class CommandStorage implements OnModuleInit {
     [key: string]: QueryCommandClass;
   } = {} as any;
 
+  postEntityCommandClasses: { [key: string]: PostCommandClass } = {} as any;
+  postRelationCommandClasses: { [key: string]: PostCommandClass } = {} as any;
+
   async onModuleInit() {
     await this.loadCommandClasses();
   }
 
   async loadCommandClasses() {
-    const commandClasses: QueryCommandClass[] = importCommandsFromDirectories([
+    const commandClasses:
+      | QueryCommandClass[]
+      | PostCommandClass[] = importCommandsFromDirectories([
       'dist/commands/*.js',
       'commands/*.js',
     ]);
@@ -25,7 +31,7 @@ export class CommandStorage implements OnModuleInit {
       if (commandClass.commandType === CommandType.QUERY_ENTITY_COMMAND) {
         console.assert(
           !this.queryEntityCommandClasses[commandName],
-          `Model command ${commandName} duplicated!`,
+          `Query entity command ${commandName} duplicated!`,
         );
         this.queryEntityCommandClasses[commandName] = commandClass;
       }
@@ -33,7 +39,7 @@ export class CommandStorage implements OnModuleInit {
       if (commandClass.commandType === CommandType.QUERY_RELATION_COMMAND) {
         console.assert(
           !this.queryRelationCommandClasses[commandName],
-          `Relation command ${commandName} duplicated!`,
+          `Query relation command ${commandName} duplicated!`,
         );
         this.queryRelationCommandClasses[commandName] = commandClass;
       }
@@ -41,9 +47,25 @@ export class CommandStorage implements OnModuleInit {
       if (commandClass.commandType === CommandType.QUERY_CONDITION_COMMAND) {
         console.assert(
           !this.queryConditionCommandClasses[commandName],
-          `Condition command ${commandName} duplicated!`,
+          `Query condition command ${commandName} duplicated!`,
         );
         this.queryConditionCommandClasses[commandName] = commandClass;
+      }
+
+      if (commandClass.commandType === CommandType.POST_ENTITY_COMMAND) {
+        console.assert(
+          !this.postEntityCommandClasses[commandName],
+          `Post entity command ${commandName} duplicated!`,
+        );
+        this.postEntityCommandClasses[commandName] = commandClass;
+      }
+
+      if (commandClass.commandType === CommandType.POST_RELATION_COMMAND) {
+        console.assert(
+          !this.postRelationCommandClasses[commandName],
+          `Post relation command ${commandName} duplicated!`,
+        );
+        this.postRelationCommandClasses[commandName] = commandClass;
       }
     });
     console.debug('Commands loaded');

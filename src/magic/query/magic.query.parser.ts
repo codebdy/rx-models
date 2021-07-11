@@ -44,7 +44,7 @@ export class MagicQueryParser {
           } else if (commandMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
           } else {
-            const commandClass = this.commandService.findModelCommandOrFailed(
+            const commandClass = this.commandService.findEntityCommandOrFailed(
               commandMeta.name,
             );
             const command = new commandClass(commandMeta, this.querMeta);
@@ -121,7 +121,7 @@ export class MagicQueryParser {
     cmdMeta.value = jsonUnit.value;
 
     if (meta instanceof QueryModelMeta) {
-      const cmdClass = this.commandService.findModelCommandOrFailed(name);
+      const cmdClass = this.commandService.findEntityCommandOrFailed(name);
       meta.pushCommand(new cmdClass(cmdMeta, this.querMeta));
     } else {
       const cmdClass = this.commandService.findRelationCommandOrFailed(name);

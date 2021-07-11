@@ -8,7 +8,7 @@ import { CommandStorage } from './command.storage';
 export class QueryCommandService {
   constructor(private readonly commandStorage: CommandStorage) {}
 
-  findModelCommandOrFailed(name: string): QueryCommandClass {
+  findEntityCommandOrFailed(name: string): QueryCommandClass {
     const commandClass = this.commandStorage.queryEntityCommandClasses[name];
     if (!commandClass) {
       throw new Error(`No entity command "${name}"`);

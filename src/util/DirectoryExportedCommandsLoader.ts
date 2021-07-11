@@ -1,3 +1,4 @@
+import { PostCommandClass } from 'src/command/post/post.command.class';
 import { QueryCommandClass } from 'src/command/query/query.command.class';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -9,13 +10,16 @@ export function importCommandsFromDirectories(
   directories: string[],
   formats = ['.js', '.cjs', '.ts'],
   // eslint-disable-next-line @typescript-eslint/ban-types
-): QueryCommandClass[] {
+): QueryCommandClass[] | PostCommandClass[] {
   const logLevel = 'info';
   const classesNotFoundMessage =
     'No classes were found using the provided glob pattern: ';
   const classesFoundMessage = 'All classes found using provided glob pattern';
   // eslint-disable-next-line @typescript-eslint/ban-types
-  function loadFileClasses(exported: any, allLoaded: QueryCommandClass[]) {
+  function loadFileClasses(
+    exported: any,
+    allLoaded: QueryCommandClass[] | PostCommandClass[],
+  ) {
     if (
       typeof exported === 'function' /*|| exported instanceof EntitySchema*/
     ) {
