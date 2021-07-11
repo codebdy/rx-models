@@ -1,4 +1,5 @@
-import { QueryCommand, CommandType } from 'src/command/query/query.command';
+import { QueryCommand } from 'src/command/query/query.command';
+import { CommandType } from 'src/command/command-type';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_ONE } from 'src/magic/base/tokens';
 import { SelectQueryBuilder } from 'typeorm';

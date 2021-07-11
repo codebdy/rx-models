@@ -4,13 +4,6 @@ import { QueryModelMeta } from 'src/magic-meta/query/query.model-meta';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CommandMeta } from '../command.meta';
 
-export enum CommandType {
-  QUERY_MODEL_COMMAND = 1,
-  QUERY_RELATION_COMMAND,
-  //condition command 既可以用于Medel级别，也可以用于relation级别
-  QUERY_CONDITION_COMMAND,
-}
-
 export class QueryCommand {
   /**
    * 是否影响查询结果条数，如果是，分页时需要剔除该指令来求totalCount

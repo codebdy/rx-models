@@ -1,12 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { importCommandsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
-import { QueryCommandClass } from './query.command.class';
-import { QueryConditionCommandClass } from './query.condition-command-class';
-import { QueryRelationCommandClass } from './query.relation-command-class';
-import { CommandType } from './query.command';
+import { QueryCommandClass } from './query/query.command.class';
+import { QueryConditionCommandClass } from './query/query.condition-command-class';
+import { QueryRelationCommandClass } from './query/query.relation-command-class';
+import { CommandType } from "./command-type";
 
 @Injectable()
-export class QueryCommandService implements OnModuleInit {
+export class CommandService implements OnModuleInit {
   modelCommandClasses: { [key: string]: QueryCommandClass } = {} as any;
   relationCommandClasses: { [key: string]: QueryCommandClass } = {} as any;
   conditionCommandClasses: { [key: string]: QueryCommandClass } = {} as any;

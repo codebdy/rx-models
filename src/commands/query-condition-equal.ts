@@ -1,4 +1,4 @@
-import { CommandType } from 'src/command/query/query.command';
+import { CommandType } from 'src/command/command-type';
 import { QueryConditionCommand } from 'src/command/query/query.condition-command';
 import { createId } from 'src/util/create-id';
 

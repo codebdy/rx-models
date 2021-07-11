@@ -1,4 +1,5 @@
-import { CommandType, QueryCommand } from 'src/command/query/query.command';
+import { QueryCommand } from 'src/command/query/query.command';
+import { CommandType } from 'src/command/command-type';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelOrderByCommand extends QueryCommand {

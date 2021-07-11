@@ -1,4 +1,4 @@
-import { CommandType } from 'src/command/query/query.command';
+import { CommandType } from 'src/command/command-type';
 import { QueryRelationCommand } from 'src/command/query/query.relation-command';
 import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
 

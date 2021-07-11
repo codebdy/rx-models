@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandMeta } from 'src/command/command.meta';
-import { QueryCommandService } from 'src/command/query/query.command.service';
+import { CommandService } from 'src/command/command.service';
 import { QueryMeta } from 'src/magic-meta/query/query.meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
@@ -19,7 +19,7 @@ import {
 export class MagicQueryParser {
   private querMeta: QueryModelMeta;
   constructor(
-    private readonly commandService: QueryCommandService,
+    private readonly commandService: CommandService,
     private readonly schemaService: SchemaService,
   ) {}
 
