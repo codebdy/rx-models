@@ -42,7 +42,7 @@ export class MagicPostService {
     return instanceGroup.isSingle ? savedEntites[0] : savedEntites;
   }
 
-  private async proceRelationGroup(
+  private async processRelationGroup(
     relationCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {
@@ -60,7 +60,7 @@ export class MagicPostService {
       savedEntites = savedEntites.concat(relationEntities);
     }
 
-    return relationCollection.isSingleEntity ? savedEntites[0] : savedEntites;
+    return relationCollection.isSingle ? savedEntites[0] : savedEntites;
   }
 
   private async saveEntity(
@@ -73,7 +73,7 @@ export class MagicPostService {
       entityMeta.savedRelations[relationKey] =
         relationShip.ids.length === 0
           ? null
-          : await this.proceRelationGroup(relationShip, entityManger);
+          : await this.processRelationGroup(relationShip, entityManger);
     }
     const repository = entityManger.getRepository(entityMeta.entity);
     let entity: any = repository.create();

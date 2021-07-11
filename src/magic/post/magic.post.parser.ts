@@ -72,7 +72,7 @@ export class MagicPostParser {
       }
     } else if (jsonUnit.value === null) {
     } else {
-      relationMetaCollection.isSingleEntity = true;
+      relationMetaCollection.isSingle = true;
       this.processOneElement(jsonUnit.value, relationMetaCollection);
     }
     relationMetaCollection.commands = jsonUnit.commands;

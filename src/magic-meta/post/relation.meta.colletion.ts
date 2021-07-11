@@ -6,5 +6,5 @@ export class RelationMetaCollection {
   ids: number[] = [];
   commands: CommandMeta[] = [];
   entity: string;
-  isSingleEntity = false;
+  isSingle = false;
 }
