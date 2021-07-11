@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { EntityManager } from 'typeorm';
 import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
 
@@ -14,29 +15,41 @@ export class MagicPostService {
   async post(json: any) {
     const savedEntites = {};
     const instances = this.parser.parse(json);
-    for (const instanceGroup of instances) {
-      savedEntites[instanceGroup.model] = await this.saveInstanceGroup(
-        instanceGroup,
-      );
-    }
+    await this.typeormSerivce.connection.transaction(
+      async (entityManger: EntityManager) => {
+        for (const instanceGroup of instances) {
+          savedEntites[instanceGroup.model] = await this.saveInstanceGroup(
+            instanceGroup,
+            entityManger,
+          );
+        }
+      },
+    );
+
     return savedEntites;
   }
 
-  private async saveInstanceGroup(instanceGroup: InstanceMetaCollection) {
+  private async saveInstanceGroup(
+    instanceGroup: InstanceMetaCollection,
+    entityManger: EntityManager,
+  ) {
     const savedEntites = [];
 
     for (const entity of instanceGroup.instances) {
-      savedEntites.push(await this.saveEntity(entity));
+      savedEntites.push(await this.saveEntity(entity, entityManger));
     }
 
     return instanceGroup.isSingle ? savedEntites[0] : savedEntites;
   }
 
-  private async proceRelationGroup(relationCollection: RelationMetaCollection) {
+  private async proceRelationGroup(
+    relationCollection: RelationMetaCollection,
+    entityManger: EntityManager,
+  ) {
     let savedEntites = [];
 
     for (const entity of relationCollection.entities) {
-      savedEntites.push(await this.saveEntity(entity));
+      savedEntites.push(await this.saveEntity(entity, entityManger));
     }
 
     if (relationCollection.ids.length > 0) {
@@ -52,16 +65,19 @@ export class MagicPostService {
     return relationCollection.isSingleEntity ? savedEntites[0] : savedEntites;
   }
 
-  private async saveEntity(entityMeta: InstanceMeta) {
+  private async saveEntity(
+    entityMeta: InstanceMeta,
+    entityManger: EntityManager,
+  ) {
     const relations = entityMeta.relations;
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
       entityMeta.savedRelations[relationKey] =
         relationShip.ids.length === 0
           ? null
-          : await this.proceRelationGroup(relationShip);
+          : await this.proceRelationGroup(relationShip, entityManger);
     }
-    const repository = this.typeormSerivce.getRepository(entityMeta.entity);
+    const repository = entityManger.getRepository(entityMeta.entity);
     let entity: any = repository.create();
     if (entityMeta.meta?.id) {
       entity = await repository.findOne(entityMeta.meta?.id);
