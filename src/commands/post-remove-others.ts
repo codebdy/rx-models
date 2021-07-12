@@ -4,7 +4,7 @@ import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.collet
 import { EntityManager } from 'typeorm';
 
 export class PostRemoveOthersCommand extends PostCommand {
-  static description = `Condition equal command.`;
+  static description = `Remove records that not saved.`;
 
   static version = '1.0';
 
@@ -25,6 +25,5 @@ export class PostRemoveOthersCommand extends PostCommand {
         ids: savedInstances.map((instance) => instance.id),
       })
       .execute();
-    console.log('哈哈 来吧');
   }
 }
