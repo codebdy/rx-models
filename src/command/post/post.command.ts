@@ -13,28 +13,31 @@ export class PostCommand {
     protected readonly schemaService: SchemaService,
   ) {}
 
-  beforeSaveInstance(instanceMeta: InstanceMeta, entityManger: EntityManager) {
+  async beforeSaveInstance(
+    instanceMeta: InstanceMeta,
+    entityManger: EntityManager,
+  ) {
     return instanceMeta;
   }
 
-  afterSaveInstance(
+  async afterSaveInstance(
     savedInstance: any,
     entityName: string,
     entityManger: EntityManager,
   ) {}
 
-  beforeUpdateRelationCollection(
+  async beforeUpdateRelationCollection(
     relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {}
 
-  afterSaveEntityInstanceCollection(
+  async afterSaveEntityInstanceCollection(
     savedInstances: any[],
     instanceMetaCollection: InstanceMetaCollection,
     entityManger: EntityManager,
   ) {}
 
-  afterSaveOneRelationInstanceCollection(
+  async afterSaveOneRelationInstanceCollection(
     savedInstances: any[],
     relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,
