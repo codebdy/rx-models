@@ -18,7 +18,7 @@ export class MagicPostService {
     await this.typeormSerivce.connection.transaction(
       async (entityManger: EntityManager) => {
         for (const instanceGroup of instances) {
-          savedEntites[instanceGroup.model] = await this.saveInstanceGroup(
+          savedEntites[instanceGroup.entity] = await this.saveInstanceGroup(
             instanceGroup,
             entityManger,
           );
