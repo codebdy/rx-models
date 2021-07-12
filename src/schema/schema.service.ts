@@ -15,9 +15,21 @@ import {
 } from './graph-meta-interface/relation-meta';
 import { predefinedSchemas } from './predefined';
 
+interface WithUuid {
+  uuid: string;
+}
+
+export interface PackageSchema {
+  id: number;
+  uuid: string;
+  name: string;
+  entitySchemas: (EntitySchemaOptions<any> & WithUuid)[];
+}
+
 @Injectable()
 export class SchemaService {
-  private _entitySchemas: EntitySchemaOptions<any>[] = [];
+  private _entitySchemas: (EntitySchemaOptions<any> & WithUuid)[] = [];
+  private _packages: PackageMeta[];
 
   constructor() {
     this.loadPredefinedSchemas();
@@ -27,6 +39,24 @@ export class SchemaService {
   public get entitySchemas() {
     return this._entitySchemas;
   }
+
+  public getPackageSchemas() {
+    const packages: PackageSchema[] = this._packages.map((aPackage) => {
+      return {
+        id: aPackage.id,
+        uuid: aPackage.uuid,
+        name: aPackage.name,
+        entitySchemas: aPackage.entities.map((entity) => {
+          return this._entitySchemas.find(
+            (aEntity) => aEntity.uuid === entity.uuid,
+          );
+        }),
+      };
+    });
+
+    return packages;
+  }
+
   public findEntitySchemaOrFailed(name: string) {
     const schema = this.getSchema(name);
     if (!schema) {
@@ -66,7 +96,7 @@ export class SchemaService {
   }
 
   private loadPredefinedSchemas() {
-    predefinedSchemas.forEach((schema: EntitySchemaOptions<any>) => {
+    predefinedSchemas.forEach((schema: EntitySchemaOptions<any> & WithUuid) => {
       this._entitySchemas.push(schema);
     });
   }
@@ -78,17 +108,23 @@ export class SchemaService {
       SCHEMAS_DIR + '*.json',
     ]);
 
+    this._packages = packages;
+
     packages.forEach((aPackage) => {
       entityMetas.push(...(aPackage.entities || []));
       relationMetas.push(...(aPackage.relations || []));
     });
 
     entityMetas.forEach((entityMeta) => {
-      const columns: { [key: string]: EntitySchemaColumnOptions } = {};
-      const relations: { [key: string]: EntitySchemaRelationOptions } = {};
+      const columns: {
+        [key: string]: EntitySchemaColumnOptions & WithUuid;
+      } = {};
+      const relations: {
+        [key: string]: EntitySchemaRelationOptions & WithUuid;
+      } = {};
       for (const column of entityMeta.columns) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { name, type, uuid, ...rest } = column;
+        const { name, type, ...rest } = column;
         columns[column.name] = {
           ...rest,
           type: convertType(column.type),
@@ -98,7 +134,10 @@ export class SchemaService {
       for (const relation of relationMetas) {
         if (relation.sourceId === entityMeta.uuid) {
           relations[relation.roleOnSource] = {
-            target: entityMeta.name,
+            uuid: entityMeta.uuid,
+            target: entityMetas.find(
+              (entity) => entity.uuid === relation.targetId,
+            )?.name,
             type: relation.relationType,
             joinTable:
               relation.relationType === RelationType.MANY_TO_MANY &&
@@ -120,8 +159,11 @@ export class SchemaService {
           if (relation.relationType === RelationType.MANY_TO_ONE) {
             relationType = RelationType.ONE_TO_MANY;
           }
-          relations[relation.roleOnSource] = {
-            target: entityMeta.name,
+          relations[relation.roleOnTarget] = {
+            uuid: entityMeta.uuid,
+            target: entityMetas.find(
+              (entity) => entity.uuid === relation.sourceId,
+            )?.name,
             type: relationType,
             joinTable:
               relationType === RelationType.MANY_TO_MANY &&
@@ -137,7 +179,8 @@ export class SchemaService {
         }
       }
 
-      const entitySchemaOption: EntitySchemaOptions<any> = {
+      const entitySchemaOption: EntitySchemaOptions<any> & WithUuid = {
+        uuid: entityMeta.uuid,
         name: entityMeta.name,
         columns: columns,
         relations: relations,
