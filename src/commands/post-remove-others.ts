@@ -1,7 +1,7 @@
 import { CommandType } from 'src/command/command-type';
 import { PostCommand } from 'src/command/post/post.command';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
-import { EntityManager, In, Not } from 'typeorm';
+import { EntityManager } from 'typeorm';
 
 export class PostRemoveOthersCommand extends PostCommand {
   static description = `Condition equal command.`;
@@ -17,11 +17,14 @@ export class PostRemoveOthersCommand extends PostCommand {
     instanceMetaCollection: InstanceMetaCollection,
     entityManger: EntityManager,
   ) {
-    await entityManger.getRepository(instanceMetaCollection.entity).delete({
-      where: {
-        id: Not(In(savedInstances.map((instance) => instance.id))),
-      },
-    });
+    await entityManger
+      .createQueryBuilder()
+      .delete()
+      .from(instanceMetaCollection.entity)
+      .where('id NOT IN (:...ids)', {
+        ids: savedInstances.map((instance) => instance.id),
+      })
+      .execute();
     console.log('哈哈 来吧');
   }
 }
