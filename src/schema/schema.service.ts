@@ -41,20 +41,7 @@ export class SchemaService {
   }
 
   public getPackageSchemas() {
-    const packages: PackageSchema[] = this._packages.map((aPackage) => {
-      return {
-        id: aPackage.id,
-        uuid: aPackage.uuid,
-        name: aPackage.name,
-        entitySchemas: aPackage.entities.map((entity) => {
-          return this._entitySchemas.find(
-            (aEntity) => aEntity.uuid === entity.uuid,
-          );
-        }),
-      };
-    });
-
-    return packages;
+    return this._packages;
   }
 
   public findEntitySchemaOrFailed(name: string) {
@@ -134,7 +121,7 @@ export class SchemaService {
       for (const relation of relationMetas) {
         if (relation.sourceId === entityMeta.uuid) {
           relations[relation.roleOnSource] = {
-            uuid: entityMeta.uuid,
+            uuid: relation.uuid,
             target: entityMetas.find(
               (entity) => entity.uuid === relation.targetId,
             )?.name,
@@ -160,7 +147,7 @@ export class SchemaService {
             relationType = RelationType.ONE_TO_MANY;
           }
           relations[relation.roleOnTarget] = {
-            uuid: entityMeta.uuid,
+            uuid: relation.uuid,
             target: entityMetas.find(
               (entity) => entity.uuid === relation.sourceId,
             )?.name,
