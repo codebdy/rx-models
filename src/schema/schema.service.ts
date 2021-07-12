@@ -48,7 +48,11 @@ export class SchemaService {
   }
 
   public getRelationSchemaName(relationName: string, entityName: string) {
-    const relations = this.getSchema(entityName).relations;
+    const entitySchema = this.getSchema(entityName);
+    if (!entitySchema) {
+      throw new Error(`Entity ${entityName} dose not exist`);
+    }
+    const relations = entitySchema.relations;
     if (!relations) {
       return undefined;
     }
