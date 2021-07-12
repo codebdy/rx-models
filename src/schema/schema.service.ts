@@ -30,13 +30,16 @@ export class SchemaService {
   public findEntitySchemaOrFailed(name: string) {
     const schema = this.getSchema(name);
     if (!schema) {
-      throw new Error(`Can not find model "${name}"`);
+      throw new Error(`Can not find entity "${name}"`);
     }
     return schema;
   }
 
-  public findRelationEntitySchema(model: string, relationName: string) {
-    const entitySchema = this.getSchema(model);
+  public findRelationEntitySchema(entity: string, relationName: string) {
+    const entitySchema = this.getSchema(entity);
+    if (!entitySchema) {
+      throw new Error(`Can not find entity "${entity}"`);
+    }
     if (entitySchema.relations) {
       return entitySchema.relations[relationName];
     }
