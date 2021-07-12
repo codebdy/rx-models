@@ -23,7 +23,7 @@ export class MagicUploadController {
   /**
    * 通用提交接口，语法示例：
    * {
-   *   "model":"RxMedia",
+   *   "entity":"RxMedia",
    *   "file":...
    *   "folder":1
    * }
@@ -44,14 +44,14 @@ export class MagicUploadController {
       await sleep(500);
       this.uploadService.saveThumbnail(file);
       console.debug(file, body);
-      const { model: modelName, ...modelData } = body;
+      const { entity: entityName, ...modelData } = body;
       modelData.fileName = file.filename;
       modelData.mimetype = file.mimetype;
       modelData.path = file.path;
       modelData.size = file.size;
 
       console.debug(modelData);
-      return await this.postService.post({ [modelName]: modelData });
+      return await this.postService.post({ [entityName]: modelData });
     } catch (error: any) {
       console.error('Upload error:', error);
       throw new HttpException(

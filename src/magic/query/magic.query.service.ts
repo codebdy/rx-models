@@ -16,7 +16,7 @@ export class MagicQueryService {
 
     const meta = this.queryParser.parse(jsonStr);
     const qb = this.typeormSerivce
-      .getRepository(meta.model)
+      .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
 
     meta.makeConditionQueryBuilder(qb);

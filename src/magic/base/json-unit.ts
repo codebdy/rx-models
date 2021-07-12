@@ -1,4 +1,4 @@
-import { TOKEN_MODEL } from './tokens';
+import { TOKEN_ENTITY } from './tokens';
 import { parseCommands } from './parse-commands';
 import { CommandMeta } from 'src/command/command.meta';
 
@@ -23,6 +23,6 @@ export class JsonUnit {
   }
 
   isModel() {
-    return this.key.toLowerCase() === TOKEN_MODEL;
+    return this.key.toLowerCase() === TOKEN_ENTITY;
   }
 }

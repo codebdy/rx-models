@@ -11,7 +11,7 @@ export class QueryRelationMeta extends QueryMeta {
   entitySchema: EntitySchemaOptions<any>;
   relationCommands: QueryCommand[] = [];
 
-  get model() {
+  get entity() {
     return this.entitySchema.name;
   }
 

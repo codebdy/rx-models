@@ -37,7 +37,7 @@ export class MagicQueryParser {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       if (jsonUnit.isModel()) {
-        meta.model = jsonUnit.value;
+        meta.entity = jsonUnit.value;
         jsonUnit.commands.forEach((commandMeta) => {
           if (commandMeta.name === TOKEN_GET_ONE) {
             meta.fetchString = TOKEN_GET_ONE;
@@ -56,6 +56,8 @@ export class MagicQueryParser {
         return;
       }
     }
+
+    throw Error('Not give entity');
   }
 
   parseMeta(json: any, meta: QueryMeta) {
@@ -68,7 +70,7 @@ export class MagicQueryParser {
 
   parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
     const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
-      meta.model,
+      meta.entity,
       jsonUnit.key,
     );
     const keyWithoutAt = keyStr.replace('@', '');

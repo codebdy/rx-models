@@ -1,4 +1,4 @@
-export const TOKEN_MODEL = 'model';
+export const TOKEN_ENTITY = 'entity';
 export const TOKEN_WHERE = 'where';
 export const TOKEN_ON = 'on';
 export const TOKEN_GET_MANY = 'getMany';

@@ -14,15 +14,15 @@ export abstract class QueryMeta {
     this.id = createId();
   }
 
-  public get model(): string {
+  public get entity(): string {
     return this._model;
   }
-  public set model(value: string) {
+  public set entity(value: string) {
     this._model = value;
   }
 
   get alias() {
-    return this.model?.toLowerCase() + this.id;
+    return this.entity?.toLowerCase() + this.id;
   }
 
   abstract pushCommand(command: QueryCommand): void;
@@ -38,7 +38,7 @@ export abstract class QueryMeta {
       }
     }
     throw new Error(
-      `Please add relation ${relationName} of ${this.model} to query meta`,
+      `Please add relation ${relationName} of ${this.entity} to query meta`,
     );
   }
 

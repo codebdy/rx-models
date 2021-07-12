@@ -9,7 +9,7 @@ export class MagicQueryController {
   /**
    * 通用查询接口，语法示例：
    * {
-   *   "model @count @getOne":"User",//@getMany, @sum(ddd) as xx, @skip(100), @take(10) @paginate(25,0)
+   *   "entity @count @getOne":"User",//@getMany, @sum(ddd) as xx, @skip(100), @take(10) @paginate(25,0)
    *    "id":1,
    *    "select":["*", "photosCount"],
    *    "age @between":[18, 40], //@IN
@@ -32,10 +32,10 @@ export class MagicQueryController {
    *    "@tree":true
    * }
    * {
-   *   "model @sum(price) @count @tree":"Order"
+   *   "entity @sum(price) @count @tree":"Order"
    * }
    * {
-   *    "model":"Order",
+   *    "entity":"Order",
    *    "@count":true,
    *    "@commands":{
    *      "sum":"price",
@@ -44,7 +44,7 @@ export class MagicQueryController {
    * }
    * 关系嵌套：文章与图片
    * {
-   *    "model":"Post",
+   *    "entity":"Post",
    *    "images":{
    *      "media":{
    *      }
@@ -55,13 +55,13 @@ export class MagicQueryController {
    */
   //@UseGuards(AuthGuard())
   @Get('get/:jsonStr?')
-  async getModels(@Param('jsonStr') jsonStr) {
+  async getEntities(@Param('jsonStr') jsonStr) {
     try {
       console.debug('JSON QUERY String', jsonStr);
       await sleep(500);
       return await this.queryService.query(jsonStr);
     } catch (error: any) {
-      console.error('getModels error:', error);
+      console.error('getEntities error:', error);
       throw new HttpException(
         {
           status: 500,
