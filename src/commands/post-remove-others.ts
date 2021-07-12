@@ -4,7 +4,7 @@ import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.collet
 import { EntityManager } from 'typeorm';
 
 export class PostRemoveOthersCommand extends PostCommand {
-  static description = `Remove records that not saved.`;
+  static description = `Remove records that not saved.此命令会删除POST之外的所有记录，请谨慎使用该命令`;
 
   static version = '1.0';
 
@@ -12,6 +12,7 @@ export class PostRemoveOthersCommand extends PostCommand {
 
   static commandName = 'removeOthers';
 
+  //后面需要给该命令添加权限
   async afterSaveEntityInstanceCollection(
     savedInstances: any[],
     instanceMetaCollection: InstanceMetaCollection,
