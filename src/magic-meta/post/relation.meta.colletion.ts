@@ -1,10 +1,11 @@
-import { CommandMeta } from 'src/command/command.meta';
+import { PostCommand } from 'src/command/post/post.command';
 import { InstanceMeta } from './instance.meta';
 
 export class RelationMetaCollection {
   entities: InstanceMeta[] = [];
   ids: number[] = [];
-  commands: CommandMeta[] = [];
+  commands: PostCommand[] = [];
   entity: string;
+  relationName: string;
   isSingle = false;
 }

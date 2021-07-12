@@ -33,23 +33,37 @@ export class MagicPostService {
     instanceGroup: InstanceMetaCollection,
     entityManger: EntityManager,
   ) {
-    const savedEntites = [];
+    const savedInstances = [];
 
     for (const entity of instanceGroup.instances) {
-      savedEntites.push(await this.saveEntity(entity, entityManger));
+      savedInstances.push(
+        await this.saveEntity(entity, entityManger, instanceGroup),
+      );
     }
+    instanceGroup.commands.forEach((command) => {
+      command.afterSaveEntityInstanceCollection(
+        savedInstances,
+        instanceGroup,
+        entityManger,
+      );
+    });
 
-    return instanceGroup.isSingle ? savedEntites[0] : savedEntites;
+    return instanceGroup.isSingle ? savedInstances[0] : savedInstances;
   }
 
   private async processRelationGroup(
     relationCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {
-    let savedEntites = [];
+    relationCollection.commands.forEach((command) => {
+      command.beforeUpdateRelationCollection(relationCollection, entityManger);
+    });
+    let savedInstances = [];
 
     for (const entity of relationCollection.entities) {
-      savedEntites.push(await this.saveEntity(entity, entityManger));
+      savedInstances.push(
+        await this.saveEntity(entity, entityManger, relationCollection),
+      );
     }
 
     if (relationCollection.ids.length > 0) {
@@ -57,16 +71,28 @@ export class MagicPostService {
       const relationEntities = await repository.findByIds(
         relationCollection.ids,
       );
-      savedEntites = savedEntites.concat(relationEntities);
+      savedInstances = savedInstances.concat(relationEntities);
     }
 
-    return relationCollection.isSingle ? savedEntites[0] : savedEntites;
+    relationCollection.commands.forEach((command) => {
+      command.afterSaveOneRelationInstanceCollection(
+        savedInstances,
+        relationCollection,
+        entityManger,
+      );
+    });
+    return relationCollection.isSingle ? savedInstances[0] : savedInstances;
   }
 
   private async saveEntity(
     entityMeta: InstanceMeta,
     entityManger: EntityManager,
+    instanceGroup: InstanceMetaCollection | RelationMetaCollection,
   ) {
+    //保存前命令
+    instanceGroup.commands.forEach((command) => {
+      command.beforeSaveInstance(entityMeta, entityManger);
+    });
     const relations = entityMeta.relations;
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
@@ -92,6 +118,13 @@ export class MagicPostService {
       entity[relationKey] = relationValue;
     }
 
-    return await repository.save(entity);
+    const inststance = await repository.save(entity);
+
+    //保存后命令
+    instanceGroup.commands.forEach((command) => {
+      command.afterSaveInstance(inststance, entityMeta.entity, entityManger);
+    });
+
+    return inststance;
   }
 }

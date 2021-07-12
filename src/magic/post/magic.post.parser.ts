@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PostCommandService } from 'src/command/post-command.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
@@ -7,7 +8,10 @@ import { JsonUnit } from '../base/json-unit';
 
 @Injectable()
 export class MagicPostParser {
-  constructor(private readonly schemaService: SchemaService) {}
+  constructor(
+    private readonly commandService: PostCommandService,
+    private readonly schemaService: SchemaService,
+  ) {}
 
   parse(json: any) {
     const instanceMetas = [];
@@ -35,7 +39,14 @@ export class MagicPostParser {
         this.parseInsanceMeta(entity, jsonUnit.value),
       );
     }
-    instanceCollection.commands = jsonUnit.commands;
+    jsonUnit.commands.forEach((commandMeta) => {
+      const commandClass = this.commandService.findEntityCommandOrFailed(
+        commandMeta.name,
+      );
+      instanceCollection.commands.push(
+        new commandClass(commandMeta, this.schemaService),
+      );
+    });
     return instanceCollection;
   }
 
@@ -65,6 +76,7 @@ export class MagicPostParser {
 
   private parseRelationMetaCollection(entity: string, jsonUnit: JsonUnit) {
     const relationMetaCollection = new RelationMetaCollection();
+    relationMetaCollection.relationName = jsonUnit.key;
     relationMetaCollection.entity = entity;
     if (Array.isArray(jsonUnit.value)) {
       for (const meta of jsonUnit.value) {
@@ -75,7 +87,15 @@ export class MagicPostParser {
       relationMetaCollection.isSingle = true;
       this.processOneElement(jsonUnit.value, relationMetaCollection);
     }
-    relationMetaCollection.commands = jsonUnit.commands;
+
+    jsonUnit.commands.forEach((commandMeta) => {
+      const commandClass = this.commandService.findRelationCommandOrFailed(
+        commandMeta.name,
+      );
+      relationMetaCollection.commands.push(
+        new commandClass(commandMeta, this.schemaService),
+      );
+    });
     return relationMetaCollection;
   }
 

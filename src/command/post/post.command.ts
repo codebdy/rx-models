@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
+import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
+import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager, EntitySchemaRelationOptions } from 'typeorm';
 import { CommandMeta } from '../command.meta';
@@ -21,24 +23,20 @@ export class PostCommand {
     entityManger: EntityManager,
   ) {}
 
-  beforeUpdateRelation(
-    instanceMeta: InstanceMeta,
-    entityName: string,
-    relationName: string,
+  beforeUpdateRelationCollection(
+    relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {}
 
-  afterSaveEntityInstanceArray(
+  afterSaveEntityInstanceCollection(
     savedInstances: any[],
-    entityName: string,
-    relationName: string,
+    instanceMetaCollection: InstanceMetaCollection,
     entityManger: EntityManager,
   ) {}
 
-  afterSaveOneRelationInstanceArray(
+  afterSaveOneRelationInstanceCollection(
     savedInstances: any[],
-    entityName: string,
-    relationName: string,
+    relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {}
 }
