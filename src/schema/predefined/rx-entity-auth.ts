@@ -10,16 +10,16 @@ export const RxEntityAuthSchema: EntitySchemaOptions<any> = {
     },
     uuid: {
       type: String,
-    },    
+    },
     entityUuid: {
       type: String,
     },
     conditions: {
       type: 'simple-json',
     },
-    expand:{
+    expand: {
       type: Boolean,
       nullable: true,
-    }
+    },
   },
 };
