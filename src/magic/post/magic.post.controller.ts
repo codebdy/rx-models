@@ -13,7 +13,7 @@ export class MagicPostController {
    *      {
    *        "id": 1,
    *        "name":"XXX",
-   *        "auths @ignoreEmperty(password)":[
+   *        "auths @ignoreEmperty(password) @cascade":[
    *          {
    *            "id":2,
    *            "name":"xxx",

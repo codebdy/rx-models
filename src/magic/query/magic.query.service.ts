@@ -24,6 +24,9 @@ export class MagicQueryService {
 
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
+      if (totalCount > 1000) {
+        throw new Error('The result is to large, please use paginate command');
+      }
     }
 
     meta.makeEffectCountQueryBuilder(qb);
