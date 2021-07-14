@@ -13,9 +13,10 @@ import { CommandModule } from 'src/command/command.module';
 import { MagicQueryParser } from './query/magic.query.parser';
 import { SchemaModule } from 'src/schema/schema.module';
 import { MagicPostParser } from './post/magic.post.parser';
+import { AbilityModule } from 'src/ability/ability.module';
 
 @Module({
-  imports: [SchemaModule, CommandModule],
+  imports: [AbilityModule, SchemaModule, CommandModule],
   providers: [
     MagicQueryParser,
     MagicPostParser,

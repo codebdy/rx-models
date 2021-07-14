@@ -3,10 +3,12 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
+import { AbilityService } from 'src/ability/ability.service';
 
 @Injectable()
 export class MagicQueryService {
   constructor(
+    private readonly abilityService: AbilityService,
     private readonly typeormSerivce: TypeOrmService,
     private readonly queryParser: MagicQueryParser,
   ) {}
@@ -15,6 +17,7 @@ export class MagicQueryService {
     let totalCount = 0;
 
     const meta = this.queryParser.parse(jsonStr);
+    const entityReadAbility = this.abilityService.getEntityReadAbility();
     const qb = this.typeormSerivce
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
