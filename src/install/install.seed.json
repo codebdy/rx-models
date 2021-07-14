@@ -210,7 +210,7 @@
         {
           "id": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
           "x": 540,
-          "y": 430,
+          "y": 450,
           "width": 180,
           "height": 210
         }
@@ -340,6 +340,20 @@
             "offset": -20,
             "angle": 0
           }
+        },
+        {
+          "id": "74c80152-fcb1-41fc-9a34-d65b562f3fdc",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 0.09183673469387756,
+            "offset": 30,
+            "angle": 0
+          },
+          "roleOnTargetPosition": {
+            "distance": 0.8061224489795918,
+            "offset": 40,
+            "angle": 0
+          }
         }
       ]
     }
@@ -391,13 +405,13 @@
       "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
     },
     {
-      "uuid": "ebb178c8-ba48-474c-ae9c-bb6870453c33",
-      "relationType": "many-to-one",
-      "sourceId": "system-entity-2",
-      "targetId": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
-      "roleOnSource": "abilities",
-      "roleOnTarget": "role",
-      "ownerId": "system-entity-2"
+      "uuid": "74c80152-fcb1-41fc-9a34-d65b562f3fdc",
+      "relationType": "one-to-many",
+      "sourceId": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+      "targetId": "system-entity-2",
+      "roleOnSource": "role",
+      "roleOnTarget": "abilities",
+      "ownerId": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78"
     }
   ],
   "status": "SYNCED"
