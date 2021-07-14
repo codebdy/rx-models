@@ -1,4 +1,10 @@
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
+export enum AbilityType {
+  CREATE = 'create',
+  READ = 'read',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
 
 export const RxAbilitySchema: EntitySchemaOptions<any> = {
   name: 'RxAbility',
@@ -16,13 +22,21 @@ export const RxAbilitySchema: EntitySchemaOptions<any> = {
       nullable: true,
     },
     abilityType: {
-      type: String,
+      type: 'enum',
+      enum: AbilityType,
+      default: AbilityType.READ,
     },
     can: {
       type: Boolean,
     },
     expression: {
       type: String,
+    },
+  },
+  relations: {
+    role: {
+      type: 'many-to-one',
+      target: 'RxRole',
     },
   },
 };
