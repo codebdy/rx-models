@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { QueryResult } from 'src/common/query-result';
-import { QueryModelMeta } from 'src/magic-meta/query/query.model-meta';
+import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CommandMeta } from '../command.meta';
 
@@ -12,7 +12,7 @@ export class QueryCommand {
 
   constructor(
     protected readonly commandMeta: CommandMeta,
-    protected readonly rootMeta: QueryModelMeta,
+    protected readonly rootMeta: QueryEntityMeta,
   ) {}
 
   /**

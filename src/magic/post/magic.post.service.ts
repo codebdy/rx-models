@@ -97,10 +97,11 @@ export class MagicPostService {
       await command.beforeSaveInstance(entityMeta, entityManger);
     }
     const relations = entityMeta.relations;
+
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
       entityMeta.savedRelations[relationKey] =
-        relationShip.ids.length === 0
+        relationShip.ids.length === 0 && relationShip.entities.length === 0
           ? null
           : await this.processRelationGroup(relationShip, entityManger);
     }

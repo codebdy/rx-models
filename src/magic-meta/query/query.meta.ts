@@ -6,7 +6,7 @@ import { QueryRelationMeta } from './query.relation-meta';
 export abstract class QueryMeta {
   id: number;
   entitySchema: EntitySchemaOptions<any>;
-  private _model: string;
+  private _entity: string;
   relationMetas: QueryRelationMeta[] = [];
   conditionCommands: QueryCommand[] = [];
 
@@ -15,10 +15,10 @@ export abstract class QueryMeta {
   }
 
   public get entity(): string {
-    return this._model;
+    return this._entity;
   }
   public set entity(value: string) {
-    this._model = value;
+    this._entity = value;
   }
 
   get alias() {

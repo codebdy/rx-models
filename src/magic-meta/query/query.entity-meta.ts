@@ -4,7 +4,7 @@ import { TOKEN_GET_MANY } from 'src/magic/base/tokens';
 import { SelectQueryBuilder } from 'typeorm';
 import { QueryMeta } from './query.meta';
 
-export class QueryModelMeta extends QueryMeta {
+export class QueryEntityMeta extends QueryMeta {
   notEffectCountModelCommands: QueryCommand[] = [];
   effectCountModelCommands: QueryCommand[] = [];
 

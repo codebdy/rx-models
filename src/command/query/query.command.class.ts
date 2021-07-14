@@ -1,7 +1,7 @@
-import { QueryModelMeta } from 'src/magic-meta/query/query.model-meta';
+import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
-import { CommandType } from "../command-type";
+import { CommandType } from '../command-type';
 
 export interface QueryCommandClass extends Function {
   description?: string;
@@ -9,5 +9,5 @@ export interface QueryCommandClass extends Function {
 
   commandType: CommandType;
   commandName: string;
-  new (commandMeta: CommandMeta, rootMeta: QueryModelMeta): QueryCommand;
+  new (commandMeta: CommandMeta, rootMeta: QueryEntityMeta): QueryCommand;
 }

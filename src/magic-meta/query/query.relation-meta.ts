@@ -3,11 +3,10 @@ import { QueryResult } from 'src/common/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { QueryMeta } from './query.meta';
-import { QueryModelMeta } from './query.model-meta';
 
 export class QueryRelationMeta extends QueryMeta {
   name: string;
-  parentModelMeta: QueryModelMeta | QueryRelationMeta;
+  parentEntityMeta: QueryMeta;
   entitySchema: EntitySchemaOptions<any>;
   relationCommands: QueryCommand[] = [];
 
@@ -33,7 +32,7 @@ export class QueryRelationMeta extends QueryMeta {
     });
 
     qb.leftJoinAndSelect(
-      `${this.parentModelMeta.alias}.${this.name}`,
+      `${this.parentEntityMeta.alias}.${this.name}`,
       this.alias,
       whereStringArray.join(' AND '),
       whereParams,

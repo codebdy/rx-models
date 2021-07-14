@@ -1,6 +1,6 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { createId } from 'src/util/create-id';
-import { QueryModelMeta } from './query.model-meta';
+import { QueryEntityMeta } from './query.entity-meta';
 import { QueryRelationMeta } from './query.relation-meta';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -9,7 +9,7 @@ const OPERATOR_UNARY_MINUS = Symbol('-');
 
 export function parseWhereSql(
   commandMeta: CommandMeta,
-  ownerMeta: QueryModelMeta | QueryRelationMeta,
+  ownerMeta: QueryEntityMeta | QueryRelationMeta,
 ): [string, any] {
   if (!commandMeta.value) {
     throw new Error('Not assign param to where command');

@@ -103,7 +103,7 @@ export class MagicPostParser {
     entityOrId: any,
     relationMetaCollection: RelationMetaCollection,
   ) {
-    if (Number.isNaN(entityOrId)) {
+    if (!Number.isNaN(entityOrId)) {
       relationMetaCollection.entities.push(
         this.parseInsanceMeta(relationMetaCollection.entity, entityOrId),
       );

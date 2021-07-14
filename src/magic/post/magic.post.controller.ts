@@ -33,7 +33,7 @@ export class MagicPostController {
   async postModels(@Body() body: any) {
     try {
       await sleep(500);
-      console.debug('postModels', body);
+      //console.debug('postModels', body);
       return await this.postService.post(body || {});
     } catch (error: any) {
       console.error('postModels error:', error);

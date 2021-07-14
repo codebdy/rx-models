@@ -126,6 +126,7 @@ export class SchemaService {
               (entity) => entity.uuid === relation.targetId,
             )?.name,
             type: relation.relationType,
+            inverseSide: relation.roleOnTarget,
             joinTable:
               relation.relationType === RelationType.MANY_TO_MANY &&
               relation.ownerId === entityMeta.uuid
@@ -152,6 +153,7 @@ export class SchemaService {
               (entity) => entity.uuid === relation.sourceId,
             )?.name,
             type: relationType,
+            inverseSide: relation.roleOnSource,
             joinTable:
               relationType === RelationType.MANY_TO_MANY &&
               relation.ownerId === entityMeta.uuid
