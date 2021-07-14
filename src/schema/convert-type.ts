@@ -2,7 +2,7 @@ import { ColumnType as MetaColumnType } from 'src/schema/graph-meta-interface/co
 import { ColumnType } from 'typeorm';
 
 export function convertType(type: MetaColumnType): ColumnType {
-  if (type === MetaColumnType.String) {
+  if (type === MetaColumnType.String || type === MetaColumnType.Enum) {
     return String;
   }
 

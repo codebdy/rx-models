@@ -5,13 +5,13 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { DB_CONFIG_FILE, SALT_OR_ROUNDS } from 'src/util/consts';
 import { EntitySchema } from 'typeorm';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
-//import { PackageMeta } from 'src/meta/entity/package-meta';
 import * as bcrypt from 'bcrypt';
 import { InstallData } from './install.data';
-import { packageSeed } from './install.seed';
-//import * as packagesFromJson from './install.seed.json';
+//import { packageSeed } from './install.seed';
+import * as packagesFromJson from './install.seed.json';
+import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
 
-//const packageSeed = packagesFromJson as PackageMeta;
+const packageSeed = packagesFromJson as PackageMeta;
 
 export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 

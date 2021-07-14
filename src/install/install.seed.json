@@ -1,4 +1,5 @@
 {
+  "id": 1,
   "uuid": "system-package-1",
   "name": "System",
   "entities": [
@@ -21,43 +22,50 @@
         {
           "uuid": "system-column-1-5",
           "name": "loginName",
-          "type": "String",
-          "unique": true
+          "type": "String"
         },
         {
           "uuid": "system-column-1-6",
           "name": "email",
-          "type": "String"
+          "type": "String",
+          "nullable": true
         },
         {
           "uuid": "system-column-1-7",
           "name": "password",
-          "type": "String"
+          "type": "String",
+          "select": false
         },
         {
           "uuid": "system-column-1-8",
           "name": "isSupper",
-          "type": "Boolean"
+          "type": "Boolean",
+          "nullable": true
         },
         {
           "uuid": "system-column-1-9",
           "name": "isDemo",
-          "type": "Boolean"
+          "type": "Boolean",
+          "nullable": true
         },
         {
           "uuid": "system-column-1-10",
           "name": "status",
-          "type": "String"
+          "type": "String",
+          "default": "NORMAL"
         },
         {
           "uuid": "system-column-1-11",
           "name": "createdAt",
-          "type": "Date"
+          "type": "Date",
+          "createDate": true
         },
         {
           "uuid": "system-column-1-12",
           "name": "updatedAt",
-          "type": "Date"
+          "type": "Date",
+          "createDate": false,
+          "updateDate": true
         }
       ]
     },
@@ -80,17 +88,88 @@
         {
           "uuid": "system-column-2-3",
           "name": "description",
-          "type": "String"
+          "type": "String",
+          "nullable": true
         },
         {
           "uuid": "system-column-2-4",
           "name": "createdAt",
-          "type": "Date"
+          "type": "Date",
+          "createDate": true
         },
         {
           "uuid": "system-column-2-5",
           "name": "updatedAt",
-          "type": "Date"
+          "type": "Date",
+          "createDate": false,
+          "updateDate": true
+        }
+      ]
+    },
+    {
+      "uuid": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+      "name": "RxMedia",
+      "columns": [
+        {
+          "uuid": "c402b83a-dbc1-4fb1-93c7-c342fa0a7d33",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        }
+      ]
+    },
+    {
+      "uuid": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "name": "RxMediaFolder",
+      "columns": [
+        {
+          "uuid": "397a5afc-c4e9-40fd-8ccd-8e07d5d28815",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        }
+      ]
+    },
+    {
+      "uuid": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+      "name": "RxAbility",
+      "columns": [
+        {
+          "uuid": "95fbc970-fd5e-4b4f-845d-1776c2725db8",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "0cf7b41f-bcf8-4393-b1cc-202e0345f147",
+          "name": "entityUuid",
+          "type": "String"
+        },
+        {
+          "uuid": "20b6108a-dd46-464b-8ae6-71390cb7854b",
+          "name": "columnUuid",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "0d3545e5-eef0-4694-bf03-1f3a656bddd2",
+          "name": "can",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "uuid": "d374f24f-b8bc-49b5-9295-acce5500daee",
+          "name": "expression",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "2ee93068-0e2a-4beb-b646-2abb6805aa37",
+          "name": "abilityType",
+          "type": "Enum"
         }
       ]
     }
@@ -102,24 +181,38 @@
       "nodes": [
         {
           "id": "system-entity-1",
-          "x": 469.9999999999966,
-          "y": 5,
+          "x": 220,
+          "y": 90,
           "width": 200,
-          "height": 310
-        },
-        {
-          "id": "",
-          "x": 30,
-          "y": 30,
-          "width": 180,
-          "height": 200
+          "height": 320
         },
         {
           "id": "system-entity-2",
-          "x": 70,
-          "y": 60,
+          "x": 540,
+          "y": 150,
           "width": 180,
           "height": 200
+        },
+        {
+          "id": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+          "x": 50,
+          "y": -140,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+          "x": 420,
+          "y": -140,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+          "x": 540,
+          "y": 430,
+          "width": 180,
+          "height": 210
         }
       ],
       "edges": [
@@ -134,6 +227,119 @@
             "distance": -40,
             "offset": 20
           }
+        },
+        {
+          "id": "4a468ed4-5fb8-4e25-a711-4ff700256bed",
+          "vertices": [
+            {
+              "x": 690,
+              "y": -100
+            },
+            {
+              "x": 690,
+              "y": -210
+            },
+            {
+              "x": 540,
+              "y": -210
+            }
+          ],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": -40,
+            "offset": 20
+          }
+        },
+        {
+          "id": "57916b19-7f2c-45fe-99d8-34b08f648bd0",
+          "vertices": [
+            {
+              "x": 510,
+              "y": 60
+            },
+            {
+              "x": 740,
+              "y": 70
+            },
+            {
+              "x": 740,
+              "y": -40
+            }
+          ]
+        },
+        {
+          "id": "259c17a5-803a-462c-953c-938bbc2836c4",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": -40,
+            "offset": 20
+          }
+        },
+        {
+          "id": "b116f947-37f2-4a1e-9079-7d846190c17a",
+          "vertices": [
+            {
+              "x": 140,
+              "y": 250
+            }
+          ],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": -40,
+            "offset": 20
+          }
+        },
+        {
+          "id": "4ea17920-de7d-4a6d-b17b-b96fb41327cc",
+          "vertices": [
+            {
+              "x": 60,
+              "y": 200
+            }
+          ]
+        },
+        {
+          "id": "6826ab16-43a6-4737-8871-83e6819a6345",
+          "vertices": [
+            {
+              "x": 510,
+              "y": 80
+            }
+          ],
+          "roleOnSourcePosition": {
+            "distance": 0.24886265667448848,
+            "offset": 16.936365719238918,
+            "angle": 0
+          },
+          "roleOnTargetPosition": {
+            "distance": 0.8997149314786429,
+            "offset": 17.542581994465976,
+            "angle": 0
+          }
+        },
+        {
+          "id": "ebb178c8-ba48-474c-ae9c-bb6870453c33",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 0.13768115942028986,
+            "offset": 40,
+            "angle": 0
+          },
+          "roleOnTargetPosition": {
+            "distance": 0.8623188405797102,
+            "offset": -20,
+            "angle": 0
+          }
         }
       ]
     }
@@ -147,6 +353,51 @@
       "roleOnSource": "roles",
       "roleOnTarget": "users",
       "ownerId": "system-entity-1"
+    },
+    {
+      "uuid": "4a468ed4-5fb8-4e25-a711-4ff700256bed",
+      "relationType": "one-to-many",
+      "sourceId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "roleOnSource": "children",
+      "roleOnTarget": "parent",
+      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
+    },
+    {
+      "uuid": "259c17a5-803a-462c-953c-938bbc2836c4",
+      "relationType": "many-to-one",
+      "sourceId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+      "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "roleOnSource": "folder",
+      "roleOnTarget": "medias",
+      "ownerId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7"
+    },
+    {
+      "uuid": "b116f947-37f2-4a1e-9079-7d846190c17a",
+      "relationType": "one-to-many",
+      "sourceId": "system-entity-1",
+      "targetId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+      "roleOnSource": "medias",
+      "roleOnTarget": "user",
+      "ownerId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7"
+    },
+    {
+      "uuid": "6826ab16-43a6-4737-8871-83e6819a6345",
+      "relationType": "one-to-many",
+      "sourceId": "system-entity-1",
+      "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "roleOnSource": "mediaFolders",
+      "roleOnTarget": "user",
+      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
+    },
+    {
+      "uuid": "ebb178c8-ba48-474c-ae9c-bb6870453c33",
+      "relationType": "many-to-one",
+      "sourceId": "system-entity-2",
+      "targetId": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+      "roleOnSource": "abilities",
+      "roleOnTarget": "role",
+      "ownerId": "system-entity-2"
     }
   ],
   "status": "SYNCED"
