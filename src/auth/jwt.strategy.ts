@@ -2,11 +2,11 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
-import { getRepository } from 'typeorm';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly typeormSerivce: TypeOrmService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -18,9 +18,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     try {
       console.debug('JwtStrategy payload', payload);
       const userId = payload.sub;
-      return await getRepository('RxUser')
+      return await this.typeormSerivce
+        .getRepository('RxUser')
         .createQueryBuilder('user')
-        .leftJoinAndSelect('user.avatar', 'avatar')
+        //.leftJoinAndSelect('user.avatar', 'avatar')
         .where({ id: userId })
         .getOne();
     } catch (error: any) {

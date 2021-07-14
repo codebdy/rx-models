@@ -54,7 +54,7 @@ export class MagicQueryController {
    * @param json JSON格式的查询条件
    * @returns 查询结果
    */
-  //@UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   @Get('get/:jsonStr?')
   async getEntities(@Param('jsonStr') jsonStr) {
     try {

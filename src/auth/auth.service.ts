@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RxUser } from 'src/entity-interface/rx-user';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { NOT_INSTALL_ERROR } from 'src/util/consts';
 import * as bcrypt from 'bcrypt';
+import { RxUser } from 'src/entity-interface/rx-user';
 
 @Injectable()
 export class AuthService {
