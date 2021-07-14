@@ -1,4 +1,10 @@
-import { Controller, Get, HttpException, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { MagicQueryService } from './magic.query.service';
 import { sleep } from '../../util/sleep';
 import { AuthGuard } from '@nestjs/passport';
