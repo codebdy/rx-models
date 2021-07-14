@@ -1,9 +1,9 @@
 import { RxAbilitySchema } from './rx-ability';
-import { RxEntityAuthSchema } from './rx-entity-auth';
+import { RxEntityAuthSettingsSchema } from './rx-entity-auth-settings';
 import { RxPackageSchema } from './rx-package';
 
 export const predefinedSchemas = [
   RxPackageSchema,
-  RxEntityAuthSchema,
+  RxEntityAuthSettingsSchema,
   RxAbilitySchema,
 ];

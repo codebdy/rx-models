@@ -15,21 +15,14 @@ export const RxAbilitySchema: EntitySchemaOptions<any> = {
       type: String,
       nullable: true,
     },
-    conditionUuid: {
+    abilityType: {
       type: String,
-      nullable: true,
     },
-    canRead: {
+    can: {
       type: Boolean,
     },
-    canCreate: {
-      type: Boolean,
-    },
-    canUpdate: {
-      type: Boolean,
-    },
-    canDelete: {
-      type: Boolean,
+    expression: {
+      type: String,
     },
   },
 };
