@@ -16,11 +16,11 @@ import { MagicQuery } from './query/magic.query';
 export class MagicInstanceService {
   constructor(
     private readonly entityManager: EntityManager,
-    private readonly abilityService: AbilityService,
-    private readonly queryCommandService: QueryCommandService,
-    private readonly postCommandService: PostCommandService,
-    private readonly deleteCommandService: DeleteCommandService,
-    private readonly schemaService: SchemaService,
+    public readonly abilityService: AbilityService,
+    public readonly queryCommandService: QueryCommandService,
+    public readonly postCommandService: PostCommandService,
+    public readonly deleteCommandService: DeleteCommandService,
+    public readonly schemaService: SchemaService,
   ) {}
   async query(json: any) {
     return await new MagicQuery(
@@ -42,10 +42,6 @@ export class MagicInstanceService {
 
   async delete(json: any) {
     return await new MagicDelete(
-      this.entityManager,
-      this.abilityService,
-      this.deleteCommandService,
-      this.schemaService,
       this,
     ).delete(json);
   }
@@ -55,7 +51,7 @@ export class MagicInstanceService {
   /**
    * 拿到该变量，意味着已经脱离了权限控制，请一定不要进行数据库修改操作
    */
-  get getEntityManager() {
+  getEntityManager() {
     return this.entityManager;
   }
 }

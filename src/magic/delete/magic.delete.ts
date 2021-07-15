@@ -1,27 +1,13 @@
-import { EntityManager } from 'typeorm';
 import { MagicDeleteParser } from './magic.delete.parser';
 import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
-import { AbilityService } from 'src/ability/ability.service';
-import { SchemaService } from 'src/schema/schema.service';
-import { DeleteCommandService } from 'src/command/delete-command.service';
 import { MagicInstanceService } from '../magic.instance.service';
 
 export class MagicDelete {
-  constructor(
-    private readonly entityManager: EntityManager,
-    private readonly abilityService: AbilityService,
-    private readonly deleteCommandService: DeleteCommandService,
-    private readonly schemaService: SchemaService,
-    private readonly instanceService: MagicInstanceService,
-  ) {}
+  constructor(private readonly instanceService: MagicInstanceService) {}
 
   async delete(json: any) {
     const deletedInstances = {} as any;
-    const deleteMetas = new MagicDeleteParser(
-      this.deleteCommandService,
-      this.schemaService,
-      this.instanceService,
-    ).parse(json);
+    const deleteMetas = new MagicDeleteParser(this.instanceService).parse(json);
     for (const meta of deleteMetas) {
       deletedInstances[meta.enity] = await this.deleteOne(meta);
     }
@@ -29,7 +15,9 @@ export class MagicDelete {
   }
 
   private async deleteOne(meta: DeleteMeta) {
-    const entityRepository = this.entityManager.getRepository(meta.enity);
+    const entityRepository = this.instanceService
+      .getEntityManager()
+      .getRepository(meta.enity);
     const relationMetas = entityRepository.metadata.ownRelations;
     const qb = entityRepository.createQueryBuilder(meta.enity);
     //meta.cascades?.forEach((relationName) => {
