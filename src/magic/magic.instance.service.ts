@@ -23,12 +23,7 @@ export class MagicInstanceService {
     public readonly schemaService: SchemaService,
   ) {}
   async query(json: any) {
-    return await new MagicQuery(
-      this.entityManager,
-      this.abilityService,
-      this.queryCommandService,
-      this.schemaService,
-    ).query(json);
+    return await new MagicQuery(this).query(json);
   }
 
   async post(json: any) {
@@ -41,9 +36,7 @@ export class MagicInstanceService {
   }
 
   async delete(json: any) {
-    return await new MagicDelete(
-      this,
-    ).delete(json);
+    return await new MagicDelete(this).delete(json);
   }
 
   async update(json: any) {}

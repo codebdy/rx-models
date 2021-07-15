@@ -1,27 +1,17 @@
 import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
-import { AbilityService } from 'src/ability/ability.service';
-import { EntityManager } from 'typeorm';
-import { QueryCommandService } from 'src/command/query-command.service';
-import { SchemaService } from 'src/schema/schema.service';
+import { MagicInstanceService } from '../magic.instance.service';
 
 export class MagicQuery {
-  constructor(
-    private readonly entityManager: EntityManager,
-    private readonly abilityService: AbilityService,
-    private readonly commandService: QueryCommandService,
-    private readonly schemaService: SchemaService,
-  ) {}
+  constructor(private readonly instanceService: MagicInstanceService) {}
 
   async query(json: any) {
     let totalCount = 0;
-    const meta = new MagicQueryParser(
-      this.commandService,
-      this.schemaService,
-    ).parse(json);
+    const meta = new MagicQueryParser(this.instanceService).parse(json);
     //const entityReadAbility = this.abilityService.getEntityReadAbility();
-    const qb = this.entityManager
+    const qb = this.instanceService
+      .getEntityManager()
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
 

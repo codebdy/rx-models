@@ -1,8 +1,6 @@
 import { CommandMeta } from 'src/command/command.meta';
-import { QueryCommandService } from 'src/command/query-command.service';
 import { QueryMeta } from 'src/magic-meta/query/query.meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
-import { SchemaService } from 'src/schema/schema.service';
 import { EntitySchemaRelationOptions } from 'typeorm';
 import { QueryEntityMeta } from '../../magic-meta/query/query.entity-meta';
 import { JsonUnit } from '../base/json-unit';
@@ -14,13 +12,11 @@ import {
   TOKEN_SELECT,
   TOKEN_WHERE,
 } from '../base/tokens';
+import { MagicInstanceService } from '../magic.instance.service';
 
 export class MagicQueryParser {
   private querMeta: QueryEntityMeta;
-  constructor(
-    private readonly commandService: QueryCommandService,
-    private readonly schemaService: SchemaService,
-  ) {}
+  constructor(private readonly instanceService: MagicInstanceService) {}
 
   parse(json: any): QueryEntityMeta {
     const meta = new QueryEntityMeta();
@@ -42,7 +38,7 @@ export class MagicQueryParser {
           } else if (commandMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
           } else {
-            const commandClass = this.commandService.findEntityCommandOrFailed(
+            const commandClass = this.instanceService.queryCommandService.findEntityCommandOrFailed(
               commandMeta.name,
             );
             const command = new commandClass(commandMeta, this.querMeta);
@@ -67,7 +63,7 @@ export class MagicQueryParser {
   }
 
   parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
-    const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
+    const relationEntitySchemaOptions = this.instanceService.schemaService.findRelationEntitySchema(
       meta.entity,
       jsonUnit.key,
     );
@@ -98,7 +94,7 @@ export class MagicQueryParser {
       commandMeta = jsonUnit.commands[0];
       commandMeta.value = jsonUnit.value;
     }
-    const commandClass = this.commandService.findConditionCommandOrFailed(
+    const commandClass = this.instanceService.queryCommandService.findConditionCommandOrFailed(
       commanName,
     );
 
@@ -121,10 +117,14 @@ export class MagicQueryParser {
     cmdMeta.value = jsonUnit.value;
 
     if (meta instanceof QueryEntityMeta) {
-      const cmdClass = this.commandService.findEntityCommandOrFailed(name);
+      const cmdClass = this.instanceService.queryCommandService.findEntityCommandOrFailed(
+        name,
+      );
       meta.pushCommand(new cmdClass(cmdMeta, this.querMeta));
     } else {
-      const cmdClass = this.commandService.findRelationCommandOrFailed(name);
+      const cmdClass = this.instanceService.queryCommandService.findRelationCommandOrFailed(
+        name,
+      );
       meta.pushCommand(
         new cmdClass(cmdMeta, this.querMeta, meta as QueryRelationMeta),
       );
@@ -140,11 +140,11 @@ export class MagicQueryParser {
     relation.parentEntityMeta = parentMeta;
     parentMeta.relationMetas.push(relation);
     relation.name = jsonUnit.key;
-    relation.entitySchema = this.schemaService.findEntitySchemaOrFailed(
+    relation.entitySchema = this.instanceService.schemaService.findEntitySchemaOrFailed(
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.commands.forEach((commandMeta) => {
-      const CommandClass = this.commandService.findRelationCommandOrFailed(
+      const CommandClass = this.instanceService.queryCommandService.findRelationCommandOrFailed(
         commandMeta.name,
       );
       relation.pushCommand(new CommandClass(commandMeta, this.querMeta));
