@@ -1,7 +1,7 @@
 import { JsonUnit } from 'src/magic/base/json-unit';
 import { TOKEN_CASCADE } from 'src/magic/base/tokens';
 
-export class ModelDeleteMeta {
+export class DeleteMeta {
   private _jsonUnit: JsonUnit;
 
   constructor(jsonUnit: JsonUnit) {

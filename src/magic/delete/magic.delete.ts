@@ -1,22 +1,20 @@
-import { Injectable } from '@nestjs/common';
 import { getRepository } from 'typeorm';
 import { JsonUnit } from '../base/json-unit';
-import { MagicDeleteParamsParser } from './param/delete.param.parser';
-import { ModelDeleteMeta } from './param/model.delete.meta';
+import { MagicDeleteParser } from './magic.delete.parser';
+import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
 
-@Injectable()
-export class MagicDeleteService {
+export class MagicDelete {
   private _deletedModels: any;
   async delete(json: any) {
     this._deletedModels = {} as any;
-    const deleteMetas = new MagicDeleteParamsParser(json).deleteMetas;
+    const deleteMetas = new MagicDeleteParser().parse(json);
     for (const meta of deleteMetas) {
       this._deletedModels[meta.model] = await this.deleteOne(meta);
     }
     return this._deletedModels;
   }
 
-  private async deleteOne(meta: ModelDeleteMeta) {
+  private async deleteOne(meta: DeleteMeta) {
     const entityRepository = getRepository(meta.model);
     const relationMetas = entityRepository.metadata.ownRelations;
     const qb = entityRepository.createQueryBuilder(meta.model);
@@ -24,7 +22,7 @@ export class MagicDeleteService {
       qb.leftJoinAndSelect(`${meta.model}.${relationName}`, relationName);
     });
     const entites = await qb.whereInIds(meta.ids).getMany();
-    const cascadeMetas: ModelDeleteMeta[] = [];
+    const cascadeMetas: DeleteMeta[] = [];
     if (relationMetas && relationMetas.length > 0) {
       for (const entity of entites) {
         for (const relationMeta of relationMetas) {
@@ -32,7 +30,7 @@ export class MagicDeleteService {
             const relationObjs = entity[relationMeta.propertyName];
             relationObjs &&
               cascadeMetas.push(
-                new ModelDeleteMeta(
+                new DeleteMeta(
                   new JsonUnit(
                     relationMeta.inverseEntityMetadata.name,
                     Array.isArray(relationObjs)

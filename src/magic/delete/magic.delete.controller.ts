@@ -1,10 +1,10 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { sleep } from '../../util/sleep';
-import { MagicDeleteService } from './magic.delete.service';
+import { MagicDelete } from './magic.delete';
 
 @Controller()
 export class MagicDeleteController {
-  constructor(private readonly deleteService: MagicDeleteService) {}
+  constructor(private readonly deleteService: MagicDelete) {}
 
   /**
    * 通用删除接口，语法示例：

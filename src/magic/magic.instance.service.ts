@@ -37,7 +37,7 @@ export class MagicInstanceService {
     ).post(json);
   }
 
-  async update(json: any) {}
-
   async delete(json: any) {}
+
+  async update(json: any) {}
 }

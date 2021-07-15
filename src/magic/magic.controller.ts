@@ -131,7 +131,7 @@ export class MagicController {
    * @returns
    */
   @Post('post')
-  async postModels(@Body() body: any) {
+  async post(@Body() body: any) {
     try {
       await sleep(500);
       let result: {};
@@ -175,7 +175,7 @@ export class MagicController {
    * @returns
    */
   @Post('update')
-  async updateModels(@Body() body: any) {
+  async update(@Body() body: any) {
     try {
       await sleep(500);
       console.debug(body);
