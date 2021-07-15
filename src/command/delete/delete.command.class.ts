@@ -1,4 +1,4 @@
-import { MagicInstanceService } from 'src/magic/magic.instance.service';
+import { MagicService } from 'src/magic-meta/magic.service';
 import { CommandType } from '../command-type';
 import { CommandMeta } from '../command.meta';
 import { DeleteCommand } from './delete.command';
@@ -9,8 +9,5 @@ export interface DeleteCommandClass extends Function {
 
   commandType: CommandType;
   commandName: string;
-  new (
-    commandMeta: CommandMeta,
-    instanceService: MagicInstanceService,
-  ): DeleteCommand;
+  new (commandMeta: CommandMeta, magicService: MagicService): DeleteCommand;
 }

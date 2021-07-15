@@ -1,5 +1,6 @@
 import { AbilityService } from 'src/ability/ability.service';
 import { PostCommandService } from 'src/command/post-command.service';
+import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
 import { SchemaService } from 'src/schema/schema.service';
@@ -13,6 +14,7 @@ export class MagicPost {
     private readonly abilityService: AbilityService,
     private readonly postCommandService: PostCommandService,
     private readonly schemaService: SchemaService,
+    private readonly magicService: MagicService,
   ) {}
 
   async post(json: any) {
@@ -20,6 +22,7 @@ export class MagicPost {
     const instances = new MagicPostParser(
       this.postCommandService,
       this.schemaService,
+      this.magicService,
     ).parse(json);
 
     for (const instanceGroup of instances) {
@@ -48,7 +51,6 @@ export class MagicPost {
       await command.afterSaveEntityInstanceCollection(
         savedInstances,
         instanceGroup,
-        entityManger,
       );
     }
     return instanceGroup.isSingle ? savedInstances[0] : savedInstances;
@@ -63,7 +65,6 @@ export class MagicPost {
       await command.beforeUpdateRelationCollection(
         instanceMeta,
         relationCollection,
-        entityManger,
       );
     }
     let savedInstances = [];
@@ -87,7 +88,6 @@ export class MagicPost {
         instanceMeta,
         savedInstances,
         relationCollection,
-        entityManger,
       );
     }
     return relationCollection.isSingle ? savedInstances[0] : savedInstances;
@@ -100,7 +100,7 @@ export class MagicPost {
   ) {
     //保存前命令
     for (const command of instanceGroup.commands) {
-      await command.beforeSaveInstance(instanceMeta, entityManger);
+      await command.beforeSaveInstance(instanceMeta);
     }
     const relations = instanceMeta.relations;
 
@@ -136,11 +136,7 @@ export class MagicPost {
 
     //保存后命令
     for (const command of instanceGroup.commands) {
-      await command.afterSaveInstance(
-        inststance,
-        instanceMeta.entity,
-        entityManger,
-      );
+      await command.afterSaveInstance(inststance, instanceMeta.entity);
     }
 
     return inststance;

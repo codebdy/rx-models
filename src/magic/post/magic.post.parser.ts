@@ -1,4 +1,5 @@
 import { PostCommandService } from 'src/command/post-command.service';
+import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
@@ -9,6 +10,7 @@ export class MagicPostParser {
   constructor(
     private readonly commandService: PostCommandService,
     private readonly schemaService: SchemaService,
+    private readonly magicService: MagicService,
   ) {}
 
   parse(json: any) {
@@ -42,7 +44,7 @@ export class MagicPostParser {
         commandMeta.name,
       );
       instanceCollection.commands.push(
-        new commandClass(commandMeta, this.schemaService),
+        new commandClass(commandMeta, this.magicService),
       );
     });
     return instanceCollection;
@@ -91,7 +93,7 @@ export class MagicPostParser {
         commandMeta.name,
       );
       relationMetaCollection.commands.push(
-        new commandClass(commandMeta, this.schemaService),
+        new commandClass(commandMeta, this.magicService),
       );
     });
     return relationMetaCollection;

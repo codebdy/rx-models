@@ -3,6 +3,7 @@ import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryCommandClass } from './query.command.class';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
+import { MagicService } from 'src/magic-meta/magic.service';
 
 export interface QueryConditionCommandClass extends QueryCommandClass {
   new (
@@ -10,5 +11,6 @@ export interface QueryConditionCommandClass extends QueryCommandClass {
     rootMeta: QueryEntityMeta,
     ownerMeta: QueryMeta,
     field: string,
+    magicService: MagicService,
   ): QueryCommand;
 }

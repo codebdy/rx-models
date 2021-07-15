@@ -2,6 +2,7 @@ import { AbilityService } from 'src/ability/ability.service';
 import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
+import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { MagicDelete } from './delete/magic.delete';
@@ -13,7 +14,7 @@ import { MagicQuery } from './query/magic.query';
  * 该类不需要注入，自己管理创建。
  * 该类的所有操作都在一个事务创建的EntityManager里
  */
-export class MagicInstanceService {
+export class MagicInstanceService implements MagicService {
   constructor(
     private readonly entityManager: EntityManager,
     public readonly abilityService: AbilityService,
@@ -23,7 +24,13 @@ export class MagicInstanceService {
     public readonly schemaService: SchemaService,
   ) {}
   async query(json: any) {
-    return await new MagicQuery(this).query(json);
+    return await new MagicQuery(
+      this.entityManager,
+      this.abilityService,
+      this.queryCommandService,
+      this.schemaService,
+      this,
+    ).query(json);
   }
 
   async post(json: any) {
@@ -32,6 +39,7 @@ export class MagicInstanceService {
       this.abilityService,
       this.postCommandService,
       this.schemaService,
+      this,
     ).post(json);
   }
 

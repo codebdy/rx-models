@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { MagicService } from 'src/magic-meta/magic.service';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { CommandMeta } from '../command.meta';
@@ -9,7 +10,8 @@ export class QueryRelationCommand extends QueryCommand {
     protected readonly commandMeta: CommandMeta,
     protected readonly rootMeta: QueryEntityMeta,
     protected readonly relationMeta: QueryRelationMeta,
+    protected readonly magicService: MagicService,
   ) {
-    super(commandMeta, rootMeta);
+    super(commandMeta, rootMeta, magicService);
   }
 }

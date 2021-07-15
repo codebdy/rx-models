@@ -19,15 +19,14 @@ export class PostRelationCascadeCommand extends PostCommand {
   async beforeUpdateRelationCollection(
     ownerInstanceMeta: InstanceMeta,
     relationMetaCollection: RelationMetaCollection,
-    entityManger: EntityManager,
   ) {
-    const instance = await entityManger
+    /*const instance = await entityManger
       .getRepository(ownerInstanceMeta.entity)
       .findOne({
         id: ownerInstanceMeta.meta.id,
         relations: [relationMetaCollection.relationName],
       });
-    console.log('嘿嘿，黑恶和 ', instance);
+    console.log('嘿嘿，黑恶和 ', instance);*/
   }
 
   //后面需要给该命令添加权限
@@ -35,7 +34,6 @@ export class PostRelationCascadeCommand extends PostCommand {
     ownerInstanceMeta: InstanceMeta,
     savedInstances: any[],
     relationMetaCollection: RelationMetaCollection,
-    entityManger: EntityManager,
   ) {
     console.log('哈哈 哈哈 哈哈 哈哈 哈哈 ');
   }

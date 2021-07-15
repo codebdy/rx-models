@@ -4,13 +4,17 @@ import { CommandType } from './command-type';
 import { DeleteCommandClass } from './delete/delete.command.class';
 import { PostCommandClass } from './post/post.command.class';
 import { QueryCommandClass } from './query/query.command.class';
+import { QueryConditionCommandClass } from './query/query.condition-command-class';
+import { QueryRelationCommandClass } from './query/query.relation-command-class';
 
 @Injectable()
 export class CommandStorage implements OnModuleInit {
   queryEntityCommandClasses: { [key: string]: QueryCommandClass } = {} as any;
-  queryRelationCommandClasses: { [key: string]: QueryCommandClass } = {} as any;
+  queryRelationCommandClasses: {
+    [key: string]: QueryRelationCommandClass;
+  } = {} as any;
   queryConditionCommandClasses: {
-    [key: string]: QueryCommandClass;
+    [key: string]: QueryConditionCommandClass;
   } = {} as any;
 
   postEntityCommandClasses: { [key: string]: PostCommandClass } = {} as any;

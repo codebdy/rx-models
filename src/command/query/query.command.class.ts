@@ -2,6 +2,7 @@ import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
 import { CommandType } from '../command-type';
+import { MagicService } from 'src/magic-meta/magic.service';
 
 export interface QueryCommandClass extends Function {
   description?: string;
@@ -9,5 +10,9 @@ export interface QueryCommandClass extends Function {
 
   commandType: CommandType;
   commandName: string;
-  new (commandMeta: CommandMeta, rootMeta: QueryEntityMeta): QueryCommand;
+  new (
+    commandMeta: CommandMeta,
+    rootMeta: QueryEntityMeta,
+    magicService: MagicService,
+  ): QueryCommand;
 }
