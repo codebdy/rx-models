@@ -9,21 +9,25 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilityService } from 'src/ability/ability.service';
+import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
+import { QueryResult } from 'src/common/query-result';
 import { SchemaService } from 'src/schema/schema.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
-import { EntityService } from './entity.service';
+import { MagicInstanceService } from './magic.instance.service';
 
 @Controller()
 export class MagicController {
   constructor(
     private readonly abilityService: AbilityService,
     private readonly typeormSerivce: TypeOrmService,
-    private readonly commandService: QueryCommandService,
+    private readonly queryCommandService: QueryCommandService,
+    private readonly postCommandService: PostCommandService,
     private readonly schemaService: SchemaService,
   ) {}
+
   /**
    * 通用查询接口，语法示例：
    * {
@@ -73,17 +77,18 @@ export class MagicController {
    */
   @UseGuards(AuthGuard())
   @Get('get/:jsonStr?')
-  async getEntities(@Param('jsonStr') jsonStr) {
+  async query(@Param('jsonStr') jsonStr) {
     try {
       console.debug('JSON QUERY String', jsonStr);
       await sleep(500);
-      let result;
+      let result: QueryResult;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
-          const entityService = new EntityService(
+          const entityService = new MagicInstanceService(
             entityManger,
             this.abilityService,
-            this.commandService,
+            this.queryCommandService,
+            this.postCommandService,
             this.schemaService,
           );
           result = await entityService.query(JSON.parse(jsonStr || '{}'));
@@ -92,6 +97,59 @@ export class MagicController {
       return result;
     } catch (error: any) {
       console.error('getEntities error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
+  }
+
+  /**
+   * 通用提交接口，语法示例：
+   * {
+   *    "RxApp @ignoreEmperty(password) @sendEmail(title, content, attachments, template, sign)":[
+   *      {
+   *        "id": 1,
+   *        "name":"XXX",
+   *        "auths @ignoreEmperty(password) @cascade":[
+   *          {
+   *            "id":2,
+   *            "name":"xxx",
+   *          },
+   *          {
+   *            "name":"xxx",
+   *          },
+   *          4,5,6
+   *        ],
+   *       "author":null,
+   *      }
+   *    ]
+   * }
+   * @returns
+   */
+  @Post('post')
+  async postModels(@Body() body: any) {
+    try {
+      await sleep(500);
+      let result: {};
+      await this.typeormSerivce.connection.transaction(
+        async (entityManger: EntityManager) => {
+          const entityService = new MagicInstanceService(
+            entityManger,
+            this.abilityService,
+            this.queryCommandService,
+            this.postCommandService,
+            this.schemaService,
+          );
+          result = await entityService.post(body || {});
+        },
+      );
+      return result;
+    } catch (error: any) {
+      console.error('postModels error:', error);
       throw new HttpException(
         {
           status: 500,

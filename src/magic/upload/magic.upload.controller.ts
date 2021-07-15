@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { MagicPostService } from 'src/magic/post/magic.post.service';
+import { MagicPost } from 'src/magic/post/magic.post';
 import { sleep } from '../../util/sleep';
 import { fileName, fileFilter } from './file-upload.utils';
 import { MagicUploadService } from './magic.upload.service';
@@ -17,7 +17,7 @@ import { MagicUploadService } from './magic.upload.service';
 export class MagicUploadController {
   constructor(
     private readonly uploadService: MagicUploadService,
-    private readonly postService: MagicPostService,
+    private readonly postService: MagicPost,
   ) {}
 
   /**

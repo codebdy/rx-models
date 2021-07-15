@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { PostCommandService } from 'src/command/post-command.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
@@ -6,7 +5,6 @@ import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.collet
 import { SchemaService } from 'src/schema/schema.service';
 import { JsonUnit } from '../base/json-unit';
 
-@Injectable()
 export class MagicPostParser {
   constructor(
     private readonly commandService: PostCommandService,

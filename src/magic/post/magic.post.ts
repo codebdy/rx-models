@@ -1,30 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { AbilityService } from 'src/ability/ability.service';
+import { PostCommandService } from 'src/command/post-command.service';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
 
-@Injectable()
-export class MagicPostService {
+export class MagicPost {
   constructor(
-    private readonly typeormSerivce: TypeOrmService,
-    private readonly parser: MagicPostParser,
+    private readonly entityManager: EntityManager,
+    private readonly abilityService: AbilityService,
+    private readonly postCommandService: PostCommandService,
+    private readonly schemaService: SchemaService,
   ) {}
+
   async post(json: any) {
     const savedEntites = {};
-    const instances = this.parser.parse(json);
-    await this.typeormSerivce.connection.transaction(
-      async (entityManger: EntityManager) => {
-        for (const instanceGroup of instances) {
-          savedEntites[instanceGroup.entity] = await this.saveInstanceGroup(
-            instanceGroup,
-            entityManger,
-          );
-        }
-      },
-    );
+    const instances = new MagicPostParser(
+      this.postCommandService,
+      this.schemaService,
+    ).parse(json);
+
+    for (const instanceGroup of instances) {
+      savedEntites[instanceGroup.entity] = await this.saveInstanceGroup(
+        instanceGroup,
+        this.entityManager,
+      );
+    }
 
     return savedEntites;
   }
