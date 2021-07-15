@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommandType } from 'src/command/command-type';
 import { PostCommand } from 'src/command/post/post.command';
-import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
+import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
+import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
 import { EntityManager } from 'typeorm';
 
 export class PostRelationCascadeCommand extends PostCommand {
@@ -12,12 +14,29 @@ export class PostRelationCascadeCommand extends PostCommand {
 
   static commandName = 'cascade';
 
-  //后面需要给该命令添加权限
-  async afterSaveEntityInstanceCollection(
-    savedInstances: any[],
-    instanceMetaCollection: InstanceMetaCollection,
+  private oldRelationIds: number[] = [];
+
+  async beforeUpdateRelationCollection(
+    ownerInstanceMeta: InstanceMeta,
+    relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {
+    const instance = await entityManger
+      .getRepository(ownerInstanceMeta.entity)
+      .findOne({
+        id: ownerInstanceMeta.meta.id,
+        relations: [relationMetaCollection.relationName],
+      });
+    console.log('嘿嘿，黑恶和 ', instance);
+  }
 
+  //后面需要给该命令添加权限
+  async afterSaveOneRelationInstanceCollection(
+    ownerInstanceMeta: InstanceMeta,
+    savedInstances: any[],
+    relationMetaCollection: RelationMetaCollection,
+    entityManger: EntityManager,
+  ) {
+    console.log('哈哈 哈哈 哈哈 哈哈 哈哈 ');
   }
 }

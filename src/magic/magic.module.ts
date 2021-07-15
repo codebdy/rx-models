@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MagicPostController } from './post/magic.post.controller';
 import { MagicPostService } from './post/magic.post.service';
-import { MagicQueryController } from './query/magic.query.controller';
-import { MagicQueryService } from './query/magic.query.service';
 import { MagicDeleteController } from './delete/magic.delete.controller';
 import { MagicDeleteService } from './delete/magic.delete.service';
 import { MagicUploadService } from './upload/magic.upload.service';
@@ -14,20 +12,20 @@ import { MagicQueryParser } from './query/magic.query.parser';
 import { SchemaModule } from 'src/schema/schema.module';
 import { MagicPostParser } from './post/magic.post.parser';
 import { AbilityModule } from 'src/ability/ability.module';
+import { MagicController } from './magic.controller';
 
 @Module({
   imports: [AbilityModule, SchemaModule, CommandModule],
   providers: [
     MagicQueryParser,
     MagicPostParser,
-    MagicQueryService,
     MagicPostService,
     MagicDeleteService,
     MagicUploadService,
     MagicUpdateService,
   ],
   controllers: [
-    MagicQueryController,
+    MagicController,
     MagicPostController,
     MagicDeleteController,
     MagicUploadController,

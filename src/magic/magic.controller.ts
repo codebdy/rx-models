@@ -1,18 +1,29 @@
 import {
+  Body,
   Controller,
   Get,
   HttpException,
   Param,
+  Post,
   UseGuards,
 } from '@nestjs/common';
-import { MagicQueryService } from './magic.query.service';
-import { sleep } from '../../util/sleep';
 import { AuthGuard } from '@nestjs/passport';
+import { AbilityService } from 'src/ability/ability.service';
+import { QueryCommandService } from 'src/command/query-command.service';
+import { SchemaService } from 'src/schema/schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { sleep } from 'src/util/sleep';
+import { EntityManager } from 'typeorm';
+import { EntityService } from './entity.service';
 
 @Controller()
-export class MagicQueryController {
-  constructor(private readonly queryService: MagicQueryService) {}
-
+export class MagicController {
+  constructor(
+    private readonly abilityService: AbilityService,
+    private readonly typeormSerivce: TypeOrmService,
+    private readonly commandService: QueryCommandService,
+    private readonly schemaService: SchemaService,
+  ) {}
   /**
    * 通用查询接口，语法示例：
    * {
@@ -66,9 +77,53 @@ export class MagicQueryController {
     try {
       console.debug('JSON QUERY String', jsonStr);
       await sleep(500);
-      return await this.queryService.query(jsonStr);
+      let result;
+      await this.typeormSerivce.connection.transaction(
+        async (entityManger: EntityManager) => {
+          const entityService = new EntityService(
+            entityManger,
+            this.abilityService,
+            this.commandService,
+            this.schemaService,
+          );
+          result = await entityService.query(JSON.parse(jsonStr || '{}'));
+        },
+      );
+      return result;
     } catch (error: any) {
       console.error('getEntities error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
+  }
+
+  /**
+   * 更新接口，批量更新某几个字段，语法示例：
+   * {
+   *    "RxApp":{
+   *      "name":"xx",
+   *      "email":"yy",
+   *      "ids":[2,3,5]
+   *    },
+   *    "RxAuth":{
+   *      ...
+   *    }
+   * }
+   * @returns
+   */
+  @Post('update')
+  async updateModels(@Body() body: any) {
+    try {
+      await sleep(500);
+      console.debug(body);
+      //return await this.updateService.update(body || {});
+    } catch (error: any) {
+      console.error('updateModels error:', error);
       throw new HttpException(
         {
           status: 500,

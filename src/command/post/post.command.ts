@@ -27,6 +27,7 @@ export class PostCommand {
   ) {}
 
   async beforeUpdateRelationCollection(
+    ownerInstanceMeta: InstanceMeta,
     relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {}
@@ -38,6 +39,7 @@ export class PostCommand {
   ) {}
 
   async afterSaveOneRelationInstanceCollection(
+    ownerInstanceMeta: InstanceMeta,
     savedInstances: any[],
     relationMetaCollection: RelationMetaCollection,
     entityManger: EntityManager,

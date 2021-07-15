@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { QueryMeta } from 'src/magic-meta/query/query.meta';
@@ -16,7 +15,6 @@ import {
   TOKEN_WHERE,
 } from '../base/tokens';
 
-@Injectable()
 export class MagicQueryParser {
   private querMeta: QueryEntityMeta;
   constructor(
@@ -24,8 +22,7 @@ export class MagicQueryParser {
     private readonly schemaService: SchemaService,
   ) {}
 
-  parse(jsonStr: string): QueryEntityMeta {
-    const json = JSON.parse(jsonStr || '{}');
+  parse(json: any): QueryEntityMeta {
     const meta = new QueryEntityMeta();
     this.querMeta = meta;
     this.parseModelLine(json, meta);

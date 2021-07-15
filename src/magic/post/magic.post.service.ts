@@ -52,11 +52,13 @@ export class MagicPostService {
   }
 
   private async processRelationGroup(
+    instanceMeta: InstanceMeta,
     relationCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {
     for (const command of relationCollection.commands) {
       await command.beforeUpdateRelationCollection(
+        instanceMeta,
         relationCollection,
         entityManger,
       );
@@ -79,6 +81,7 @@ export class MagicPostService {
 
     for (const command of relationCollection.commands) {
       await command.afterSaveOneRelationInstanceCollection(
+        instanceMeta,
         savedInstances,
         relationCollection,
         entityManger,
@@ -88,37 +91,41 @@ export class MagicPostService {
   }
 
   private async saveEntity(
-    entityMeta: InstanceMeta,
+    instanceMeta: InstanceMeta,
     entityManger: EntityManager,
     instanceGroup: InstanceMetaCollection | RelationMetaCollection,
   ) {
     //保存前命令
     for (const command of instanceGroup.commands) {
-      await command.beforeSaveInstance(entityMeta, entityManger);
+      await command.beforeSaveInstance(instanceMeta, entityManger);
     }
-    const relations = entityMeta.relations;
+    const relations = instanceMeta.relations;
 
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
-      entityMeta.savedRelations[relationKey] =
+      instanceMeta.savedRelations[relationKey] =
         relationShip.ids.length === 0 && relationShip.entities.length === 0
           ? null
-          : await this.processRelationGroup(relationShip, entityManger);
+          : await this.processRelationGroup(
+              instanceMeta,
+              relationShip,
+              entityManger,
+            );
     }
-    const repository = entityManger.getRepository(entityMeta.entity);
+    const repository = entityManger.getRepository(instanceMeta.entity);
     let entity: any = repository.create();
-    if (entityMeta.meta?.id) {
-      entity = await repository.findOne(entityMeta.meta?.id);
+    if (instanceMeta.meta?.id) {
+      entity = await repository.findOne(instanceMeta.meta?.id);
     }
 
-    for (const attrKey in entityMeta.meta) {
+    for (const attrKey in instanceMeta.meta) {
       if (attrKey !== 'id') {
-        entity[attrKey] = entityMeta.meta[attrKey];
+        entity[attrKey] = instanceMeta.meta[attrKey];
       }
     }
 
-    for (const relationKey in entityMeta.savedRelations) {
-      const relationValue = entityMeta.savedRelations[relationKey];
+    for (const relationKey in instanceMeta.savedRelations) {
+      const relationValue = instanceMeta.savedRelations[relationKey];
       entity[relationKey] = relationValue;
     }
 
@@ -128,7 +135,7 @@ export class MagicPostService {
     for (const command of instanceGroup.commands) {
       await command.afterSaveInstance(
         inststance,
-        entityMeta.entity,
+        instanceMeta.entity,
         entityManger,
       );
     }

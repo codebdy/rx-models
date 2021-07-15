@@ -1,24 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
 import { AbilityService } from 'src/ability/ability.service';
+import { EntityManager } from 'typeorm';
+import { QueryCommandService } from 'src/command/query-command.service';
+import { SchemaService } from 'src/schema/schema.service';
 
-@Injectable()
-export class MagicQueryService {
+export class MagicQuery {
   constructor(
+    private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly typeormSerivce: TypeOrmService,
-    private readonly queryParser: MagicQueryParser,
+    private readonly commandService: QueryCommandService,
+    private readonly schemaService: SchemaService,
   ) {}
 
-  async query(jsonStr: string) {
+  async query(json: any) {
     let totalCount = 0;
-
-    const meta = this.queryParser.parse(jsonStr);
-    const entityReadAbility = this.abilityService.getEntityReadAbility();
-    const qb = this.typeormSerivce
+    const meta = new MagicQueryParser(
+      this.commandService,
+      this.schemaService,
+    ).parse(json);
+    //const entityReadAbility = this.abilityService.getEntityReadAbility();
+    const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
 
@@ -28,7 +31,7 @@ export class MagicQueryService {
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
       if (totalCount > 1000) {
-        throw new Error('The result is to large, please use paginate command');
+        throw new Error('The result is too large, please use paginate command');
       }
     }
 
