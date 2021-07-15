@@ -1,14 +1,15 @@
+import { DeleteCommand } from 'src/command/delete/delete.command';
 import { JsonUnit } from 'src/magic/base/json-unit';
-import { TOKEN_CASCADE } from 'src/magic/base/tokens';
 
 export class DeleteMeta {
   private _jsonUnit: JsonUnit;
+  public commands: DeleteCommand[] = [];
 
   constructor(jsonUnit: JsonUnit) {
     this._jsonUnit = jsonUnit;
   }
 
-  get model() {
+  get enity() {
     return this._jsonUnit.key;
   }
 
@@ -18,7 +19,7 @@ export class DeleteMeta {
       : [this._jsonUnit.value];
   }
 
-  get cascades() {
+  /*get cascades() {
     const cascadeCommand = this._jsonUnit.getCommand(TOKEN_CASCADE);
     return cascadeCommand ? cascadeCommand.value : undefined;
   }
@@ -34,5 +35,5 @@ export class DeleteMeta {
     }
 
     return false;
-  }
+  }*/
 }

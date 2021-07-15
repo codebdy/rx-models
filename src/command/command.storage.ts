@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { importCommandsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
 import { CommandType } from './command-type';
+import { DeleteCommandClass } from './delete/delete.command.class';
 import { PostCommandClass } from './post/post.command.class';
 import { QueryCommandClass } from './query/query.command.class';
 
@@ -14,6 +15,8 @@ export class CommandStorage implements OnModuleInit {
 
   postEntityCommandClasses: { [key: string]: PostCommandClass } = {} as any;
   postRelationCommandClasses: { [key: string]: PostCommandClass } = {} as any;
+
+  deleteCommandClasses: { [key: string]: DeleteCommandClass } = {} as any;
 
   async onModuleInit() {
     await this.loadCommandClasses();
@@ -66,6 +69,13 @@ export class CommandStorage implements OnModuleInit {
           `Post relation command ${commandName} duplicated!`,
         );
         this.postRelationCommandClasses[commandName] = commandClass;
+      }
+      if (commandClass.commandType === CommandType.DELETE_COMMAND) {
+        console.assert(
+          !this.deleteCommandClasses[commandName],
+          `Delete command ${commandName} duplicated!`,
+        );
+        this.deleteCommandClasses[commandName] = commandClass;
       }
     });
     console.debug('Commands loaded');

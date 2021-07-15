@@ -1,8 +1,10 @@
 import { AbilityService } from 'src/ability/ability.service';
+import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
+import { MagicDelete } from './delete/magic.delete';
 import { MagicPost } from './post/magic.post';
 import { MagicQuery } from './query/magic.query';
 
@@ -17,6 +19,7 @@ export class MagicInstanceService {
     private readonly abilityService: AbilityService,
     private readonly queryCommandService: QueryCommandService,
     private readonly postCommandService: PostCommandService,
+    private readonly deleteCommandService: DeleteCommandService,
     private readonly schemaService: SchemaService,
   ) {}
   async query(json: any) {
@@ -37,7 +40,22 @@ export class MagicInstanceService {
     ).post(json);
   }
 
-  async delete(json: any) {}
+  async delete(json: any) {
+    return await new MagicDelete(
+      this.entityManager,
+      this.abilityService,
+      this.deleteCommandService,
+      this.schemaService,
+      this,
+    ).delete(json);
+  }
 
   async update(json: any) {}
+
+  /**
+   * 拿到该变量，意味着已经脱离了权限控制，请一定不要进行数据库修改操作
+   */
+  get getEntityManager() {
+    return this.entityManager;
+  }
 }

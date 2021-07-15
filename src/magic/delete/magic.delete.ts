@@ -1,32 +1,46 @@
-import { getRepository } from 'typeorm';
-import { JsonUnit } from '../base/json-unit';
+import { EntityManager } from 'typeorm';
 import { MagicDeleteParser } from './magic.delete.parser';
 import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
+import { AbilityService } from 'src/ability/ability.service';
+import { SchemaService } from 'src/schema/schema.service';
+import { DeleteCommandService } from 'src/command/delete-command.service';
+import { MagicInstanceService } from '../magic.instance.service';
 
 export class MagicDelete {
-  private _deletedModels: any;
+  constructor(
+    private readonly entityManager: EntityManager,
+    private readonly abilityService: AbilityService,
+    private readonly deleteCommandService: DeleteCommandService,
+    private readonly schemaService: SchemaService,
+    private readonly instanceService: MagicInstanceService,
+  ) {}
+
   async delete(json: any) {
-    this._deletedModels = {} as any;
-    const deleteMetas = new MagicDeleteParser().parse(json);
+    const deletedInstances = {} as any;
+    const deleteMetas = new MagicDeleteParser(
+      this.deleteCommandService,
+      this.schemaService,
+      this.instanceService,
+    ).parse(json);
     for (const meta of deleteMetas) {
-      this._deletedModels[meta.model] = await this.deleteOne(meta);
+      deletedInstances[meta.enity] = await this.deleteOne(meta);
     }
-    return this._deletedModels;
+    return deletedInstances;
   }
 
   private async deleteOne(meta: DeleteMeta) {
-    const entityRepository = getRepository(meta.model);
+    const entityRepository = this.entityManager.getRepository(meta.enity);
     const relationMetas = entityRepository.metadata.ownRelations;
-    const qb = entityRepository.createQueryBuilder(meta.model);
-    meta.cascades?.forEach((relationName) => {
-      qb.leftJoinAndSelect(`${meta.model}.${relationName}`, relationName);
-    });
+    const qb = entityRepository.createQueryBuilder(meta.enity);
+    //meta.cascades?.forEach((relationName) => {
+    //  qb.leftJoinAndSelect(`${meta.enity}.${relationName}`, relationName);
+    //});
     const entites = await qb.whereInIds(meta.ids).getMany();
-    const cascadeMetas: DeleteMeta[] = [];
+    //const cascadeMetas: DeleteMeta[] = [];
     if (relationMetas && relationMetas.length > 0) {
       for (const entity of entites) {
         for (const relationMeta of relationMetas) {
-          if (meta.isCascade(relationMeta.propertyName)) {
+          /*if (meta.isCascade(relationMeta.propertyName)) {
             const relationObjs = entity[relationMeta.propertyName];
             relationObjs &&
               cascadeMetas.push(
@@ -39,7 +53,7 @@ export class MagicDelete {
                   ),
                 ),
               );
-          }
+          }*/
           //解除所有关联关系，防止外键约束
           entity[relationMeta.propertyName] = null;
         }
@@ -49,13 +63,13 @@ export class MagicDelete {
     meta.ids &&
       meta.ids.length > 0 &&
       (await entityRepository.delete(meta.ids));
-    for (const cascadeMeta of cascadeMetas) {
+    /* for (const cascadeMeta of cascadeMetas) {
       const deletedIds = await this.deleteOne(cascadeMeta);
-      this._deletedModels[cascadeMeta.model] = [
-        ...(this._deletedModels[cascadeMeta.model] || []),
+      this._deletedModels[cascadeMeta.enity] = [
+        ...(this._deletedModels[cascadeMeta.enity] || []),
         ...deletedIds,
       ];
-    }
+    }*/
 
     return entites.map((entity: any) => entity.id);
   }

@@ -9,7 +9,7 @@ export class PostCommandService {
   findEntityCommandOrFailed(name: string): PostCommandClass {
     const commandClass = this.commandStorage.postEntityCommandClasses[name];
     if (!commandClass) {
-      throw new Error(`No model command "${name}"`);
+      throw new Error(`No entity command "${name}"`);
     }
     return commandClass;
   }

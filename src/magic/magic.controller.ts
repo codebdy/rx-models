@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilityService } from 'src/ability/ability.service';
+import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { QueryResult } from 'src/common/query-result';
@@ -25,6 +26,7 @@ export class MagicController {
     private readonly typeormSerivce: TypeOrmService,
     private readonly queryCommandService: QueryCommandService,
     private readonly postCommandService: PostCommandService,
+    private readonly deleteCommandService: DeleteCommandService,
     private readonly schemaService: SchemaService,
   ) {}
 
@@ -84,13 +86,7 @@ export class MagicController {
       let result: QueryResult;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
-          const entityService = new MagicInstanceService(
-            entityManger,
-            this.abilityService,
-            this.queryCommandService,
-            this.postCommandService,
-            this.schemaService,
-          );
+          const entityService = this.createEntityService(entityManger);
           result = await entityService.query(JSON.parse(jsonStr || '{}'));
         },
       );
@@ -134,22 +130,49 @@ export class MagicController {
   async post(@Body() body: any) {
     try {
       await sleep(500);
-      let result: {};
+      let result: any;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
-          const entityService = new MagicInstanceService(
-            entityManger,
-            this.abilityService,
-            this.queryCommandService,
-            this.postCommandService,
-            this.schemaService,
-          );
+          const entityService = this.createEntityService(entityManger);
           result = await entityService.post(body || {});
         },
       );
       return result;
     } catch (error: any) {
       console.error('postModels error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
+  }
+
+  /**
+   * 通用删除接口，语法示例：
+   * {
+   *    "RxApp @cascade(pages, auths)":[2,3,5],
+   *    "RxAuth":7
+   * }
+   * @returns
+   */
+  @Post('delete')
+  async deleteModels(@Body() body: any) {
+    try {
+      await sleep(500);
+      console.debug(body);
+      let result: any;
+      await this.typeormSerivce.connection.transaction(
+        async (entityManger: EntityManager) => {
+          const entityService = this.createEntityService(entityManger);
+          result = await entityService.delete(body || {});
+        },
+      );
+      return result;
+    } catch (error: any) {
+      console.error('deleteModels error:', error);
       throw new HttpException(
         {
           status: 500,
@@ -190,5 +213,16 @@ export class MagicController {
         500,
       );
     }
+  }
+
+  private createEntityService(entityManger: EntityManager) {
+    return new MagicInstanceService(
+      entityManger,
+      this.abilityService,
+      this.queryCommandService,
+      this.postCommandService,
+      this.deleteCommandService,
+      this.schemaService,
+    );
   }
 }
