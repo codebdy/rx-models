@@ -2,6 +2,7 @@ import { AbilityService } from 'src/ability/ability.service';
 import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
+import { QueryResult } from 'src/common/query-result';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
@@ -23,7 +24,7 @@ export class MagicInstanceService implements MagicService {
     public readonly deleteCommandService: DeleteCommandService,
     public readonly schemaService: SchemaService,
   ) {}
-  async query(json: any) {
+  async query(json: any): Promise<QueryResult> {
     return await new MagicQuery(
       this.entityManager,
       this.abilityService,
