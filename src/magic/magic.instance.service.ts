@@ -1,4 +1,4 @@
-import { AbilityService } from 'src/ability/ability.service';
+import { AbilityService } from 'src/magic/ability.service';
 import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';

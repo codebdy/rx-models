@@ -2,7 +2,7 @@ import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/common/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { AbilityService } from 'src/ability/ability.service';
+import { AbilityService } from 'src/magic/ability.service';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
@@ -31,6 +31,8 @@ export class MagicQuery {
     const ablilityReslut = await this.abilityService.validateEntityQueryAbility(
       this.schemaService.getEntityMetaOrFailed(meta.entity),
     );
+
+    console.log('哈哈', ablilityReslut);
 
     //如果没有访问权限，返回空数据
     if (ablilityReslut === false) {

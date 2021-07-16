@@ -18,12 +18,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     try {
       console.debug('JwtStrategy payload', payload);
       const userId = payload.sub;
-      return await this.typeormSerivce
+      const user = await this.typeormSerivce
         .getRepository('RxUser')
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.roles', 'RxRole')
         .where({ id: userId })
         .getOne();
+      return user;
     } catch (error: any) {
       throw new HttpException(
         {

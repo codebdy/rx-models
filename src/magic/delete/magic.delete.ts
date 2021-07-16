@@ -1,6 +1,6 @@
 import { MagicDeleteParser } from './magic.delete.parser';
 import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
-import { AbilityService } from 'src/ability/ability.service';
+import { AbilityService } from 'src/magic/ability.service';
 import { EntityManager } from 'typeorm';
 import { DeleteCommandService } from 'src/command/delete-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';

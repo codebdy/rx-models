@@ -6,9 +6,10 @@ import {
   Param,
   Post,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AbilityService } from 'src/ability/ability.service';
+import { AbilityService } from 'src/magic/ability.service';
 import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
@@ -18,11 +19,11 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
+import { RxUser } from 'src/entity-interface/rx-user';
 
 @Controller()
 export class MagicController {
   constructor(
-    private readonly abilityService: AbilityService,
     private readonly typeormSerivce: TypeOrmService,
     private readonly queryCommandService: QueryCommandService,
     private readonly postCommandService: PostCommandService,
@@ -79,14 +80,17 @@ export class MagicController {
    */
   @UseGuards(AuthGuard())
   @Get('get/:jsonStr?')
-  async query(@Param('jsonStr') jsonStr) {
+  async query(@Request() req, @Param('jsonStr') jsonStr) {
     try {
       console.debug('JSON QUERY String', jsonStr);
       await sleep(500);
       let result: QueryResult;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
-          const entityService = this.createEntityService(entityManger);
+          const entityService = this.createEntityService(
+            entityManger,
+            req.user,
+          );
           result = await entityService.query(JSON.parse(jsonStr || '{}'));
         },
       );
@@ -127,13 +131,16 @@ export class MagicController {
    * @returns
    */
   @Post('post')
-  async post(@Body() body: any) {
+  async post(@Request() req, @Body() body: any) {
     try {
       await sleep(500);
       let result: any;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
-          const entityService = this.createEntityService(entityManger);
+          const entityService = this.createEntityService(
+            entityManger,
+            req.user,
+          );
           result = await entityService.post(body || {});
         },
       );
@@ -159,14 +166,17 @@ export class MagicController {
    * @returns
    */
   @Post('delete')
-  async deleteModels(@Body() body: any) {
+  async deleteModels(@Request() req, @Body() body: any) {
     try {
       await sleep(500);
       console.debug(body);
       let result: any;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
-          const entityService = this.createEntityService(entityManger);
+          const entityService = this.createEntityService(
+            entityManger,
+            req.user,
+          );
           result = await entityService.delete(body || {});
         },
       );
@@ -198,7 +208,7 @@ export class MagicController {
    * @returns
    */
   @Post('update')
-  async update(@Body() body: any) {
+  async update(@Request() req, @Body() body: any) {
     try {
       await sleep(500);
       console.debug(body);
@@ -215,10 +225,10 @@ export class MagicController {
     }
   }
 
-  private createEntityService(entityManger: EntityManager) {
+  private createEntityService(entityManger: EntityManager, user: RxUser) {
     return new MagicInstanceService(
       entityManger,
-      this.abilityService,
+      new AbilityService(user, this.typeormSerivce, this.schemaService),
       this.queryCommandService,
       this.postCommandService,
       this.deleteCommandService,

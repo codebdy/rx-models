@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AbilityService } from 'src/ability/ability.service';
+import { AbilityService } from 'src/magic/ability.service';
 import { EntityManager } from 'typeorm';
 import { MagicUpdateParamsParser } from './param/update.param.parser';
 

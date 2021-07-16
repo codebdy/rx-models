@@ -1,4 +1,4 @@
-import { AbilityService } from 'src/ability/ability.service';
+import { AbilityService } from 'src/magic/ability.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';

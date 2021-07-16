@@ -1,16 +1,12 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { request, Request } from 'express';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { RxUser } from 'src/entity-interface/rx-user';
 import { RxAbility } from 'src/entity-interface/rx-ability';
 
-@Injectable({ scope: Scope.REQUEST })
 export class AbilityService {
   constructor(
-    @Inject(REQUEST) private readonly request: Request,
+    private readonly user: RxUser,
     private readonly typeormSerivce: TypeOrmService,
     private readonly schemaService: SchemaService,
   ) {}
@@ -18,10 +14,10 @@ export class AbilityService {
   async validateEntityQueryAbility(
     entityMeta: EntityMeta,
   ): Promise<true | false | RxAbility[]> {
-    const notAuthrized = [] as RxAbility[];
-    const user = request.user as RxUser;
+    const user = this.user;
+
     if (!user) {
-      return notAuthrized;
+      return false;
     }
     if (user.isSupper || user.isDemo) {
       return true;
@@ -38,6 +34,8 @@ export class AbilityService {
         },
       )
       .getMany()) as RxAbility[];
+
+    console.log('哈哈1', abilities);
 
     if (!abilities || abilities.length === 0) {
       return false;
