@@ -20,7 +20,7 @@ export class CommandMeta {
       ? paramStr.split(',').map((token) => token.trim())
       : undefined;
     this.value = params && params.length === 1 ? params[0] : params;
-    if (this.value !== undefined) {
+    if (value !== undefined) {
       this.value = value;
     }
   }

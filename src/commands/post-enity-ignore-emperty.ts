@@ -2,12 +2,12 @@ import { CommandType } from 'src/command/command-type';
 import { PostCommand } from 'src/command/post/post.command';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 
-export class PostIgnorEmpertyCommand extends PostCommand {
+export class PostIgnorEntityEmpertyCommand extends PostCommand {
   static description = `如果为空，则忽略该字段`;
 
   static version = '1.0';
 
-  static commandType = CommandType.POST_RELATION_COMMAND;
+  static commandType = CommandType.POST_ENTITY_COMMAND;
 
   static commandName = 'ignoreEmperty';
 
