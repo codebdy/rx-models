@@ -15,22 +15,18 @@ export class AbilityService {
     private readonly schemaService: SchemaService,
   ) {}
 
-  /**
-   *
-   * @returns 返回用于权限过滤的Sql语句，或者false，如果返回false表示没有权限
-   */
-  async validateEntityQuery(
+  async validateEntityQueryAbility(
     entityMeta: EntityMeta,
-  ): Promise<false | [string, any]> {
-    const authrized = ['', undefined] as [string, any];
+  ): Promise<true | false | RxAbility[]> {
+    const notAuthrized = [] as RxAbility[];
     const user = request.user as RxUser;
     if (!user) {
-      return false;
+      return notAuthrized;
     }
     if (user.isSupper || user.isDemo) {
-      return authrized;
+      return true;
     }
-    const abilitys = (await this.typeormSerivce
+    const ablities = (await this.typeormSerivce
       .getRepository('RxAbility')
       .createQueryBuilder('rxability')
       .leftJoinAndSelect('rxability.role', 'role')
@@ -39,9 +35,11 @@ export class AbilityService {
         roleIds: user.roles?.map((role) => role.id) || [],
       })
       .getMany()) as RxAbility[];
-    for (const ability of abilitys) {
-      console.log(ability);
+
+    if (!ablities || ablities.length === 0) {
+      return false;
     }
-    return authrized;
+
+    return ablities;
   }
 }

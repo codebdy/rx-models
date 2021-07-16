@@ -1,4 +1,3 @@
-import { CommandMeta } from 'src/command/command.meta';
 import { createId } from 'src/util/create-id';
 import { QueryEntityMeta } from './query.entity-meta';
 import { QueryRelationMeta } from './query.relation-meta';
@@ -8,11 +7,11 @@ const SqlWhereParser = require('sql-where-parser');
 const OPERATOR_UNARY_MINUS = Symbol('-');
 
 export function parseWhereSql(
-  commandMeta: CommandMeta,
+  sql: string,
   ownerMeta: QueryEntityMeta | QueryRelationMeta,
 ): [string, any] {
-  if (!commandMeta.value) {
-    throw new Error('Not assign param to where command');
+  if (!sql) {
+    throw new Error('Not assign sql statement to where command or expression');
   }
 
   const parser = new SqlWhereParser();
@@ -51,7 +50,7 @@ export function parseWhereSql(
     }
   };
 
-  const parsed = parser.parse(commandMeta.value, evaluator);
+  const parsed = parser.parse(sql, evaluator);
 
   return [parsed, params];
 }
