@@ -26,7 +26,6 @@ export class MagicDeleteParser {
 
       deleteMetas.push(deleteMeta);
     }
-    console.debug('MagicDeleteParser', deleteMetas);
     return deleteMetas;
   }
 }
