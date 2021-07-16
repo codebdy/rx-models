@@ -1,6 +1,7 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
+import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
 import { QueryMeta } from 'src/magic-meta/query/query.meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
@@ -86,10 +87,14 @@ export class MagicQueryParser {
       meta instanceof QueryEntityMeta
     ) {
       meta.fetchString = TOKEN_GET_ONE;
+    } //如果是On或者Where指令，添加指令用到的的关联
+    else if (keyWithoutAt === TOKEN_ON || keyWithoutAt === TOKEN_WHERE) {
+      const relationNames = parseRelationsFromWhereSql(jsonUnit.value);
+      relationNames?.forEach((roleName) => {
+        this.parseOneLine(new JsonUnit(roleName, {}), meta, roleName);
+      });
+      this.parseModelOrRelationCommand(keyWithoutAt, jsonUnit, meta);
     } else if (
-      //如果是model指令或者relation指令
-      keyWithoutAt === TOKEN_ON ||
-      keyWithoutAt === TOKEN_WHERE ||
       keyWithoutAt === TOKEN_SELECT ||
       keyWithoutAt === TOKEN_ORDER_BY ||
       keyStr.startsWith('@')
@@ -155,9 +160,14 @@ export class MagicQueryParser {
     relationEntitySchemaOptions: EntitySchemaRelationOptions,
     parentMeta: QueryMeta,
   ) {
-    const relation = new QueryRelationMeta();
+    //如果关联已经存在，则不再创建新的关联，直接合并他们的数据
+    const existRelation = parentMeta.relationMetas.find(
+      (relation) => relation.name === jsonUnit.key,
+    );
+    const relation = existRelation ? existRelation : new QueryRelationMeta();
+    !existRelation && parentMeta.relationMetas.push(relation);
+
     relation.parentEntityMeta = parentMeta;
-    parentMeta.relationMetas.push(relation);
     relation.name = jsonUnit.key;
     relation.entitySchema = this.schemaService.findEntitySchemaOrFailed(
       relationEntitySchemaOptions.target.toString(),

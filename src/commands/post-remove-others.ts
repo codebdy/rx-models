@@ -11,7 +11,7 @@ export class PostRemoveOthersCommand extends PostCommand {
 
   static commandName = 'removeOthers';
 
-  //后面需要给该命令添加权限
+  //该命令权限管理通过MagicService实现
   async afterSaveEntityInstanceCollection(
     savedInstances: any[],
     instanceMetaCollection: InstanceMetaCollection,
