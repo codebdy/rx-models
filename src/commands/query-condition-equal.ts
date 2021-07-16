@@ -14,7 +14,7 @@ export class QueryConditionEqualCommand extends QueryConditionCommand {
   getWhereStatement(): [string, any] {
     const paramName = 'param' + createId();
     return [
-      ` ${this.field} = :${paramName} `,
+      ` ${this.ownerMeta.alias}.${this.field} = :${paramName} `,
       {
         [paramName]: this.value,
       },

@@ -82,6 +82,11 @@ export class MagicQueryParser {
     if (relationEntitySchemaOptions) {
       this.parseRelation(jsonUnit, relationEntitySchemaOptions, meta);
     } else if (
+      keyWithoutAt === TOKEN_GET_ONE &&
+      meta instanceof QueryEntityMeta
+    ) {
+      meta.fetchString = TOKEN_GET_ONE;
+    } else if (
       //如果是model指令或者relation指令
       keyWithoutAt === TOKEN_ON ||
       keyWithoutAt === TOKEN_WHERE ||

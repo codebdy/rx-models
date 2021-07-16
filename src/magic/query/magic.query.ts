@@ -40,13 +40,13 @@ export class MagicQuery {
     const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
-
     //如果需要筛选
     this.makeEntityQueryAbilityBuilder(ablilityReslut, meta, qb);
 
     meta.makeConditionQueryBuilder(qb);
     meta.makeNotEffectCountQueryBuilder(qb);
 
+    console.log('哈哈', qb.getSql());
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
       if (totalCount > 1000) {
@@ -56,7 +56,7 @@ export class MagicQuery {
 
     meta.makeEffectCountQueryBuilder(qb);
 
-    console.debug(qb.getSql());
+    console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
 
     const result =

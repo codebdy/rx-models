@@ -20,13 +20,22 @@ export class PostRelationCascadeCommand extends PostCommand {
     ownerInstanceMeta: InstanceMeta,
     relationMetaCollection: RelationMetaCollection,
   ) {
-    /*const instance = await entityManger
-      .getRepository(ownerInstanceMeta.entity)
-      .findOne({
-        id: ownerInstanceMeta.meta.id,
-        relations: [relationMetaCollection.relationName],
-      });
-    console.log('嘿嘿，黑恶和 ', instance);*/
+    const data = await this.magicService.query({
+      entity: ownerInstanceMeta.entity,
+      id: ownerInstanceMeta.meta.id,
+      [relationMetaCollection.relationName]: {},
+      '@getOne': true,
+    });
+    this.oldRelationIds = data.data[relationMetaCollection.relationName]?.map(
+      (relation: { id: number }) => relation.id,
+    );
+
+    console.log(
+      '嘿嘿',
+      ownerInstanceMeta.entity,
+      ownerInstanceMeta.meta.id,
+      relationMetaCollection.relationName,
+    );
   }
 
   //后面需要给该命令添加权限

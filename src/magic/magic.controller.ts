@@ -80,7 +80,7 @@ export class MagicController {
    */
   @UseGuards(AuthGuard())
   @Get('get/:jsonStr?')
-  async query(@Request() req, @Param('jsonStr') jsonStr) {
+  async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
       console.debug('JSON QUERY String', jsonStr);
       await sleep(500);
