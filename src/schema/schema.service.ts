@@ -6,6 +6,7 @@ import {
   EntitySchemaRelationOptions,
 } from 'typeorm';
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
+import { convertDefault } from './convert-default';
 import { convertType } from './convert-type';
 import { EntityMeta } from './graph-meta-interface/entity-meta';
 import { PackageMeta } from './graph-meta-interface/package-meta';
@@ -13,7 +14,6 @@ import {
   RelationMeta,
   RelationType,
 } from './graph-meta-interface/relation-meta';
-import { predefinedSchemas } from './predefined';
 
 interface WithUuid {
   uuid: string;
@@ -32,7 +32,6 @@ export class SchemaService {
   private _packages: PackageMeta[];
 
   constructor() {
-    this.loadPredefinedSchemas();
     this.loadPublishedSchemas();
   }
 
@@ -94,12 +93,6 @@ export class SchemaService {
     }
   }
 
-  private loadPredefinedSchemas() {
-    predefinedSchemas.forEach((schema: EntitySchemaOptions<any> & WithUuid) => {
-      this._entitySchemas.push(schema);
-    });
-  }
-
   private loadPublishedSchemas() {
     const entityMetas: EntityMeta[] = [];
     const relationMetas: RelationMeta[] = [];
@@ -127,6 +120,7 @@ export class SchemaService {
         columns[column.name] = {
           ...rest,
           type: convertType(column.type),
+          default: convertDefault(column),
         };
       }
 

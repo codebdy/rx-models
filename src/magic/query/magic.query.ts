@@ -28,21 +28,21 @@ export class MagicQuery {
     ).parse(json);
 
     //读权限筛查
-    const ablilityReslut = await this.abilityService.validateEntityQueryAbility(
-      this.schemaService.getEntityMetaOrFailed(meta.entity),
-    );
+    //const ablilityReslut = await this.abilityService.validateEntityQueryAbility(
+    //  this.schemaService.getEntityMetaOrFailed(meta.entity),
+    //);
 
     //如果没有访问权限，返回空数据
-    if (ablilityReslut === false) {
-      return { data: [] } as QueryResult;
-    }
+    //if (ablilityReslut === false) {
+    //  return { data: [] } as QueryResult;
+    //}
 
     const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
 
     //如果需要筛选
-    this.makeEntityQueryAbilityBuilder(ablilityReslut, meta, qb);
+    //this.makeEntityQueryAbilityBuilder(ablilityReslut, meta, qb);
 
     meta.makeConditionQueryBuilder(qb);
     meta.makeNotEffectCountQueryBuilder(qb);

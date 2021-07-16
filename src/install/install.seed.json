@@ -172,6 +172,88 @@
           "type": "Enum"
         }
       ]
+    },
+    {
+      "uuid": "e8f06cc9-3125-4dc1-8b88-94829fbb8683",
+      "name": "RxPackage",
+      "columns": [
+        {
+          "uuid": "6b1f5a59-4c32-4ce5-9b29-87851c361bf7",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "ac1b5565-f920-41a9-8f25-e00112108883",
+          "name": "uuid",
+          "type": "String"
+        },
+        {
+          "uuid": "9ffc7fac-9930-42af-9ad6-d032c8cee516",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "d5fe93ee-2015-4d4a-87a5-039e9cd71a3d",
+          "name": "entities",
+          "type": "simple-json"
+        },
+        {
+          "uuid": "a29d99cb-8262-49c7-b8b0-9f0612f74768",
+          "name": "diagrams",
+          "type": "simple-json",
+          "nullable": true
+        },
+        {
+          "uuid": "dbe71c81-0f37-45af-b6ed-2ebce0703910",
+          "name": "relations",
+          "type": "simple-json",
+          "nullable": true
+        },
+        {
+          "uuid": "aa879bb0-b757-4098-97e7-290d1d060078",
+          "name": "status",
+          "type": "Enum",
+          "nullable": true
+        },
+        {
+          "uuid": "bc3a5ce6-34b0-4fa6-9f9a-b24fffb3f11f",
+          "name": "createdAt",
+          "type": "Date",
+          "createDate": true
+        },
+        {
+          "uuid": "0f52f1f4-1bc0-489a-88d9-c53723db7c2c",
+          "name": "updatedAt",
+          "type": "Date",
+          "updateDate": true
+        }
+      ]
+    },
+    {
+      "uuid": "e5fee1e4-fe3e-4d50-82a2-e26df7c7edce",
+      "name": "RxEntityAuthSettings",
+      "columns": [
+        {
+          "uuid": "7e42a840-5394-41ad-9b21-d58f19fcd016",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "b06ea1e0-1a78-4a15-b478-1aa30b6432e6",
+          "name": "entityUuid",
+          "type": "String"
+        },
+        {
+          "uuid": "6cfa422a-b06f-49d8-b19b-a21099f837ed",
+          "name": "expand",
+          "type": "Boolean",
+          "nullable": true
+        }
+      ]
     }
   ],
   "diagrams": [
@@ -206,13 +288,6 @@
           "y": -140,
           "width": 180,
           "height": 80
-        },
-        {
-          "id": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
-          "x": 540,
-          "y": 450,
-          "width": 180,
-          "height": 210
         }
       ],
       "edges": [
@@ -220,8 +295,9 @@
           "id": "system-relation-1",
           "vertices": [],
           "roleOnSourcePosition": {
-            "distance": 40,
-            "offset": 20
+            "distance": 0.2457627118644068,
+            "offset": 20,
+            "angle": 0
           },
           "roleOnTargetPosition": {
             "distance": -40,
@@ -274,12 +350,14 @@
           "id": "259c17a5-803a-462c-953c-938bbc2836c4",
           "vertices": [],
           "roleOnSourcePosition": {
-            "distance": 40,
-            "offset": 20
+            "distance": 0.2074468085106383,
+            "offset": -19.999999999999986,
+            "angle": 0
           },
           "roleOnTargetPosition": {
-            "distance": -40,
-            "offset": 20
+            "distance": 0.7925531914893617,
+            "offset": -20,
+            "angle": 0
           }
         },
         {
@@ -354,6 +432,73 @@
             "offset": 40,
             "angle": 0
           }
+        },
+        {
+          "id": "af5a8311-53b5-43e8-9624-cf6e89afce16",
+          "vertices": [
+            {
+              "x": 320,
+              "y": 30
+            }
+          ],
+          "roleOnSourcePosition": {
+            "distance": 0.09033602045585834,
+            "offset": 30,
+            "angle": 0
+          },
+          "roleOnTargetPosition": {
+            "distance": 0.6890907656293197,
+            "offset": 35.50095916195933,
+            "angle": 0
+          }
+        }
+      ]
+    },
+    {
+      "uuid": "42957ad7-32d5-4cdd-821a-612b5c77bfa8",
+      "name": "Auth ER",
+      "nodes": [
+        {
+          "id": "e8f06cc9-3125-4dc1-8b88-94829fbb8683",
+          "x": 100,
+          "y": 30.000000000000227,
+          "width": 180,
+          "height": 280
+        },
+        {
+          "id": "e5fee1e4-fe3e-4d50-82a2-e26df7c7edce",
+          "x": 460,
+          "y": 50,
+          "width": 180,
+          "height": 130
+        },
+        {
+          "id": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+          "x": 100,
+          "y": 357,
+          "width": 180,
+          "height": 226
+        },
+        {
+          "id": "system-entity-2",
+          "x": 510,
+          "y": 370,
+          "width": 180,
+          "height": 200
+        }
+      ],
+      "edges": [
+        {
+          "id": "74c80152-fcb1-41fc-9a34-d65b562f3fdc",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": -40,
+            "offset": 20
+          }
         }
       ]
     }
@@ -412,6 +557,15 @@
       "roleOnSource": "role",
       "roleOnTarget": "abilities",
       "ownerId": "system-entity-2"
+    },
+    {
+      "uuid": "af5a8311-53b5-43e8-9624-cf6e89afce16",
+      "relationType": "one-to-one",
+      "sourceId": "system-entity-1",
+      "targetId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+      "roleOnSource": "avatar",
+      "roleOnTarget": "avatarOfUser",
+      "ownerId": "system-entity-1"
     }
   ],
   "status": "SYNCED"
