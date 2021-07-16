@@ -130,6 +130,7 @@ export class MagicController {
    * }
    * @returns
    */
+  @UseGuards(AuthGuard())
   @Post('post')
   async post(@Request() req, @Body() body: any) {
     try {
@@ -166,6 +167,7 @@ export class MagicController {
    * }
    * @returns
    */
+  @UseGuards(AuthGuard())
   @Post('delete')
   async deleteModels(@Request() req, @Body() body: any) {
     try {
@@ -208,6 +210,7 @@ export class MagicController {
    * }
    * @returns
    */
+  @UseGuards(AuthGuard())
   @Post('update')
   async update(@Request() req, @Body() body: any) {
     try {

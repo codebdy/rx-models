@@ -15,7 +15,7 @@ export class AbilityService {
     entityMeta: EntityMeta,
   ): Promise<true | false | RxAbility[]> {
     const user = this.user;
-
+    console.debug('Read权限筛查用户：', user.name);
     if (!user) {
       return false;
     }

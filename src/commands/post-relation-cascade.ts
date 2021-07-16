@@ -29,21 +29,19 @@ export class PostRelationCascadeCommand extends PostCommand {
     this.oldRelationIds = data.data[relationMetaCollection.relationName]?.map(
       (relation: { id: number }) => relation.id,
     );
-
-    console.log(
-      '嘿嘿',
-      ownerInstanceMeta.entity,
-      ownerInstanceMeta.meta.id,
-      relationMetaCollection.relationName,
-    );
   }
 
-  //后面需要给该命令添加权限
+  //该命令的权限通过magicService完成
   async afterSaveOneRelationInstanceCollection(
     ownerInstanceMeta: InstanceMeta,
     savedInstances: any[],
     relationMetaCollection: RelationMetaCollection,
   ) {
-    console.log('哈哈 哈哈 哈哈 哈哈 哈哈 ');
+    const deleteIds = this.oldRelationIds.filter(
+      (id) => !savedInstances.find((instance) => instance.id === id),
+    );
+    await this.magicService.delete({
+      [relationMetaCollection.entity]: deleteIds,
+    });
   }
 }

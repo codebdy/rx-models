@@ -32,6 +32,8 @@ export class MagicQuery {
       this.schemaService.getEntityMetaOrFailed(meta.entity),
     );
 
+    console.debug(`${meta.entity}的Read权限筛查结果：`, ablilityReslut);
+
     //如果没有访问权限，返回空数据
     if (ablilityReslut === false) {
       return { data: [] } as QueryResult;
@@ -46,7 +48,6 @@ export class MagicQuery {
     meta.makeConditionQueryBuilder(qb);
     meta.makeNotEffectCountQueryBuilder(qb);
 
-    console.log('哈哈', qb.getSql());
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
       if (totalCount > 1000) {
