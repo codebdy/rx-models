@@ -98,37 +98,40 @@ export class MagicPost {
     entityManger: EntityManager,
     instanceGroup: InstanceMetaCollection | RelationMetaCollection,
   ) {
+    let filterdInstanceMeta = instanceMeta;
     //保存前命令
     for (const command of instanceGroup.commands) {
-      await command.beforeSaveInstance(instanceMeta);
+      filterdInstanceMeta = await command.beforeSaveInstance(
+        filterdInstanceMeta,
+      );
     }
-    const relations = instanceMeta.relations;
+    const relations = filterdInstanceMeta.relations;
 
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
-      instanceMeta.savedRelations[relationKey] =
+      filterdInstanceMeta.savedRelations[relationKey] =
         relationShip.ids.length === 0 && relationShip.entities.length === 0
           ? null
           : await this.processRelationGroup(
-              instanceMeta,
+              filterdInstanceMeta,
               relationShip,
               entityManger,
             );
     }
-    const repository = entityManger.getRepository(instanceMeta.entity);
+    const repository = entityManger.getRepository(filterdInstanceMeta.entity);
     let entity: any = repository.create();
-    if (instanceMeta.meta?.id) {
-      entity = await repository.findOne(instanceMeta.meta?.id);
+    if (filterdInstanceMeta.meta?.id) {
+      entity = await repository.findOne(filterdInstanceMeta.meta?.id);
     }
 
-    for (const attrKey in instanceMeta.meta) {
+    for (const attrKey in filterdInstanceMeta.meta) {
       if (attrKey !== 'id') {
-        entity[attrKey] = instanceMeta.meta[attrKey];
+        entity[attrKey] = filterdInstanceMeta.meta[attrKey];
       }
     }
 
-    for (const relationKey in instanceMeta.savedRelations) {
-      const relationValue = instanceMeta.savedRelations[relationKey];
+    for (const relationKey in filterdInstanceMeta.savedRelations) {
+      const relationValue = filterdInstanceMeta.savedRelations[relationKey];
       entity[relationKey] = relationValue;
     }
 
@@ -136,7 +139,7 @@ export class MagicPost {
 
     //保存后命令
     for (const command of instanceGroup.commands) {
-      await command.afterSaveInstance(inststance, instanceMeta.entity);
+      await command.afterSaveInstance(inststance, filterdInstanceMeta.entity);
     }
 
     return inststance;
