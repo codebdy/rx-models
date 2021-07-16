@@ -9,6 +9,7 @@ import { EntityManager } from 'typeorm';
 import { MagicDelete } from './delete/magic.delete';
 import { MagicPost } from './post/magic.post';
 import { MagicQuery } from './query/magic.query';
+import { MagicUpdate } from './update/magic.update';
 
 /**
  * 操作数据库通用类，所有数据库操作都应该通过该类进行，因为该类负责权限控制
@@ -45,10 +46,21 @@ export class MagicInstanceService implements MagicService {
   }
 
   async delete(json: any) {
-    return await new MagicDelete(this).delete(json);
+    return await new MagicDelete(
+      this.entityManager,
+      this.abilityService,
+      this.deleteCommandService,
+      this.schemaService,
+      this,
+    ).delete(json);
   }
 
-  async update(json: any) {}
+  async update(json: any) {
+    return await new MagicUpdate(
+      this.entityManager,
+      this.abilityService,
+    ).update(json);
+  }
 
   /**
    * 拿到该变量，意味着已经脱离了权限控制，请一定不要进行数据库修改操作

@@ -1,10 +1,10 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { sleep } from '../../util/sleep';
-import { MagicUpdateService } from './magic.update.service';
+import { MagicUpdate } from './magic.update';
 
 @Controller()
 export class MagicUpdateController {
-  constructor(private readonly updateService: MagicUpdateService) {}
+  constructor(private readonly updateService: MagicUpdate) {}
 
   /**
    * 更新接口，批量更新某几个字段，语法示例：
