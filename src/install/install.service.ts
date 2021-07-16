@@ -50,7 +50,7 @@ export class InstallService {
     await this.createAccount({
       name: 'Admin',
       loginName: data.admin,
-      password: await bcrypt.hash(data.password, SALT_OR_ROUNDS),
+      password: await bcrypt.hash(data.adminPassword, SALT_OR_ROUNDS),
       isSupper: true,
       status: 'NORMAL',
     });
