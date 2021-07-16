@@ -22,20 +22,18 @@ export class AbilityService {
     if (user.isSupper || user.isDemo) {
       return true;
     }
-    const abilities = (await this.typeormSerivce
-      .getRepository('RxAbility')
+    const abilities = await this.typeormSerivce
+      .getRepository<RxAbility>('RxAbility')
       .createQueryBuilder('rxability')
       .leftJoinAndSelect('rxability.role', 'role')
       .where(
-        'entityUuid=:entityUuid and columnUuid is null and role.id IN (:...roleIds)',
+        'rxability.entityUuid=:entityUuid and rxability.columnUuid is null and role.id IN (:...roleIds)',
         {
           entityUuid: entityMeta.uuid,
           roleIds: user.roles?.map((role) => role.id) || [],
         },
       )
-      .getMany()) as RxAbility[];
-
-    console.log('哈哈1', abilities);
+      .getMany();
 
     if (!abilities || abilities.length === 0) {
       return false;

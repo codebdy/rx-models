@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { RxUser } from 'src/entity-interface/rx-user';
 import { SchemaService } from './schema.service';
 
 @Controller()
 export class SchemaController {
   constructor(private readonly schemaService: SchemaService) {}
 
+  @UseGuards(AuthGuard())
   @Get('published-schema')
-  getSchemas() {
+  getSchemas(@Request() req) {
+    const user = req.user as RxUser;
+    if (!user.isSupper && !user.isDemo) {
+      return [];
+    }
     return this.schemaService.getPackageSchemas();
   }
 }

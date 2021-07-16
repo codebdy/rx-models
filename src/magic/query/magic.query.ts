@@ -32,8 +32,6 @@ export class MagicQuery {
       this.schemaService.getEntityMetaOrFailed(meta.entity),
     );
 
-    console.log('哈哈', ablilityReslut);
-
     //如果没有访问权限，返回空数据
     if (ablilityReslut === false) {
       return { data: [] } as QueryResult;
