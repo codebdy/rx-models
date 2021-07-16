@@ -27,7 +27,7 @@ export class AbilityService {
       .createQueryBuilder('rxability')
       .leftJoinAndSelect('rxability.role', 'role')
       .where(
-        'entityUuid=:entityUuid and columnUuid is null and role.id IN (...:roleIds)',
+        'entityUuid=:entityUuid and columnUuid is null and role.id IN (:...roleIds)',
         {
           entityUuid: entityMeta.uuid,
           roleIds: user.roles?.map((role) => role.id) || [],
