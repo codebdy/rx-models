@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostMedia } from './PostMedia';
-import { RxUser } from './RxUser';
+//import { RxUser } from './RxUser';
 
 @Entity()
 export class Post {
@@ -35,7 +35,7 @@ export class Post {
   @DeleteDateColumn()
   deletedAt?: Date;
 
-  @OneToOne(() => RxUser)
-  @JoinColumn()
-  user: RxUser;
+ // @OneToOne(() => RxUser)
+ // @JoinColumn()
+ // user: RxUser;
 }

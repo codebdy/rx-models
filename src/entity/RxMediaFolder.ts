@@ -7,7 +7,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { RxUser } from './RxUser';
+//import { RxUser } from './RxUser';
 
 @Entity()
 export class RxMediaFolder {
@@ -20,9 +20,9 @@ export class RxMediaFolder {
   @Column({ nullable: true })
   order: number;
 
-  @OneToOne(() => RxUser)
-  @JoinColumn()
-  user: RxUser;
+  //@OneToOne(() => RxUser)
+  //@JoinColumn()
+  //user: RxUser;
 
   @ManyToOne(() => RxMediaFolder, (folder) => folder.children)
   parent: RxMediaFolder;

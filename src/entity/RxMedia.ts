@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { RxMediaFolder } from './RxMediaFolder';
-import { RxUser } from './RxUser';
+//import { RxUser } from './RxUser';
 
 @Entity()
 export class RxMedia {
@@ -41,9 +41,9 @@ export class RxMedia {
   @DeleteDateColumn()
   deletedAt?: Date;
 
-  @OneToOne(() => RxUser)
-  @JoinColumn()
-  user: RxUser;
+  //@OneToOne(() => RxUser)
+  //@JoinColumn()
+  //user: RxUser;
 
   @ManyToOne(() => RxMediaFolder)
   folder: RxMediaFolder;

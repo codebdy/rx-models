@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       return await this.typeormSerivce
         .getRepository('RxUser')
         .createQueryBuilder('user')
-        //.leftJoinAndSelect('user.avatar', 'avatar')
+        .leftJoinAndSelect('user.roles', 'RxRole')
         .where({ id: userId })
         .getOne();
     } catch (error: any) {

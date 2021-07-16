@@ -1,3 +1,5 @@
+import { RxRole } from "./rx-role";
+
 export interface RxUser {
   id?: number;
   loginName: string;
@@ -9,4 +11,5 @@ export interface RxUser {
   status?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  roles?: RxRole[];
 }

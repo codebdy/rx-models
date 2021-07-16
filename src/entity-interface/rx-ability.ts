@@ -1,3 +1,5 @@
+import { RxRole } from './rx-role';
+
 export enum AbilityType {
   CREATE = 'create',
   READ = 'read',
@@ -12,4 +14,5 @@ export interface RxAbility {
   abilityType: AbilityType;
   can: boolean;
   expression: string;
+  role: RxRole;
 }
