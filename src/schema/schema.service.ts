@@ -67,6 +67,18 @@ export class SchemaService {
     return this._entitySchemas.find((schema) => schema.name === name);
   }
 
+  public getEntityMetaOrFailed(name: string) {
+    for (const aPackage of this._packages) {
+      const entityMeta = aPackage.entities?.find(
+        (entity) => entity.name === name,
+      );
+      if (entityMeta) {
+        return entityMeta;
+      }
+    }
+    throw new Error(`Can not find entity meta ${name}`);
+  }
+
   public getRelationSchemaName(relationName: string, entityName: string) {
     const entitySchema = this.getSchema(entityName);
     if (!entitySchema) {

@@ -26,20 +26,30 @@ export class AbilityService {
     if (user.isSupper || user.isDemo) {
       return true;
     }
-    const ablities = (await this.typeormSerivce
+    const abilities = (await this.typeormSerivce
       .getRepository('RxAbility')
       .createQueryBuilder('rxability')
       .leftJoinAndSelect('rxability.role', 'role')
-      .where('entityUuid=:entityUuid and role.id IN (...:roleIds)', {
-        entityUuid: entityMeta,
-        roleIds: user.roles?.map((role) => role.id) || [],
-      })
+      .where(
+        'entityUuid=:entityUuid and columnUuid is null and role.id IN (...:roleIds)',
+        {
+          entityUuid: entityMeta.uuid,
+          roleIds: user.roles?.map((role) => role.id) || [],
+        },
+      )
       .getMany()) as RxAbility[];
 
-    if (!ablities || ablities.length === 0) {
+    if (!abilities || abilities.length === 0) {
       return false;
     }
 
-    return ablities;
+    for (const ablility of abilities) {
+      //如果没有设置表达式,说明全部可读，直接返回true
+      if (!ablility.expression && ablility.can) {
+        return true;
+      }
+    }
+
+    return abilities.filter((ablity) => ablity.can);
   }
 }
