@@ -7,7 +7,6 @@ import { EntitySchema } from 'typeorm';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import * as bcrypt from 'bcrypt';
 import { InstallData } from './install.data';
-//import { packageSeed } from './install.seed';
 import * as packagesFromJson from './install.seed.json';
 import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
 
