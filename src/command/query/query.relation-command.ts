@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MagicService } from 'src/magic-meta/magic.service';
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { QueryEntityMeta } from 'src/magic-meta/query-old/query.entity-meta';
+import { QueryRelationMeta } from 'src/magic-meta/query-old/query.relation-meta';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
 

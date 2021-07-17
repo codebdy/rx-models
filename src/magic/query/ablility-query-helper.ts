@@ -1,10 +1,13 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
+import { parseWhereSql } from 'src/magic-meta/query-old/parse-where-sql';
+import { QueryEntityMeta } from 'src/magic-meta/query-old/query.entity-meta';
 import { RxAbility } from 'src/entity-interface/rx-ability';
-import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
+import {
+  parseRelationsFromWhereSql,
+} from 'src/magic-meta/query-old/parse-relations-from-where-sql';
+import { AddonRelationInfo } from "src/magic-meta/query-old/addon-relation-info";
 import { RxUser } from 'src/entity-interface/rx-user';
-import { QueryMeta } from 'src/magic-meta/query/query.meta';
+import { QueryMeta } from 'src/magic-meta/query-old/query.meta';
 
 export function makeEntityQueryAbilityBuilder(
   ablilityReslut: RxAbility[] | true | false,
@@ -50,19 +53,19 @@ export function getEntityQueryAbilitySql(
   return [whereStringArray, whereParams];
 }
 
-//取得权限用到的关联名称
+//取得权限用到的关联信息
 export function getAbilityRelations(
   ablilityReslut: RxAbility[] | true | false,
 ) {
-  const relatonNames: string[] = [];
+  const relations: AddonRelationInfo[] = [];
   if (ablilityReslut === false) {
-    return relatonNames;
+    return relations;
   }
   if (ablilityReslut !== true) {
     for (const ability of ablilityReslut) {
       const rlNames = parseRelationsFromWhereSql(ability.expression);
-      relatonNames.push(...rlNames);
+      relations.push(...rlNames);
     }
   }
-  return relatonNames;
+  return relations;
 }

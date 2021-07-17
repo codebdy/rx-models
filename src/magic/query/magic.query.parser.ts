@@ -1,11 +1,11 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { QueryMeta } from 'src/magic-meta/query/query.meta';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { QueryMeta } from 'src/magic-meta/query-old/query.meta';
+import { QueryRelationMeta } from 'src/magic-meta/query-old/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntitySchemaRelationOptions } from 'typeorm';
-import { QueryEntityMeta } from '../../magic-meta/query/query.entity-meta';
+import { QueryEntityMeta } from '../../magic-meta/query-old/query.entity-meta';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 import {
@@ -16,6 +16,7 @@ import {
   TOKEN_SELECT,
   TOKEN_WHERE,
 } from '../base/tokens';
+import { getAbilityRelations } from './ablility-query-helper';
 
 export class MagicQueryParser {
   private querMeta: QueryEntityMeta;
@@ -39,6 +40,11 @@ export class MagicQueryParser {
       `${meta.entity}的Read权限筛查结果：`,
       meta.abilityValidateResult,
     );
+
+    const abilityRelationInfos = getAbilityRelations(
+      meta.abilityValidateResult,
+    );
+
     this.parseMeta(json, meta);
     return meta;
   }
@@ -83,7 +89,6 @@ export class MagicQueryParser {
     }
   }
 
-  //会合并重复的关联
   parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
     const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
       meta.entity,
@@ -174,12 +179,8 @@ export class MagicQueryParser {
     relationEntitySchemaOptions: EntitySchemaRelationOptions,
     parentMeta: QueryMeta,
   ) {
-    //如果关联已经存在，则不再创建新的关联，直接合并他们的数据
-    const existRelation = parentMeta.relationMetas.find(
-      (relation) => relation.name === jsonUnit.key,
-    );
-    const relation = existRelation ? existRelation : new QueryRelationMeta();
-    !existRelation && parentMeta.relationMetas.push(relation);
+    const relation = new QueryRelationMeta();
+    parentMeta.relationMetas.push(relation);
 
     relation.parentEntityMeta = parentMeta;
     relation.name = jsonUnit.key;

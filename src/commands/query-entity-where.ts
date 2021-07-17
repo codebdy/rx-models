@@ -1,6 +1,6 @@
 import { QueryCommand } from 'src/command/query/query.command';
 import { CommandType } from 'src/command/command-type';
-import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
+import { parseWhereSql } from 'src/magic-meta/query-old/parse-where-sql';
 
 export class QueryEntityWhereCommand extends QueryCommand {
   static description = `

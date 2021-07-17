@@ -1,4 +1,4 @@
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
+import { QueryEntityMeta } from 'src/magic-meta/query-old/query.entity-meta';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
 import { CommandType } from '../command-type';

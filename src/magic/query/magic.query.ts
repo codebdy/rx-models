@@ -11,7 +11,7 @@ import {
   getAbilityRelations,
   makeEntityQueryAbilityBuilder,
 } from './ablility-query-helper';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { QueryRelationMeta } from 'src/magic-meta/query-old/query.relation-meta';
 
 export class MagicQuery {
   constructor(
@@ -107,14 +107,14 @@ async function makeOneRelationBuilder(
   console.debug(`${relationMeta.entity}的Read权限筛查结果：`, ablilityReslut);
 
   //补足权限用到的关联
-  const relationNames = getAbilityRelations(ablilityReslut);
-  for (const relationName of relationNames) {
-    parser.parseOneLine(
-      new JsonUnit(relationName, {}),
-      relationMeta,
-      relationName,
-    );
-  }
+  //const relationNames = getAbilityRelations(ablilityReslut);
+  //for (const relationName of relationNames) {
+  //  parser.parseOneLine(
+  //    new JsonUnit(relationName, {}),
+  //    relationMeta,
+  //    relationName,
+  //  );
+  //}
 
   const whereStringArray: string[] = [];
   let whereParams: any = {};

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { QueryResult } from 'src/common/query-result';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
+import { QueryEntityMeta } from 'src/magic-meta/query-old/query.entity-meta';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CommandMeta } from '../command.meta';
 

@@ -6,9 +6,9 @@ import { QueryAddonRelationMeta } from './query.addon-relation-meta';
 import { QueryRelationMeta } from './query.relation-meta';
 
 export abstract class QueryMeta {
+  private _entity: string;
   id: number;
   entitySchema: EntitySchemaOptions<any>;
-  private _entity: string;
   relationMetas: QueryRelationMeta[] = [];
   conditionCommands: QueryCommand[] = [];
   //条件或者where指令中附加的关联
@@ -28,6 +28,18 @@ export abstract class QueryMeta {
   }
   public set entity(value: string) {
     this._entity = value;
+  }
+
+  public addAbilityAddonRelation(
+    //relationInfo: AddonRelationInfo,
+    //entitySchema: EntitySchemaOptions<any>,
+  ) {
+    //const relationMeta = new QueryAddonRelationMeta();
+    //relationMeta.name = relationInfo.name;
+    //relationMeta.conditionFields = relationInfo.fields;
+    //relationMeta.parentEntityMeta = this;
+    //relationMeta.entitySchema = entitySchema;
+    //this.abilityAddonRelationMetas.push(relationMeta);
   }
 
   get alias() {
