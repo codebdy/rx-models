@@ -1,7 +1,6 @@
 import { RxUser } from 'src/entity-interface/rx-user';
 import { createId } from 'src/util/create-id';
-import { QueryEntityMeta } from './query.entity-meta';
-import { QueryRelationMeta } from './query.relation-meta';
+import { QueryMeta } from './query.meta';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SqlWhereParser = require('sql-where-parser');
@@ -9,7 +8,7 @@ const OPERATOR_UNARY_MINUS = Symbol('-');
 
 export function parseWhereSql(
   sql: string,
-  ownerMeta: QueryEntityMeta | QueryRelationMeta,
+  ownerMeta: QueryMeta,
   me: RxUser,
 ): [string, any] {
   if (!sql) {

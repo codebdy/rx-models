@@ -2,6 +2,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { RxUser } from 'src/entity-interface/rx-user';
 import { AbilityType, RxAbility } from 'src/entity-interface/rx-ability';
+import { AbilityValidateResult } from 'src/magic-meta/ability-validate-restult';
 
 export class AbilityService {
   constructor(
@@ -12,7 +13,7 @@ export class AbilityService {
 
   async validateEntityQueryAbility(
     entity: string,
-  ): Promise<true | false | RxAbility[]> {
+  ): Promise<AbilityValidateResult> {
     const user = this.me;
     const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
     console.debug('Read权限筛查用户：', user.name);

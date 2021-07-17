@@ -27,7 +27,7 @@ export class QueryEntityMeta extends QueryMeta {
     );
     sql && qb.andWhere(sql, params);
 
-    this.relationMetas.forEach((relation) => relation.makeQueryBuilder(qb));
+    //this.relationMetas.forEach((relation) => relation.makeQueryBuilder(qb));
     return qb;
   }
 

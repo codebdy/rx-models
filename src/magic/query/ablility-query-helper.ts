@@ -4,6 +4,7 @@ import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { RxAbility } from 'src/entity-interface/rx-ability';
 import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
 import { RxUser } from 'src/entity-interface/rx-user';
+import { QueryMeta } from 'src/magic-meta/query/query.meta';
 
 export function makeEntityQueryAbilityBuilder(
   ablilityReslut: RxAbility[] | true | false,
@@ -11,12 +12,29 @@ export function makeEntityQueryAbilityBuilder(
   qb: SelectQueryBuilder<any>,
   me: RxUser,
 ) {
-  const whereStringArray: string[] = [];
-  let whereParams: any = {};
   if (ablilityReslut === false) {
     qb.andWhere('false');
     return qb;
   }
+  const [whereStringArray, whereParams] = getEntityQueryAbilitySql(
+    ablilityReslut,
+    meta,
+    me,
+  );
+
+  if (whereStringArray.length > 0) {
+    qb.andWhere(whereStringArray.join(' OR '), whereParams);
+  }
+}
+
+export function getEntityQueryAbilitySql(
+  ablilityReslut: RxAbility[] | true,
+  meta: QueryMeta,
+  me: RxUser,
+): [string[], any] {
+  const whereStringArray: string[] = [];
+  let whereParams: any = {};
+
   //如果需要筛选
   if (ablilityReslut !== true) {
     for (const ability of ablilityReslut) {
@@ -29,10 +47,9 @@ export function makeEntityQueryAbilityBuilder(
     }
   }
 
-  if (whereStringArray.length > 0) {
-    qb.andWhere(whereStringArray.join(' OR '), whereParams);
-  }
+  return [whereStringArray, whereParams];
 }
+
 //取得权限用到的关联名称
 export function getAbilityRelations(
   ablilityReslut: RxAbility[] | true | false,
