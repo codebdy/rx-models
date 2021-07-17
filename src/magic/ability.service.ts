@@ -1,6 +1,5 @@
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { SchemaService } from 'src/schema/schema.service';
-import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { RxUser } from 'src/entity-interface/rx-user';
 import { AbilityType, RxAbility } from 'src/entity-interface/rx-ability';
 
@@ -12,9 +11,10 @@ export class AbilityService {
   ) {}
 
   async validateEntityQueryAbility(
-    entityMeta: EntityMeta,
+    entity: string,
   ): Promise<true | false | RxAbility[]> {
     const user = this.me;
+    const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
     console.debug('Read权限筛查用户：', user.name);
     if (!user) {
       return false;
