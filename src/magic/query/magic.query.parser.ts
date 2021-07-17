@@ -28,12 +28,12 @@ export class MagicQueryParser {
   parse(json: any): QueryEntityMeta {
     const meta = new QueryEntityMeta();
     this.querMeta = meta;
-    this.parseModelLine(json, meta);
+    this.parseEntityLine(json, meta);
     this.parseMeta(json, meta);
     return meta;
   }
 
-  parseModelLine(json: any, meta: QueryEntityMeta) {
+  parseEntityLine(json: any, meta: QueryEntityMeta) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -73,6 +73,7 @@ export class MagicQueryParser {
     }
   }
 
+  //会合并重复的关联
   parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
     const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
       meta.entity,

@@ -5,10 +5,12 @@ import { MagicService } from 'src/magic-meta/magic.service';
 import { AbilityService } from 'src/magic/ability.service';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { SchemaService } from 'src/schema/schema.service';
-import { EntityManager } from 'typeorm';
+import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { RxAbility } from 'src/entity-interface/rx-ability';
+import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
+import { JsonUnit } from '../base/json-unit';
 
 export class MagicQuery {
   constructor(
@@ -21,11 +23,12 @@ export class MagicQuery {
 
   async query(json: any) {
     let totalCount = 0;
-    const meta = new MagicQueryParser(
+    const parser = new MagicQueryParser(
       this.queryCommandService,
       this.schemaService,
       this.magicService,
-    ).parse(json);
+    );
+    const meta = parser.parse(json);
 
     //读权限筛查
     const ablilityReslut = await this.abilityService.validateEntityQueryAbility(
@@ -37,6 +40,12 @@ export class MagicQuery {
     //如果没有访问权限，返回空数据
     if (ablilityReslut === false) {
       return { data: [] } as QueryResult;
+    }
+
+    //补足权限用到的关联
+    const relationNames = this.getAbilityRelations(ablilityReslut);
+    for (const relationName of relationNames) {
+      parser.parseOneLine(new JsonUnit(relationName, {}), meta, relationName);
     }
 
     const qb = this.entityManager
@@ -71,7 +80,7 @@ export class MagicQuery {
   private makeEntityQueryAbilityBuilder(
     ablilityReslut: RxAbility[] | true,
     meta: QueryEntityMeta,
-    qb,
+    qb: SelectQueryBuilder<any>,
   ) {
     const whereStringArray: string[] = [];
     let whereParams: any = {};
@@ -84,12 +93,23 @@ export class MagicQuery {
           whereStringArray.push(whereStr);
           whereParams = { ...whereParams, ...params };
         }
-        //@补足缺失的关联
       }
     }
 
     if (whereStringArray.length > 0) {
       qb.andWhere(whereStringArray.join(' OR '), whereParams);
     }
+  }
+
+  //取得权限用到的关联名称
+  private getAbilityRelations(ablilityReslut: RxAbility[] | true) {
+    const relatonNames: string[] = [];
+    if (ablilityReslut !== true) {
+      for (const ability of ablilityReslut) {
+        const rlNames = parseRelationsFromWhereSql(ability.expression);
+        relatonNames.push(...rlNames);
+      }
+    }
+    return relatonNames;
   }
 }
