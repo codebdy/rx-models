@@ -1,12 +1,12 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
 import { QueryMeta } from 'src/magic-meta/query/query.meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntitySchemaRelationOptions } from 'typeorm';
 import { QueryEntityMeta } from '../../magic-meta/query/query.entity-meta';
+import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 import {
   TOKEN_GET_MANY,
@@ -23,12 +23,22 @@ export class MagicQueryParser {
     private readonly queryCommandService: QueryCommandService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
+    private readonly abilityService: AbilityService,
   ) {}
 
-  parse(json: any): QueryEntityMeta {
+  async parse(json: any): Promise<QueryEntityMeta> {
     const meta = new QueryEntityMeta();
     this.querMeta = meta;
     this.parseEntityLine(json, meta);
+    //读权限筛查
+    meta.abilityValidateResult = await this.abilityService.validateEntityQueryAbility(
+      meta.entity,
+    );
+
+    console.debug(
+      `${meta.entity}的Read权限筛查结果：`,
+      meta.abilityValidateResult,
+    );
     this.parseMeta(json, meta);
     return meta;
   }
@@ -89,13 +99,16 @@ export class MagicQueryParser {
     ) {
       meta.fetchString = TOKEN_GET_ONE;
     } //如果是On或者Where指令，添加指令用到的的关联
-    else if (keyWithoutAt === TOKEN_ON || keyWithoutAt === TOKEN_WHERE) {
+    /*else if (keyWithoutAt === TOKEN_ON || keyWithoutAt === TOKEN_WHERE) {
       const relationNames = parseRelationsFromWhereSql(jsonUnit.value);
       relationNames?.forEach((roleName) => {
         this.parseOneLine(new JsonUnit(roleName, {}), meta, roleName);
       });
       this.parseModelOrRelationCommand(keyWithoutAt, jsonUnit, meta);
-    } else if (
+    }*/
+    else if (
+      keyWithoutAt === TOKEN_ON ||
+      keyWithoutAt === TOKEN_WHERE ||
       keyWithoutAt === TOKEN_SELECT ||
       keyWithoutAt === TOKEN_ORDER_BY ||
       keyStr.startsWith('@')

@@ -28,21 +28,15 @@ export class MagicQuery {
       this.queryCommandService,
       this.schemaService,
       this.magicService,
+      this.abilityService,
     );
-    const meta = parser.parse(json);
-
-    //读权限筛查
-    const ablilityReslut = await this.abilityService.validateEntityQueryAbility(
-      meta.entity,
-    );
-
-    console.debug(`${meta.entity}的Read权限筛查结果：`, ablilityReslut);
+    const meta = await parser.parse(json);
 
     //补足权限用到的关联
-    const relationNames = getAbilityRelations(ablilityReslut);
-    for (const relationName of relationNames) {
-      parser.parseOneLine(new JsonUnit(relationName, {}), meta, relationName);
-    }
+    //const relationNames = getAbilityRelations(ablilityReslut);
+    //for (const relationName of relationNames) {
+    //  parser.parseOneLine(new JsonUnit(relationName, {}), meta, relationName);
+    //}
 
     const qb = this.entityManager
       .getRepository(meta.entity)
@@ -50,12 +44,12 @@ export class MagicQuery {
 
     meta.makeConditionQueryBuilder(qb);
     //构建用于权限筛查的QB
-    makeEntityQueryAbilityBuilder(
-      ablilityReslut,
-      meta,
-      qb,
-      this.magicService.me,
-    );
+    //makeEntityQueryAbilityBuilder(
+    //  ablilityReslut,
+    //  meta,
+    //  qb,
+    //  this.magicService.me,
+    //);
 
     meta.makeNotEffectCountQueryBuilder(qb);
 

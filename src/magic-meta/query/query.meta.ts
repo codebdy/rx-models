@@ -16,7 +16,7 @@ export abstract class QueryMeta {
   //权限判断附加的关联
   abilityAddonRelationMetas: QueryAddonRelationMeta[] = [];
 
-  //权限检查结果:ture 可以读，false 不可以读，数组 通过表达式判定是否可读
+  //权限检查结果:ture - 可以读，false - 不可以读，数组 - 通过表达式判定是否可读
   abilityValidateResult: AbilityValidateResult = false;
 
   constructor() {
