@@ -2,7 +2,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { RxUser } from 'src/entity-interface/rx-user';
-import { RxAbility } from 'src/entity-interface/rx-ability';
+import { AbilityType, RxAbility } from 'src/entity-interface/rx-ability';
 
 export class AbilityService {
   constructor(
@@ -27,7 +27,11 @@ export class AbilityService {
       .createQueryBuilder('rxability')
       .leftJoinAndSelect('rxability.role', 'role')
       .where(
-        'rxability.entityUuid=:entityUuid and rxability.columnUuid is null and role.id IN (:...roleIds)',
+        `rxability.entityUuid=:entityUuid 
+          and rxability.columnUuid is null 
+          and rxability.abilityType = '${AbilityType.READ}' 
+          and role.id IN (:...roleIds)
+        `,
         {
           entityUuid: entityMeta.uuid,
           roleIds: user.roles?.map((role) => role.id) || [],
