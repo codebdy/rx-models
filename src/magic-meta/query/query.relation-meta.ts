@@ -1,17 +1,5 @@
-import { QueryCommand } from 'src/command/query/query.command';
-import { createId } from 'src/util/create-id';
+import { QueryEntityMeta } from './query.entity-meta';
 
-export class QueryRelationMeta {
-  id: number;
-  entity: string;
+export class QueryRelationMeta extends QueryEntityMeta {
   name: string;
-  relations: QueryRelationMeta[] = [];
-  commands: QueryCommand[];
-  constructor() {
-    this.id = createId();
-  }
-
-  get alias() {
-    return this.entity?.toLowerCase() + this.id;
-  }
 }
