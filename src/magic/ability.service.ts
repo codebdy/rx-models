@@ -6,7 +6,7 @@ import { RxAbility } from 'src/entity-interface/rx-ability';
 
 export class AbilityService {
   constructor(
-    private readonly user: RxUser,
+    public readonly me: RxUser,
     private readonly typeormSerivce: TypeOrmService,
     private readonly schemaService: SchemaService,
   ) {}
@@ -14,7 +14,7 @@ export class AbilityService {
   async validateEntityQueryAbility(
     entityMeta: EntityMeta,
   ): Promise<true | false | RxAbility[]> {
-    const user = this.user;
+    const user = this.me;
     console.debug('Read权限筛查用户：', user.name);
     if (!user) {
       return false;

@@ -25,6 +25,11 @@ export class MagicInstanceService implements MagicService {
     public readonly deleteCommandService: DeleteCommandService,
     public readonly schemaService: SchemaService,
   ) {}
+
+  get me() {
+    return this.abilityService.me;
+  }
+
   async query(json: any): Promise<QueryResult> {
     return await new MagicQuery(
       this.entityManager,

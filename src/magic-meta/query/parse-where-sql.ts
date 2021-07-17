@@ -1,3 +1,4 @@
+import { RxUser } from 'src/entity-interface/rx-user';
 import { createId } from 'src/util/create-id';
 import { QueryEntityMeta } from './query.entity-meta';
 import { QueryRelationMeta } from './query.relation-meta';
@@ -9,6 +10,7 @@ const OPERATOR_UNARY_MINUS = Symbol('-');
 export function parseWhereSql(
   sql: string,
   ownerMeta: QueryEntityMeta | QueryRelationMeta,
+  me: RxUser,
 ): [string, any] {
   if (!sql) {
     throw new Error('Not assign sql statement to where command or expression');
@@ -42,7 +44,13 @@ export function parseWhereSql(
           }
         }
         operands[0] = `${modelAlias}.${operands[0]}`;
-        params[paramName] = operands[1];
+        if ((operands[1] as string).startsWith('$me.')) {
+          const [, columnStr] = (operands[1] as string).split('.');
+          params[paramName] = me[columnStr];
+        } else {
+          params[paramName] = operands[1];
+        }
+
         if (operatorValue === 'IN') {
           return `${operands[0]} ${operatorValue} (:...${paramName})`;
         }

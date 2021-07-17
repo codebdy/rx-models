@@ -89,7 +89,11 @@ export class MagicQuery {
     if (ablilityReslut !== true) {
       for (const ability of ablilityReslut) {
         //如果没有表达式，则说明具有所有读权限
-        const [whereStr, params] = parseWhereSql(ability.expression, meta);
+        const [whereStr, params] = parseWhereSql(
+          ability.expression,
+          meta,
+          this.magicService.me,
+        );
         if (whereStr) {
           whereStringArray.push(whereStr);
           whereParams = { ...whereParams, ...params };

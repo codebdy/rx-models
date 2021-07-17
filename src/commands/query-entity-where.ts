@@ -14,6 +14,10 @@ export class QueryEntityWhereCommand extends QueryCommand {
   static commandName = 'where';
 
   getWhereStatement(): [string, any] | void {
-    return parseWhereSql(this.commandMeta.value, this.rootMeta);
+    return parseWhereSql(
+      this.commandMeta.value,
+      this.rootMeta,
+      this.magicService.me,
+    );
   }
 }
