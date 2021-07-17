@@ -21,7 +21,7 @@ export class QueryRelationMeta extends QueryMeta {
   makeQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     const whereStringArray: string[] = [];
     let whereParams: any = {};
-    this.relationCommands.forEach((command) => {
+    this.relationCommands.concat(this.conditionCommands).forEach((command) => {
       const [whereStr, param] = command.getWhereStatement() || [];
       if (whereStr) {
         whereStringArray.push(whereStr);

@@ -42,7 +42,7 @@ export class MagicQuery {
     const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
-    //如果需要筛选
+    //构建用于权限筛查的QB
     this.makeEntityQueryAbilityBuilder(ablilityReslut, meta, qb);
 
     meta.makeConditionQueryBuilder(qb);
@@ -75,6 +75,7 @@ export class MagicQuery {
   ) {
     const whereStringArray: string[] = [];
     let whereParams: any = {};
+    //如果需要筛选
     if (ablilityReslut !== true) {
       for (const ability of ablilityReslut) {
         //如果没有表达式，则说明具有所有读权限
@@ -83,6 +84,7 @@ export class MagicQuery {
           whereStringArray.push(whereStr);
           whereParams = { ...whereParams, ...params };
         }
+        //@补足缺失的关联
       }
     }
 
