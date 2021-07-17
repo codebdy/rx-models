@@ -51,10 +51,11 @@ export class MagicQuery {
     const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
+
+    meta.makeConditionQueryBuilder(qb);
     //构建用于权限筛查的QB
     this.makeEntityQueryAbilityBuilder(ablilityReslut, meta, qb);
 
-    meta.makeConditionQueryBuilder(qb);
     meta.makeNotEffectCountQueryBuilder(qb);
 
     if (meta.fetchString === TOKEN_GET_MANY) {
