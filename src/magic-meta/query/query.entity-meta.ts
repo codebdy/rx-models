@@ -11,7 +11,7 @@ export class QueryEntityMeta {
   relations: QueryRelationMeta[] = [];
   //权限或者where sql需要用到的关联
   addonRelations: QueryRelationMeta[] = [];
-  commands: QueryCommand[];
+  commands: QueryCommand[] = [];
   //附加关联用到的字段，如果查询中不包含这些字段，需要在结果中滤除
   addonRelationInfos: AddonRelationInfo[] = [];
   //展开，对每个属性进行设置

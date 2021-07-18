@@ -1,12 +1,15 @@
+import { RxUser } from 'src/entity-interface/RxUser';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { SelectQueryBuilder } from 'typeorm';
+import { getEntityQueryAbilitySql } from './make-abilities-query-builder';
 
 export function makeRelationsBuilder(
   relationMetas: QueryRelationMeta[],
   qb: SelectQueryBuilder<any>,
+  me: RxUser,
 ) {
   for (const relationMeta of relationMetas) {
-    qb = makeOneRelationBuilder(relationMeta, qb);
+    qb = makeOneRelationBuilder(relationMeta, qb, me);
   }
 
   return qb;
@@ -15,6 +18,7 @@ export function makeRelationsBuilder(
 function makeOneRelationBuilder(
   relationMeta: QueryRelationMeta,
   qb: SelectQueryBuilder<any>,
+  me: RxUser,
 ) {
   const whereStringArray: string[] = [];
   let whereParams: any = {};
@@ -27,16 +31,25 @@ function makeOneRelationBuilder(
     command.addToQueryBuilder(qb);
   }
 
+  const [whereArray, params] = getEntityQueryAbilitySql(
+    relationMeta.abilities,
+    relationMeta,
+    me,
+  );
+
+  whereStringArray.push(whereArray.join(' OR '));
+
   qb.leftJoinAndSelect(
     `${relationMeta.parentEntityMeta.alias}.${relationMeta.name}`,
     relationMeta.alias,
     whereStringArray.join(' AND '),
-    whereParams,
+    { ...whereParams, ...params },
   );
 
   qb = makeRelationsBuilder(
     [...relationMeta.relations, ...relationMeta.addonRelations],
     qb,
+    me,
   );
   return qb;
 }

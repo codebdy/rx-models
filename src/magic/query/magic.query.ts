@@ -34,7 +34,11 @@ export class MagicQuery {
       .createQueryBuilder(meta.alias);
 
     makeNotEffectCountQueryBuilder(meta, qb);
-    makeRelationsBuilder([...meta.relations, ...meta.addonRelations], qb);
+    makeRelationsBuilder(
+      [...meta.relations, ...meta.addonRelations],
+      qb,
+      this.magicService.me,
+    );
 
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
