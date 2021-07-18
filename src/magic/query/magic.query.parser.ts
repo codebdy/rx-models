@@ -32,7 +32,7 @@ export class MagicQueryParser {
     this.rootMeta = meta;
     this.parseEntityLine(json, meta);
     await this.parseQueryAbilities(meta);
-    this.parseOtherMeta(json, meta);
+    await this.parseOtherMeta(json, meta);
     return meta;
   }
 
@@ -95,15 +95,15 @@ export class MagicQueryParser {
     }
   }
 
-  parseOtherMeta(json: any, meta: QueryEntityMeta) {
+  async parseOtherMeta(json: any, meta: QueryEntityMeta) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
-      this.parseOneLine(jsonUnit, meta, keyStr.trim());
+      await this.parseOneLine(jsonUnit, meta, keyStr.trim());
     }
   }
 
-  private parseOneLine(
+  private async parseOneLine(
     jsonUnit: JsonUnit,
     meta: QueryEntityMeta,
     keyStr: string,
@@ -115,7 +115,7 @@ export class MagicQueryParser {
     const keyWithoutAt = keyStr.replace('@', '');
     //如果是关联
     if (relationEntitySchemaOptions) {
-      this.parseRelation(jsonUnit, relationEntitySchemaOptions, meta);
+      await this.parseRelation(jsonUnit, relationEntitySchemaOptions, meta);
     } else if (
       keyWithoutAt === TOKEN_GET_ONE &&
       meta instanceof QueryRootMeta
@@ -184,7 +184,7 @@ export class MagicQueryParser {
     }
   }
 
-  private parseRelation(
+  private async parseRelation(
     jsonUnit: JsonUnit,
     relationEntitySchemaOptions: EntitySchemaRelationOptions,
     parentMeta: QueryEntityMeta,
@@ -205,6 +205,7 @@ export class MagicQueryParser {
         new CommandClass(commandMeta, this.rootMeta, this.magicService),
       );
     });
-    this.parseOtherMeta(jsonUnit.value, relation);
+    await this.parseQueryAbilities(relation);
+    await this.parseOtherMeta(jsonUnit.value, relation);
   }
 }
