@@ -8,6 +8,7 @@ import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-count-query-builder';
 import { makeRelationsBuilder } from './traverser/make-relations-builder';
+import { makeEffectCountQueryBuilder } from './traverser/make-effect-count-query-builder';
 
 export class MagicQuery {
   constructor(
@@ -28,24 +29,9 @@ export class MagicQuery {
     );
     const meta = await parser.parse(json);
 
-    //补足权限用到的关联
-    //const relationNames = getAbilityRelations(ablilityReslut);
-    //for (const relationName of relationNames) {
-    //  parser.parseOneLine(new JsonUnit(relationName, {}), meta, relationName);
-    //}
-
     const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
-
-    //meta.makeConditionQueryBuilder(qb);
-    //构建用于权限筛查的QB
-    //makeEntityQueryAbilityBuilder(
-    //  ablilityReslut,
-    //  meta,
-    //  qb,
-    //  this.magicService.me,
-    //);
 
     makeNotEffectCountQueryBuilder(meta, qb);
     makeRelationsBuilder([...meta.relations, ...meta.addonRelations], qb);
@@ -57,7 +43,7 @@ export class MagicQuery {
       }
     }
 
-    //meta.makeEffectCountQueryBuilder(qb);
+    makeEffectCountQueryBuilder(meta, qb, this.magicService.me);
 
     console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
