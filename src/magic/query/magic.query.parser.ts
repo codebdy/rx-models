@@ -1,6 +1,7 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
+import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
@@ -16,7 +17,6 @@ import {
   TOKEN_SELECT,
   TOKEN_WHERE,
 } from '../base/tokens';
-import { getAbilityRelations } from './ablility-query-helper';
 
 export class MagicQueryParser {
   private rootMeta: QueryRootMeta;
@@ -78,6 +78,21 @@ export class MagicQueryParser {
     meta.abilities = await this.abilityService.getEntityQueryAbilities(
       meta.entityMeta.uuid,
     );
+    //添加权限用到的关联
+    for (const ability of meta.abilities) {
+      if (ability.expression) {
+        const relationInfos = parseRelationsFromWhereSql(ability.expression);
+        meta.addonRelationInfos.push(...relationInfos);
+        for (const relationInfo of relationInfos) {
+          const relation = new QueryRelationMeta();
+          relation.entityMeta = this.schemaService.getRelationEntityMetaOrFailed(
+            relationInfo.name,
+            meta.entity,
+          );
+          meta.addonRelations.push(relation);
+        }
+      }
+    }
   }
 
   parseOtherMeta(json: any, meta: QueryEntityMeta) {

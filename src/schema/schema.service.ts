@@ -90,7 +90,10 @@ export class SchemaService {
     throw new Error(`Can not find entity meta ${name}`);
   }
 
-  public getRelationSchemaName(relationName: string, entityName: string) {
+  public getRelationSchemaNameOrFailed(
+    relationName: string,
+    entityName: string,
+  ) {
     const entitySchema = this.getSchema(entityName);
     if (!entitySchema) {
       throw new Error(`Entity ${entityName} dose not exist`);
@@ -103,6 +106,15 @@ export class SchemaService {
     if (relations[relationName]) {
       return relations[relationName].target?.toString();
     }
+  }
+
+  public getRelationEntityMetaOrFailed(
+    relationName: string,
+    entityName: string,
+  ) {
+    return this.getEntityMetaOrFailed(
+      this.getRelationSchemaNameOrFailed(relationName, entityName),
+    );
   }
 
   private loadPublishedSchemas() {

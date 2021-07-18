@@ -2,6 +2,7 @@ import { QueryCommand } from 'src/command/query/query.command';
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { createId } from 'src/util/create-id';
+import { AddonRelationInfo } from './addon-relation-info';
 import { QueryRelationMeta } from './query.relation-meta';
 
 export class QueryEntityMeta {
@@ -12,7 +13,7 @@ export class QueryEntityMeta {
   addonRelations: QueryRelationMeta[] = [];
   commands: QueryCommand[];
   //附加关联用到的字段，如果查询中不包含这些字段，需要在结果中滤除
-  addonFields: string[] = [];
+  addonRelationInfos: AddonRelationInfo[] = [];
   //展开，对每个属性进行设置
   expandFieldForAuth = false;
   //当前登录用户，Entity对应的Abiltity

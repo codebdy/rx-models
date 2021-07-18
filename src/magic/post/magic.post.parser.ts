@@ -57,7 +57,7 @@ export class MagicPostParser {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
 
-      const relationModel = this.schemaService.getRelationSchemaName(
+      const relationModel = this.schemaService.getRelationSchemaNameOrFailed(
         jsonUnit.key,
         entity,
       );
