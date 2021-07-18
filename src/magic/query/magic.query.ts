@@ -5,13 +5,9 @@ import { MagicService } from 'src/magic-meta/magic.service';
 import { AbilityService } from 'src/magic/ability.service';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { SchemaService } from 'src/schema/schema.service';
-import { EntityManager, SelectQueryBuilder } from 'typeorm';
-import { JsonUnit } from '../base/json-unit';
-import {
-  getAbilityRelations,
-  makeEntityQueryAbilityBuilder,
-} from './ablility-query-helper';
-import { QueryRelationMeta } from 'src/magic-meta/query-old/query.relation-meta';
+import { EntityManager } from 'typeorm';
+import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-count-query-builder';
+import { makeRelationsBuilder } from './traverser/make-relations-builder';
 
 export class MagicQuery {
   constructor(
@@ -51,14 +47,8 @@ export class MagicQuery {
     //  this.magicService.me,
     //);
 
-    //meta.makeNotEffectCountQueryBuilder(qb);
-
-    //await makeRelationsBuilder(
-     // meta.relationMetas,
-    //  qb,
-    //  parser,
-    //  this.abilityService,
-    //);
+    makeNotEffectCountQueryBuilder(meta, qb);
+    makeRelationsBuilder([...meta.relations, ...meta.addonRelations], qb);
 
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
@@ -79,79 +69,4 @@ export class MagicQuery {
     return result;
     //return meta.filterResult(result);
   }
-}
-
-async function makeRelationsBuilder(
-  relationMetas: QueryRelationMeta[],
-  qb: SelectQueryBuilder<any>,
-  parser: MagicQueryParser,
-  abilityService: AbilityService,
-) {
-  for (const relationMeta of relationMetas) {
-    qb = await makeOneRelationBuilder(relationMeta, qb, parser, abilityService);
-  }
-
-  return qb;
-}
-
-async function makeOneRelationBuilder(
-  relationMeta: QueryRelationMeta,
-  qb: SelectQueryBuilder<any>,
-  parser: MagicQueryParser,
-  abilityService: AbilityService,
-) {
-  //读权限筛查
-  const ablilityReslut = await abilityService.validateEntityQueryAbility(
-    relationMeta.entity,
-  );
-  console.debug(`${relationMeta.entity}的Read权限筛查结果：`, ablilityReslut);
-
-  //补足权限用到的关联
-  //const relationNames = getAbilityRelations(ablilityReslut);
-  //for (const relationName of relationNames) {
-  //  parser.parseOneLine(
-  //    new JsonUnit(relationName, {}),
-  //    relationMeta,
-  //    relationName,
-  //  );
-  //}
-
-  const whereStringArray: string[] = [];
-  let whereParams: any = {};
-  relationMeta.relationCommands
-    .concat(relationMeta.conditionCommands)
-    .forEach((command) => {
-      const [whereStr, param] = command.getWhereStatement() || [];
-      if (whereStr) {
-        whereStringArray.push(whereStr);
-        whereParams = { ...whereParams, ...param };
-      }
-
-      command.addToQueryBuilder(qb);
-    });
-  
- // const [whereStringArray2, whereParams2] = getEntityQueryAbilitySql(
- //   ablilityReslut,
- //   relationMeta,
- //   abilityService,
- // );
-
-  //const abilityWhere =
-  //  whereStringArray2.length > 0
-  //    ? ' AND (' + whereStringArray2.join(' OR ') + ')'
-  //    : '';
-  qb.leftJoinAndSelect(
-    `${relationMeta.parentEntityMeta.alias}.${relationMeta.name}`,
-    relationMeta.alias,
-    whereStringArray.join(' AND '),
-    whereParams,
-  );
-
-  qb = await makeRelationsBuilder(
-    relationMeta.relationMetas,
-    qb,
-    parser,
-    abilityService,
-  );
-  return qb;
 }
