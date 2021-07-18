@@ -42,7 +42,7 @@ export class MagicQuery {
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
 
-    meta.makeConditionQueryBuilder(qb);
+    //meta.makeConditionQueryBuilder(qb);
     //构建用于权限筛查的QB
     //makeEntityQueryAbilityBuilder(
     //  ablilityReslut,
@@ -51,14 +51,14 @@ export class MagicQuery {
     //  this.magicService.me,
     //);
 
-    meta.makeNotEffectCountQueryBuilder(qb);
+    //meta.makeNotEffectCountQueryBuilder(qb);
 
-    await makeRelationsBuilder(
-      meta.relationMetas,
-      qb,
-      parser,
-      this.abilityService,
-    );
+    //await makeRelationsBuilder(
+     // meta.relationMetas,
+    //  qb,
+    //  parser,
+    //  this.abilityService,
+    //);
 
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
@@ -67,7 +67,7 @@ export class MagicQuery {
       }
     }
 
-    meta.makeEffectCountQueryBuilder(qb);
+    //meta.makeEffectCountQueryBuilder(qb);
 
     console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
@@ -76,8 +76,8 @@ export class MagicQuery {
       meta.fetchString === TOKEN_GET_MANY
         ? ({ data, totalCount } as QueryResult)
         : ({ data } as QueryResult);
-
-    return meta.filterResult(result);
+    return result;
+    //return meta.filterResult(result);
   }
 }
 

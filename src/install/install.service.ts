@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RxUser } from 'src/entity-interface/rx-user';
+import { RxUser } from 'src/entity-interface/RxUser';
 import { PackageManageService } from 'src/package-manage/package-manage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { DB_CONFIG_FILE, SALT_OR_ROUNDS } from 'src/util/consts';

@@ -1,11 +1,11 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
-import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
+import { QueryMeta } from 'src/magic-meta/query-old/query.meta';
+import { QueryRelationMeta } from 'src/magic-meta/query-old/query.relation-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntitySchemaRelationOptions } from 'typeorm';
+import { QueryEntityMeta } from '../../magic-meta/query-old/query.entity-meta';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 import {
@@ -19,7 +19,7 @@ import {
 import { getAbilityRelations } from './ablility-query-helper';
 
 export class MagicQueryParser {
-  private rootMeta: QueryRootMeta;
+  private querMeta: QueryEntityMeta;
   constructor(
     private readonly queryCommandService: QueryCommandService,
     private readonly schemaService: SchemaService,
@@ -27,23 +27,34 @@ export class MagicQueryParser {
     private readonly abilityService: AbilityService,
   ) {}
 
-  async parse(json: any): Promise<QueryRootMeta> {
-    const meta = new QueryRootMeta();
-    this.rootMeta = meta;
+  async parse(json: any): Promise<QueryEntityMeta> {
+    const meta = new QueryEntityMeta();
+    this.querMeta = meta;
     this.parseEntityLine(json, meta);
-    await this.parseQueryAbilities(meta);
-    this.parseOtherMeta(json, meta);
+    //读权限筛查
+    meta.abilityValidateResult = await this.abilityService.validateEntityQueryAbility(
+      meta.entity,
+    );
+
+    console.debug(
+      `${meta.entity}的Read权限筛查结果：`,
+      meta.abilityValidateResult,
+    );
+
+    const abilityRelationInfos = getAbilityRelations(
+      meta.abilityValidateResult,
+    );
+
+    this.parseMeta(json, meta);
     return meta;
   }
 
-  parseEntityLine(json: any, meta: QueryRootMeta) {
+  parseEntityLine(json: any, meta: QueryEntityMeta) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       if (jsonUnit.isModel()) {
-        meta.entityMeta = this.schemaService.getEntityMetaOrFailed(
-          (jsonUnit.value as string).trim(),
-        );
+        meta.entity = jsonUnit.value;
         jsonUnit.commands.forEach((commandMeta) => {
           if (commandMeta.name === TOKEN_GET_ONE) {
             meta.fetchString = TOKEN_GET_ONE;
@@ -55,7 +66,7 @@ export class MagicQueryParser {
             );
             const command = new commandClass(
               commandMeta,
-              this.rootMeta,
+              this.querMeta,
               this.magicService,
             );
             meta.pushCommand(command);
@@ -63,24 +74,14 @@ export class MagicQueryParser {
         });
 
         delete json[keyStr];
-        return meta;
+        return;
       }
     }
 
     throw Error('Not give entity');
   }
 
-  async parseQueryAbilities(meta: QueryEntityMeta) {
-    meta.expandFieldForAuth = await this.abilityService.isEntityExpand(
-      meta.entityMeta.uuid,
-    );
-
-    meta.abilities = await this.abilityService.getEntityQueryAbilities(
-      meta.entityMeta.uuid,
-    );
-  }
-
-  parseOtherMeta(json: any, meta: QueryEntityMeta) {
+  parseMeta(json: any, meta: QueryMeta) {
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -88,13 +89,9 @@ export class MagicQueryParser {
     }
   }
 
-  private parseOneLine(
-    jsonUnit: JsonUnit,
-    meta: QueryEntityMeta,
-    keyStr: string,
-  ) {
+  parseOneLine(jsonUnit: JsonUnit, meta: QueryMeta, keyStr: string) {
     const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
-      meta.entityMeta.name,
+      meta.entity,
       jsonUnit.key,
     );
     const keyWithoutAt = keyStr.replace('@', '');
@@ -103,24 +100,32 @@ export class MagicQueryParser {
       this.parseRelation(jsonUnit, relationEntitySchemaOptions, meta);
     } else if (
       keyWithoutAt === TOKEN_GET_ONE &&
-      meta instanceof QueryRootMeta
+      meta instanceof QueryEntityMeta
     ) {
       meta.fetchString = TOKEN_GET_ONE;
-    } else if (
+    } //如果是On或者Where指令，添加指令用到的的关联
+    /*else if (keyWithoutAt === TOKEN_ON || keyWithoutAt === TOKEN_WHERE) {
+      const relationNames = parseRelationsFromWhereSql(jsonUnit.value);
+      relationNames?.forEach((roleName) => {
+        this.parseOneLine(new JsonUnit(roleName, {}), meta, roleName);
+      });
+      this.parseModelOrRelationCommand(keyWithoutAt, jsonUnit, meta);
+    }*/
+    else if (
       keyWithoutAt === TOKEN_ON ||
       keyWithoutAt === TOKEN_WHERE ||
       keyWithoutAt === TOKEN_SELECT ||
       keyWithoutAt === TOKEN_ORDER_BY ||
       keyStr.startsWith('@')
     ) {
-      this.parseEntityOrRelationCommand(keyWithoutAt, jsonUnit, meta);
+      this.parseModelOrRelationCommand(keyWithoutAt, jsonUnit, meta);
     } else {
       //剩下的全是条件行
       this.paseConditionCommand(jsonUnit, meta);
     }
   }
 
-  private paseConditionCommand(jsonUnit: JsonUnit, meta: QueryEntityMeta) {
+  private paseConditionCommand(jsonUnit: JsonUnit, meta: QueryMeta) {
     let commanName = 'equal';
     let commandMeta: CommandMeta;
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
@@ -132,10 +137,10 @@ export class MagicQueryParser {
       commanName,
     );
 
-    meta.pushCommand(
+    meta.pushConditionCommand(
       new commandClass(
         commandMeta ? commandMeta : new CommandMeta(commanName, jsonUnit.value),
-        this.rootMeta,
+        this.querMeta,
         meta,
         jsonUnit.key,
         this.magicService,
@@ -143,17 +148,17 @@ export class MagicQueryParser {
     );
   }
 
-  private parseEntityOrRelationCommand(
+  private parseModelOrRelationCommand(
     name: string,
     jsonUnit: JsonUnit,
-    meta: QueryEntityMeta,
+    meta: QueryMeta,
   ) {
     const cmdMeta = new CommandMeta(name);
     cmdMeta.value = jsonUnit.value;
 
-    if (meta instanceof QueryRootMeta) {
+    if (meta instanceof QueryEntityMeta) {
       const cmdClass = this.queryCommandService.findEntityCommandOrFailed(name);
-      meta.pushCommand(new cmdClass(cmdMeta, this.rootMeta, this.magicService));
+      meta.pushCommand(new cmdClass(cmdMeta, this.querMeta, this.magicService));
     } else {
       const cmdClass = this.queryCommandService.findRelationCommandOrFailed(
         name,
@@ -161,7 +166,7 @@ export class MagicQueryParser {
       meta.pushCommand(
         new cmdClass(
           cmdMeta,
-          this.rootMeta,
+          this.querMeta,
           meta as QueryRelationMeta,
           this.magicService,
         ),
@@ -172,14 +177,14 @@ export class MagicQueryParser {
   private parseRelation(
     jsonUnit: JsonUnit,
     relationEntitySchemaOptions: EntitySchemaRelationOptions,
-    parentMeta: QueryEntityMeta,
+    parentMeta: QueryMeta,
   ) {
     const relation = new QueryRelationMeta();
-    parentMeta.relations.push(relation);
+    parentMeta.relationMetas.push(relation);
 
     relation.parentEntityMeta = parentMeta;
     relation.name = jsonUnit.key;
-    relation.entityMeta = this.schemaService.getEntityMetaOrFailed(
+    relation.entitySchema = this.schemaService.findEntitySchemaOrFailed(
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.commands.forEach((commandMeta) => {
@@ -187,9 +192,9 @@ export class MagicQueryParser {
         commandMeta.name,
       );
       relation.pushCommand(
-        new CommandClass(commandMeta, this.rootMeta, this.magicService),
+        new CommandClass(commandMeta, this.querMeta, this.magicService),
       );
     });
-    this.parseOtherMeta(jsonUnit.value, relation);
+    this.parseMeta(jsonUnit.value, relation);
   }
 }

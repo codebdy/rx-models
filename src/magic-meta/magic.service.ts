@@ -1,5 +1,5 @@
 import { QueryResult } from 'src/common/query-result';
-import { RxUser } from 'src/entity-interface/rx-user';
+import { RxUser } from 'src/entity-interface/RxUser';
 
 export interface MagicService {
   me: RxUser;

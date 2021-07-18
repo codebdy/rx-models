@@ -19,7 +19,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
-import { RxUser } from 'src/entity-interface/rx-user';
+import { RxUser } from 'src/entity-interface/RxUser';
 
 @Controller()
 export class MagicController {

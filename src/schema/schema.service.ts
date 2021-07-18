@@ -78,6 +78,18 @@ export class SchemaService {
     throw new Error(`Can not find entity meta ${name}`);
   }
 
+  public getEntityMetaOrFailedByUuid(entityUuid: string) {
+    for (const aPackage of this._packages) {
+      const entityMeta = aPackage.entities?.find(
+        (entity) => entity.uuid === entityUuid,
+      );
+      if (entityMeta) {
+        return entityMeta;
+      }
+    }
+    throw new Error(`Can not find entity meta ${name}`);
+  }
+
   public getRelationSchemaName(relationName: string, entityName: string) {
     const entitySchema = this.getSchema(entityName);
     if (!entitySchema) {

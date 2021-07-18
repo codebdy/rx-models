@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { NOT_INSTALL_ERROR } from 'src/util/consts';
 import * as bcrypt from 'bcrypt';
-import { RxUser } from 'src/entity-interface/rx-user';
+import { RxUser } from 'src/entity-interface/RxUser';
 
 @Injectable()
 export class AuthService {

@@ -1,4 +1,4 @@
-import { RxRole } from './rx-role';
+import { RxRole } from './RxRole';
 
 export enum AbilityType {
   CREATE = 'create',

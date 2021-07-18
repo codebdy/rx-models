@@ -1,8 +1,8 @@
-import { QueryEntityMeta } from 'src/magic-meta/query-old/query.entity-meta';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
 import { CommandType } from '../command-type';
 import { MagicService } from 'src/magic-meta/magic.service';
+import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 
 export interface QueryCommandClass extends Function {
   description?: string;
@@ -12,7 +12,7 @@ export interface QueryCommandClass extends Function {
   commandName: string;
   new (
     commandMeta: CommandMeta,
-    rootMeta: QueryEntityMeta,
+    rootMeta: QueryRootMeta,
     magicService: MagicService,
   ): QueryCommand;
 }

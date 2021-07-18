@@ -1,13 +1,10 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { parseWhereSql } from 'src/magic-meta/query-old/parse-where-sql';
-import { QueryEntityMeta } from 'src/magic-meta/query-old/query.entity-meta';
-import { RxAbility } from 'src/entity-interface/rx-ability';
-import {
-  parseRelationsFromWhereSql,
-} from 'src/magic-meta/query-old/parse-relations-from-where-sql';
-import { AddonRelationInfo } from "src/magic-meta/query-old/addon-relation-info";
-import { RxUser } from 'src/entity-interface/rx-user';
-import { QueryMeta } from 'src/magic-meta/query-old/query.meta';
+import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
+import { RxAbility } from 'src/entity-interface/RxAbility';
+import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
+import { AddonRelationInfo } from 'src/magic-meta/query/addon-relation-info';
+import { RxUser } from 'src/entity-interface/RxUser';
+import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 
 export function makeEntityQueryAbilityBuilder(
   ablilityReslut: RxAbility[] | true | false,
@@ -32,7 +29,7 @@ export function makeEntityQueryAbilityBuilder(
 
 export function getEntityQueryAbilitySql(
   ablilityReslut: RxAbility[] | true,
-  meta: QueryMeta,
+  meta: QueryEntityMeta,
   me: RxUser,
 ): [string[], any] {
   const whereStringArray: string[] = [];
