@@ -43,7 +43,7 @@ export function parseWhereSql(
           }
         }
         operands[0] = `${modelAlias}.${operands[0]}`;
-        if ((operands[1] as string).startsWith('$me.')) {
+        if (operands[1].toString().startsWith('$me.')) {
           const [, columnStr] = (operands[1] as string).split('.');
           params[paramName] = me[columnStr];
         } else {

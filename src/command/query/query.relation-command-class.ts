@@ -4,6 +4,7 @@ import { QueryCommand } from './query.command';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { SchemaService } from 'src/schema/schema.service';
 
 export interface QueryRelationCommandClass extends QueryCommandClass {
   new (
@@ -11,5 +12,6 @@ export interface QueryRelationCommandClass extends QueryCommandClass {
     rootMeta: QueryRootMeta,
     relationMeta: QueryRelationMeta,
     magicService: MagicService,
+    schemaService: SchemaService,
   ): QueryCommand;
 }

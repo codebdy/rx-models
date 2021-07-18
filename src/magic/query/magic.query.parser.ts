@@ -57,6 +57,7 @@ export class MagicQueryParser {
               commandMeta,
               this.rootMeta,
               this.magicService,
+              this.schemaService,
             );
             meta.pushCommand(command);
           }
@@ -89,6 +90,8 @@ export class MagicQueryParser {
             relationInfo.name,
             meta.entity,
           );
+          relation.name = relationInfo.name;
+          relation.parentEntityMeta = meta;
           meta.addonRelations.push(relation);
         }
       }
@@ -154,6 +157,7 @@ export class MagicQueryParser {
         meta,
         jsonUnit.key,
         this.magicService,
+        this.schemaService,
       ),
     );
   }
@@ -168,7 +172,14 @@ export class MagicQueryParser {
 
     if (meta instanceof QueryRootMeta) {
       const cmdClass = this.queryCommandService.findEntityCommandOrFailed(name);
-      meta.pushCommand(new cmdClass(cmdMeta, this.rootMeta, this.magicService));
+      meta.pushCommand(
+        new cmdClass(
+          cmdMeta,
+          this.rootMeta,
+          this.magicService,
+          this.schemaService,
+        ),
+      );
     } else {
       const cmdClass = this.queryCommandService.findRelationCommandOrFailed(
         name,
@@ -179,6 +190,7 @@ export class MagicQueryParser {
           this.rootMeta,
           meta as QueryRelationMeta,
           this.magicService,
+          this.schemaService,
         ),
       );
     }
@@ -202,7 +214,12 @@ export class MagicQueryParser {
         commandMeta.name,
       );
       relation.pushCommand(
-        new CommandClass(commandMeta, this.rootMeta, this.magicService),
+        new CommandClass(
+          commandMeta,
+          this.rootMeta,
+          this.magicService,
+          this.schemaService,
+        ),
       );
     });
     await this.parseQueryAbilities(relation);

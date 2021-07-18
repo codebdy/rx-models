@@ -2,6 +2,7 @@
 import { MagicService } from 'src/magic-meta/magic.service';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
+import { SchemaService } from 'src/schema/schema.service';
 import { CommandMeta } from '../command.meta';
 import { QueryCommand } from './query.command';
 
@@ -11,7 +12,8 @@ export class QueryRelationCommand extends QueryCommand {
     protected readonly rootMeta: QueryRootMeta,
     protected readonly relationMeta: QueryRelationMeta,
     protected readonly magicService: MagicService,
+    protected readonly schemaService: SchemaService,
   ) {
-    super(commandMeta, rootMeta, magicService);
+    super(commandMeta, rootMeta, magicService, schemaService);
   }
 }

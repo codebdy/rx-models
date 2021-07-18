@@ -2,6 +2,7 @@
 import { QueryResult } from 'src/common/query-result';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
+import { SchemaService } from 'src/schema/schema.service';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CommandMeta } from '../command.meta';
 
@@ -15,6 +16,7 @@ export class QueryCommand {
     protected readonly commandMeta: CommandMeta,
     protected readonly rootMeta: QueryRootMeta,
     protected readonly magicService: MagicService,
+    protected readonly schemaService: SchemaService,
   ) {}
 
   /**
