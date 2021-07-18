@@ -28,7 +28,7 @@ export class QueryEntityWhereCommand extends QueryCommand {
       );
       relation.name = relationInfo.name;
       relation.parentEntityMeta = meta;
-      meta.addonRelations.push(relation);
+      meta.addAddOnRelation(relation);
     }
 
     return parseWhereSql(

@@ -1,6 +1,7 @@
 import { CommandMeta } from 'src/command/command.meta';
 import { QueryCommandService } from 'src/command/query-command.service';
 import { MagicService } from 'src/magic-meta/magic.service';
+import { AddonRelationInfo } from 'src/magic-meta/query/addon-relation-info';
 import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
@@ -85,17 +86,22 @@ export class MagicQueryParser {
         const relationInfos = parseRelationsFromWhereSql(ability.expression);
         meta.addonRelationInfos.push(...relationInfos);
         for (const relationInfo of relationInfos) {
-          const relation = new QueryRelationMeta();
-          relation.entityMeta = this.schemaService.getRelationEntityMetaOrFailed(
-            relationInfo.name,
-            meta.entity,
-          );
-          relation.name = relationInfo.name;
-          relation.parentEntityMeta = meta;
-          meta.addonRelations.push(relation);
+          this.createAddonRelation(relationInfo.name, meta);
         }
       }
     }
+  }
+
+  private createAddonRelation(relationName: string, meta: QueryEntityMeta) {
+    const relation = new QueryRelationMeta();
+    relation.entityMeta = this.schemaService.getRelationEntityMetaOrFailed(
+      relationName,
+      meta.entity,
+    );
+    relation.name = relationName;
+    relation.parentEntityMeta = meta;
+    meta.addAddOnRelation(relation);
+    return relation;
   }
 
   async parseOtherMeta(json: any, meta: QueryEntityMeta) {
@@ -103,6 +109,19 @@ export class MagicQueryParser {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       await this.parseOneLine(jsonUnit, meta, keyStr.trim());
+    }
+    for (const relationCondition of meta.relationConditions) {
+      const [relationName, fieldName] = relationCondition.key.split('.');
+      let relation = meta.findRelation(relationName);
+      if (!relation) {
+        relation = this.createAddonRelation(relationName, meta);
+      }
+
+      this.paseConditionCommand(
+        relationCondition,
+        meta,
+        relation.alias + '.' + fieldName,
+      );
     }
   }
 
@@ -134,13 +153,25 @@ export class MagicQueryParser {
       this.parseEntityOrRelationCommand(keyWithoutAt, jsonUnit, meta);
     } else {
       //剩下的全是条件行
-      this.paseConditionCommand(jsonUnit, meta);
+      if (jsonUnit.key.split('.').length > 1) {
+        meta.relationConditions.push(jsonUnit);
+      } else {
+        this.paseConditionCommand(
+          jsonUnit,
+          meta,
+          meta.alias + '.' + jsonUnit.key,
+        );
+      }
     }
   }
 
-  private paseConditionCommand(jsonUnit: JsonUnit, meta: QueryEntityMeta) {
-    let commanName = 'equal';
+  private paseConditionCommand(
+    jsonUnit: JsonUnit,
+    meta: QueryEntityMeta,
+    field: string,
+  ) {
     let commandMeta: CommandMeta;
+    let commanName = 'equal';
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
       commanName = jsonUnit.commands[0].name;
       commandMeta = jsonUnit.commands[0];
@@ -155,7 +186,7 @@ export class MagicQueryParser {
         commandMeta ? commandMeta : new CommandMeta(commanName, jsonUnit.value),
         this.rootMeta,
         meta,
-        jsonUnit.key,
+        field,
         this.magicService,
         this.schemaService,
       ),

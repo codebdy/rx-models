@@ -1,5 +1,6 @@
 import { QueryCommand } from 'src/command/query/query.command';
 import { RxAbility } from 'src/entity-interface/RxAbility';
+import { JsonUnit } from 'src/magic/base/json-unit';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { createId } from 'src/util/create-id';
 import { AddonRelationInfo } from './addon-relation-info';
@@ -20,6 +21,9 @@ export class QueryEntityMeta {
   //根据该数据，可以衍生出方法，进行权限检查
   abilities: RxAbility[] = [];
 
+  //关联条件，如user.id
+  relationConditions: JsonUnit[] = [];
+
   constructor() {
     this.id = createId();
   }
@@ -32,15 +36,32 @@ export class QueryEntityMeta {
     return this.entityMeta.name?.toLowerCase() + this.id;
   }
 
+  addAddOnRelation(relationMeta: QueryRelationMeta) {
+    const foundRelation = this.addonRelations.find(
+      (relation) => relation.name === relationMeta.name,
+    );
+    //避免重复添加
+    if (!foundRelation) {
+      this.addonRelations.push(relationMeta);
+    }
+  }
+
   pushCommand(command: QueryCommand) {
     this.commands.push(command);
   }
 
-  findRelatiOrFailed(relationName: string): QueryRelationMeta {
+  findRelation(relationName: string): QueryRelationMeta {
     for (const relationMeta of [...this.relations, ...this.addonRelations]) {
       if (relationMeta.name === relationName) {
         return relationMeta;
       }
+    }
+  }
+
+  findRelatiOrFailed(relationName: string): QueryRelationMeta {
+    const relation = this.findRelation(relationName);
+    if (relation) {
+      return relation;
     }
     throw new Error(
       `Please add relation ${relationName} of ${this.entity} to query meta`,

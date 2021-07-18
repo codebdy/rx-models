@@ -14,7 +14,7 @@ export class QueryConditionEqualCommand extends QueryConditionCommand {
   getWhereStatement(): [string, any] {
     const paramName = 'param' + createId();
     return [
-      ` ${this.ownerMeta.alias}.${this.field} LIKE :${paramName} `,
+      `${this.field} LIKE :${paramName} `,
       {
         [paramName]: this.value,
       },
