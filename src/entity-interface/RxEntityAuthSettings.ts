@@ -1,5 +1,5 @@
 export interface RxEntityAuthSettings {
-  id: number;
+  id?: number;
   entityUuid: string;
-  expand: boolean;
+  expand?: boolean;
 }

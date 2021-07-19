@@ -1,11 +1,12 @@
+import { RxUser } from './RxUser';
+import { RxAbility } from './RxAbility';
+
 export interface RxRole {
-  id: number;
-
+  id?: number;
   name: string;
-
-  description: string;
-
-  createdAt: Date;
-
-  updatedAt: Date;
+  description?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  users?: RxUser[];
+  abilities?: RxAbility[];
 }

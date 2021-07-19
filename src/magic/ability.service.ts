@@ -1,10 +1,11 @@
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { RxUser } from 'src/entity-interface/RxUser';
-import { AbilityType, RxAbility } from 'src/entity-interface/RxAbility';
+import { RxAbility } from 'src/entity-interface/RxAbility';
 import { AbilityValidateResult } from 'src/magic-meta/ability-validate-restult';
 import { RxEntityAuthSettings } from 'src/entity-interface/RxEntityAuthSettings';
 import { HttpException } from '@nestjs/common';
+import { AbilityType } from 'src/entity-interface/AbilityType';
 
 export class AbilityService {
   constructor(

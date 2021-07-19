@@ -1,18 +1,12 @@
 import { RxRole } from './RxRole';
-
-export enum AbilityType {
-  CREATE = 'create',
-  READ = 'read',
-  UPDATE = 'update',
-  DELETE = 'delete',
-}
+import { AbilityType } from './AbilityType';
 
 export interface RxAbility {
   id?: number;
   entityUuid: string;
   columnUuid?: string;
-  abilityType: AbilityType;
   can: boolean;
-  expression: string;
-  role: RxRole;
+  expression?: string;
+  abilityType: AbilityType;
+  role?: RxRole;
 }
