@@ -116,6 +116,35 @@
           "type": "Number",
           "primary": true,
           "generated": true
+        },
+        {
+          "uuid": "b9dc3084-8442-4258-96e5-8e8df402ce04",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "1307934d-cd5f-41cc-a13b-a948b4fedfcf",
+          "name": "mimetype",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "11bfd6b3-6725-42fe-9732-7e80c0dcf6da",
+          "name": "fileName",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "9d02f63e-76c6-4276-876f-b20e1a97a570",
+          "name": "path",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "7ce23a21-99b7-4a0a-8868-d66aaf758e00",
+          "name": "size",
+          "type": "Number",
+          "nullable": true
         }
       ]
     },
@@ -129,6 +158,17 @@
           "type": "Number",
           "primary": true,
           "generated": true
+        },
+        {
+          "uuid": "ea16fd94-aac9-4e23-9e8e-eef151f00875",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "940bc72b-4546-4150-931b-e277ac985ce7",
+          "name": "order",
+          "type": "String",
+          "nullable": true
         }
       ]
     },
@@ -277,17 +317,17 @@
         },
         {
           "id": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
-          "x": 50,
-          "y": -140,
+          "x": 40,
+          "y": -205,
           "width": 180,
-          "height": 80
+          "height": 210
         },
         {
           "id": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
           "x": 420,
-          "y": -140,
+          "y": -165,
           "width": 180,
-          "height": 80
+          "height": 130
         }
       ],
       "edges": [
@@ -364,7 +404,7 @@
           "id": "b116f947-37f2-4a1e-9079-7d846190c17a",
           "vertices": [
             {
-              "x": 140,
+              "x": 130,
               "y": 250
             }
           ],
