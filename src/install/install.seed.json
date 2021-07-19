@@ -58,14 +58,16 @@
           "uuid": "system-column-1-11",
           "name": "createdAt",
           "type": "Date",
-          "createDate": true
+          "createDate": true,
+          "nullable": true
         },
         {
           "uuid": "system-column-1-12",
           "name": "updatedAt",
           "type": "Date",
           "createDate": false,
-          "updateDate": true
+          "updateDate": true,
+          "nullable": true
         }
       ]
     },
@@ -95,14 +97,16 @@
           "uuid": "system-column-2-4",
           "name": "createdAt",
           "type": "Date",
-          "createDate": true
+          "createDate": true,
+          "nullable": true
         },
         {
           "uuid": "system-column-2-5",
           "name": "updatedAt",
           "type": "Date",
           "createDate": false,
-          "updateDate": true
+          "updateDate": true,
+          "nullable": true
         }
       ]
     },
@@ -209,7 +213,8 @@
         {
           "uuid": "2ee93068-0e2a-4beb-b646-2abb6805aa37",
           "name": "abilityType",
-          "type": "Enum"
+          "type": "Enum",
+          "enumEnityUuid": "1207fea9-ed2f-4688-8a01-eb39b5c16aa2"
         }
       ]
     },
@@ -294,6 +299,18 @@
           "nullable": true
         }
       ]
+    },
+    {
+      "uuid": "1207fea9-ed2f-4688-8a01-eb39b5c16aa2",
+      "name": "AbilityType",
+      "entityType": "Enum",
+      "columns": [],
+      "enumValues": {
+        "CREATE": "create",
+        "READ": "read",
+        "UPDATE": "update",
+        "DELETE": "delete"
+      }
     }
   ],
   "diagrams": [
@@ -507,7 +524,7 @@
         },
         {
           "id": "e5fee1e4-fe3e-4d50-82a2-e26df7c7edce",
-          "x": 460,
+          "x": 490,
           "y": 50,
           "width": 180,
           "height": 130
@@ -525,6 +542,13 @@
           "y": 370,
           "width": 180,
           "height": 200
+        },
+        {
+          "id": "1207fea9-ed2f-4688-8a01-eb39b5c16aa2",
+          "x": 100,
+          "y": 623,
+          "width": 180,
+          "height": 70
         }
       ],
       "edges": [
