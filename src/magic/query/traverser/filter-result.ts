@@ -10,6 +10,10 @@ export function filterResult(result: QueryResult, rootMeta: QueryRootMeta) {
   } else {
     filterOneInstance(result.data, rootMeta);
   }
+  //进行command过滤
+  for (const command of rootMeta.commands) {
+    result = command.filterResult(result);
+  }
   return result;
 }
 
