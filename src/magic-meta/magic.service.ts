@@ -1,4 +1,4 @@
-import { QueryResult } from 'src/common/query-result';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { RxUser } from 'src/entity-interface/RxUser';
 
 export interface MagicService {

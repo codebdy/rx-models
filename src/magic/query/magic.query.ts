@@ -1,5 +1,5 @@
 import { MagicQueryParser } from './magic.query.parser';
-import { QueryResult } from 'src/common/query-result';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { AbilityService } from 'src/magic/ability.service';
@@ -9,6 +9,7 @@ import { EntityManager } from 'typeorm';
 import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-count-query-builder';
 import { makeRelationsBuilder } from './traverser/make-relations-builder';
 import { makeEffectCountQueryBuilder } from './traverser/make-effect-count-query-builder';
+import { filterResult } from './traverser/filter-result';
 
 export class MagicQuery {
   constructor(
@@ -56,7 +57,7 @@ export class MagicQuery {
       meta.fetchString === TOKEN_GET_MANY
         ? ({ data, totalCount } as QueryResult)
         : ({ data } as QueryResult);
-    return result;
-    //return meta.filterResult(result);
+
+    return filterResult(result, meta);
   }
 }

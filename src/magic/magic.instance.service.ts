@@ -2,7 +2,7 @@ import { AbilityService } from 'src/magic/ability.service';
 import { DeleteCommandService } from 'src/command/delete-command.service';
 import { PostCommandService } from 'src/command/post-command.service';
 import { QueryCommandService } from 'src/command/query-command.service';
-import { QueryResult } from 'src/common/query-result';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';

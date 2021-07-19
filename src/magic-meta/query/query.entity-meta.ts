@@ -36,6 +36,16 @@ export class QueryEntityMeta {
     return this.entityMeta.name?.toLowerCase() + this.id;
   }
 
+  getHasQueryAbilityFields() {
+    return this.abilities
+      .filter((ability) => ability.columnUuid)
+      .map((ability) => {
+        return this.entityMeta.columns.find(
+          (column) => column.uuid === ability.columnUuid,
+        ).name;
+      });
+  }
+
   addAddOnRelation(relationMeta: QueryRelationMeta) {
     const foundRelation = this.addonRelations.find(
       (relation) => relation.name === relationMeta.name,

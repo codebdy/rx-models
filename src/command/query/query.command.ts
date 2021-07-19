@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { QueryResult } from 'src/common/query-result';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 import { SchemaService } from 'src/schema/schema.service';

@@ -1,6 +1,6 @@
 import { QueryCommand } from 'src/command/query/query.command';
 import { CommandType } from 'src/command/command-type';
-import { QueryResult } from 'src/common/query-result';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryEntityPaginateCommand extends QueryCommand {

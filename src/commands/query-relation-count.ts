@@ -1,6 +1,6 @@
 import { CommandType } from 'src/command/command-type';
 import { QueryRelationCommand } from 'src/command/query/query.relation-command';
-import { QueryResult } from 'src/common/query-result';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryRelationCountCommand extends QueryRelationCommand {
