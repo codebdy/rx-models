@@ -58,6 +58,6 @@ export class MagicQuery {
         ? ({ data, totalCount } as QueryResult)
         : ({ data } as QueryResult);
 
-    return filterResult(result, meta);
+    return filterResult(result, meta, this.magicService.me);
   }
 }

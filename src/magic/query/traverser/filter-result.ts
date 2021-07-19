@@ -1,14 +1,19 @@
+import { RxUser } from 'src/entity-interface/RxUser';
 import { QueryResult } from 'src/magic-meta/query/query-result';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 
-export function filterResult(result: QueryResult, rootMeta: QueryRootMeta) {
+export function filterResult(
+  result: QueryResult,
+  rootMeta: QueryRootMeta,
+  me: RxUser,
+) {
   if (Array.isArray(result.data)) {
     for (const instance of result.data) {
-      filterOneInstance(instance, rootMeta);
+      filterOneInstance(instance, rootMeta, me);
     }
   } else {
-    filterOneInstance(result.data, rootMeta);
+    filterOneInstance(result.data, rootMeta, me);
   }
   //进行command过滤
   for (const command of rootMeta.commands) {
@@ -17,12 +22,12 @@ export function filterResult(result: QueryResult, rootMeta: QueryRootMeta) {
   return result;
 }
 
-function filterOneInstance(instance: any, meta: QueryEntityMeta) {
+function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
   if (!instance) {
     return instance;
   }
   //基于权限过滤
-  if (meta.expandFieldForAuth) {
+  if (meta.expandFieldForAuth && !(me.isDemo || me.isSupper)) {
     const fields = meta.getHasQueryAbilityFields();
     for (const column of meta.entityMeta.columns) {
       const fieldName = column.name;
@@ -46,10 +51,10 @@ function filterOneInstance(instance: any, meta: QueryEntityMeta) {
     const relationInstance = instance[relation.name];
     if (Array.isArray(relationInstance)) {
       for (const obj of relationInstance) {
-        filterOneInstance(obj, relation);
+        filterOneInstance(obj, relation, me);
       }
     } else {
-      filterOneInstance(relationInstance, relation);
+      filterOneInstance(relationInstance, relation, me);
     }
   }
   return instance;
