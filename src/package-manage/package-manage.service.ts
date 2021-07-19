@@ -45,9 +45,4 @@ export class PackageManageService {
 
     await this.typeormSerivce.restart();
   }
-
-  //public getAllPublishedPackages(): PackageMeta[] {
-  //  const packages = importJsonsFromDirectories([SCHEMAS_DIR]);
-  //  return packages;
-  //}
 }
