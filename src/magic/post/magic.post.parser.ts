@@ -1,9 +1,12 @@
 import { PostCommandService } from 'src/command/post-command.service';
+import { RxAbility } from 'src/entity-interface/RxAbility';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
+import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { SchemaService } from 'src/schema/schema.service';
+import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 
 export class MagicPostParser {
@@ -11,32 +14,44 @@ export class MagicPostParser {
     private readonly commandService: PostCommandService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
+    private readonly abilityService: AbilityService,
   ) {}
 
-  parse(json: any) {
+  async parse(json: any) {
     const instanceMetas = [];
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
       instanceMetas.push(
-        this.parseInanceMetaCollection(jsonUnit.key, jsonUnit),
+        await this.parseInanceMetaCollection(jsonUnit.key, jsonUnit),
       );
     }
 
     return instanceMetas;
   }
 
-  private parseInanceMetaCollection(entity: string, jsonUnit: JsonUnit) {
+  private async parseInanceMetaCollection(entity: string, jsonUnit: JsonUnit) {
     const instanceCollection = new InstanceMetaCollection();
+    const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
+    const abilities = await this.abilityService.getEntityPostAbilities(
+      entityMeta.uuid,
+    );
     instanceCollection.entity = entity;
     if (Array.isArray(jsonUnit.value)) {
       for (const meta of jsonUnit.value) {
-        instanceCollection.instances.push(this.parseInsanceMeta(entity, meta));
+        instanceCollection.instances.push(
+          await this.parseInsanceMeta(entity, meta, abilities, entityMeta),
+        );
       }
     } else {
       instanceCollection.isSingle = true;
       instanceCollection.instances.push(
-        this.parseInsanceMeta(entity, jsonUnit.value),
+        await this.parseInsanceMeta(
+          entity,
+          jsonUnit.value,
+          abilities,
+          entityMeta,
+        ),
       );
     }
     jsonUnit.commands.forEach((commandMeta) => {
@@ -50,9 +65,15 @@ export class MagicPostParser {
     return instanceCollection;
   }
 
-  private parseInsanceMeta(entity: string, json: any) {
+  private async parseInsanceMeta(
+    entity: string,
+    json: any,
+    abilities: RxAbility[],
+    entityMeta: EntityMeta,
+  ) {
     const instanceMeta = new InstanceMeta();
-    instanceMeta.entity = entity;
+    instanceMeta.abilities = abilities;
+    instanceMeta.entityMeta = entityMeta;
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -62,10 +83,9 @@ export class MagicPostParser {
         entity,
       );
       if (relationModel) {
-        instanceMeta.relations[jsonUnit.key] = this.parseRelationMetaCollection(
-          relationModel,
-          jsonUnit,
-        );
+        instanceMeta.relations[
+          jsonUnit.key
+        ] = await this.parseRelationMetaCollection(relationModel, jsonUnit);
       } else {
         instanceMeta.meta[keyStr] = value;
       }
@@ -74,18 +94,35 @@ export class MagicPostParser {
     return instanceMeta;
   }
 
-  private parseRelationMetaCollection(entity: string, jsonUnit: JsonUnit) {
+  private async parseRelationMetaCollection(
+    entity: string,
+    jsonUnit: JsonUnit,
+  ) {
+    const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
+    const abilities = await this.abilityService.getEntityPostAbilities(
+      entityMeta.uuid,
+    );
     const relationMetaCollection = new RelationMetaCollection();
     relationMetaCollection.relationName = jsonUnit.key;
     relationMetaCollection.entity = entity;
     if (Array.isArray(jsonUnit.value)) {
       for (const meta of jsonUnit.value) {
-        this.processOneElement(meta, relationMetaCollection);
+        await this.processOneElement(
+          meta,
+          relationMetaCollection,
+          abilities,
+          entityMeta,
+        );
       }
     } else if (jsonUnit.value === null) {
     } else {
       relationMetaCollection.isSingle = true;
-      this.processOneElement(jsonUnit.value, relationMetaCollection);
+      await this.processOneElement(
+        jsonUnit.value,
+        relationMetaCollection,
+        abilities,
+        entityMeta,
+      );
     }
 
     jsonUnit.commands.forEach((commandMeta) => {
@@ -99,13 +136,20 @@ export class MagicPostParser {
     return relationMetaCollection;
   }
 
-  private processOneElement(
+  private async processOneElement(
     entityOrId: any,
     relationMetaCollection: RelationMetaCollection,
+    abilities: RxAbility[],
+    entityMeta: EntityMeta,
   ) {
     if (isNaN(entityOrId)) {
       relationMetaCollection.entities.push(
-        this.parseInsanceMeta(relationMetaCollection.entity, entityOrId),
+        await this.parseInsanceMeta(
+          relationMetaCollection.entity,
+          entityOrId,
+          abilities,
+          entityMeta,
+        ),
       );
     } else {
       relationMetaCollection.ids.push(entityOrId);

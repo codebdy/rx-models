@@ -7,6 +7,7 @@ import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
+import { AbilityType } from 'src/entity-interface/AbilityType';
 
 export class MagicPost {
   constructor(
@@ -19,12 +20,16 @@ export class MagicPost {
 
   async post(json: any) {
     const savedEntites = {};
-    const instances = new MagicPostParser(
+    const instances = await new MagicPostParser(
       this.postCommandService,
       this.schemaService,
       this.magicService,
+      this.abilityService,
     ).parse(json);
 
+    if (this.magicService.me.isDemo) {
+      throw new Error('Demo account can not change data');
+    }
     for (const instanceGroup of instances) {
       savedEntites[instanceGroup.entity] = await this.saveInstanceGroup(
         instanceGroup,
@@ -41,9 +46,9 @@ export class MagicPost {
   ) {
     const savedInstances = [];
 
-    for (const entity of instanceGroup.instances) {
+    for (const instanceMeta of instanceGroup.instances) {
       savedInstances.push(
-        await this.saveEntity(entity, entityManger, instanceGroup),
+        await this.saveInstance(instanceMeta, entityManger, instanceGroup),
       );
     }
 
@@ -71,7 +76,7 @@ export class MagicPost {
 
     for (const entity of relationCollection.entities) {
       savedInstances.push(
-        await this.saveEntity(entity, entityManger, relationCollection),
+        await this.saveInstance(entity, entityManger, relationCollection),
       );
     }
 
@@ -93,11 +98,23 @@ export class MagicPost {
     return relationCollection.isSingle ? savedInstances[0] : savedInstances;
   }
 
-  private async saveEntity(
+  private async saveInstance(
     instanceMeta: InstanceMeta,
     entityManger: EntityManager,
     instanceGroup: InstanceMetaCollection | RelationMetaCollection,
   ) {
+    //如果是新创建，需要检查create权限
+    if (!instanceMeta.meta?.id && !this.magicService.me.isSupper) {
+      const createAbility = instanceMeta.abilities.find(
+        (ability) => ability.abilityType === AbilityType.CREATE,
+      );
+
+      if (!createAbility?.can) {
+        throw new Error(
+          `${this.magicService.me.name} has not ability to create ${instanceMeta.entity} instance `,
+        );
+      }
+    }
     let filterdInstanceMeta = instanceMeta;
     //保存前命令
     for (const command of instanceGroup.commands) {

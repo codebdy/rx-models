@@ -96,4 +96,36 @@ export class AbilityService {
       )
       .getMany();
   }
+
+  async getEntityPostAbilities(entityUuid: string) {
+    const user = this.me;
+    console.debug('Read权限筛查用户：', user.name);
+    if (!user) {
+      throw new HttpException(
+        {
+          status: 401,
+          error: 'Please login first!',
+        },
+        401,
+      );
+    }
+    if (user.isSupper || user.isDemo) {
+      return [];
+    }
+    return await this.typeormSerivce
+      .getRepository<RxAbility>('RxAbility')
+      .createQueryBuilder('rxability')
+      .leftJoinAndSelect('rxability.role', 'role')
+      .where(
+        `rxability.entityUuid=:entityUuid 
+        AND (rxability.abilityType = '${AbilityType.CREATE}' OR rxability.abilityType = '${AbilityType.UPDATE}') 
+        AND role.id IN (:...roleIds)
+      `,
+        {
+          entityUuid,
+          roleIds: user.roles?.map((role) => role.id) || [],
+        },
+      )
+      .getMany();
+  }
 }
