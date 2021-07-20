@@ -36,11 +36,18 @@ export class MagicPostParser {
     const abilities = await this.abilityService.getEntityPostAbilities(
       entityMeta.uuid,
     );
+    const expand = await this.abilityService.isEntityExpand(entityMeta.uuid);
     instanceCollection.entity = entity;
     if (Array.isArray(jsonUnit.value)) {
       for (const meta of jsonUnit.value) {
         instanceCollection.instances.push(
-          await this.parseInsanceMeta(entity, meta, abilities, entityMeta),
+          await this.parseInsanceMeta(
+            entity,
+            meta,
+            abilities,
+            entityMeta,
+            expand,
+          ),
         );
       }
     } else {
@@ -51,6 +58,7 @@ export class MagicPostParser {
           jsonUnit.value,
           abilities,
           entityMeta,
+          expand,
         ),
       );
     }
@@ -70,10 +78,12 @@ export class MagicPostParser {
     json: any,
     abilities: RxAbility[],
     entityMeta: EntityMeta,
+    expand: boolean,
   ) {
     const instanceMeta = new InstanceMeta();
     instanceMeta.abilities = abilities;
     instanceMeta.entityMeta = entityMeta;
+    instanceMeta.expandFieldForAuth = expand;
     for (const keyStr in json) {
       const value = json[keyStr];
       const jsonUnit = new JsonUnit(keyStr, value);
@@ -102,6 +112,7 @@ export class MagicPostParser {
     const abilities = await this.abilityService.getEntityPostAbilities(
       entityMeta.uuid,
     );
+    const expand = await this.abilityService.isEntityExpand(entityMeta.uuid);
     const relationMetaCollection = new RelationMetaCollection();
     relationMetaCollection.relationName = jsonUnit.key;
     relationMetaCollection.entity = entity;
@@ -112,6 +123,7 @@ export class MagicPostParser {
           relationMetaCollection,
           abilities,
           entityMeta,
+          expand,
         );
       }
     } else if (jsonUnit.value === null) {
@@ -122,6 +134,7 @@ export class MagicPostParser {
         relationMetaCollection,
         abilities,
         entityMeta,
+        expand,
       );
     }
 
@@ -141,6 +154,7 @@ export class MagicPostParser {
     relationMetaCollection: RelationMetaCollection,
     abilities: RxAbility[],
     entityMeta: EntityMeta,
+    expand: boolean,
   ) {
     if (isNaN(entityOrId)) {
       relationMetaCollection.entities.push(
@@ -149,6 +163,7 @@ export class MagicPostParser {
           entityOrId,
           abilities,
           entityMeta,
+          expand,
         ),
       );
     } else {

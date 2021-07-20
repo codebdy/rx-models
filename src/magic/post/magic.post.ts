@@ -108,7 +108,7 @@ export class MagicPost {
       this.validateCreate(instanceMeta);
     }
     if (instanceMeta.meta?.id && !this.magicService.me.isSupper) {
-      this.validateUpdate(instanceMeta);
+      await this.validateUpdate(instanceMeta);
     }
 
     let filterdInstanceMeta = instanceMeta;
@@ -158,24 +158,25 @@ export class MagicPost {
     return inststance;
   }
 
-  private validateUpdate(instanceMeta: InstanceMeta) {
+  private async validateUpdate(instanceMeta: InstanceMeta) {
+    const entityAbility = instanceMeta.abilities.find(
+      (ability) => ability.columnUuid === null,
+    );
+
+    if (!entityAbility?.can) {
+      throw new Error(
+        `${this.magicService.me.name} has not ability to update ${instanceMeta.entity}`,
+      );
+    }
+
     //如果没有展开
     if (!instanceMeta.expandFieldForAuth) {
-      const ability = instanceMeta.abilities.find(
-        (ability) => ability.columnUuid === null,
-      );
-      if (!ability.can) {
-        throw new Error(
-          `${this.magicService.me.name} has not ability to update ${instanceMeta.entity}`,
-        );
-      } else {
-        return;
-      }
+      return;
     }
 
     const relatedAbilites = [];
     for (const column of instanceMeta.entityMeta.columns) {
-      if (instanceMeta.meta[column.name] !== undefined) {
+      if (instanceMeta.meta[column.name] !== undefined && column.name != 'id') {
         const ability = instanceMeta.abilities.find(
           (ability) => ability.columnUuid === column.uuid,
         );
@@ -187,6 +188,24 @@ export class MagicPost {
             `${this.magicService.me.name} has not ability to update ${instanceMeta.entity} column ${column.name}`,
           );
         }
+      }
+    }
+
+    const whereSql = relatedAbilites
+      .filter((ability) => ability.expression)
+      .map((ability) => ability.expression)
+      .join(' AND ');
+    if (whereSql) {
+      const queryResult = await this.magicService.query({
+        entity: instanceMeta.entity,
+        id: instanceMeta.meta.id,
+        where: whereSql,
+      });
+
+      if (!queryResult.data?.length) {
+        throw new Error(
+          `${this.magicService.me.name} has not ability to update ${instanceMeta.entity} some columns or instance not exist`,
+        );
       }
     }
   }
