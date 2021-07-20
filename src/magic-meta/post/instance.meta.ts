@@ -12,7 +12,7 @@ export class InstanceMeta {
   expandFieldForAuth = false;
   abilities: RxAbility[] = [];
 
-  get entity(){
+  get entity() {
     return this.entityMeta?.name;
   }
 }

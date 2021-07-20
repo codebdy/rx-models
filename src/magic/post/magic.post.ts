@@ -105,16 +105,12 @@ export class MagicPost {
   ) {
     //如果是新创建，需要检查create权限
     if (!instanceMeta.meta?.id && !this.magicService.me.isSupper) {
-      const createAbility = instanceMeta.abilities.find(
-        (ability) => ability.abilityType === AbilityType.CREATE,
-      );
-
-      if (!createAbility?.can) {
-        throw new Error(
-          `${this.magicService.me.name} has not ability to create ${instanceMeta.entity} instance `,
-        );
-      }
+      this.validateCreate(instanceMeta);
     }
+    if (instanceMeta.meta?.id && !this.magicService.me.isSupper) {
+      this.validateUpdate(instanceMeta);
+    }
+
     let filterdInstanceMeta = instanceMeta;
     //保存前命令
     for (const command of instanceGroup.commands) {
@@ -160,5 +156,50 @@ export class MagicPost {
     }
 
     return inststance;
+  }
+
+  private validateUpdate(instanceMeta: InstanceMeta) {
+    //如果没有展开
+    if (!instanceMeta.expandFieldForAuth) {
+      const ability = instanceMeta.abilities.find(
+        (ability) => ability.columnUuid === null,
+      );
+      if (!ability.can) {
+        throw new Error(
+          `${this.magicService.me.name} has not ability to update ${instanceMeta.entity}`,
+        );
+      } else {
+        return;
+      }
+    }
+
+    const relatedAbilites = [];
+    for (const column of instanceMeta.entityMeta.columns) {
+      if (instanceMeta.meta[column.name] !== undefined) {
+        const ability = instanceMeta.abilities.find(
+          (ability) => ability.columnUuid === column.uuid,
+        );
+
+        if (ability) {
+          relatedAbilites.push(ability);
+        } else {
+          throw new Error(
+            `${this.magicService.me.name} has not ability to update ${instanceMeta.entity} column ${column.name}`,
+          );
+        }
+      }
+    }
+  }
+
+  private validateCreate(instanceMeta: InstanceMeta) {
+    const createAbility = instanceMeta.abilities.find(
+      (ability) => ability.abilityType === AbilityType.CREATE,
+    );
+
+    if (!createAbility?.can) {
+      throw new Error(
+        `${this.magicService.me.name} has not ability to create ${instanceMeta.entity} instance `,
+      );
+    }
   }
 }
