@@ -1,15 +1,17 @@
 import { DeleteCommand } from 'src/command/delete/delete.command';
+import { RxAbility } from 'src/entity-interface/RxAbility';
 import { JsonUnit } from 'src/magic/base/json-unit';
 
 export class DeleteMeta {
   private _jsonUnit: JsonUnit;
   public commands: DeleteCommand[] = [];
+  abilities: RxAbility[] = [];
 
   constructor(jsonUnit: JsonUnit) {
     this._jsonUnit = jsonUnit;
   }
 
-  get enity() {
+  get entity() {
     return this._jsonUnit.key;
   }
 
