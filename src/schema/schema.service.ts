@@ -8,7 +8,7 @@ import {
 import { EntitySchemaOptions } from 'typeorm/entity-schema/EntitySchemaOptions';
 import { convertDefault } from './convert-default';
 import { convertType } from './convert-type';
-import { EntityMeta } from './graph-meta-interface/entity-meta';
+import { EntityMeta, EntityType } from './graph-meta-interface/entity-meta';
 import { PackageMeta } from './graph-meta-interface/package-meta';
 import {
   RelationMeta,
@@ -127,7 +127,11 @@ export class SchemaService {
     this._packages = packages;
 
     packages.forEach((aPackage) => {
-      entityMetas.push(...(aPackage.entities || []));
+      entityMetas.push(
+        ...(aPackage.entities.filter(
+          (entity) => entity.entityType !== EntityType.enum,
+        ) || []),
+      );
       relationMetas.push(...(aPackage.relations || []));
     });
 
