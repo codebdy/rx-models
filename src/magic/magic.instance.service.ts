@@ -63,6 +63,7 @@ export class MagicInstanceService implements MagicService {
   async update(json: any) {
     return await new MagicUpdate(
       this.entityManager,
+      this.schemaService,
       this.abilityService,
     ).update(json);
   }
