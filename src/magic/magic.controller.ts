@@ -270,6 +270,9 @@ export class MagicController {
     try {
       await sleep(500);
       let result: any;
+      if (!file) {
+        throw new Error('no file to upload!');
+      }
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
           const entityService = this.createEntityService(
