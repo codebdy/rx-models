@@ -7,6 +7,8 @@ import {
   Post,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilityService } from 'src/magic/ability.service';
@@ -20,6 +22,10 @@ import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
 import { RxUser } from 'src/entity-interface/RxUser';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileFilter, fileName } from './upload/file-upload.utils';
+import { MagicUploadService } from './upload/magic.upload.service';
 
 @Controller()
 export class MagicController {
@@ -29,6 +35,7 @@ export class MagicController {
     private readonly postCommandService: PostCommandService,
     private readonly deleteCommandService: DeleteCommandService,
     private readonly schemaService: SchemaService,
+    private readonly uploadService: MagicUploadService,
   ) {}
 
   /**
@@ -229,6 +236,62 @@ export class MagicController {
       return result;
     } catch (error: any) {
       console.error('updateModels error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
+  }
+
+  /**
+   * 通用提交接口，语法示例：
+   * {
+   *   "entity":"RxMedia",
+   *   "file":...
+   *   "folder":1
+   * }
+   * @returns
+   */
+  @UseGuards(AuthGuard())
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './public/uploads',
+        filename: fileName,
+      }),
+      fileFilter: fileFilter,
+    }),
+  )
+  async uploadMedia(@Request() req, @UploadedFile() file, @Body() body: any) {
+    try {
+      await sleep(500);
+      let result: any;
+      await this.typeormSerivce.connection.transaction(
+        async (entityManger: EntityManager) => {
+          const entityService = this.createEntityService(
+            entityManger,
+            req.user,
+          );
+          this.uploadService.saveThumbnail(file);
+          console.debug(file, body);
+          const { entity: entityName, ...modelData } = body;
+          modelData.fileName = file.filename;
+          modelData.mimetype = file.mimetype;
+          modelData.path = file.path;
+          modelData.size = file.size;
+
+          console.debug(modelData);
+          result = await entityService.post({ [entityName]: modelData });
+        },
+      );
+
+      return result;
+    } catch (error: any) {
+      console.error('Upload error:', error);
       throw new HttpException(
         {
           status: 500,
