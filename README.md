@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+演示地址：https://rxmodels.vercel.app/  
+
 ## Installation
 要使用TypeORM CLI创建Models，需要全局安装TypeORM:
 ```bash
