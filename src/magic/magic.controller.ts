@@ -216,7 +216,17 @@ export class MagicController {
     try {
       await sleep(500);
       console.debug(body);
-      //return await this.updateService.update(body || {});
+      let result: any;
+      await this.typeormSerivce.connection.transaction(
+        async (entityManger: EntityManager) => {
+          const entityService = this.createEntityService(
+            entityManger,
+            req.user,
+          );
+          result = await entityService.update(body || {});
+        },
+      );
+      return result;
     } catch (error: any) {
       console.error('updateModels error:', error);
       throw new HttpException(

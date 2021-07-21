@@ -3,7 +3,7 @@ import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { TOKEN_IDS } from '../../magic/base/tokens';
 export class ModelUpdateMeta {
   private _ids: number[] = [];
-  private _params: any = {};
+  columns: any = {};
   entityMeta: EntityMeta;
   expandFieldForAuth = false;
   abilities: RxAbility[] = [];
@@ -15,7 +15,7 @@ export class ModelUpdateMeta {
       if (keyStr.trim().toLowerCase() === TOKEN_IDS) {
         this._ids = value;
       } else {
-        this._params[keyStr] = value;
+        this.columns[keyStr] = value;
       }
     }
   }
@@ -26,9 +26,5 @@ export class ModelUpdateMeta {
 
   get entity() {
     return this.entityMeta.name;
-  }
-
-  get params() {
-    return this._params;
   }
 }

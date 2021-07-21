@@ -65,6 +65,7 @@ export class MagicInstanceService implements MagicService {
       this.entityManager,
       this.schemaService,
       this.abilityService,
+      this,
     ).update(json);
   }
 

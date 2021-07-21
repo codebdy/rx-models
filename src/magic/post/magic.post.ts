@@ -174,7 +174,7 @@ export class MagicPost {
       return;
     }
 
-    const relatedAbilites = [];
+    const relatedAbilites = [entityAbility];
     for (const column of instanceMeta.entityMeta.columns) {
       if (instanceMeta.meta[column.name] !== undefined && column.name != 'id') {
         const ability = instanceMeta.abilities.find(
