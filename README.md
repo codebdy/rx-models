@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+不需要代码，就可以构建后端。  
 
 演示地址：https://rxmodels.vercel.app/  
 
