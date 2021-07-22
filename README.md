@@ -26,7 +26,7 @@
 
 不需要代码，就可以构建后端。  
 
-演示地址：https://rxmodels.vercel.app/  
+演示地址：https://rxmodels-client.rxdrag.com/login
 
 ## Installation
 要使用TypeORM CLI创建Models，需要全局安装TypeORM:
