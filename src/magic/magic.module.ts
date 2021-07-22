@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { CommandModule } from 'src/command/command.module';
+import { CommandModule } from 'src/directive/directive.module';
 import { SchemaModule } from 'src/schema/schema.module';
 import { MagicController } from './magic.controller';
 import { MagicUploadService } from './upload/magic.upload.service';

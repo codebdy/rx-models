@@ -1,5 +1,5 @@
 import { AbilityService } from 'src/magic/ability.service';
-import { PostCommandService } from 'src/command/post-command.service';
+import { PostDirectiveService } from 'src/directive/post-directive.service';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
@@ -13,7 +13,7 @@ export class MagicPost {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly postCommandService: PostCommandService,
+    private readonly postCommandService: PostDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
   ) {}

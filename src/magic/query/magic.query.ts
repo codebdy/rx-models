@@ -3,7 +3,7 @@ import { QueryResult } from 'src/magic-meta/query/query-result';
 import { TOKEN_GET_MANY } from '../base/tokens';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { AbilityService } from 'src/magic/ability.service';
-import { QueryCommandService } from 'src/command/query-command.service';
+import { QueryDirectiveService } from 'src/directive/query-directive.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-count-query-builder';
@@ -15,7 +15,7 @@ export class MagicQuery {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly queryCommandService: QueryCommandService,
+    private readonly queryCommandService: QueryDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
   ) {}

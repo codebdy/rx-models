@@ -1,13 +1,13 @@
 import { JsonUnit } from '../base/json-unit';
 import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { DeleteCommandService } from 'src/command/delete-command.service';
+import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
 import { AbilityService } from '../ability.service';
 import { SchemaService } from 'src/schema/schema.service';
 
 export class MagicDeleteParser {
   constructor(
-    private readonly deleteCommandService: DeleteCommandService,
+    private readonly deleteCommandService: DeleteDirectiveService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
     public readonly schemaService: SchemaService,
@@ -27,12 +27,12 @@ export class MagicDeleteParser {
       );
       deleteMeta.abilities = abilities;
 
-      for (const commandMeta of jsonUnit.commands) {
+      for (const directiveMeta of jsonUnit.commands) {
         const CommandClass = this.deleteCommandService.findCommandOrFailed(
-          commandMeta.name,
+          directiveMeta.name,
         );
         deleteMeta.commands.push(
-          new CommandClass(commandMeta, this.magicService),
+          new CommandClass(directiveMeta, this.magicService),
         );
       }
 

@@ -1,4 +1,4 @@
-import { PostCommandService } from 'src/command/post-command.service';
+import { PostDirectiveService } from 'src/directive/post-directive.service';
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
@@ -11,7 +11,7 @@ import { JsonUnit } from '../base/json-unit';
 
 export class MagicPostParser {
   constructor(
-    private readonly commandService: PostCommandService,
+    private readonly commandService: PostDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
@@ -62,12 +62,12 @@ export class MagicPostParser {
         ),
       );
     }
-    jsonUnit.commands.forEach((commandMeta) => {
-      const commandClass = this.commandService.findEntityCommandOrFailed(
-        commandMeta.name,
+    jsonUnit.commands.forEach((directiveMeta) => {
+      const directiveClass = this.commandService.findEntityDirectiveOrFailed(
+        directiveMeta.name,
       );
       instanceCollection.commands.push(
-        new commandClass(commandMeta, this.magicService),
+        new directiveClass(directiveMeta, this.magicService),
       );
     });
     return instanceCollection;
@@ -138,12 +138,12 @@ export class MagicPostParser {
       );
     }
 
-    jsonUnit.commands.forEach((commandMeta) => {
-      const commandClass = this.commandService.findRelationCommandOrFailed(
-        commandMeta.name,
+    jsonUnit.commands.forEach((directiveMeta) => {
+      const directiveClass = this.commandService.findRelationDirectiveOrFailed(
+        directiveMeta.name,
       );
       relationMetaCollection.commands.push(
-        new commandClass(commandMeta, this.magicService),
+        new directiveClass(directiveMeta, this.magicService),
       );
     });
     return relationMetaCollection;

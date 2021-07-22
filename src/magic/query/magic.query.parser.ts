@@ -1,5 +1,5 @@
-import { CommandMeta } from 'src/command/command.meta';
-import { QueryCommandService } from 'src/command/query-command.service';
+import { DirectiveMeta } from 'src/directive/directive.meta';
+import { QueryDirectiveService } from 'src/directive/query-directive.service';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
@@ -21,7 +21,7 @@ import {
 export class MagicQueryParser {
   private rootMeta: QueryRootMeta;
   constructor(
-    private readonly queryCommandService: QueryCommandService,
+    private readonly queryCommandService: QueryDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
@@ -44,22 +44,22 @@ export class MagicQueryParser {
         meta.entityMeta = this.schemaService.getEntityMetaOrFailed(
           (jsonUnit.value as string).trim(),
         );
-        jsonUnit.commands.forEach((commandMeta) => {
-          if (commandMeta.name === TOKEN_GET_ONE) {
+        jsonUnit.commands.forEach((directiveMeta) => {
+          if (directiveMeta.name === TOKEN_GET_ONE) {
             meta.fetchString = TOKEN_GET_ONE;
-          } else if (commandMeta.name === TOKEN_GET_MANY) {
+          } else if (directiveMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
           } else {
-            const commandClass = this.queryCommandService.findEntityCommandOrFailed(
-              commandMeta.name,
+            const directiveClass = this.queryCommandService.findEntityCommandOrFailed(
+              directiveMeta.name,
             );
-            const command = new commandClass(
-              commandMeta,
+            const command = new directiveClass(
+              directiveMeta,
               this.rootMeta,
               this.magicService,
               this.schemaService,
             );
-            meta.pushCommand(command);
+            meta.pushDirective(command);
           }
         });
 
@@ -169,20 +169,20 @@ export class MagicQueryParser {
     meta: QueryEntityMeta,
     field: string,
   ) {
-    let commandMeta: CommandMeta;
+    let directiveMeta: DirectiveMeta;
     let commanName = 'equal';
     if (jsonUnit.commands && jsonUnit.commands.length > 0) {
       commanName = jsonUnit.commands[0].name;
-      commandMeta = jsonUnit.commands[0];
-      commandMeta.value = jsonUnit.value;
+      directiveMeta = jsonUnit.commands[0];
+      directiveMeta.value = jsonUnit.value;
     }
-    const commandClass = this.queryCommandService.findConditionCommandOrFailed(
+    const directiveClass = this.queryCommandService.findConditionCommandOrFailed(
       commanName,
     );
 
-    meta.pushCommand(
-      new commandClass(
-        commandMeta ? commandMeta : new CommandMeta(commanName, jsonUnit.value),
+    meta.pushDirective(
+      new directiveClass(
+        directiveMeta ? directiveMeta : new DirectiveMeta(commanName, jsonUnit.value),
         this.rootMeta,
         meta,
         field,
@@ -197,12 +197,12 @@ export class MagicQueryParser {
     jsonUnit: JsonUnit,
     meta: QueryEntityMeta,
   ) {
-    const cmdMeta = new CommandMeta(name);
+    const cmdMeta = new DirectiveMeta(name);
     cmdMeta.value = jsonUnit.value;
 
     if (meta instanceof QueryRootMeta) {
       const cmdClass = this.queryCommandService.findEntityCommandOrFailed(name);
-      meta.pushCommand(
+      meta.pushDirective(
         new cmdClass(
           cmdMeta,
           this.rootMeta,
@@ -214,7 +214,7 @@ export class MagicQueryParser {
       const cmdClass = this.queryCommandService.findRelationCommandOrFailed(
         name,
       );
-      meta.pushCommand(
+      meta.pushDirective(
         new cmdClass(
           cmdMeta,
           this.rootMeta,
@@ -239,13 +239,13 @@ export class MagicQueryParser {
     relation.entityMeta = this.schemaService.getEntityMetaOrFailed(
       relationEntitySchemaOptions.target.toString(),
     );
-    jsonUnit.commands.forEach((commandMeta) => {
+    jsonUnit.commands.forEach((directiveMeta) => {
       const CommandClass = this.queryCommandService.findRelationCommandOrFailed(
-        commandMeta.name,
+        directiveMeta.name,
       );
-      relation.pushCommand(
+      relation.pushDirective(
         new CommandClass(
-          commandMeta,
+          directiveMeta,
           this.rootMeta,
           this.magicService,
           this.schemaService,

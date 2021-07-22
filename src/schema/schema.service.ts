@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SCHEMAS_DIR } from 'src/util/consts';
-import { importJsonsFromDirectories } from 'src/util/DirectoryExportedCommandsLoader';
+import { importJsonsFromDirectories } from 'src/util/DirectoryExportedDirectivesLoader';
 import {
   EntitySchemaColumnOptions,
   EntitySchemaRelationOptions,

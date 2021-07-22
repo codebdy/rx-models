@@ -22,13 +22,13 @@ function makeOneRelationBuilder(
 ) {
   const whereStringArray: string[] = [];
   let whereParams: any = {};
-  for (const command of relationMeta.commands) {
-    const [whereStr, param] = command.getWhereStatement() || [];
+  for (const directive of relationMeta.directives) {
+    const [whereStr, param] = directive.getWhereStatement() || [];
     if (whereStr) {
       whereStringArray.push(whereStr);
       whereParams = { ...whereParams, ...param };
     }
-    command.addToQueryBuilder(qb);
+    directive.addToQueryBuilder(qb);
   }
 
   const [whereArray, params] = getEntityQueryAbilitySql(

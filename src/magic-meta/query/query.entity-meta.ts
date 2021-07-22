@@ -1,4 +1,4 @@
-import { QueryCommand } from 'src/command/query/query.command';
+import { QueryDirective } from 'src/directive/query/query.directive';
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { JsonUnit } from 'src/magic/base/json-unit';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
@@ -12,7 +12,7 @@ export class QueryEntityMeta {
   relations: QueryRelationMeta[] = [];
   //权限或者where sql需要用到的关联
   addonRelations: QueryRelationMeta[] = [];
-  commands: QueryCommand[] = [];
+  directives: QueryDirective[] = [];
   //附加关联用到的字段，如果查询中不包含这些字段，需要在结果中滤除
   addonRelationInfos: AddonRelationInfo[] = [];
   //展开，对每个属性进行设置
@@ -56,8 +56,8 @@ export class QueryEntityMeta {
     }
   }
 
-  pushCommand(command: QueryCommand) {
-    this.commands.push(command);
+  pushDirective(directive: QueryDirective) {
+    this.directives.push(directive);
   }
 
   findRelation(relationName: string): QueryRelationMeta {

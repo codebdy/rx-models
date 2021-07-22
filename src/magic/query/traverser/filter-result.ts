@@ -16,7 +16,7 @@ export function filterResult(
     filterOneInstance(result.data, rootMeta, me);
   }
   //进行command过滤
-  for (const command of rootMeta.commands) {
+  for (const command of rootMeta.directives) {
     result = command.filterResult(result);
   }
   return result;

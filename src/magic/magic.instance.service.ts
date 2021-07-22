@@ -1,7 +1,7 @@
 import { AbilityService } from 'src/magic/ability.service';
-import { DeleteCommandService } from 'src/command/delete-command.service';
-import { PostCommandService } from 'src/command/post-command.service';
-import { QueryCommandService } from 'src/command/query-command.service';
+import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
+import { PostDirectiveService } from 'src/directive/post-directive.service';
+import { QueryDirectiveService } from 'src/directive/query-directive.service';
 import { QueryResult } from 'src/magic-meta/query/query-result';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
@@ -20,9 +20,9 @@ export class MagicInstanceService implements MagicService {
   constructor(
     private readonly entityManager: EntityManager,
     public readonly abilityService: AbilityService,
-    public readonly queryCommandService: QueryCommandService,
-    public readonly postCommandService: PostCommandService,
-    public readonly deleteCommandService: DeleteCommandService,
+    public readonly queryCommandService: QueryDirectiveService,
+    public readonly postCommandService: PostDirectiveService,
+    public readonly deleteCommandService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
   ) {}
 

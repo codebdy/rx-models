@@ -1,10 +1,10 @@
 import { TOKEN_ENTITY } from './tokens';
 import { parseCommands } from './parse-commands';
-import { CommandMeta } from 'src/command/command.meta';
+import { DirectiveMeta } from 'src/directive/directive.meta';
 
 export class JsonUnit {
   key = '';
-  commands: CommandMeta[] = [];
+  commands: DirectiveMeta[] = [];
   value: any;
   constructor(keyStr: string, value: any) {
     const [key, commands] = parseCommands(keyStr);
@@ -13,9 +13,9 @@ export class JsonUnit {
     this.value = value;
   }
 
-  getCommand(commandName: string) {
+  getCommand(directiveName: string) {
     for (const command of this.commands) {
-      if (command.name === commandName) {
+      if (command.name === directiveName) {
         return command;
       }
     }

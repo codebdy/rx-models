@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilityService } from 'src/magic/ability.service';
-import { DeleteCommandService } from 'src/command/delete-command.service';
-import { PostCommandService } from 'src/command/post-command.service';
-import { QueryCommandService } from 'src/command/query-command.service';
+import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
+import { PostDirectiveService } from 'src/directive/post-directive.service';
+import { QueryDirectiveService } from 'src/directive/query-directive.service';
 import { QueryResult } from 'src/magic-meta/query/query-result';
 import { SchemaService } from 'src/schema/schema.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
@@ -31,9 +31,9 @@ import { MagicUploadService } from './upload/magic.upload.service';
 export class MagicController {
   constructor(
     private readonly typeormSerivce: TypeOrmService,
-    private readonly queryCommandService: QueryCommandService,
-    private readonly postCommandService: PostCommandService,
-    private readonly deleteCommandService: DeleteCommandService,
+    private readonly queryCommandService: QueryDirectiveService,
+    private readonly postCommandService: PostDirectiveService,
+    private readonly deleteCommandService: DeleteDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly uploadService: MagicUploadService,
   ) {}

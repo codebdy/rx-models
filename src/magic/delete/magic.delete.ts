@@ -2,7 +2,7 @@ import { MagicDeleteParser } from './magic.delete.parser';
 import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
 import { AbilityService } from 'src/magic/ability.service';
 import { EntityManager } from 'typeorm';
-import { DeleteCommandService } from 'src/command/delete-command.service';
+import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { AbilityType } from 'src/entity-interface/AbilityType';
@@ -11,7 +11,7 @@ export class MagicDelete {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly deleteCommandService: DeleteCommandService,
+    private readonly deleteCommandService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
   ) {}

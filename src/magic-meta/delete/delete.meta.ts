@@ -1,10 +1,10 @@
-import { DeleteCommand } from 'src/command/delete/delete.command';
+import { DeleteDirective } from 'src/directive/delete/delete.directive';
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { JsonUnit } from 'src/magic/base/json-unit';
 
 export class DeleteMeta {
   private _jsonUnit: JsonUnit;
-  public commands: DeleteCommand[] = [];
+  public commands: DeleteDirective[] = [];
   abilities: RxAbility[] = [];
 
   constructor(jsonUnit: JsonUnit) {
