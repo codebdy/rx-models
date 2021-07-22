@@ -15,9 +15,9 @@ export function filterResult(
   } else {
     filterOneInstance(result.data, rootMeta, me);
   }
-  //进行command过滤
-  for (const command of rootMeta.directives) {
-    result = command.filterResult(result);
+  //进行directive过滤
+  for (const directive of rootMeta.directives) {
+    result = directive.filterResult(result);
   }
   return result;
 }
@@ -44,7 +44,7 @@ function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
       delete instance[addonRelation.name];
     }
   }
-  //进行command过滤
+  //进行directive过滤
 
   //递归处理关联
   for (const relation of meta.relations) {

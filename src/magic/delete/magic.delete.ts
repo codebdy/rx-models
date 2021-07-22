@@ -11,7 +11,7 @@ export class MagicDelete {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly deleteCommandService: DeleteDirectiveService,
+    private readonly deleteDirectiveService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
   ) {}
@@ -23,7 +23,7 @@ export class MagicDelete {
 
     const deletedInstances = {} as any;
     const deleteMetas = await new MagicDeleteParser(
-      this.deleteCommandService,
+      this.deleteDirectiveService,
       this.magicService,
       this.abilityService,
       this.schemaService,

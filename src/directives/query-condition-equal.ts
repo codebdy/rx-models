@@ -3,7 +3,7 @@ import { QueryConditionDirective } from 'src/directive/query/query.condition-dir
 import { createId } from 'src/util/create-id';
 
 export class QueryConditionEqualDirective extends QueryConditionDirective {
-  static description = `Condition equal command.`;
+  static description = `Condition equal directive.`;
 
   static version = '1.0';
 

@@ -4,7 +4,7 @@ import { PlatformTools } from 'typeorm/platform/PlatformTools';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require('glob');
 /**
- * Loads all exported commands from the given directory.
+ * Loads all exported directives from the given directory.
  */
 export function importDirectivesFromDirectories(
   directories: string[],

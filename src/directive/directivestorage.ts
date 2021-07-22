@@ -44,7 +44,7 @@ export class DirectiveStorage implements OnModuleInit {
       ) {
         console.assert(
           !this.queryEntityDirectiveClasses[directiveName],
-          `Query entity command ${directiveName} duplicated!`,
+          `Query entity directive ${directiveName} duplicated!`,
         );
         this.queryEntityDirectiveClasses[directiveName] = directiveClass;
       }
@@ -54,7 +54,7 @@ export class DirectiveStorage implements OnModuleInit {
       ) {
         console.assert(
           !this.queryRelationDirectiveClasses[directiveName],
-          `Query relation command ${directiveName} duplicated!`,
+          `Query relation directive ${directiveName} duplicated!`,
         );
         this.queryRelationDirectiveClasses[directiveName] = directiveClass;
       }
@@ -64,7 +64,7 @@ export class DirectiveStorage implements OnModuleInit {
       ) {
         console.assert(
           !this.queryConditionDirectiveClasses[directiveName],
-          `Query condition command ${directiveName} duplicated!`,
+          `Query condition directive ${directiveName} duplicated!`,
         );
         this.queryConditionDirectiveClasses[directiveName] = directiveClass;
       }
@@ -74,7 +74,7 @@ export class DirectiveStorage implements OnModuleInit {
       ) {
         console.assert(
           !this.postEntityDirectiveClasses[directiveName],
-          `Post entity command ${directiveName} duplicated!`,
+          `Post entity directive ${directiveName} duplicated!`,
         );
         this.postEntityDirectiveClasses[directiveName] = directiveClass;
       }
@@ -84,18 +84,18 @@ export class DirectiveStorage implements OnModuleInit {
       ) {
         console.assert(
           !this.postRelationDirectiveClasses[directiveName],
-          `Post relation command ${directiveName} duplicated!`,
+          `Post relation directive ${directiveName} duplicated!`,
         );
         this.postRelationDirectiveClasses[directiveName] = directiveClass;
       }
       if (directiveClass.directiveType === DirectiveType.DELETE_DIRECTIVE) {
         console.assert(
           !this.deleteDirectiveClasses[directiveName],
-          `Delete command ${directiveName} duplicated!`,
+          `Delete directive ${directiveName} duplicated!`,
         );
         this.deleteDirectiveClasses[directiveName] = directiveClass;
       }
     });
-    console.debug('Commands loaded');
+    console.debug('Directives loaded');
   }
 }

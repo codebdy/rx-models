@@ -8,7 +8,7 @@ import { DirectiveStorage } from './directivestorage';
 export class QueryDirectiveService {
   constructor(private readonly directiveStorage: DirectiveStorage) {}
 
-  findEntityCommandOrFailed(name: string): QueryDirectiveClass {
+  findEntityDirectiveOrFailed(name: string): QueryDirectiveClass {
     const directiveClass = this.directiveStorage.queryEntityDirectiveClasses[
       name
     ];
@@ -18,7 +18,7 @@ export class QueryDirectiveService {
     return directiveClass;
   }
 
-  findRelationCommandOrFailed(name: string): QueryRelationDirectiveClass {
+  findRelationDirectiveOrFailed(name: string): QueryRelationDirectiveClass {
     const directiveClass = this.directiveStorage.queryRelationDirectiveClasses[
       name
     ];
@@ -28,7 +28,7 @@ export class QueryDirectiveService {
     return directiveClass;
   }
 
-  findConditionCommandOrFailed(name: string): QueryConditionDirectiveClass {
+  findConditionDirectiveOrFailed(name: string): QueryConditionDirectiveClass {
     const directiveClass = this.directiveStorage.queryConditionDirectiveClasses[
       name
     ];

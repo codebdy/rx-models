@@ -3,7 +3,7 @@ import { QueryConditionDirective } from 'src/directive/query/query.condition-dir
 import { createId } from 'src/util/create-id';
 
 export class QueryConditionBetweenDirective extends QueryConditionDirective {
-  static description = `Condition between command.`;
+  static description = `Condition between directive.`;
 
   static version = '1.0';
 
@@ -16,7 +16,7 @@ export class QueryConditionBetweenDirective extends QueryConditionDirective {
     const value = this.value;
     if (!value || !value.length || value.length < 2) {
       throw new Error(
-        `Field "${field}" value "${value}" can not be used to between command`,
+        `Field "${field}" value "${value}" can not be used to between directive`,
       );
     }
     const paramName1 = 'param' + createId();

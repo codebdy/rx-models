@@ -31,9 +31,9 @@ import { MagicUploadService } from './upload/magic.upload.service';
 export class MagicController {
   constructor(
     private readonly typeormSerivce: TypeOrmService,
-    private readonly queryCommandService: QueryDirectiveService,
-    private readonly postCommandService: PostDirectiveService,
-    private readonly deleteCommandService: DeleteDirectiveService,
+    private readonly queryDirectiveService: QueryDirectiveService,
+    private readonly postDirectiveService: PostDirectiveService,
+    private readonly deleteDirectiveService: DeleteDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly uploadService: MagicUploadService,
   ) {}
@@ -69,7 +69,7 @@ export class MagicController {
    * {
    *    "entity":"Order",
    *    "@count":true,
-   *    "@commands":{
+   *    "@directives":{
    *      "sum":"price",
    *      "tree":true
    *    }
@@ -309,9 +309,9 @@ export class MagicController {
     return new MagicInstanceService(
       entityManger,
       new AbilityService(user, this.typeormSerivce, this.schemaService),
-      this.queryCommandService,
-      this.postCommandService,
-      this.deleteCommandService,
+      this.queryDirectiveService,
+      this.postDirectiveService,
+      this.deleteDirectiveService,
       this.schemaService,
     );
   }

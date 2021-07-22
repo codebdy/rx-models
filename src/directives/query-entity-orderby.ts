@@ -24,7 +24,7 @@ export class QueryEntityOrderByDirective extends QueryDirective {
   getpMap() {
     const orderMap = {} as any;
     if (!this.directiveMeta.value) {
-      throw new Error('Not assign params to "select" command');
+      throw new Error('Not assign params to "select" directive');
     }
     const orderBy = this.directiveMeta.value;
     for (const key in orderBy) {

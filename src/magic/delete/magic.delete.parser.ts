@@ -7,7 +7,7 @@ import { SchemaService } from 'src/schema/schema.service';
 
 export class MagicDeleteParser {
   constructor(
-    private readonly deleteCommandService: DeleteDirectiveService,
+    private readonly deleteDirectiveService: DeleteDirectiveService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
     public readonly schemaService: SchemaService,
@@ -27,12 +27,12 @@ export class MagicDeleteParser {
       );
       deleteMeta.abilities = abilities;
 
-      for (const directiveMeta of jsonUnit.commands) {
-        const CommandClass = this.deleteCommandService.findCommandOrFailed(
+      for (const directiveMeta of jsonUnit.directives) {
+        const DirectiveClass = this.deleteDirectiveService.findDirectiveOrFailed(
           directiveMeta.name,
         );
-        deleteMeta.commands.push(
-          new CommandClass(directiveMeta, this.magicService),
+        deleteMeta.directives.push(
+          new DirectiveClass(directiveMeta, this.magicService),
         );
       }
 

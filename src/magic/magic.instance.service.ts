@@ -20,9 +20,9 @@ export class MagicInstanceService implements MagicService {
   constructor(
     private readonly entityManager: EntityManager,
     public readonly abilityService: AbilityService,
-    public readonly queryCommandService: QueryDirectiveService,
-    public readonly postCommandService: PostDirectiveService,
-    public readonly deleteCommandService: DeleteDirectiveService,
+    public readonly queryDirectiveService: QueryDirectiveService,
+    public readonly postDirectiveService: PostDirectiveService,
+    public readonly deleteDirectiveService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
   ) {}
 
@@ -34,7 +34,7 @@ export class MagicInstanceService implements MagicService {
     return await new MagicQuery(
       this.entityManager,
       this.abilityService,
-      this.queryCommandService,
+      this.queryDirectiveService,
       this.schemaService,
       this,
     ).query(json);
@@ -44,7 +44,7 @@ export class MagicInstanceService implements MagicService {
     return await new MagicPost(
       this.entityManager,
       this.abilityService,
-      this.postCommandService,
+      this.postDirectiveService,
       this.schemaService,
       this,
     ).post(json);
@@ -54,7 +54,7 @@ export class MagicInstanceService implements MagicService {
     return await new MagicDelete(
       this.entityManager,
       this.abilityService,
-      this.deleteCommandService,
+      this.deleteDirectiveService,
       this.schemaService,
       this,
     ).delete(json);

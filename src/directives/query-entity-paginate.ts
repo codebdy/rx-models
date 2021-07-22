@@ -5,7 +5,7 @@ import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryEntityPaginateDirective extends QueryDirective {
   static description = `
-    Magic query command, Paginate the results.
+    Magic query directive, Paginate the results.
   `;
 
   static version = '1.0';

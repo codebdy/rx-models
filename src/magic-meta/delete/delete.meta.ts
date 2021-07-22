@@ -4,7 +4,7 @@ import { JsonUnit } from 'src/magic/base/json-unit';
 
 export class DeleteMeta {
   private _jsonUnit: JsonUnit;
-  public commands: DeleteDirective[] = [];
+  public directives: DeleteDirective[] = [];
   abilities: RxAbility[] = [];
 
   constructor(jsonUnit: JsonUnit) {

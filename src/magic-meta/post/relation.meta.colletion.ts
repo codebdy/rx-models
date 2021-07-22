@@ -4,7 +4,7 @@ import { InstanceMeta } from './instance.meta';
 export class RelationMetaCollection {
   entities: InstanceMeta[] = [];
   ids: number[] = [];
-  commands: PostDirective[] = [];
+  directives: PostDirective[] = [];
   entity: string;
   relationName: string;
   isSingle = false;

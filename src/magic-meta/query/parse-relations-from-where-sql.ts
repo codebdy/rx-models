@@ -6,7 +6,9 @@ const OPERATOR_UNARY_MINUS = Symbol('-');
 
 export function parseRelationsFromWhereSql(sql: string): AddonRelationInfo[] {
   if (!sql) {
-    throw new Error('Not assign sql statement to where command or expression');
+    throw new Error(
+      'Not assign sql statement to where directive or expression',
+    );
   }
 
   const parser = new SqlWhereParser();

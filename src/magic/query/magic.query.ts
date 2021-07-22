@@ -15,7 +15,7 @@ export class MagicQuery {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly queryCommandService: QueryDirectiveService,
+    private readonly queryDirectiveService: QueryDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
   ) {}
@@ -23,7 +23,7 @@ export class MagicQuery {
   async query(json: any) {
     let totalCount = 0;
     const parser = new MagicQueryParser(
-      this.queryCommandService,
+      this.queryDirectiveService,
       this.schemaService,
       this.magicService,
       this.abilityService,
@@ -44,7 +44,9 @@ export class MagicQuery {
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();
       if (totalCount > 1000) {
-        throw new Error('The result is too large, please use paginate command');
+        throw new Error(
+          'The result is too large, please use paginate directive',
+        );
       }
     }
 

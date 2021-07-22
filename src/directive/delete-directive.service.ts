@@ -6,10 +6,10 @@ import { DeleteDirectiveClass } from './delete/delete.directive.class';
 export class DeleteDirectiveService {
   constructor(private readonly directiveStorage: DirectiveStorage) {}
 
-  findCommandOrFailed(name: string): DeleteDirectiveClass {
+  findDirectiveOrFailed(name: string): DeleteDirectiveClass {
     const directiveClass = this.directiveStorage.deleteDirectiveClasses[name];
     if (!directiveClass) {
-      throw new Error(`No delete command "${name}"`);
+      throw new Error(`No delete directive "${name}"`);
     }
     return directiveClass;
   }

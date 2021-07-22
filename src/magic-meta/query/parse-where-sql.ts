@@ -12,7 +12,9 @@ export function parseWhereSql(
   me: RxUser,
 ): [string, any] {
   if (!sql) {
-    throw new Error('Not assign sql statement to where command or expression');
+    throw new Error(
+      'Not assign sql statement to where directive or expression',
+    );
   }
 
   const parser = new SqlWhereParser();

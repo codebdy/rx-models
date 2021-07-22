@@ -18,4 +18,4 @@ import { QueryDirectiveService } from './query-directive.service';
     DeleteDirectiveService,
   ],
 })
-export class CommandModule {}
+export class DirectiveModule {}

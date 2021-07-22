@@ -13,7 +13,7 @@ export class MagicPost {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly abilityService: AbilityService,
-    private readonly postCommandService: PostDirectiveService,
+    private readonly postDirectiveService: PostDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
   ) {}
@@ -21,7 +21,7 @@ export class MagicPost {
   async post(json: any) {
     const savedEntites = {};
     const instances = await new MagicPostParser(
-      this.postCommandService,
+      this.postDirectiveService,
       this.schemaService,
       this.magicService,
       this.abilityService,
@@ -52,8 +52,8 @@ export class MagicPost {
       );
     }
 
-    for (const command of instanceGroup.commands) {
-      await command.afterSaveEntityInstanceCollection(
+    for (const directive of instanceGroup.directives) {
+      await directive.afterSaveEntityInstanceCollection(
         savedInstances,
         instanceGroup,
       );
@@ -66,8 +66,8 @@ export class MagicPost {
     relationCollection: RelationMetaCollection,
     entityManger: EntityManager,
   ) {
-    for (const command of relationCollection.commands) {
-      await command.beforeUpdateRelationCollection(
+    for (const directive of relationCollection.directives) {
+      await directive.beforeUpdateRelationCollection(
         instanceMeta,
         relationCollection,
       );
@@ -88,8 +88,8 @@ export class MagicPost {
       savedInstances = savedInstances.concat(relationEntities);
     }
 
-    for (const command of relationCollection.commands) {
-      await command.afterSaveOneRelationInstanceCollection(
+    for (const directive of relationCollection.directives) {
+      await directive.afterSaveOneRelationInstanceCollection(
         instanceMeta,
         savedInstances,
         relationCollection,
@@ -113,8 +113,8 @@ export class MagicPost {
 
     let filterdInstanceMeta = instanceMeta;
     //保存前命令
-    for (const command of instanceGroup.commands) {
-      filterdInstanceMeta = await command.beforeSaveInstance(
+    for (const directive of instanceGroup.directives) {
+      filterdInstanceMeta = await directive.beforeSaveInstance(
         filterdInstanceMeta,
       );
     }
@@ -151,8 +151,8 @@ export class MagicPost {
     const inststance = await repository.save(entity);
 
     //保存后命令
-    for (const command of instanceGroup.commands) {
-      await command.afterSaveInstance(inststance, filterdInstanceMeta.entity);
+    for (const directive of instanceGroup.directives) {
+      await directive.afterSaveInstance(inststance, filterdInstanceMeta.entity);
     }
 
     return inststance;

@@ -11,7 +11,7 @@ import { JsonUnit } from '../base/json-unit';
 
 export class MagicPostParser {
   constructor(
-    private readonly commandService: PostDirectiveService,
+    private readonly directiveService: PostDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
@@ -62,11 +62,11 @@ export class MagicPostParser {
         ),
       );
     }
-    jsonUnit.commands.forEach((directiveMeta) => {
-      const directiveClass = this.commandService.findEntityDirectiveOrFailed(
+    jsonUnit.directives.forEach((directiveMeta) => {
+      const directiveClass = this.directiveService.findEntityDirectiveOrFailed(
         directiveMeta.name,
       );
-      instanceCollection.commands.push(
+      instanceCollection.directives.push(
         new directiveClass(directiveMeta, this.magicService),
       );
     });
@@ -138,11 +138,11 @@ export class MagicPostParser {
       );
     }
 
-    jsonUnit.commands.forEach((directiveMeta) => {
-      const directiveClass = this.commandService.findRelationDirectiveOrFailed(
+    jsonUnit.directives.forEach((directiveMeta) => {
+      const directiveClass = this.directiveService.findRelationDirectiveOrFailed(
         directiveMeta.name,
       );
-      relationMetaCollection.commands.push(
+      relationMetaCollection.directives.push(
         new directiveClass(directiveMeta, this.magicService),
       );
     });

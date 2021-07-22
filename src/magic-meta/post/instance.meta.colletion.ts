@@ -3,7 +3,7 @@ import { InstanceMeta } from './instance.meta';
 
 export class InstanceMetaCollection {
   instances: InstanceMeta[] = [];
-  commands: PostDirective[] = [];
+  directives: PostDirective[] = [];
   entity: string;
   isSingle = false;
 }

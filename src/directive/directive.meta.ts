@@ -4,7 +4,7 @@ export class DirectiveMeta {
 
   /**
    *
-   * @param directiveStr 命令字符串，可解析这种形式“command(x,y...)”
+   * @param directiveStr 命令字符串，可解析这种形式“directive(x,y...)”
    * @param value 如果提供了该值，则忽略解析出来的参数，用该值代替
    */
   constructor(directiveStr: string, value?: any) {

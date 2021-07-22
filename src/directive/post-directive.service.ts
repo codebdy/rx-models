@@ -11,7 +11,7 @@ export class PostDirectiveService {
       name
     ];
     if (!directiveClass) {
-      throw new Error(`No entity command "${name}"`);
+      throw new Error(`No entity directive "${name}"`);
     }
     return directiveClass;
   }
@@ -21,7 +21,7 @@ export class PostDirectiveService {
       name
     ];
     if (!directiveClass) {
-      throw new Error(`No relation command "${name}"`);
+      throw new Error(`No relation directive "${name}"`);
     }
     return directiveClass;
   }
