@@ -79,6 +79,20 @@ export class InstallService {
     if (!this.typeormSerivce.connection) {
       throw new Error('Install failed: null connection');
     }
-    await this.typeormSerivce.getRepository('RxUser').save(user);
+    const repository = this.typeormSerivce.getRepository('RxUser');
+    let userWillBeSave = (await repository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where({ loginName: user.name })
+      .getOne()) as RxUser;
+    if (userWillBeSave) {
+      for (const key in user) {
+        userWillBeSave[key] = user[key];
+      }
+    } else {
+      userWillBeSave = user;
+    }
+
+    await repository.save(userWillBeSave);
   }
 }
