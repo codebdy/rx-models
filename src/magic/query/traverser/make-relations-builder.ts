@@ -37,7 +37,9 @@ function makeOneRelationBuilder(
     me,
   );
 
-  whereStringArray.push(whereArray.join(' OR '));
+  if (whereArray.length > 0) {
+    whereStringArray.push(whereArray.join(' OR '));
+  }
 
   qb.leftJoinAndSelect(
     `${relationMeta.parentEntityMeta.alias}.${relationMeta.name}`,

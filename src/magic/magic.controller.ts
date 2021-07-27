@@ -247,7 +247,7 @@ export class MagicController {
   }
 
   /**
-   * 通用提交接口，语法示例：
+   * 通用上传，语法示例：
    * {
    *   "entity":"RxMedia",
    *   "file":...
