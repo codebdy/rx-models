@@ -10,72 +10,40 @@
 演示地址：https://rxmodels-client.rxdrag.com/login
 
 ## Installation
-要使用TypeORM CLI创建Models，需要全局安装TypeORM:
-```bash
-$ npm install -g ts-node
-$ npm install typeorm -g  
-```
-如果sharp安装不成功，在需要设置代理：
-npm config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"   
-npm config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"   
-npm install sharp  
+```console
+#不用下面第一条命令，直接在Github网站上Download一个zip格式的代码包，然后解压也很方便
 
-安装本项目
-```bash
-$ npm install
-```
-配置数据库
-```
-cp ormconfig-example.json ormconfig.json
-```
-更新数据库配置 `ormconfig.json`
-```
-...
-  "username": "root",
-  "password": "",
-  "database": "rxdrag",
-...
-```
+git clone https://github.com/rxdrag/rx-models.git
 
-生成数据库 (**需要执行两次**)
-```bash
-$ npm run typeorm migration:run  
+cd rx-models
+
+npm install
+
+npm run start:dev
 ```
-## Running the app
+在浏览器输入：http://localhost:3001/ ，看到熟悉的“Hello World!”，则说明已经成功运行了。
 
-```bash
-# development
-$ npm run start
+服务端使用了Sharp图形处理库来管理图片，这个库不设置代理，可能不容易安装成功，如果在`npm install`时没有成功，那么按照下面的命令，设置一下代理
+```console
+npm config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
 
-# watch mode
-$ npm run start:dev
+npm config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+```
+设置完成以后再执行命令
+```console
+npm install
 
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Test
+## 文档
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+[rxModels文档](https://rxdrag.com/docs/rx-models/install)
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - 悠闲的水
+- Website - [https://rxdrag.com](https://rxdrag.com/)
 
 ## License
 
