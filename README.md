@@ -99,7 +99,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 ### 简单示例
 分页查询 RxUser 实体，每页2条数据，附带关联 roles 信息。
 
-```json
+```
 {
   "entity": "RxUser",
   "roles": {},
@@ -109,7 +109,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 
 其中@paginate是一条指令用于分页，目前的版本支持把@paginate指令放在 entity 后面。
 
-```json
+```
 {
   "entity @paginate(2, 0)": "RxUser",
   "roles": {}
@@ -118,7 +118,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 这两个请求的查询结果是一样的，目前还不确定哪种方式更好，还是两种方式都需要保留。
 
 ### 给查询添加条件
-```json
+```
 {
   "entity": "RxUser",
   "roles": {},
@@ -129,7 +129,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 添加 `name` 条件跟指令 `@like` 可以查询名字中包含文字“水”的RxUser实例。
 
 如果想让 RxRole 的 name 字段包含“风”，可以这么写：
-```json
+```
 {
   "entity": "RxUser",
   "@paginate": [2,0],
@@ -142,7 +142,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 这个查询会返回所有名字包含“水”的 RxUser，并附带名字中包含“风”的RxRole。
 
 如果要剔除 RxRole 名字中不包含“风”的 RxUser，这个查询是满足不了要求的，需要用到更复杂的 `where` 指令：
-```json
+```
 {
   "entity": "RxUser",
   "@paginate": [2,0],
@@ -157,7 +157,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 `@where` 指令支持类似与 SQL 的 where语句的语法。
 
 关系里面，有个跟 `@where` 指令类似的 `@on`指令，使用这个指令，可以把上面的例子（就是第二个例子）改为：
-```json
+```
 {
   "entity": "RxUser",
   "@paginate": [2,0],
@@ -205,7 +205,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 
 ### 请求格式
 
-```json
+```
 {
   "EntityName @directive(arg...)": [
     {
@@ -253,7 +253,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 批量更新某些字段。通过 web post method发送请求。
 
 ### 请求格式
-```json
+```
 {
    "EntityName1":{
      "name":"张三",
@@ -274,7 +274,7 @@ update 目前不需要指令。
 
 ### 请求格式
 
-```json
+```
 {
    "EntityName1 @cascade(pages, auths)":[2,3,5],
    "EntityName2":7,
@@ -294,7 +294,7 @@ update 目前不需要指令。
 指令还在开发中...
 
 ### 请求格式
-```json
+```
 {
   "entity":"RxMedia",
   "file":...
