@@ -71,7 +71,7 @@ rxModels 提供了五个通用JSON接口，用这个五个接口，可以完成�
 ## 接口测试
 直接在客户端界面，输入JSON格式的请求，就可以查询或者修改数据。
 
-![API使用](/img/tutorial/api.jpg)
+![API使用]((https://rxdrag.com/img/tutorial/api.jpg)
 
 ## /get/...
 
