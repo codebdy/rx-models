@@ -7,10 +7,6 @@
     <p align="center">
 
 
-## Description
-
-不需要代码，就可以构建后端。  
-
 演示地址：https://rxmodels-client.rxdrag.com/login
 
 ## Installation
