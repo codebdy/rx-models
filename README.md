@@ -47,4 +47,4 @@ npm run start:dev
 
 ## License
 
-  rxModels is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+  rxModels is MIT licensed
