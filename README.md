@@ -83,7 +83,7 @@ JSON格式的查询参数，编码成url格式，使用 web 请求的 get method
 
 ### 请求格式
 
-```json
+```
 {
   "entity @directive": "EntityName",
   "@directive": true,
