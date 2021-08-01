@@ -203,7 +203,9 @@ export class MagicQueryParser {
     cmdMeta.value = jsonUnit.value;
 
     if (meta instanceof QueryRootMeta) {
-      const cmdClass = this.queryDirectiveService.findEntityDirectiveOrFailed(name);
+      const cmdClass = this.queryDirectiveService.findEntityDirectiveOrFailed(
+        name,
+      );
       meta.pushDirective(
         new cmdClass(
           cmdMeta,
