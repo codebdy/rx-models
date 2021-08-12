@@ -7,6 +7,7 @@ import { MagicModule } from './magic/magic.module';
 import { TypeOrmModule } from './typeorm/typeorm.module';
 import { InstallModule } from './install/install.module';
 import { PackageManageModule } from './package-manage/package-manage.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PackageManageModule } from './package-manage/package-manage.module';
     TypeOrmModule,
     AuthModule,
     MagicModule,
+    MailerModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],
