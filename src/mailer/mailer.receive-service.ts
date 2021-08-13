@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MailConfig } from 'src/entity-interface/MailConfig';
+import { MailerEventType } from './mailer.event';
 import { MailerGateway } from './mailer.gateway';
 const POP3Client = require('poplib');
 
@@ -14,7 +15,7 @@ export class MailerReceiveService {
       host: 'pop-mail.outlook.com',
       account: '',
       password: '',
-      address: '',
+      address: 'test@test.com',
     });
   }
 
@@ -53,7 +54,11 @@ export class MailerReceiveService {
         client.list();
       } else {
         this.logger.error('LOGIN/PASS failed');
-        console.log('LOGIN/PASS failed');
+        this.mailerGateWay.broadcastMessage({
+          type: MailerEventType.error,
+          message: 'LOGIN/PASS failed',
+          mailConfig: config,
+        });
         client.quit();
       }
     });
@@ -96,6 +101,5 @@ export class MailerReceiveService {
       if (status === true) console.log('QUIT success');
       else console.log('QUIT failed');
     });
-
   }
 }
