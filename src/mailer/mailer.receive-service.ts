@@ -9,9 +9,17 @@ export class MailerReceiveService {
   constructor(private mailerGateWay: MailerGateway) {}
 
   receiveMails(configs: MailConfig[]) {
-    const port = 995;
-    const host = 'pop-mail.outlook.com';
-    const client = new POP3Client(port, host, {
+    this.doReceive({
+      port: '995',
+      host: 'pop-mail.outlook.com',
+      account: '',
+      password: '',
+      address: '',
+    });
+  }
+
+  doReceive(config: MailConfig) {
+    const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
       enabletls: true,
       debug: true,
@@ -88,5 +96,6 @@ export class MailerReceiveService {
       if (status === true) console.log('QUIT success');
       else console.log('QUIT failed');
     });
+
   }
 }
