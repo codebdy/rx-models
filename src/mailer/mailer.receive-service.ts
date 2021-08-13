@@ -34,7 +34,11 @@ export class MailerReceiveService {
     });
 
     client.on('connect', () => {
-      console.log('CONNECT success');
+      this.mailerGateWay.broadcastMessage({
+        type: MailerEventType.connect,
+        message: 'CONNECT success',
+        mailAddress: config.address,
+      });
       client.login('username', 'password');
     });
 
@@ -57,7 +61,7 @@ export class MailerReceiveService {
         this.mailerGateWay.broadcastMessage({
           type: MailerEventType.error,
           message: 'LOGIN/PASS failed',
-          mailConfig: config,
+          mailAddress: config.address,
         });
         client.quit();
       }
