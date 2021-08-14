@@ -48,6 +48,6 @@ export class MailerController {
   @UseGuards(AuthGuard())
   @Get('crypto-key')
   cryptoKey() {
-    return CRYPTO_KEY;
+    return { cryptoKey: CRYPTO_KEY };
   }
 }
