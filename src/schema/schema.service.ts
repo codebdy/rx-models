@@ -87,7 +87,7 @@ export class SchemaService {
         return entityMeta;
       }
     }
-    throw new Error(`Can not find entity meta ${name}`);
+    throw new Error(`Can not find entity meta ${entityUuid}`);
   }
 
   public getRelationSchemaNameOrFailed(
@@ -129,7 +129,9 @@ export class SchemaService {
     packages.forEach((aPackage) => {
       entityMetas.push(
         ...(aPackage.entities.filter(
-          (entity) => entity.entityType !== EntityType.enum,
+          (entity) =>
+            entity.entityType !== EntityType.ENUM &&
+            entity.entityType !== EntityType.INTERFACE,
         ) || []),
       );
       relationMetas.push(...(aPackage.relations || []));

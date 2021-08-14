@@ -1,7 +1,9 @@
 import { ColumnMeta } from './column-meta';
 
 export enum EntityType {
-  enum = 'Enum',
+  NORMAL = 'Normal',
+  ENUM = 'Enum',
+  INTERFACE = 'Interface',
 }
 
 export interface EntityMeta {
