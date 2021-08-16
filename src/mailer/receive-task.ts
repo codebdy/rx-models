@@ -40,4 +40,13 @@ export class ReceiveTask {
   emitStatusToClient(client: MailClient) {
     client.socket.emit(EVENT_MAIL_RECEIVE_PROGRESS, this.lastEvent);
   }
+
+  abort() {
+    this.lastEvent = {
+      type: MailerEventType.aborted,
+    };
+    this.emitStatusEvent();
+    this.lastEvent = undefined;
+    this.tasksPoolRemover.removeTask(this.accountId);
+  }
 }

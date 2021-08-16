@@ -34,11 +34,11 @@ export class MailerReceiveService {
     });
 
     client.on('connect', () => {
-      this.mailerGateWay.broadcastMessage({
-        type: MailerEventType.connect,
-        message: 'CONNECT success',
+      //this.mailerGateWay.broadcastMessage({
+      //  type: MailerEventType.connect,
+      //  message: 'CONNECT success',
         //mailAddress: config.address,
-      });
+      //});
       client.login('username', 'password');
     });
 
@@ -58,11 +58,11 @@ export class MailerReceiveService {
         client.list();
       } else {
         this.logger.error('LOGIN/PASS failed');
-        this.mailerGateWay.broadcastMessage({
-          type: MailerEventType.error,
-          message: 'LOGIN/PASS failed',
+        //this.mailerGateWay.broadcastMessage({
+        //  type: MailerEventType.error,
+        //  message: 'LOGIN/PASS failed',
           //mailAddress: config.address,
-        });
+        //});
         client.quit();
       }
     });

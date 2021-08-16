@@ -7,11 +7,11 @@ import { Socket, Server } from 'socket.io';
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import {
   CHANNEL_MAILER,
+  EVENT_CANCEL_RECEIVE,
   EVENT_RECEIVEMAILS,
   EVENT_REGISTER_MAIL_CLIENT,
 } from './consts';
 import { MailerClientsPool } from './mailer.clients-pool';
-import { MailerEvent, MAILER_EVENT_NAME } from './mailer.event';
 import { MailerReceiveTasksPool } from './mailer.receive-tasks-pool';
 
 @WebSocketGateway({ namespace: CHANNEL_MAILER })
@@ -50,7 +50,9 @@ export class MailerGateway {
     this.tasksPool.createTask(message.accountId, message.configs);
   }
 
-  broadcastMessage(mailerEvent: MailerEvent) {
-    this.wss.emit(MAILER_EVENT_NAME, mailerEvent);
+  @SubscribeMessage(EVENT_CANCEL_RECEIVE)
+  cancelReceive(client: Socket, message: { accountId: number }) {
+    console.debug('Abort receive', message.accountId);
+    this.tasksPool.getTask(message.accountId)?.abort();
   }
 }
