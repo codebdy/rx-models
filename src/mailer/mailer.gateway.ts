@@ -26,14 +26,16 @@ export class MailerGateway {
   @SubscribeMessage(EVENT_REGISTER_MAIL_CLIENT)
   registerClient(client: Socket, message: { accountId: number }) {
     console.debug('Register client:', client.id, message.accountId);
-    this.clientsPool.addClient(client.id, {
+    const mailClient = {
       accountId: message.accountId,
       socket: client,
-    });
+    };
+    this.clientsPool.addClient(client.id, mailClient);
     client.on('disconnect', () => {
       console.debug('Client disconnect:', client.id, message.accountId);
       this.clientsPool.removeClient(client.id);
     });
+    this.tasksPool.getTask(message.accountId)?.emitStatusToClient(mailClient);
   }
 
   @SubscribeMessage(EVENT_RECEIVEMAILS)
@@ -41,6 +43,7 @@ export class MailerGateway {
     client: Socket,
     message: { accountId: number; configs: MailConfig[] },
   ) {
+    console.debug('receive emails', client.id);
     if (!this.clientsPool.has(client.id)) {
       this.registerClient(client, { accountId: message.accountId });
     }
