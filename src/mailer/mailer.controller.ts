@@ -21,7 +21,7 @@ export class MailerController {
   async receiveMails(@Body() configs: MailConfig[]) {
     try {
       await sleep(1000);
-      this.mailService.receiveMails(configs);
+      this.mailService.receiveMails();
       return { success: true };
     } catch (error: any) {
       throw new HttpException(
@@ -38,7 +38,7 @@ export class MailerController {
   @Post('cancel')
   async cancelReceiving(@Body() configs: MailConfig[]) {
     await sleep(1000);
-    this.mailService.receiveMails(configs);
+    this.mailService.receiveMails();
     return { success: true };
   }
 

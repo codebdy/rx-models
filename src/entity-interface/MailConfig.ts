@@ -1,10 +1,14 @@
+import { RxUser } from './RxUser';
+import { MailReceiveConfig } from './MailReceiveConfig';
+
 export const EntityMailConfig = 'MailConfig';
 
 export interface MailConfig {
   id?: number;
   address: string;
-  account: string;
-  password: string;
-  host: string;
-  port: string;
+  password?: string;
+  pop3?: MailReceiveConfig;
+  imap4?: any;
+  smtp?: any;
+  belongsTo?: RxUser;
 }
