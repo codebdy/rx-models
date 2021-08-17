@@ -37,7 +37,7 @@ export class Pop3Job implements Job {
       type: MailerEventType.connect,
       message: 'connecting to mail server ...',
     });
-    console.log('嘿嘿', this);
+
     const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
       enabletls: true,
