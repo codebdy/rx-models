@@ -6,11 +6,13 @@ import { Pop3Job } from './pop3-job';
 
 export class MailAddressJob implements Job, JobOwner {
   private jobs: Job[] = [];
-  jobOwner: JobOwner;
   private currentJob: Job;
-  constructor(private readonly config: MailConfig) {
+  constructor(
+    private readonly config: MailConfig,
+    public readonly jobOwner: JobOwner,
+  ) {
     if (!config.pop3?.stop) {
-      this.jobs.push(new Pop3Job(config.pop3));
+      this.jobs.push(new Pop3Job(config.pop3, this));
     }
   }
 

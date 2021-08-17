@@ -19,7 +19,7 @@ export class ReceiveTask implements JobOwner {
 
   nextJob() {
     if (this.configs.length > 0) {
-      this.currentJob = new MailAddressJob(this.configs.pop());
+      this.currentJob = new MailAddressJob(this.configs.pop(), this);
       return this.currentJob;
     } else {
       //结束任务
@@ -50,6 +50,7 @@ export class ReceiveTask implements JobOwner {
   emit(event: MailerEvent) {
     this.lastEvent = event;
     this.emitStatusEvent();
+    console.log('哈哈', event);
   }
 
   emitStatusEvent() {
@@ -66,10 +67,17 @@ export class ReceiveTask implements JobOwner {
   }
 
   abort() {
-    this.lastEvent = {
-      type: MailerEventType.cancelling,
-      message: 'Cancelling...',
-    };
+    if (this.lastEvent?.type === MailerEventType.error) {
+      this.lastEvent = {
+        type: MailerEventType.aborted,
+      };
+    } else {
+      this.lastEvent = {
+        type: MailerEventType.cancelling,
+        message: 'Cancelling...',
+      };
+    }
+
     this.emitStatusEvent();
     this.currentJob?.abort();
     this.configs = [];
