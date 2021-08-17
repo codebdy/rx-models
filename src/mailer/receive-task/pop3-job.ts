@@ -14,6 +14,7 @@ export class Pop3Job implements Job {
   private client: any;
   private isError = false;
   constructor(
+    private readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
   ) {}
@@ -28,18 +29,17 @@ export class Pop3Job implements Job {
       this.jobOwner.finishJob();
     }
   }
+  emit(event: MailerEvent): void {
+    event.name = `${this.mailAddress}(POP3)`;
+    this.jobOwner.emit(event);
+  }
 
   error(message: string) {
-    this.jobOwner.emit({
+    this.emit({
       type: MailerEventType.error,
       message,
     });
     this.isError = true;
-  }
-
-  emit(event: MailerEvent): void {
-    event.name = this.pop3Config.name;
-    this.jobOwner.emit(event);
   }
 
   start(): void {
