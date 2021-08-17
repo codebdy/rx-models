@@ -7,6 +7,7 @@ export enum MailerEventType {
   locked = 'locked',
   login = 'login',
   list = 'list',
+  uidl = 'uidl',
   retr = 'retr',
   dele = 'dele',
   quit = 'quit',
@@ -22,4 +23,5 @@ export interface MailerEvent {
   progress?: number;
   buffer?: number;
   mailAddress?: string;
+  name?: string;
 }

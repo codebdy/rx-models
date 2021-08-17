@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEventType } from '../mailer.event';
+import { MailerEvent, MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -12,6 +12,7 @@ export class Pop3Job implements Job {
   private readonly logger = new Logger('Mailer');
   private isAborted = false;
   private client: any;
+  private isError = false;
   constructor(
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
@@ -33,11 +34,17 @@ export class Pop3Job implements Job {
       type: MailerEventType.error,
       message,
     });
+    this.isError = true;
+  }
+
+  emit(event: MailerEvent): void {
+    event.name = this.pop3Config.name;
+    this.jobOwner.emit(event);
   }
 
   start(): void {
     const config = this.pop3Config;
-    this.jobOwner.emit({
+    this.emit({
       type: MailerEventType.connect,
       message: 'connecting to mail server ...',
     });
@@ -56,7 +63,7 @@ export class Pop3Job implements Job {
 
     client.on('connect', (data) => {
       console.log('connect:', data);
-      this.jobOwner.emit({
+      this.emit({
         type: MailerEventType.login,
         message: 'Logging ...',
       });
@@ -68,14 +75,14 @@ export class Pop3Job implements Job {
     });
 
     client.on('locked', (cmd) => {
-      console.log(
+      console.debug(
         'Current command has not finished yet. You tried calling ' + cmd,
       );
     });
 
     client.on('login', (status /*, rawdata*/) => {
       if (status) {
-        this.jobOwner.emit({
+        this.emit({
           type: MailerEventType.list,
           message: 'Listing ...',
         });
@@ -87,25 +94,44 @@ export class Pop3Job implements Job {
     });
 
     // Data is a 1-based index of messages, if there are any messages
-    client.on('list', (status, msgcount /*, msgnumber, data, rawdata*/) => {
+    client.on('list', (status, msgcount, msgnumber, data, rawdata) => {
       if (status === false) {
-        this.error('Pop3 LIST failed');
+        this.error('LIST failed');
         client.quit();
       } else {
+        console.log('哈哈', status, msgcount, msgnumber, rawdata);
         console.log('LIST success with ' + msgcount + ' element(s)');
 
-        if (msgcount > 0) client.retr(1);
-        else client.quit();
+        if (msgcount > 0) {
+          this.emit({
+            type: MailerEventType.uidl,
+            message: 'Get uidl',
+          });
+          client.uidl();
+        } else {
+          client.quit();
+          this.jobOwner.finishJob();
+        }
+      }
+    });
+
+    client.on('uidl', (status, msgnumber, data, rawdata) => {
+      if (status === true) {
+        client.retr(1);
+      } else {
+        this.error('uidl failed');
+        client.quit();
       }
     });
 
     client.on('retr', (status, msgnumber, data, rawdata) => {
       if (status === true) {
+        client.retr(msgnumber + 1);
         console.log('RETR success for msgnumber ' + msgnumber);
-        client.dele(msgnumber);
+        //client.dele(msgnumber);
         client.quit();
       } else {
-        console.log('RETR failed for msgnumber ' + msgnumber);
+        this.error('RETR failed for msgnumber ' + msgnumber);
         client.quit();
       }
     });
@@ -120,10 +146,10 @@ export class Pop3Job implements Job {
       }
     });
 
-    client.on('quit', (status, rawdata) => {
-      console.debug(rawdata);
-      //const message = status === true ? 'QUIT success' : 'QUIT failed';
-      this.jobOwner.finishJob();
+    client.on('quit', (/*status, rawdata*/) => {
+      if (!this.isError) {
+        this.jobOwner.finishJob();
+      }
     });
   }
 
