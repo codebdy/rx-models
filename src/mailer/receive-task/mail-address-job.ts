@@ -9,7 +9,9 @@ export class MailAddressJob implements Job, JobOwner {
   jobOwner: JobOwner;
   private currentJob: Job;
   constructor(private readonly config: MailConfig) {
-    this.jobs.push(new Pop3Job());
+    if (!config.pop3?.stop) {
+      this.jobs.push(new Pop3Job(config.pop3));
+    }
   }
 
   start() {
