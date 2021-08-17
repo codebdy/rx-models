@@ -11,6 +11,7 @@ export enum MailerEventType {
   dele = 'dele',
   quit = 'quit',
   progress = 'progress',
+  cancelling = 'cancelling',
   finished = 'finished',
   aborted = 'aborted',
 }

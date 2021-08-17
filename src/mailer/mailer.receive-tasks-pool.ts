@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { MailerClientsPool } from './mailer.clients-pool';
-import { ReceiveTask } from './receive-task';
+import { ReceiveTask } from './receive-task/receive-task';
 
-export interface TasksPoolRemover {
+export interface TasksPool {
+  getTask(accountId: number): ReceiveTask;
   removeTask(accountId: number): void;
 }
 
 @Injectable()
-export class MailerReceiveTasksPool implements TasksPoolRemover {
+export class MailerReceiveTasksPool implements TasksPool {
   private pool = new Map<number, ReceiveTask>();
 
   constructor(private readonly clientsPool: MailerClientsPool) {}
@@ -18,7 +19,7 @@ export class MailerReceiveTasksPool implements TasksPoolRemover {
     if (!task) {
       task = new ReceiveTask(this.clientsPool, this, accountId, configs);
       this.pool.set(accountId, task);
-      task.doReceive();
+      task.start();
     } else {
       task.addConfigs(configs);
     }
