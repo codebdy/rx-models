@@ -33,6 +33,10 @@ export class Pop3Job implements Job {
 
   start(): void {
     const config = this.pop3Config;
+    this.jobOwner.emit({
+      type: MailerEventType.connect,
+      message: 'connectint to mail server ...',
+    });
     const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
       enabletls: true,
@@ -40,15 +44,15 @@ export class Pop3Job implements Job {
     });
 
     client.on('error', (err) => {
-      const message =
-        err.errno === 111
-          ? `Unable to connect to mail server:${config.host}`
-          : `Mail Server(${config.host}) error occurred`;
-      this.error(message);
+      this.error(err.toString() + ' errno:' + err.errno);
       this.logger.error(err);
     });
 
     client.on('connect', () => {
+      this.jobOwner.emit({
+        type: MailerEventType.login,
+        message: 'Loging ...',
+      });
       client.login('username', 'password');
     });
 

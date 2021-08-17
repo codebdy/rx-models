@@ -34,6 +34,7 @@ export class MailAddressJob implements Job, JobOwner {
   }
 
   emit(event: MailerEvent): void {
+    event.mailAddress = this.config.address;
     this.jobOwner.emit(event);
   }
 

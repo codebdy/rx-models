@@ -71,6 +71,7 @@ export class ReceiveTask implements JobOwner {
       this.lastEvent = {
         type: MailerEventType.aborted,
       };
+      this.tasksPool.removeTask(this.accountId);
     } else {
       this.lastEvent = {
         type: MailerEventType.cancelling,
