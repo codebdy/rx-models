@@ -11,6 +11,7 @@ const POP3Client = require('poplib');
 export class Pop3Job implements Job {
   private readonly logger = new Logger('Mailer');
   private isAborted = false;
+  private client: any;
   constructor(
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
@@ -18,9 +19,10 @@ export class Pop3Job implements Job {
 
   abort(): void {
     this.isAborted = true;
+    this.client?.quit();
   }
 
-  checkAbout() {
+  checkAbort() {
     if (this.isAborted) {
       this.jobOwner.finishJob();
     }
@@ -43,8 +45,9 @@ export class Pop3Job implements Job {
     const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
       enabletls: true,
-      debug: true,
+      debug: false,
     });
+    this.client = client;
 
     client.on('error', (err) => {
       this.error(err.toString() + ' errno:' + err.errno);
@@ -70,9 +73,12 @@ export class Pop3Job implements Job {
       );
     });
 
-    client.on('login', (status, rawdata) => {
+    client.on('login', (status /*, rawdata*/) => {
       if (status) {
-        console.log('LOGIN/PASS success');
+        this.jobOwner.emit({
+          type: MailerEventType.list,
+          message: 'Listing ...',
+        });
         client.list();
       } else {
         this.error('LOGIN/PASS failed');
@@ -81,9 +87,9 @@ export class Pop3Job implements Job {
     });
 
     // Data is a 1-based index of messages, if there are any messages
-    client.on('list', (status, msgcount, msgnumber, data, rawdata) => {
+    client.on('list', (status, msgcount /*, msgnumber, data, rawdata*/) => {
       if (status === false) {
-        console.log('LIST failed');
+        this.error('Pop3 LIST failed');
         client.quit();
       } else {
         console.log('LIST success with ' + msgcount + ' element(s)');
@@ -115,8 +121,9 @@ export class Pop3Job implements Job {
     });
 
     client.on('quit', (status, rawdata) => {
-      if (status === true) console.log('QUIT success');
-      else console.log('QUIT failed');
+      console.debug(rawdata);
+      //const message = status === true ? 'QUIT success' : 'QUIT failed';
+      this.jobOwner.finishJob();
     });
   }
 

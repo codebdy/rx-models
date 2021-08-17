@@ -28,6 +28,7 @@ export class ReceiveTask implements JobOwner {
         type: MailerEventType.finished,
       };
       this.emitStatusEvent();
+      this.lastEvent = undefined;
     }
   }
 
