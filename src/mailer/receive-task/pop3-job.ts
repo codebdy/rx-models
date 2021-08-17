@@ -35,8 +35,9 @@ export class Pop3Job implements Job {
     const config = this.pop3Config;
     this.jobOwner.emit({
       type: MailerEventType.connect,
-      message: 'connectint to mail server ...',
+      message: 'connecting to mail server ...',
     });
+    console.log('嘿嘿', this);
     const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
       enabletls: true,
@@ -51,7 +52,7 @@ export class Pop3Job implements Job {
     client.on('connect', () => {
       this.jobOwner.emit({
         type: MailerEventType.login,
-        message: 'Loging ...',
+        message: 'Logging ...',
       });
       client.login('username', 'password');
     });
@@ -114,5 +115,9 @@ export class Pop3Job implements Job {
       if (status === true) console.log('QUIT success');
       else console.log('QUIT failed');
     });
+  }
+
+  retry(): void {
+    this.start();
   }
 }

@@ -50,7 +50,6 @@ export class ReceiveTask implements JobOwner {
   emit(event: MailerEvent) {
     this.lastEvent = event;
     this.emitStatusEvent();
-    console.log('哈哈', event);
   }
 
   emitStatusEvent() {
@@ -82,5 +81,10 @@ export class ReceiveTask implements JobOwner {
     this.emitStatusEvent();
     this.currentJob?.abort();
     this.configs = [];
+  }
+
+  retry() {
+    this.lastEvent = undefined;
+    this.currentJob?.retry();
   }
 }

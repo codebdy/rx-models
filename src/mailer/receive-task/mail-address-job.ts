@@ -15,9 +15,12 @@ export class MailAddressJob implements Job, JobOwner {
       this.jobs.push(new Pop3Job(config.pop3, this));
     }
   }
-
   start() {
     this.nextJob()?.start();
+  }
+
+  retry(): void {
+    this.currentJob?.retry();
   }
 
   nextJob(): Job {
