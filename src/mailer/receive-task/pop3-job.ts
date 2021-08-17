@@ -1,5 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
+import { decypt } from 'src/util/cropt-js';
+import { CRYPTO_KEY } from '../consts';
 import { MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
@@ -49,12 +51,13 @@ export class Pop3Job implements Job {
       this.logger.error(err);
     });
 
-    client.on('connect', () => {
+    client.on('connect', (data) => {
+      console.log('connect:', data);
       this.jobOwner.emit({
         type: MailerEventType.login,
         message: 'Logging ...',
       });
-      client.login('username', 'password');
+      client.login(config.account, decypt(config.password, CRYPTO_KEY));
     });
 
     client.on('invalid-state', (cmd) => {
