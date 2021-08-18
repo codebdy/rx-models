@@ -1,4 +1,5 @@
 import { MailConfig } from 'src/entity-interface/MailConfig';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
@@ -11,6 +12,7 @@ export class ReceiveTask implements JobOwner {
   lastEvent?: MailerEvent;
   private currentJob: Job;
   constructor(
+    private readonly typeOrmService: TypeOrmService,
     private readonly clientsPool: MailerClientsPool,
     private readonly tasksPool: TasksPool,
     private readonly accountId: number,
@@ -19,7 +21,11 @@ export class ReceiveTask implements JobOwner {
 
   nextJob() {
     if (this.configs.length > 0) {
-      this.currentJob = new MailAddressJob(this.configs.pop(), this);
+      this.currentJob = new MailAddressJob(
+        this.typeOrmService,
+        this.configs.pop(),
+        this,
+      );
       return this.currentJob;
     } else {
       //结束任务

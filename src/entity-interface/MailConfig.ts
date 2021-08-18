@@ -1,6 +1,7 @@
 import { RxUser } from './RxUser';
 import { MailReceiveConfig } from './MailReceiveConfig';
 
+
 export const EntityMailConfig = 'MailConfig';
 
 export interface MailConfig {
@@ -10,5 +11,8 @@ export interface MailConfig {
   pop3?: MailReceiveConfig;
   imap4?: any;
   smtp?: any;
+  interval?: number;
+  stop?: boolean;
+  receiveInterval?: boolean;
   belongsTo?: RxUser;
 }

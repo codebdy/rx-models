@@ -5,6 +5,8 @@ import { CRYPTO_KEY } from '../consts';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
+import _ from 'lodash';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
 
@@ -14,6 +16,7 @@ export class Pop3Job implements Job {
   private client: any;
   private isError = false;
   constructor(
+    private readonly typeOrmService: TypeOrmService,
     private readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
@@ -40,6 +43,14 @@ export class Pop3Job implements Job {
       message,
     });
     this.isError = true;
+  }
+
+  readMailUidlList() {
+
+  }
+
+  saveMail(data) {
+
   }
 
   start(): void {
@@ -117,6 +128,7 @@ export class Pop3Job implements Job {
 
     client.on('uidl', (status, msgnumber, data, rawdata) => {
       if (status === true) {
+        //_.difference(array, [values])
         client.retr(1);
       } else {
         this.error('uidl failed');

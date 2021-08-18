@@ -1,3 +1,5 @@
+export const EntityRxPackage = 'RxPackage';
+
 export interface RxPackage {
   id?: number;
   uuid: string;

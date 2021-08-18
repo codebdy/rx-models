@@ -1,7 +1,7 @@
 export interface MailReceiveConfig {
-  name?: string;
+  name: string;
   host: string;
-  port?: string;
+  port: string;
   timeout?: number;
   account?: string;
   password?: string;
@@ -9,8 +9,5 @@ export interface MailReceiveConfig {
   spa?: boolean;
   starTtls?: boolean;
   removeAfterDays?: number;
-  receiveInterval?: boolean;
-  stop?: boolean;
   removeFromServer?: boolean;
-  interval?: number;
 }

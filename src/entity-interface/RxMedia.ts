@@ -1,5 +1,8 @@
 import { RxMediaFolder } from './RxMediaFolder';
 import { RxUser } from './RxUser';
+import { Attachment } from './Attachment';
+
+export const EntityRxMedia = 'RxMedia';
 
 export interface RxMedia {
   id?: number;
@@ -10,5 +13,6 @@ export interface RxMedia {
   size?: number;
   user?: RxUser;
   avatarOfUser?: RxUser;
+  asMailAttachment?: Attachment;
   folder?: RxMediaFolder;
 }

@@ -1,4 +1,5 @@
 import { MailConfig } from 'src/entity-interface/MailConfig';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerEvent } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
@@ -8,11 +9,14 @@ export class MailAddressJob implements Job, JobOwner {
   private jobs: Job[] = [];
   private currentJob: Job;
   constructor(
+    private readonly typeOrmService: TypeOrmService,
     private readonly config: MailConfig,
     public readonly jobOwner: JobOwner,
   ) {
     if (config.pop3 && !config.pop3?.stop) {
-      this.jobs.push(new Pop3Job(config.address, config.pop3, this));
+      this.jobs.push(
+        new Pop3Job(this.typeOrmService, config.address, config.pop3, this),
+      );
     }
   }
   start() {

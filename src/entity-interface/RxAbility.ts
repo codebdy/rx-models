@@ -1,5 +1,7 @@
 import { RxRole } from './RxRole';
-import { AbilityType } from './AbilityType';
+
+
+export const EntityRxAbility = 'RxAbility';
 
 export interface RxAbility {
   id?: number;
@@ -7,6 +9,6 @@ export interface RxAbility {
   columnUuid?: string;
   can: boolean;
   expression?: string;
-  abilityType: AbilityType;
+  abilityType: string;
   role?: RxRole;
 }

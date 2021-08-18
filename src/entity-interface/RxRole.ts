@@ -1,6 +1,8 @@
 import { RxUser } from './RxUser';
 import { RxAbility } from './RxAbility';
 
+export const EntityRxRole = 'RxRole';
+
 export interface RxRole {
   id?: number;
   name: string;
