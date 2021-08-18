@@ -8,6 +8,9 @@ import { JobOwner } from './job-owner';
 import _ from 'lodash';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
+import { v4 as uuidv4 } from 'uuid';
+import { FOLDER_MAILS } from 'src/util/consts';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -51,7 +54,10 @@ export class Pop3Job implements Job {
 
   readMailUidlList() {}
 
-  saveMail(data) {}
+  async saveMailFile(data: any) {
+    const fileName = uuidv4() + '.eml';
+    return await this.storageService.putFileBuffer(FOLDER_MAILS, fileName, data);
+  }
 
   start(): void {
     this.emit({
@@ -60,11 +66,12 @@ export class Pop3Job implements Job {
     });
 
     this.storageService
-      .checkAndCreateBucket('rxmodels-emails')
+      .checkAndCreateFolder(FOLDER_MAILS)
       .then(() => {
         this.receive();
       })
       .catch((error) => {
+        this.logger.error(error);
         this.error('Storage error:' + error);
       });
   }
@@ -156,15 +163,23 @@ export class Pop3Job implements Job {
       if (status === true) {
         //client.retr(msgnumber + 1);
         console.log('RETR success for msgnumber ' + msgnumber);
-        simpleParser(data)
-          .then((parsed) => {
-            console.log('哈哈1', parsed);
-            console.log('哈哈2', parsed?.to?.value);
-            console.log('哈哈3', parsed?.from?.value);
+        this.saveMailFile(data)
+          .then(() => {
+            simpleParser(data)
+              .then((parsed) => {
+                console.log('哈哈2', parsed?.to?.value);
+                console.log('哈哈3', parsed?.from?.value);
+              })
+              .catch((err) => {
+                this.error('Parse mail error:' + err);
+                console.error(err);
+              });
           })
-          .catch((err) => {
-            console.log('哈哈12', err);
+          .catch((error) => {
+            console.error(error);
+            this.error('Save mail file error:' + error);
           });
+
         //client.dele(msgnumber);
         //client.quit();
       } else {
