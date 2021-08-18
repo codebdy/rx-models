@@ -5,19 +5,65 @@ import { CRYPTO_KEY } from '../consts';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
-import _ from 'lodash';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { v4 as uuidv4 } from 'uuid';
 import { FOLDER_MAILS } from 'src/util/consts';
+import _ = require('lodash');
+import { EntityMail, Mail } from 'src/entity-interface/Mail';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
+export interface MailIdentifier {
+  msg: number;
+  uidl: string;
+}
+
+export class MailTeller {
+  localMailList: string[] = [];
+  newMailList: string[] = [];
+  uidlData: any;
+
+  totalNew: number;
+
+  /**
+   * 识别新邮件
+   */
+  tellIt(): void {
+    this.newMailList = _.difference(this.uidlData, this.localMailList);
+    this.totalNew = this.newMailList.length;
+  }
+
+  getUidl(msg: string): string {
+    return this.uidlData[msg];
+  }
+
+  getMsgNumber(uidl: string): string {
+    for (const msg in this.uidlData) {
+      if (this.uidlData[msg] === uidl) {
+        return msg;
+      }
+    }
+  }
+
+  nextMsgNumber(): string {
+    if (this.newMailList.length > 0) {
+      const uidl = this.newMailList.pop();
+      return this.getMsgNumber(uidl);
+    }
+  }
+
+  cunrrentNumber(): number {
+    return this.totalNew - this.newMailList.length;
+  }
+}
+
 export class Pop3Job implements Job {
   private readonly logger = new Logger('Mailer');
+  private mailTeller = new MailTeller();
   private isAborted = false;
   private client: any;
   private isError = false;
@@ -47,16 +93,22 @@ export class Pop3Job implements Job {
   error(message: string) {
     this.emit({
       type: MailerEventType.error,
-      message,
+      message: message,
     });
     this.isError = true;
   }
 
-  readMailUidlList() {}
-
-  async saveMailFile(data: any) {
+  async saveMail(uidl: string, data: any) {
     const fileName = uuidv4() + '.eml';
-    return await this.storageService.putFileBuffer(FOLDER_MAILS, fileName, data);
+    await this.storageService.putFileData(FOLDER_MAILS, fileName, data);
+    const parsed = await simpleParser(data);
+    const repository = this.typeOrmService.getRepository<Mail>(EntityMail);
+
+    await repository.insert({
+      uidl: uidl,
+      subject: parsed.subject,
+      mailAddress: this.mailAddress,
+    });
   }
 
   start(): void {
@@ -68,11 +120,33 @@ export class Pop3Job implements Job {
     this.storageService
       .checkAndCreateFolder(FOLDER_MAILS)
       .then(() => {
+        this.readLocalMailList();
+      })
+      .catch((error) => {
+        console.error(error);
+        this.error('Storage error:' + error);
+      });
+  }
+
+  readLocalMailList(): void {
+    this.emit({
+      type: MailerEventType.readLocalMailList,
+      message: 'Read local mail list',
+    });
+
+    const repository = this.typeOrmService.getRepository<Mail>(EntityMail);
+    repository
+      .find({
+        select: ['uidl'],
+        where: { mailAddress: this.mailAddress },
+      })
+      .then((data) => {
+        this.mailTeller.localMailList = data.map((mail) => mail.uidl);
         this.receive();
       })
       .catch((error) => {
-        this.logger.error(error);
-        this.error('Storage error:' + error);
+        console.error(error);
+        this.error('Read local mail list error:' + error);
       });
   }
 
@@ -133,7 +207,7 @@ export class Pop3Job implements Job {
         this.error('LIST failed');
         client.quit();
       } else {
-        console.log('哈哈', status, msgcount, msgnumber, rawdata);
+        //console.log('哈哈', status, msgcount, msgnumber, rawdata);
         console.log('LIST success with ' + msgcount + ' element(s)');
 
         if (msgcount > 0) {
@@ -149,35 +223,46 @@ export class Pop3Job implements Job {
       }
     });
 
-    client.on('uidl', (status, msgnumber, data, rawdata) => {
+    const retrOne = () => {
+      const msg = this.mailTeller.nextMsgNumber();
+      if (msg) {
+        this.emit({
+          type: MailerEventType.progress,
+          message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
+            this.mailTeller.totalNew
+          }`,
+          progress: Math.ceil(
+            (this.mailTeller.cunrrentNumber() / this.mailTeller.totalNew) * 100,
+          ),
+        });
+        client.retr(msg);
+      } else {
+        client.quit();
+      }
+    };
+
+    client.on('uidl', (status, msgnumber, data /*, rawdata*/) => {
       if (status === true) {
-        //_.difference(array, [values])
-        client.retr(1);
+        this.mailTeller.uidlData = data;
+        this.mailTeller.tellIt();
+        retrOne();
       } else {
         this.error('uidl failed');
         client.quit();
       }
     });
 
-    client.on('retr', (status, msgnumber, data, rawdata) => {
+    client.on('retr', (status, msgnumber, data /*, rawdata*/) => {
       if (status === true) {
         //client.retr(msgnumber + 1);
         console.log('RETR success for msgnumber ' + msgnumber);
-        this.saveMailFile(data)
+        this.saveMail(this.mailTeller.getUidl(msgnumber), data)
           .then(() => {
-            simpleParser(data)
-              .then((parsed) => {
-                console.log('哈哈2', parsed?.to?.value);
-                console.log('哈哈3', parsed?.from?.value);
-              })
-              .catch((err) => {
-                this.error('Parse mail error:' + err);
-                console.error(err);
-              });
+            retrOne();
           })
           .catch((error) => {
             console.error(error);
-            this.error('Save mail file error:' + error);
+            this.error('Save mail error:' + error);
           });
 
         //client.dele(msgnumber);

@@ -36,9 +36,8 @@ export class AliyunClient {
     return await client.putBucket(bucket, options);
   }
 
-  async putFileBuffer(folder: string, name: string, data: any) {
+  async putFileData(folder: string, name: string, data: any) {
     const client = maikeClient({ bucket: folder });
-    console.log('嘿哈', name);
     return await client.put(name, Buffer.from(data));
   }
 }

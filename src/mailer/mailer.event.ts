@@ -3,6 +3,7 @@ export const MAILER_EVENT_NAME = 'mailerEvent';
 export enum MailerEventType {
   error = 'error',
   checkStorage = 'checkStorage',
+  readLocalMailList = 'readLocalMailList',
   connect = 'connect',
   invalidState = 'invalid-state',
   locked = 'locked',

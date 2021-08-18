@@ -9,7 +9,7 @@ export class StorageService {
     return await this.storageClient.checkAndCreateFolder(bucket);
   }
 
-  async putFileBuffer(folder: string, name: string, data: any) {
-    return await this.storageClient.putFileBuffer(folder, name, data);
+  async putFileData(folder: string, name: string, data: any) {
+    return await this.storageClient.putFileData(folder, name, data);
   }
 }
