@@ -6,7 +6,7 @@ export const EntityMailConfig = 'MailConfig';
 
 export interface MailConfig {
   id?: number;
-  address: string;
+  address?: string;
   password?: string;
   pop3?: MailReceiveConfig;
   imap4?: any;

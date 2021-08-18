@@ -1,12 +1,12 @@
 import { Attachment } from './Attachment';
+import { RxMedia } from './RxMedia';
+import { MailIdentifier } from './MailIdentifier';
 import { RxUser } from './RxUser';
 
 export const EntityMail = 'Mail';
 
 export interface Mail {
   id?: number;
-  uidl: string;
-  mailAddress: string;
   subject?: string;
   from?: string;
   to?: any[];
@@ -15,4 +15,6 @@ export interface Mail {
   receivedAt?: Date;
   belongsTo?: RxUser;
   attachments?: Attachment[];
+  emlFile?: RxMedia;
+  identifier?: MailIdentifier;
 }

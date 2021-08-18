@@ -10,17 +10,16 @@ import { StorageService } from 'src/storage/storage.service';
 import { v4 as uuidv4 } from 'uuid';
 import { FOLDER_MAILS } from 'src/util/consts';
 import _ = require('lodash');
+import {
+  EntityMailIdentifier,
+  MailIdentifier,
+} from 'src/entity-interface/MailIdentifier';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
-
-export interface MailIdentifier {
-  msg: number;
-  uidl: string;
-}
 
 export class MailTeller {
   localMailList: string[] = [];
@@ -102,16 +101,23 @@ export class Pop3Job implements Job {
   }
 
   async saveMail(uidl: string, data: any) {
-    const fileName = uuidv4() + '.eml';
+    const fileName = this.mailAddress + '-' + uidl + '.eml';
     await this.storageService.putFileData(FOLDER_MAILS, fileName, data);
     const parsed = await simpleParser(data);
-    const repository = this.typeOrmService.getRepository<Mail>(EntityMail);
+    const mail = await this.typeOrmService
+      .getRepository<Mail>(EntityMail)
+      .save({
+        subject: parsed.subject,
+      });
 
-    await repository.insert({
-      uidl: uidl,
-      subject: parsed.subject,
-      mailAddress: this.mailAddress,
-    });
+    await this.typeOrmService
+      .getRepository<MailIdentifier>(EntityMailIdentifier)
+      .save({
+        uidl: uidl,
+        mailAddress: this.mailAddress,
+        file: fileName,
+        mail: mail,
+      });
   }
 
   start(): void {
@@ -137,7 +143,8 @@ export class Pop3Job implements Job {
       message: 'Read local mail list',
     });
 
-    const repository = this.typeOrmService.getRepository<Mail>(EntityMail);
+    const repository =
+      this.typeOrmService.getRepository<MailIdentifier>(EntityMailIdentifier);
     repository
       .find({
         select: ['uidl'],
