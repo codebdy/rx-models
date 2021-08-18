@@ -34,7 +34,9 @@ export class MailTeller {
    * 识别新邮件
    */
   tellIt(): void {
-    this.newMailList = _.difference(this.uidlData, this.localMailList);
+    this.newMailList = _.difference(this.uidlData, this.localMailList).splice(
+      1,
+    );
     this.totalNew = this.newMailList.length;
   }
 
@@ -52,7 +54,7 @@ export class MailTeller {
 
   nextMsgNumber(): string {
     if (this.newMailList.length > 0) {
-      const uidl = this.newMailList.pop();
+      const uidl = this.newMailList.shift();
       return this.getMsgNumber(uidl);
     }
   }
@@ -254,8 +256,6 @@ export class Pop3Job implements Job {
 
     client.on('retr', (status, msgnumber, data /*, rawdata*/) => {
       if (status === true) {
-        //client.retr(msgnumber + 1);
-        console.log('RETR success for msgnumber ' + msgnumber);
         this.saveMail(this.mailTeller.getUidl(msgnumber), data)
           .then(() => {
             retrOne();
@@ -264,9 +264,6 @@ export class Pop3Job implements Job {
             console.error(error);
             this.error('Save mail error:' + error);
           });
-
-        //client.dele(msgnumber);
-        //client.quit();
       } else {
         this.error('RETR failed for msgnumber ' + msgnumber);
         client.quit();
