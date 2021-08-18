@@ -22,8 +22,9 @@ export enum MailerEventType {
 export interface MailerEvent {
   type: MailerEventType;
   message?: string;
-  progress?: number;
-  buffer?: number;
+  total?: number;
+  current?: number;
+  size?: number;
   mailAddress?: string;
   name?: string;
 }

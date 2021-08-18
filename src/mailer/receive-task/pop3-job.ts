@@ -26,6 +26,7 @@ export class MailTeller {
   localMailList: string[] = [];
   newMailList: string[] = [];
   uidlData: any;
+  sizeList: string[] = [];
 
   totalNew: number;
 
@@ -207,9 +208,8 @@ export class Pop3Job implements Job {
         this.error('LIST failed');
         client.quit();
       } else {
-        //console.log('哈哈', status, msgcount, msgnumber, rawdata);
         console.log('LIST success with ' + msgcount + ' element(s)');
-
+        this.mailTeller.sizeList = data;
         if (msgcount > 0) {
           this.emit({
             type: MailerEventType.uidl,
@@ -231,9 +231,9 @@ export class Pop3Job implements Job {
           message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
             this.mailTeller.totalNew
           }`,
-          progress: Math.ceil(
-            (this.mailTeller.cunrrentNumber() / this.mailTeller.totalNew) * 100,
-          ),
+          total: this.mailTeller.totalNew,
+          current: this.mailTeller.cunrrentNumber(),
+          size: this.mailTeller.sizeList[msg],
         });
         client.retr(msg);
       } else {
