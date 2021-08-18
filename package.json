@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^8.0.6",
     "@nestjs/platform-socket.io": "^8.0.6",
     "@nestjs/websockets": "^8.0.6",
+    "ali-oss": "^6.16.0",
     "bcrypt": "^5.0.1",
     "crypto-js": "^4.1.1",
     "es6-symbol": "^3.1.3",

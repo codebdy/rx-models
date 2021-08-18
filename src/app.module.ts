@@ -8,12 +8,14 @@ import { TypeOrmModule } from './typeorm/typeorm.module';
 import { InstallModule } from './install/install.module';
 import { PackageManageModule } from './package-manage/package-manage.module';
 import { MailerModule } from './mailer/mailer.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
     PackageManageModule,
     InstallModule,
     TypeOrmModule,
+    StorageModule,
     AuthModule,
     MagicModule,
     MailerModule,

@@ -1,4 +1,5 @@
 import { MailConfig } from 'src/entity-interface/MailConfig';
+import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
@@ -13,6 +14,7 @@ export class ReceiveTask implements JobOwner {
   private currentJob: Job;
   constructor(
     private readonly typeOrmService: TypeOrmService,
+    private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
     private readonly tasksPool: TasksPool,
     private readonly accountId: number,
@@ -23,6 +25,7 @@ export class ReceiveTask implements JobOwner {
     if (this.configs.length > 0) {
       this.currentJob = new MailAddressJob(
         this.typeOrmService,
+        this.storageService,
         this.configs.pop(),
         this,
       );

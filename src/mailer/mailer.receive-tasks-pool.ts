@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailConfig } from 'src/entity-interface/MailConfig';
+import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { ReceiveTask } from './receive-task/receive-task';
@@ -15,6 +16,7 @@ export class MailerReceiveTasksPool implements TasksPool {
 
   constructor(
     private readonly typeOrmService: TypeOrmService,
+    private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
   ) {}
 
@@ -23,6 +25,7 @@ export class MailerReceiveTasksPool implements TasksPool {
     if (!task) {
       task = new ReceiveTask(
         this.typeOrmService,
+        this.storageService,
         this.clientsPool,
         this,
         accountId,

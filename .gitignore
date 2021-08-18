@@ -401,4 +401,5 @@ uploads
 thumbnails
 dbconfig.json
 schemas
+aliyun.ts
 

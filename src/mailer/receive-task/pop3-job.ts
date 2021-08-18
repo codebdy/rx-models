@@ -7,6 +7,7 @@ import { Job } from './job';
 import { JobOwner } from './job-owner';
 import _ from 'lodash';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { StorageService } from 'src/storage/storage.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -19,6 +20,7 @@ export class Pop3Job implements Job {
   private isError = false;
   constructor(
     private readonly typeOrmService: TypeOrmService,
+    private readonly storageService: StorageService,
     private readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
@@ -52,6 +54,22 @@ export class Pop3Job implements Job {
   saveMail(data) {}
 
   start(): void {
+    this.emit({
+      type: MailerEventType.checkStorage,
+      message: 'Check storage',
+    });
+
+    this.storageService
+      .checkAndCreateBucket('rxmodels-emails')
+      .then(() => {
+        this.receive();
+      })
+      .catch((error) => {
+        this.error('Storage error:' + error);
+      });
+  }
+
+  receive(): void {
     const config = this.pop3Config;
     this.emit({
       type: MailerEventType.connect,
