@@ -10,8 +10,9 @@ export interface Mail {
   subject?: string;
   from?: string;
   to?: any[];
-  content?: string;
-  receivedAt: Date;
+  text?: string;
+  html?: string;
+  receivedAt?: Date;
   belongsTo?: RxUser;
   attachments?: Attachment[];
 }
