@@ -9,6 +9,8 @@ import _ from 'lodash';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const simpleParser = require('mailparser').simpleParser;
 
 export class Pop3Job implements Job {
   private readonly logger = new Logger('Mailer');
@@ -45,13 +47,9 @@ export class Pop3Job implements Job {
     this.isError = true;
   }
 
-  readMailUidlList() {
+  readMailUidlList() {}
 
-  }
-
-  saveMail(data) {
-
-  }
+  saveMail(data) {}
 
   start(): void {
     const config = this.pop3Config;
@@ -138,10 +136,19 @@ export class Pop3Job implements Job {
 
     client.on('retr', (status, msgnumber, data, rawdata) => {
       if (status === true) {
-        client.retr(msgnumber + 1);
+        //client.retr(msgnumber + 1);
         console.log('RETR success for msgnumber ' + msgnumber);
+        simpleParser(data)
+          .then((parsed) => {
+            console.log('哈哈1', parsed);
+            console.log('哈哈2', parsed?.to?.value);
+            console.log('哈哈3', parsed?.from?.value);
+          })
+          .catch((err) => {
+            console.log('哈哈12', err);
+          });
         //client.dele(msgnumber);
-        client.quit();
+        //client.quit();
       } else {
         this.error('RETR failed for msgnumber ' + msgnumber);
         client.quit();

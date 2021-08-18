@@ -5,7 +5,7 @@ export const EntityRxMediaFolder = 'RxMediaFolder';
 
 export interface RxMediaFolder {
   id?: number;
-  name: string;
+  name?: string;
   order?: string;
   parent?: RxMediaFolder;
   medias?: RxMedia[];

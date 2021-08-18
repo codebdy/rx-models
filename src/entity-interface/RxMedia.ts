@@ -6,7 +6,7 @@ export const EntityRxMedia = 'RxMedia';
 
 export interface RxMedia {
   id?: number;
-  name: string;
+  name?: string;
   mimetype?: string;
   fileName?: string;
   path?: string;

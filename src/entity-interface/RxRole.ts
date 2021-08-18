@@ -5,7 +5,7 @@ export const EntityRxRole = 'RxRole';
 
 export interface RxRole {
   id?: number;
-  name: string;
+  name?: string;
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;

@@ -8,12 +8,13 @@ export const EntityRxUser = 'RxUser';
 
 export interface RxUser {
   id?: number;
-  name: string;
-  loginName: string;
+  name?: string;
+  loginName?: string;
   email?: string;
+  password?: string;
   isSupper?: boolean;
   isDemo?: boolean;
-  status: string;
+  status?: string;
   createdAt?: Date;
   updatedAt?: Date;
   roles?: RxRole[];
