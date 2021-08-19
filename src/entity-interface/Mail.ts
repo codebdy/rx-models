@@ -3,6 +3,7 @@ import { MailIdentifier } from './MailIdentifier';
 import { RxUser } from './RxUser';
 import { MailTag } from './MailTag';
 import { MailBoxType } from './MailBoxType';
+import { AddressObject } from './AddressObject';
 
 
 export const EntityMail = 'Mail';
@@ -10,15 +11,15 @@ export const EntityMail = 'Mail';
 export interface Mail {
   id?: number;
   subject?: string;
-  from?: any;
-  to?: any;
-  cc?: any;
-  bcc?: any;
+  from?: AddressObject;
+  to?: AddressObject;
+  cc?: AddressObject;
+  bcc?: AddressObject;
   date?: Date;
   messageId?: string;
   inReplyTo?: string;
   replyTo?: any;
-  references?: any[];
+  references?: any;
   html?: string;
   text?: string;
   textAsHtml?: string;
@@ -26,6 +27,7 @@ export interface Mail {
   readFlag?: boolean;
   isTop?: string;
   inMailBox?: MailBoxType;
+  finished?: boolean;
   belongsTo?: RxUser;
   tags?: MailTag[];
   attachments?: Attachment[];
