@@ -1,3 +1,4 @@
+
 export interface MailReceiveConfig {
   name?: string;
   host?: string;

@@ -6,6 +6,7 @@ import { MailBoxType } from './MailBoxType';
 import { AddressObject } from './AddressObject';
 
 
+
 export const EntityMail = 'Mail';
 
 export interface Mail {
