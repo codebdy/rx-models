@@ -7,3 +7,4 @@ export const ALIYUN_CONFIG_KEY = 'aliyun';
 export const BUCKET_MAILS = 'rxmodels-mails';
 export const FOLEDR_INBOX = 'inbox';
 export const FOLEDR_SENT = 'sent';
+export const FOLEDR_ATTACHMENTS = 'attachments';
