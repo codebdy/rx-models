@@ -28,6 +28,7 @@ export class ReceiveTask implements JobOwner {
         this.storageService,
         this.configs.pop(),
         this,
+        this.accountId,
       );
       return this.currentJob;
     } else {

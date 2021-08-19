@@ -14,6 +14,7 @@ export class MailAddressJob implements Job, JobOwner {
     private readonly storageService: StorageService,
     private readonly config: MailConfig,
     public readonly jobOwner: JobOwner,
+    private readonly accountId: number,
   ) {
     if (config.pop3 && !config.stop) {
       this.jobs.push(
@@ -23,6 +24,7 @@ export class MailAddressJob implements Job, JobOwner {
           config.address,
           config.pop3,
           this,
+          this.accountId,
         ),
       );
     }

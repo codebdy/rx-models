@@ -7,61 +7,18 @@ import { Job } from './job';
 import { JobOwner } from './job-owner';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
-import { v4 as uuidv4 } from 'uuid';
 import { BUCKET_MAILS, FOLEDR_INBOX } from 'src/util/consts';
-import _ = require('lodash');
 import {
   EntityMailIdentifier,
   MailIdentifier,
 } from 'src/entity-interface/MailIdentifier';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
+import { MailTeller } from './mail-teller';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
-
-export class MailTeller {
-  localMailList: string[] = [];
-  newMailList: string[] = [];
-  uidlData: any;
-  sizeList: string[] = [];
-
-  totalNew: number;
-
-  /**
-   * 识别新邮件
-   */
-  tellIt(): void {
-    this.newMailList = _.difference(this.uidlData, this.localMailList).splice(
-      1,
-    );
-    this.totalNew = this.newMailList.length;
-  }
-
-  getUidl(msg: string): string {
-    return this.uidlData[msg];
-  }
-
-  getMsgNumber(uidl: string): string {
-    for (const msg in this.uidlData) {
-      if (this.uidlData[msg] === uidl) {
-        return msg;
-      }
-    }
-  }
-
-  nextMsgNumber(): string {
-    if (this.newMailList.length > 0) {
-      const uidl = this.newMailList.shift();
-      return this.getMsgNumber(uidl);
-    }
-  }
-
-  cunrrentNumber(): number {
-    return this.totalNew - this.newMailList.length;
-  }
-}
 
 export class Pop3Job implements Job {
   private readonly logger = new Logger('Mailer');
@@ -75,6 +32,7 @@ export class Pop3Job implements Job {
     private readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
+    private readonly accountId: number,
   ) {}
 
   abort(): void {
@@ -113,8 +71,23 @@ export class Pop3Job implements Job {
       .getRepository<Mail>(EntityMail)
       .save({
         subject: parsed.subject,
+        from: parsed.from,
+        to: parsed.to,
+        cc: parsed.cc,
+        bcc: parsed.bcc,
+        date: parsed.date,
+        messageId: parsed.messageId,
+        inReplyTo: parsed.inReplyTo,
+        replyTo: parsed.replyTo,
+        references: parsed.references,
+        html: parsed.html,
+        text: parsed.text,
+        textAsHtml: parsed.textAsHtml,
+        priority: parsed.priority,
+        belongsTo: { id: this.accountId },
+        //belongsTo:
+        //attachments:
       });
-
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)
       .save({

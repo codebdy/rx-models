@@ -20,6 +20,7 @@ export interface Mail {
   html?: string;
   text?: string;
   textAsHtml?: string;
+  priority?: string;
   belongsTo?: RxUser;
   attachments?: Attachment[];
   identifier?: MailIdentifier;
