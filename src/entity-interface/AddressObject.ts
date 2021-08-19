@@ -1,6 +1,6 @@
 import { AddressItem } from './AddressItem';
 export interface AddressObject {
-  value?: AddressItem;
+  value?: AddressItem[];
   text?: string;
   html?: string;
 }

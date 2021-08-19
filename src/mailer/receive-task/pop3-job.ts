@@ -82,6 +82,7 @@ export class Pop3Job implements Job {
         priority: parsed.priority,
         belongsTo: { id: this.accountId },
         inMailBox: MailBoxType.INBOX,
+        fromAddress: parsed.from?.value[0]?.address,
         //attachments:
       });
     await this.typeOrmService

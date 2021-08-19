@@ -2,9 +2,7 @@ import { RxUser } from './RxUser';
 import { MailReceiveConfig } from './MailReceiveConfig';
 
 
-
 export const EntityMailConfig = 'MailConfig';
-
 export interface MailConfig {
   id?: number;
   address?: string;

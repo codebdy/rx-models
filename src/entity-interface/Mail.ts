@@ -6,9 +6,7 @@ import { MailBoxType } from './MailBoxType';
 import { AddressObject } from './AddressObject';
 
 
-
 export const EntityMail = 'Mail';
-
 export interface Mail {
   id?: number;
   subject?: string;
@@ -20,7 +18,7 @@ export interface Mail {
   messageId?: string;
   inReplyTo?: string;
   replyTo?: any;
-  references?: any;
+  references?: any[];
   html?: string;
   text?: string;
   textAsHtml?: string;
@@ -29,6 +27,7 @@ export interface Mail {
   isTop?: string;
   inMailBox?: MailBoxType;
   finished?: boolean;
+  fromAddress?: string;
   belongsTo?: RxUser;
   tags?: MailTag[];
   attachments?: Attachment[];
