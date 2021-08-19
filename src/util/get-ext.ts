@@ -1,4 +1,4 @@
-export function getExt(name:string) {
+export function getExt(name: string) {
   if (!name) {
     return name;
   }

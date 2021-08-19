@@ -77,8 +77,8 @@ export class Pop3Job implements Job {
         this.mailAddress
       }/${FOLEDR_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
       if (attachementObj.related) {
-        //可能后面需要保存到一个公共目录
-        //continue;
+        //可能不需要保存
+        continue;
       }
       await this.storageService.putFileData(
         path,
