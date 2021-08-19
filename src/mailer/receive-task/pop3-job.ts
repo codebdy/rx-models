@@ -14,6 +14,7 @@ import {
 } from 'src/entity-interface/MailIdentifier';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { MailTeller } from './mail-teller';
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const POP3Client = require('poplib');
@@ -85,7 +86,7 @@ export class Pop3Job implements Job {
         textAsHtml: parsed.textAsHtml,
         priority: parsed.priority,
         belongsTo: { id: this.accountId },
-        //belongsTo:
+        inMailBox: MailBoxType.INBOX,
         //attachments:
       });
     await this.typeOrmService
