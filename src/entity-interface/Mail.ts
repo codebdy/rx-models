@@ -1,20 +1,26 @@
 import { Attachment } from './Attachment';
-import { RxMedia } from './RxMedia';
 import { MailIdentifier } from './MailIdentifier';
 import { RxUser } from './RxUser';
+
 
 export const EntityMail = 'Mail';
 
 export interface Mail {
   id?: number;
   subject?: string;
-  from?: string;
-  to?: any[];
-  text?: string;
+  from?: any;
+  to?: any;
+  cc?: any;
+  bcc?: any;
+  date?: Date;
+  messageId?: string;
+  inReplyTo?: string;
+  replyTo?: any;
+  references?: any[];
   html?: string;
-  receivedAt?: Date;
+  text?: string;
+  textAsHtml?: string;
   belongsTo?: RxUser;
   attachments?: Attachment[];
-  emlFile?: RxMedia;
   identifier?: MailIdentifier;
 }

@@ -6,6 +6,16 @@ export function convertType(type: MetaColumnType): ColumnType {
     return String;
   }
 
+  if (type === MetaColumnType.Text) {
+    return 'text';
+  }
+  if (type === MetaColumnType.MediumText) {
+    return 'mediumtext';
+  }
+  if (type === MetaColumnType.LongText) {
+    return 'longtext';
+  }
+
   if (type === MetaColumnType.Boolean) {
     return Boolean;
   }
