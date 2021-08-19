@@ -101,8 +101,13 @@ export class Pop3Job implements Job {
   }
 
   async saveMail(uidl: string, data: any) {
-    const fileName = FOLEDR_INBOX + this.mailAddress + '-' + uidl + '.eml';
-    await this.storageService.putFileData(BUCKET_MAILS, fileName, data);
+    const fileName = this.mailAddress + '-' + uidl + '.eml';
+    await this.storageService.putFileData(
+      fileName,
+      data,
+      BUCKET_MAILS,
+      FOLEDR_INBOX,
+    );
     const parsed = await simpleParser(data);
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)

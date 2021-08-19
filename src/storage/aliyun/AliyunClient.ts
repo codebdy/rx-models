@@ -29,8 +29,11 @@ export class AliyunClient {
     return await client.putBucket(bucket, options);
   }
 
-  async putFileData(bucket: string, name: string, data: any) {
+  async putFileData(name: string, data: any, bucket: string, folder?: string) {
     client.useBucket(bucket);
-    return await client.put(name, Buffer.from(data));
+    return await client.put(
+      folder ? folder + '/' + name : name,
+      Buffer.from(data),
+    );
   }
 }

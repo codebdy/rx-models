@@ -9,7 +9,7 @@ export class StorageService {
     return await this.storageClient.checkAndCreateBacket(bucket);
   }
 
-  async putFileData(folder: string, name: string, data: any) {
-    return await this.storageClient.putFileData(folder, name, data);
+  async putFileData(name: string, data: any, bucket: string, folder?: string) {
+    return await this.storageClient.putFileData(name, data, bucket, folder);
   }
 }
