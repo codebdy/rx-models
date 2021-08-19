@@ -3,22 +3,16 @@ import { aliyunConfig } from './aliyun';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const OSS = require('ali-oss');
 
-function maikeClient(config?: any) {
-  if (config) {
-    return new OSS({ ...aliyunConfig, ...config });
-  }
-  return new OSS(aliyunConfig);
-}
+const client = new OSS(aliyunConfig);
 
 export class AliyunClient {
-  async checkAndCreateFolder(bucket: string) {
-    const client = maikeClient();
+  async checkAndCreateBacket(bucket: string) {
     try {
-      return client.getBucketInfo(bucket);
+      return await client.getBucketInfo(bucket);
     } catch (error) {
       // 指定的存储空间不存在。
-      if (error.name === 'NoSuchBucketError') {
-        return this.createBucket(bucket);
+      if (error.name === 'NoSuchBucketError' || error.code === 'NoSuchBucket') {
+        return await this.createBucket(bucket);
       } else {
         throw error;
       }
@@ -26,7 +20,6 @@ export class AliyunClient {
   }
 
   async createBucket(bucket: string) {
-    const client = maikeClient();
     const options = {
       storageClass: 'Standard', // 存储空间的默认存储类型为标准存储，即Standard。如果需要设置存储空间的存储类型为归档存储，请替换为Archive。
       acl: 'private', // 存储空间的默认读写权限为私有，即private。如果需要设置存储空间的读写权限为公共读，请替换为public-read。
@@ -36,8 +29,8 @@ export class AliyunClient {
     return await client.putBucket(bucket, options);
   }
 
-  async putFileData(folder: string, name: string, data: any) {
-    const client = maikeClient({ bucket: folder });
+  async putFileData(bucket: string, name: string, data: any) {
+    client.useBucket(bucket);
     return await client.put(name, Buffer.from(data));
   }
 }

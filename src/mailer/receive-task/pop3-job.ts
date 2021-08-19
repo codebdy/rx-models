@@ -8,7 +8,7 @@ import { JobOwner } from './job-owner';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { v4 as uuidv4 } from 'uuid';
-import { FOLDER_MAILS } from 'src/util/consts';
+import { BUCKET_MAILS, FOLEDR_INBOX } from 'src/util/consts';
 import _ = require('lodash');
 import {
   EntityMailIdentifier,
@@ -101,8 +101,8 @@ export class Pop3Job implements Job {
   }
 
   async saveMail(uidl: string, data: any) {
-    const fileName = this.mailAddress + '-' + uidl + '.eml';
-    await this.storageService.putFileData(FOLDER_MAILS, fileName, data);
+    const fileName = FOLEDR_INBOX + this.mailAddress + '-' + uidl + '.eml';
+    await this.storageService.putFileData(BUCKET_MAILS, fileName, data);
     const parsed = await simpleParser(data);
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
@@ -127,7 +127,7 @@ export class Pop3Job implements Job {
     });
 
     this.storageService
-      .checkAndCreateFolder(FOLDER_MAILS)
+      .checkAndCreateBacket(BUCKET_MAILS)
       .then(() => {
         this.readLocalMailList();
       })

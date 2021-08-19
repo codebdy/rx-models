@@ -4,4 +4,6 @@ export const SCHEMAS_DIR = 'schemas/';
 export const SALT_OR_ROUNDS = 10;
 export const RxPackage = 'RxPackage';
 export const ALIYUN_CONFIG_KEY = 'aliyun';
-export const FOLDER_MAILS = 'rxmodels-emails';
+export const BUCKET_MAILS = 'rxmodels-mails';
+export const FOLEDR_INBOX = 'inbox/';
+export const FOLEDR_SENT = 'sent/';
