@@ -1,13 +1,12 @@
-//import { aliyunConfig } from './aliyun';
+import { aliyunConfig } from './aliyun';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const OSS = require('ali-oss');
 
-
+const client = new OSS(aliyunConfig);
 
 export class AliyunClient {
   async checkAndCreateBacket(bucket: string) {
-    const client = new OSS({});
     try {
       return await client.getBucketInfo(bucket);
     } catch (error) {
@@ -21,7 +20,6 @@ export class AliyunClient {
   }
 
   async createBucket(bucket: string) {
-    const client = new OSS({});
     const options = {
       storageClass: 'Standard', // 存储空间的默认存储类型为标准存储，即Standard。如果需要设置存储空间的存储类型为归档存储，请替换为Archive。
       acl: 'private', // 存储空间的默认读写权限为私有，即private。如果需要设置存储空间的读写权限为公共读，请替换为public-read。
@@ -32,7 +30,6 @@ export class AliyunClient {
   }
 
   async putFileData(name: string, data: any, bucket: string) {
-    const client = new OSS({});
     client.useBucket(bucket);
     return await client.put(name, Buffer.from(data));
   }
