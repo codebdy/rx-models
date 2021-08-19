@@ -73,19 +73,18 @@ export class Pop3Job implements Job {
     const attachments = [];
     for (let i = 0; i < parsed.attachments.length; i++) {
       const attachementObj = parsed.attachments[i];
-      console.log(attachementObj);
-      let path =
-        `${this.mailAddress}/${FOLEDR_ATTACHMENTS}/${uidl}-${i}` +
-        getExt(attachementObj.filename);
-      if (!attachementObj.related) {
-        await this.storageService.putFileData(
-          fileName,
-          attachementObj.content,
-          BUCKET_MAILS,
-        );
-      } else {
-        path = undefined;
+      const path = `${
+        this.mailAddress
+      }/${FOLEDR_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
+      if (attachementObj.related) {
+        //可能后面需要保存到一个公共目录
+        //continue;
       }
+      await this.storageService.putFileData(
+        path,
+        attachementObj.content,
+        BUCKET_MAILS,
+      );
       attachments.push(
         await this.typeOrmService
           .getRepository<Attachment>(EntityAttachment)
