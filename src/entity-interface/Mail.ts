@@ -28,6 +28,7 @@ export interface Mail {
   inMailBox?: MailBoxType;
   finished?: boolean;
   fromAddress?: string;
+  showAsOriginal?: boolean;
   belongsTo?: RxUser;
   tags?: MailTag[];
   attachments?: Attachment[];

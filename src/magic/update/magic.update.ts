@@ -22,7 +22,10 @@ export class MagicUpdate {
     ).parse(json);
     const result = {} as any;
     for (const meta of metas) {
-      await this.validateUpdate(meta);
+      if (!this.magicService.me.isSupper) {
+        await this.validateUpdate(meta);
+      }
+
       if (meta.ids.length > 0) {
         await this.entityManager
           .createQueryBuilder()
@@ -33,7 +36,10 @@ export class MagicUpdate {
         result[meta.entity] = await this.magicService.query({
           entity: meta.entity,
           select: this.getUpdatColumnNames(meta),
-          where: `id in(${meta.ids.join(',')})`,
+          where:
+            meta.ids.length > 1
+              ? `id in(${meta.ids.join(',')})`
+              : `id = ${meta.ids[0]}`,
         });
       }
     }
@@ -45,7 +51,6 @@ export class MagicUpdate {
     for (const columnName in updateMeta.columns) {
       columnNames.push(columnName);
     }
-
     return columnNames;
   }
 

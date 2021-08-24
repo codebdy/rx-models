@@ -29,7 +29,6 @@ export class MagicQuery {
       this.abilityService,
     );
     const meta = await parser.parse(json);
-
     const qb = this.entityManager
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
@@ -54,12 +53,10 @@ export class MagicQuery {
 
     console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
-
     const result =
       meta.fetchString === TOKEN_GET_MANY
         ? ({ data, totalCount } as QueryResult)
         : ({ data } as QueryResult);
-
     return filterResult(result, meta, this.magicService.me);
   }
 }
