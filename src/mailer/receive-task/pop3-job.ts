@@ -21,9 +21,8 @@ import { MailTeller } from './mail-teller';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
 import { getExt } from 'src/util/get-ext';
+import { POP3Client } from './poplib';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
