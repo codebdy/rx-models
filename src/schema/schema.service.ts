@@ -10,10 +10,8 @@ import { convertDefault } from './convert-default';
 import { convertType } from './convert-type';
 import { EntityMeta, EntityType } from './graph-meta-interface/entity-meta';
 import { PackageMeta } from './graph-meta-interface/package-meta';
-import {
-  RelationMeta,
-  RelationType,
-} from './graph-meta-interface/relation-meta';
+import { RelationMeta } from './graph-meta-interface/relation-meta';
+import { RelationType } from './graph-meta-interface/relation-type';
 
 interface WithUuid {
   uuid: string;
@@ -154,14 +152,17 @@ export class SchemaService {
         };
       }
 
-      for (const relation of relationMetas) {
+      //处理关系，忽略继承关系
+      for (const relation of relationMetas.filter(
+        (rela) => rela.relationType !== RelationType.INHERIT,
+      )) {
         if (relation.sourceId === entityMeta.uuid) {
           relations[relation.roleOnSource] = {
             uuid: relation.uuid,
             target: entityMetas.find(
               (entity) => entity.uuid === relation.targetId,
             )?.name,
-            type: relation.relationType,
+            type: relation.relationType as any, //加any照顾继承
             inverseSide: relation.roleOnTarget,
             joinTable:
               relation.relationType === RelationType.MANY_TO_MANY &&
@@ -188,7 +189,7 @@ export class SchemaService {
             target: entityMetas.find(
               (entity) => entity.uuid === relation.sourceId,
             )?.name,
-            type: relationType,
+            type: relationType as any, //加any照顾继承
             inverseSide: relation.roleOnSource,
             joinTable:
               relationType === RelationType.MANY_TO_MANY &&
@@ -213,5 +214,21 @@ export class SchemaService {
 
       this._entitySchemas.push(entitySchemaOption);
     });
+
+    // 处理继承关系, 包含的父类部分引用，而不是副本，需要注意数据污染
+    for (const relation of relationMetas.filter(
+      (rela) => rela.relationType === RelationType.INHERIT,
+    )) {
+      const parent = this._entitySchemas.find(
+        (entity) => entity.uuid === relation.targetId,
+      );
+      const child = this._entitySchemas.find(
+        (entity) => entity.uuid === relation.sourceId,
+      );
+      if (parent && child) {
+        child.columns = { ...parent.columns, ...child.columns };
+        child.relations = { ...parent.relations, ...child.relations }
+      }
+    }
   }
 }
