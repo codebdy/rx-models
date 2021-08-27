@@ -1,5 +1,5 @@
 
-export interface AddressItem {
+export interface AddressItem  {
   name?: string;
   address?: string;
   group?: any[];

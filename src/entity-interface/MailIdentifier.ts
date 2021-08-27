@@ -1,7 +1,7 @@
 import { Mail } from './Mail';
 
 export const EntityMailIdentifier = 'MailIdentifier';
-export interface MailIdentifier {
+export interface MailIdentifier  {
   id?: number;
   uidl?: string;
   mailAddress?: string;
