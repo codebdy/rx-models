@@ -117,6 +117,7 @@ export class SchemaService {
 
   private loadPublishedSchemas() {
     const entityMetas: EntityMeta[] = [];
+    const abstractEntityMetas: EntityMeta[] = [];
     const relationMetas: RelationMeta[] = [];
     const packages: PackageMeta[] = importJsonsFromDirectories([
       SCHEMAS_DIR + '*.json',
@@ -130,6 +131,11 @@ export class SchemaService {
           (entity) =>
             entity.entityType !== EntityType.ENUM &&
             entity.entityType !== EntityType.INTERFACE,
+        ) || []),
+      );
+      abstractEntityMetas.push(
+        ...(aPackage.entities.filter(
+          (entity) => entity.entityType === EntityType.ABSTRACT,
         ) || []),
       );
       relationMetas.push(...(aPackage.relations || []));
@@ -230,5 +236,12 @@ export class SchemaService {
         child.relations = { ...parent.relations, ...child.relations };
       }
     }
+
+    //删除 Abstract class
+    this._entitySchemas = this.entitySchemas.filter((entitySchema) => {
+      return !abstractEntityMetas.find(
+        (meta) => entitySchema.uuid === meta.uuid,
+      );
+    });
   }
 }
