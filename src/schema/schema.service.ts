@@ -227,7 +227,7 @@ export class SchemaService {
       );
       if (parent && child) {
         child.columns = { ...parent.columns, ...child.columns };
-        child.relations = { ...parent.relations, ...child.relations }
+        child.relations = { ...parent.relations, ...child.relations };
       }
     }
   }
