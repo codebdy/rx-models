@@ -1,3 +1,4 @@
+import { isString } from 'lodash';
 import { DirectiveType } from 'src/directive/directive-type';
 import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
 import { SelectQueryBuilder } from 'typeorm';
@@ -27,6 +28,9 @@ export class QueryModelOrderByDirective extends QueryRelationDirective {
       throw new Error('Not assign params to "select" directive');
     }
     const orderBy = this.directiveMeta.value as any;
+    if (isString(orderBy)) {
+      throw new Error('Orderby syntax error:' + orderBy);
+    }
     for (const key in orderBy) {
       orderMap[`${this.relationMeta.alias}.${key}`] = orderBy[key];
     }

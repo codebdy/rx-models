@@ -50,9 +50,10 @@ export class MagicQueryParser {
           } else if (directiveMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
           } else {
-            const directiveClass = this.queryDirectiveService.findEntityDirectiveOrFailed(
-              directiveMeta.name,
-            );
+            const directiveClass =
+              this.queryDirectiveService.findEntityDirectiveOrFailed(
+                directiveMeta.name,
+              );
             const directive = new directiveClass(
               directiveMeta,
               this.rootMeta,
@@ -116,7 +117,7 @@ export class MagicQueryParser {
         relation = this.createAddonRelation(relationName, meta);
       }
 
-      this.paseConditionDirective(
+      this.parseConditionDirective(
         relationCondition,
         meta,
         relation.alias + '.' + fieldName,
@@ -129,10 +130,11 @@ export class MagicQueryParser {
     meta: QueryEntityMeta,
     keyStr: string,
   ) {
-    const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
-      meta.entityMeta.name,
-      jsonUnit.key,
-    );
+    const relationEntitySchemaOptions =
+      this.schemaService.findRelationEntitySchema(
+        meta.entityMeta.name,
+        jsonUnit.key,
+      );
     const keyWithoutAt = keyStr.replace('@', '');
     //如果是关联
     if (relationEntitySchemaOptions) {
@@ -155,7 +157,7 @@ export class MagicQueryParser {
       if (jsonUnit.key.split('.').length > 1) {
         meta.relationConditions.push(jsonUnit);
       } else {
-        this.paseConditionDirective(
+        this.parseConditionDirective(
           jsonUnit,
           meta,
           meta.alias + '.' + jsonUnit.key,
@@ -164,7 +166,7 @@ export class MagicQueryParser {
     }
   }
 
-  private paseConditionDirective(
+  private parseConditionDirective(
     jsonUnit: JsonUnit,
     meta: QueryEntityMeta,
     field: string,
@@ -176,9 +178,8 @@ export class MagicQueryParser {
       directiveMeta = jsonUnit.directives[0];
       directiveMeta.value = jsonUnit.value;
     }
-    const directiveClass = this.queryDirectiveService.findConditionDirectiveOrFailed(
-      directiveName,
-    );
+    const directiveClass =
+      this.queryDirectiveService.findConditionDirectiveOrFailed(directiveName);
 
     meta.pushDirective(
       new directiveClass(
@@ -203,9 +204,8 @@ export class MagicQueryParser {
     cmdMeta.value = jsonUnit.value;
 
     if (meta instanceof QueryRootMeta) {
-      const cmdClass = this.queryDirectiveService.findEntityDirectiveOrFailed(
-        name,
-      );
+      const cmdClass =
+        this.queryDirectiveService.findEntityDirectiveOrFailed(name);
       meta.pushDirective(
         new cmdClass(
           cmdMeta,
@@ -215,9 +215,8 @@ export class MagicQueryParser {
         ),
       );
     } else {
-      const cmdClass = this.queryDirectiveService.findRelationDirectiveOrFailed(
-        name,
-      );
+      const cmdClass =
+        this.queryDirectiveService.findRelationDirectiveOrFailed(name);
       meta.pushDirective(
         new cmdClass(
           cmdMeta,
@@ -244,9 +243,10 @@ export class MagicQueryParser {
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.directives.forEach((directiveMeta) => {
-      const DirectiveClass = this.queryDirectiveService.findRelationDirectiveOrFailed(
-        directiveMeta.name,
-      );
+      const DirectiveClass =
+        this.queryDirectiveService.findRelationDirectiveOrFailed(
+          directiveMeta.name,
+        );
       relation.pushDirective(
         new DirectiveClass(
           directiveMeta,
