@@ -35,7 +35,7 @@ export class QueryFieldImageUrllDirective extends QueryFieldDirective {
     }
 
     if (this.directiveMeta.value.length > 2) {
-      field = this.directiveMeta.value[2]
+      field = this.directiveMeta.value[2];
     }
 
     entity[urlField] = await this.storageService.resizeImage(
