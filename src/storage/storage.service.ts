@@ -25,7 +25,7 @@ export class StorageService {
     return await this.storageClient.creatUploadsOperateToken();
   }
 
-  async resizeImage(path: string, size: ImageSize) {
+  async resizeImage(path: string, size?: ImageSize) {
     return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);
   }
 }

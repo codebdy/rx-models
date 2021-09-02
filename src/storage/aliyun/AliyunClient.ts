@@ -42,12 +42,14 @@ export class AliyunClient {
     return await client.put(name, file.buffer);
   }
 
-  async resizeImage(path: string, bucket: string, size: ImageSize) {
+  async resizeImage(path: string, bucket: string, size?: ImageSize) {
     client.useBucket(bucket);
     return await client.signatureUrl(path, {
       expires: 36000,
       method: 'GET',
-      process: `image/resize,w_${size.width},h_${size.height}`,
+      process: size
+        ? `image/resize,w_${size.width},h_${size.height}`
+        : undefined,
     });
   }
 
