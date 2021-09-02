@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DirectiveStorage } from './directivestorage';
+import { DirectiveStorage } from './directive.storage';
 import { PostDirectiveClass } from './post/post.directive.class';
 
 @Injectable()
@@ -7,9 +7,8 @@ export class PostDirectiveService {
   constructor(private readonly directiveStorage: DirectiveStorage) {}
 
   findEntityDirectiveOrFailed(name: string): PostDirectiveClass {
-    const directiveClass = this.directiveStorage.postEntityDirectiveClasses[
-      name
-    ];
+    const directiveClass =
+      this.directiveStorage.postEntityDirectiveClasses[name];
     if (!directiveClass) {
       throw new Error(`No entity directive "${name}"`);
     }
@@ -17,9 +16,8 @@ export class PostDirectiveService {
   }
 
   findRelationDirectiveOrFailed(name: string): PostDirectiveClass {
-    const directiveClass = this.directiveStorage.postRelationDirectiveClasses[
-      name
-    ];
+    const directiveClass =
+      this.directiveStorage.postRelationDirectiveClasses[name];
     if (!directiveClass) {
       throw new Error(`No relation directive "${name}"`);
     }

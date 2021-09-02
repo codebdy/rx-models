@@ -10,6 +10,7 @@ import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-coun
 import { makeRelationsBuilder } from './traverser/make-relations-builder';
 import { makeEffectCountQueryBuilder } from './traverser/make-effect-count-query-builder';
 import { filterResult } from './traverser/filter-result';
+import { StorageService } from 'src/storage/storage.service';
 
 export class MagicQuery {
   constructor(
@@ -17,6 +18,7 @@ export class MagicQuery {
     private readonly abilityService: AbilityService,
     private readonly queryDirectiveService: QueryDirectiveService,
     private readonly schemaService: SchemaService,
+    private readonly storageService: StorageService,
     private readonly magicService: MagicService,
   ) {}
 
@@ -27,6 +29,7 @@ export class MagicQuery {
       this.schemaService,
       this.magicService,
       this.abilityService,
+      this.storageService,
     );
     const meta = await parser.parse(json);
     const qb = this.entityManager

@@ -6,6 +6,7 @@ import { PostDirectiveClass } from './post/post.directive.class';
 import { QueryDirectiveClass } from './query/query.directive.class';
 import { QueryConditionDirectiveClass } from './query/query.condition-directive-class';
 import { QueryRelationDirectiveClass } from './query/query.relation-directive-class';
+import { QueryFieldDirectiveClass } from './query/query.field-directive.class';
 
 @Injectable()
 export class DirectiveStorage implements OnModuleInit {
@@ -17,6 +18,9 @@ export class DirectiveStorage implements OnModuleInit {
   } = {} as any;
   queryConditionDirectiveClasses: {
     [key: string]: QueryConditionDirectiveClass;
+  } = {} as any;
+  queryFieldDirectiveClasses: {
+    [key: string]: QueryFieldDirectiveClass;
   } = {} as any;
 
   postEntityDirectiveClasses: { [key: string]: PostDirectiveClass } = {} as any;
@@ -31,12 +35,11 @@ export class DirectiveStorage implements OnModuleInit {
   }
 
   async loadDirectiveClasses() {
-    const directiveClasses:
-      | QueryDirectiveClass[]
-      | PostDirectiveClass[] = importDirectivesFromDirectories([
-      'dist/directives/*.js',
-      'directives/*.js',
-    ]);
+    const directiveClasses: QueryDirectiveClass[] | PostDirectiveClass[] =
+      importDirectivesFromDirectories([
+        'dist/directives/*.js',
+        'directives/*.js',
+      ]);
     directiveClasses.forEach((directiveClass) => {
       const directiveName = directiveClass.directiveName;
       if (
@@ -67,6 +70,16 @@ export class DirectiveStorage implements OnModuleInit {
           `Query condition directive ${directiveName} duplicated!`,
         );
         this.queryConditionDirectiveClasses[directiveName] = directiveClass;
+      }
+
+      if (
+        directiveClass.directiveType === DirectiveType.QUERY_FIELD_DIRECTIVE
+      ) {
+        console.assert(
+          !this.queryFieldDirectiveClasses[directiveName],
+          `Query field directive ${directiveName} duplicated!`,
+        );
+        this.queryFieldDirectiveClasses[directiveName] = directiveClass;
       }
 
       if (

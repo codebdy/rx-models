@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DirectiveStorage } from './directivestorage';
+import { DirectiveStorage } from './directive.storage';
 import { DeleteDirectiveService } from './delete-directive.service';
 import { PostDirectiveService } from './post-directive.service';
 import { QueryDirectiveService } from './query-directive.service';

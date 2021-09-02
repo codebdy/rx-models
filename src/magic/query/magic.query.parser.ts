@@ -6,6 +6,7 @@ import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 import { SchemaService } from 'src/schema/schema.service';
+import { StorageService } from 'src/storage/storage.service';
 import { EntitySchemaRelationOptions } from 'typeorm';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
@@ -25,6 +26,7 @@ export class MagicQueryParser {
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
+    private readonly storageService: StorageService,
   ) {}
 
   async parse(json: any): Promise<QueryRootMeta> {
@@ -203,11 +205,26 @@ export class MagicQueryParser {
     const cmdMeta = new DirectiveMeta(name);
     cmdMeta.value = jsonUnit.value;
 
+    const fieldDirectiveClass =
+      this.queryDirectiveService.findFieldDirective(name);
+    if (fieldDirectiveClass) {
+      meta.pushDirective(
+        new fieldDirectiveClass(
+          cmdMeta,
+          this.rootMeta,
+          this.magicService,
+          this.schemaService,
+          this.storageService,
+        ),
+      );
+      return;
+    }
+
     if (meta instanceof QueryRootMeta) {
-      const cmdClass =
+      const directiveClass =
         this.queryDirectiveService.findEntityDirectiveOrFailed(name);
       meta.pushDirective(
-        new cmdClass(
+        new directiveClass(
           cmdMeta,
           this.rootMeta,
           this.magicService,
@@ -215,10 +232,10 @@ export class MagicQueryParser {
         ),
       );
     } else {
-      const cmdClass =
+      const directiveClass =
         this.queryDirectiveService.findRelationDirectiveOrFailed(name);
       meta.pushDirective(
-        new cmdClass(
+        new directiveClass(
           cmdMeta,
           this.rootMeta,
           meta as QueryRelationMeta,

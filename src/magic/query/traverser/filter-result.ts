@@ -45,7 +45,9 @@ function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
     }
   }
   //进行directive过滤
-
+  meta.directives.forEach((directive) => {
+    instance = directive.filterEntity(instance);
+  });
   //递归处理关联
   for (const relation of meta.relations) {
     const relationInstance = instance[relation.name];

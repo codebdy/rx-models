@@ -46,6 +46,15 @@ export class QueryDirective {
   }
 
   /**
+   * 过滤实体
+   * @param entity 传入实体
+   * @returns 过滤后实体
+   */
+  filterEntity(entity: any): any {
+    return entity;
+  }
+
+  /**
    * 查询附带的修改操作，用于增加浏览次数，更改已读标志等功能
    * 该操作对查询结果有影响，所以在查询前调用
    * @param model 实体的类名

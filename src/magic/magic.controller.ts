@@ -30,6 +30,7 @@ import { MagicUploadService } from './upload/magic.upload.service';
 import { getFileName, getFileType } from './upload/file-upload.utils';
 import { RxMedia } from 'src/entity-interface/RxMedia';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { StorageService } from 'src/storage/storage.service';
 
 @Controller()
 export class MagicController {
@@ -40,6 +41,7 @@ export class MagicController {
     private readonly deleteDirectiveService: DeleteDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly uploadService: MagicUploadService,
+    protected readonly storageService: StorageService,
   ) {}
 
   /**
@@ -329,6 +331,7 @@ export class MagicController {
       this.postDirectiveService,
       this.deleteDirectiveService,
       this.schemaService,
+      this.storageService,
     );
   }
 }
