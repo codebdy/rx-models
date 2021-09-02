@@ -5,14 +5,14 @@ import { FOLDER_UPLOADS } from 'src/util/consts';
 
 @Injectable()
 export class MagicUploadService {
-  constructor(private readonly storageService: StorageService){}
+  constructor(private readonly storageService: StorageService) {}
 
-  async saveFile(file: any, fileName: string) {
+  async saveFile(file: Express.Multer.File, fileName: string) {
     await this.storageService.checkAndCreateBucket(FOLDER_UPLOADS);
-    await this.storageService.putFileData(fileName, file, FOLDER_UPLOADS);
+    await this.storageService.putFile(fileName, file, FOLDER_UPLOADS);
   }
 
-  async saveThumbnail(file: any) {
+  async saveThumbnail(file: Express.Multer.File) {
     const thumbnail = `/thumbnails/${file.filename}`;
     if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
       sharp(file.path)

@@ -27,7 +27,7 @@ export const fileName = (req: any, file: any, cb: any) => {
   cb(null, getFileName(file));
 };
 
-export const getFileName = (file: any) => {
+export const getFileName = (file: Express.Multer.File) => {
   return `${uuid()}${extname(file.originalname)}`;
 };
 

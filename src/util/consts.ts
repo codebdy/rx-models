@@ -8,4 +8,4 @@ export const BUCKET_MAILS = 'rxmodels-mails';
 export const FOLDER_INBOX = 'inbox';
 export const FOLDER_SENT = 'sent';
 export const FOLDER_ATTACHMENTS = 'attachments';
-export const FOLDER_UPLOADS = 'uploads';
+export const FOLDER_UPLOADS = 'rxmodels-uploads';

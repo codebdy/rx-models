@@ -9,6 +9,7 @@ import {
   Request,
   //UseInterceptors,
   UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilityService } from 'src/magic/ability.service';
@@ -28,6 +29,7 @@ import { RxUser } from 'src/entity-interface/RxUser';
 import { MagicUploadService } from './upload/magic.upload.service';
 import { getFileName, getFileType } from './upload/file-upload.utils';
 import { RxMedia } from 'src/entity-interface/RxMedia';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class MagicController {
@@ -268,7 +270,12 @@ export class MagicController {
       fileFilter: fileFilter,
     }),
   )*/
-  async uploadMedia(@Request() req, @UploadedFile() file, @Body() body: any) {
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadMedia(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: any,
+  ) {
     try {
       await sleep(500);
       let result: any;
@@ -287,13 +294,13 @@ export class MagicController {
           console.debug(file, body);
           const { entity: entityName, ...modelData } = body;
           const model = modelData as RxMedia;
-          model.fileName = file.filename;
+          model.name = modelData.name || file.originalname;
+          model.fileName = file.originalname;
           model.mimetype = file.mimetype;
           model.path = fileName;
           model.size = file.size;
           model.mediaType = getFileType(file);
 
-          console.debug(model);
           result = await entityService.post({ [entityName]: model });
         },
       );

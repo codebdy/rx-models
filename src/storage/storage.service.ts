@@ -13,6 +13,10 @@ export class StorageService {
     return await this.storageClient.putFileData(name, data, bucket);
   }
 
+  async putFile(name: string, file: Express.Multer.File, bucket: string){
+    return await this.storageClient.putFile(name, file, bucket);
+  }
+
   async getTokenObject() {
     return await this.storageClient.creatUploadsOperateToken();
   }

@@ -37,6 +37,11 @@ export class AliyunClient {
     return await client.put(name, Buffer.from(data));
   }
 
+  async putFile(name: string, file: Express.Multer.File, bucket: string) {
+    client.useBucket(bucket);
+    return await client.put(name, file.buffer);
+  }
+
   //客户端上传OSS用的TOKEN，本方法暂时没用
   async creatUploadsOperateToken() {
     await this.checkAndCreateBucket(FOLDER_UPLOADS);
