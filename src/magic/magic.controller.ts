@@ -7,7 +7,7 @@ import {
   Post,
   UseGuards,
   Request,
-  UseInterceptors,
+  //UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -22,10 +22,12 @@ import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
 import { RxUser } from 'src/entity-interface/RxUser';
-import { diskStorage } from 'multer';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter, fileName } from './upload/file-upload.utils';
+//import { diskStorage } from 'multer';
+//import { FileInterceptor } from '@nestjs/platform-express';
+//import { fileFilter, fileName } from './upload/file-upload.utils';
 import { MagicUploadService } from './upload/magic.upload.service';
+import { getFileName, getFileType } from './upload/file-upload.utils';
+import { RxMedia } from 'src/entity-interface/RxMedia';
 
 @Controller()
 export class MagicController {
@@ -257,7 +259,7 @@ export class MagicController {
    */
   @UseGuards(AuthGuard())
   @Post('upload')
-  @UseInterceptors(
+  /*@UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './public/uploads',
@@ -265,7 +267,7 @@ export class MagicController {
       }),
       fileFilter: fileFilter,
     }),
-  )
+  )*/
   async uploadMedia(@Request() req, @UploadedFile() file, @Body() body: any) {
     try {
       await sleep(500);
@@ -279,16 +281,20 @@ export class MagicController {
             entityManger,
             req.user,
           );
-          this.uploadService.saveThumbnail(file);
+          const fileName = getFileName(file);
+          await this.uploadService.saveFile(file, fileName);
+          //this.uploadService.saveThumbnail(file);
           console.debug(file, body);
           const { entity: entityName, ...modelData } = body;
-          modelData.fileName = file.filename;
-          modelData.mimetype = file.mimetype;
-          modelData.path = file.path;
-          modelData.size = file.size;
+          const model = modelData as RxMedia;
+          model.fileName = file.filename;
+          model.mimetype = file.mimetype;
+          model.path = fileName;
+          model.size = file.size;
+          model.mediaType = getFileType(file);
 
-          console.debug(modelData);
-          result = await entityService.post({ [entityName]: modelData });
+          console.debug(model);
+          result = await entityService.post({ [entityName]: model });
         },
       );
 
