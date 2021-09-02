@@ -42,6 +42,14 @@ export class AliyunClient {
     return await client.put(name, file.buffer);
   }
 
+  async getFilePath(path: string, bucket: string) {
+    client.useBucket(bucket);
+    return await client.signatureUrl(path, {
+      expires: 3600,
+      method: 'GET',
+    });
+  }
+
   //客户端上传OSS用的TOKEN，本方法暂时没用
   async creatUploadsOperateToken() {
     await this.checkAndCreateBucket(FOLDER_UPLOADS);
