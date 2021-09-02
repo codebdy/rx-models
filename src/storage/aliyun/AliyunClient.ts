@@ -1,12 +1,15 @@
-import { aliyunConfig } from './aliyun';
+import { FOLDER_UPLOADS } from 'src/util/consts';
+import { aliyunConfig, stsConfig } from './aliyun';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const OSS = require('ali-oss');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { STS } = require('ali-oss');
 
 const client = new OSS(aliyunConfig);
 
 export class AliyunClient {
-  async checkAndCreateBacket(bucket: string) {
+  async checkAndCreateBucket(bucket: string) {
     try {
       return await client.getBucketInfo(bucket);
     } catch (error) {
@@ -32,5 +35,26 @@ export class AliyunClient {
   async putFileData(name: string, data: any, bucket: string) {
     client.useBucket(bucket);
     return await client.put(name, Buffer.from(data));
+  }
+
+  //客户端上传OSS用的TOKEN，本方法暂时没用
+  async creatUploadsOperateToken() {
+    await this.checkAndCreateBucket(FOLDER_UPLOADS);
+    const client = new STS({
+      accessKeyId: aliyunConfig.accessKeyId,
+      accessKeySecret: aliyunConfig.accessKeySecret,
+    });
+
+    const result = await client.assumeRole(
+      stsConfig.roleArn,
+      stsConfig.policy,
+      stsConfig.tokenExpireTime,
+    );
+    return {
+      AccessKeyId: result.credentials.AccessKeyId,
+      AccessKeySecret: result.credentials.AccessKeySecret,
+      SecurityToken: result.credentials.SecurityToken,
+      Expiration: result.credentials.Expiration,
+    };
   }
 }

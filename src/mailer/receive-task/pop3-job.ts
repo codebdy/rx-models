@@ -9,8 +9,8 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import {
   BUCKET_MAILS,
-  FOLEDR_ATTACHMENTS,
-  FOLEDR_INBOX,
+  FOLDER_ATTACHMENTS,
+  FOLDER_INBOX,
 } from 'src/util/consts';
 import {
   EntityMailIdentifier,
@@ -65,7 +65,7 @@ export class Pop3Job implements Job {
   }
 
   async saveMail(uidl: string, data: any) {
-    const fileName = `${this.mailAddress}/${FOLEDR_INBOX}/${uidl}.eml`;
+    const fileName = `${this.mailAddress}/${FOLDER_INBOX}/${uidl}.eml`;
     await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
     const parsed = await simpleParser(data);
 
@@ -74,7 +74,7 @@ export class Pop3Job implements Job {
       const attachementObj = parsed.attachments[i];
       const path = `${
         this.mailAddress
-      }/${FOLEDR_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
+      }/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
       if (attachementObj.related) {
         //可能不需要保存
         continue;
@@ -135,7 +135,7 @@ export class Pop3Job implements Job {
     });
 
     this.storageService
-      .checkAndCreateBacket(BUCKET_MAILS)
+      .checkAndCreateBucket(BUCKET_MAILS)
       .then(() => {
         this.readLocalMailList();
       })

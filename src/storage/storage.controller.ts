@@ -1,14 +1,25 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { StorageService } from './storage.service';
 
 @Controller('storage')
 export class StorageController {
-  /**
-   * @returns 用户给邮件password字段加密的KEY
-   */
+  constructor(private service: StorageService) {}
+  //客户端上传OSS用的TOKEN，本方法暂时没用
   @UseGuards(AuthGuard())
-  @Get('stat')
-  stat() {
-    return {};
+  @Get('get-token-object')
+  async getTokenObject() {
+    try {
+      return await this.service.getTokenObject();
+    } catch (error: any) {
+      console.error('get-token-object error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 }
