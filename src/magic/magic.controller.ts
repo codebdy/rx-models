@@ -291,15 +291,18 @@ export class MagicController {
           const fileName = getFileName(file);
           await this.uploadService.saveFile(file, fileName);
           //this.uploadService.saveThumbnail(file);
-          console.debug(file, body);
           const { entity: entityName, ...modelData } = body;
-          const model = modelData as RxMedia;
+          const model = {} as RxMedia;
           model.name = modelData.name || file.originalname;
           model.fileName = file.originalname;
           model.mimetype = file.mimetype;
           model.path = fileName;
           model.size = file.size;
           model.mediaType = getFileType(file);
+          model.folder =
+            !modelData.folder || modelData.folder === 'null'
+              ? null
+              : modelData.folder;
 
           result = await entityService.post({ [entityName]: model });
         },

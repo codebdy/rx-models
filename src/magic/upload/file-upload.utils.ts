@@ -32,7 +32,8 @@ export const getFileName = (file: Express.Multer.File) => {
 };
 
 export const getFileType = (file: any): RxMediaType => {
-  const ext = extname(file.originalname);
+  const ext = extname(file.originalname).replace('.', '');
+
   if (
     ext === 'doc' ||
     ext === 'docx' ||
