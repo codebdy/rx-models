@@ -7,11 +7,10 @@ import { StorageService } from 'src/storage/storage.service';
 import { DirectiveMeta } from '../directive.meta';
 import { QueryDirective } from './query.directive';
 
-export class QueryEntityDirective extends QueryDirective {
+export class QueryFieldDirective extends QueryDirective {
   constructor(
     protected readonly directiveMeta: DirectiveMeta,
     protected readonly rootMeta: QueryRootMeta,
-    protected readonly relationMeta: QueryRelationMeta,
     protected readonly magicService: MagicService,
     protected readonly schemaService: SchemaService,
     protected readonly storageService: StorageService,

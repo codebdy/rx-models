@@ -50,7 +50,7 @@ export class QueryDirective {
    * @param entity 传入实体
    * @returns 过滤后实体
    */
-  filterEntity(entity: any): any {
+  async filterEntity(entity: any): Promise<any> {
     return entity;
   }
 

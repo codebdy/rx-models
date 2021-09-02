@@ -1,7 +1,8 @@
 import { DirectiveType } from 'src/directive/directive-type';
-import { QueryEntityDirective } from 'src/directive/query/query.field-directive';
+import { QueryFieldDirective } from 'src/directive/query/query.field-directive';
+import { DEFAULT_FILE_PATH_FIELD, THUMBNAIL_SIZE } from 'src/util/consts';
 
-export class QueryEntityImageThumbnailDirective extends QueryEntityDirective {
+export class QueryEntityImageThumbnailDirective extends QueryFieldDirective {
   static description = `获取RxMedia对象缩略图，网址附加到thumbnail字段`;
 
   static version = '1.0';
@@ -10,7 +11,12 @@ export class QueryEntityImageThumbnailDirective extends QueryEntityDirective {
 
   static directiveName = 'thumbnail';
 
-  filterEntity(entity: any): any {
+  async filterEntity(entity: any): Promise<any> {
+    const field = this.directiveMeta.value[0] || DEFAULT_FILE_PATH_FIELD;
+    entity.thumbnail = await this.storageService.resizeImage(
+      entity[field],
+      THUMBNAIL_SIZE,
+    );
     return entity;
   }
 }

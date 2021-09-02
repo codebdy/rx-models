@@ -208,15 +208,14 @@ export class MagicQueryParser {
     const fieldDirectiveClass =
       this.queryDirectiveService.findFieldDirective(name);
     if (fieldDirectiveClass) {
-      meta.pushDirective(
-        new fieldDirectiveClass(
-          cmdMeta,
-          this.rootMeta,
-          this.magicService,
-          this.schemaService,
-          this.storageService,
-        ),
+      const directive = new fieldDirectiveClass(
+        cmdMeta,
+        this.rootMeta,
+        this.magicService,
+        this.schemaService,
+        this.storageService,
       );
+      meta.pushDirective(directive);
       return;
     }
 

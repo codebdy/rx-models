@@ -3,17 +3,17 @@ import { QueryResult } from 'src/magic-meta/query/query-result';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 
-export function filterResult(
+export async function filterResult(
   result: QueryResult,
   rootMeta: QueryRootMeta,
   me: RxUser,
 ) {
   if (Array.isArray(result.data)) {
     for (const instance of result.data) {
-      filterOneInstance(instance, rootMeta, me);
+      await filterOneInstance(instance, rootMeta, me);
     }
   } else {
-    filterOneInstance(result.data, rootMeta, me);
+    await filterOneInstance(result.data, rootMeta, me);
   }
   //进行directive过滤
   for (const directive of rootMeta.directives) {
@@ -22,7 +22,11 @@ export function filterResult(
   return result;
 }
 
-function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
+async function filterOneInstance(
+  instance: any,
+  meta: QueryEntityMeta,
+  me: RxUser,
+) {
   if (!instance) {
     return instance;
   }
@@ -45,18 +49,18 @@ function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
     }
   }
   //进行directive过滤
-  meta.directives.forEach((directive) => {
-    instance = directive.filterEntity(instance);
-  });
+  for (const directive of meta.directives) {
+    instance = await directive.filterEntity(instance);
+  }
   //递归处理关联
   for (const relation of meta.relations) {
     const relationInstance = instance[relation.name];
     if (Array.isArray(relationInstance)) {
       for (const obj of relationInstance) {
-        filterOneInstance(obj, relation, me);
+        await filterOneInstance(obj, relation, me);
       }
     } else {
-      filterOneInstance(relationInstance, relation, me);
+      await filterOneInstance(relationInstance, relation, me);
     }
   }
   return instance;

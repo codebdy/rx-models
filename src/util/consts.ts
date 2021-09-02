@@ -9,3 +9,13 @@ export const FOLDER_INBOX = 'inbox';
 export const FOLDER_SENT = 'sent';
 export const FOLDER_ATTACHMENTS = 'attachments';
 export const FOLDER_UPLOADS = 'rxmodels-uploads';
+export const THUMBNAIL_SIZE = {
+  width: 200,
+  height: 200,
+};
+export const DEFAULT_FILE_PATH_FIELD = 'path';
+
+export interface ImageSize {
+  width: number;
+  height: number;
+}

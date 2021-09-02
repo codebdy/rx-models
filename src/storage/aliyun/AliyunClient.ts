@@ -1,4 +1,4 @@
-import { FOLDER_UPLOADS } from 'src/util/consts';
+import { FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
 import { aliyunConfig, stsConfig } from './aliyun';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -42,11 +42,12 @@ export class AliyunClient {
     return await client.put(name, file.buffer);
   }
 
-  async getFilePath(path: string, bucket: string) {
+  async resizeImage(path: string, bucket: string, size: ImageSize) {
     client.useBucket(bucket);
     return await client.signatureUrl(path, {
-      expires: 3600,
+      expires: 36000,
       method: 'GET',
+      process: `image/resize,w_${size.width},h_${size.height}`,
     });
   }
 
