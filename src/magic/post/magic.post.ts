@@ -27,6 +27,10 @@ export class MagicPost {
       this.abilityService,
     ).parse(json);
 
+    if (instances.length === 0) {
+      throw new Error('No data is given for save!');
+    }
+
     if (this.magicService.me.isDemo) {
       throw new Error('Demo account can not change data');
     }
