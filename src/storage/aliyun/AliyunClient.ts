@@ -1,5 +1,7 @@
 import { FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
 import { aliyunConfig, stsConfig } from './aliyun';
+import { expaireTime } from './consts';
+import { urlCache } from './UrlCache';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const OSS = require('ali-oss');
@@ -43,14 +45,26 @@ export class AliyunClient {
   }
 
   async resizeImage(path: string, bucket: string, size?: ImageSize) {
+    const urlInfo = urlCache.getUrlInfo(path, bucket, size);
+    if (urlInfo) {
+      return urlInfo.url;
+    }
     client.useBucket(bucket);
-    return await client.signatureUrl(path, {
-      expires: 36000,
+    const url = await client.signatureUrl(path, {
+      expires: expaireTime,
       method: 'GET',
       process: size
         ? `image/resize,w_${size.width},h_${size.height}`
         : undefined,
     });
+    urlCache.addUrl({
+      path: path,
+      bucket: bucket,
+      size: size,
+      time: new Date(),
+      url: url,
+    });
+    return url;
   }
 
   //客户端上传OSS用的TOKEN，本方法暂时没用
