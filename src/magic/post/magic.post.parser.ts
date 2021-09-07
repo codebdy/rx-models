@@ -93,9 +93,8 @@ export class MagicPostParser {
         entity,
       );
       if (relationModel) {
-        instanceMeta.relations[
-          jsonUnit.key
-        ] = await this.parseRelationMetaCollection(relationModel, jsonUnit);
+        instanceMeta.relations[jsonUnit.key] =
+          await this.parseRelationMetaCollection(relationModel, jsonUnit);
       } else {
         instanceMeta.meta[keyStr] = value;
       }
@@ -139,9 +138,8 @@ export class MagicPostParser {
     }
 
     jsonUnit.directives.forEach((directiveMeta) => {
-      const directiveClass = this.directiveService.findRelationDirectiveOrFailed(
-        directiveMeta.name,
-      );
+      const directiveClass =
+        this.directiveService.findRelationDirectiveOrFailed(directiveMeta.name);
       relationMetaCollection.directives.push(
         new directiveClass(directiveMeta, this.magicService),
       );
@@ -157,15 +155,20 @@ export class MagicPostParser {
     expand: boolean,
   ) {
     if (isNaN(entityOrId)) {
-      relationMetaCollection.entities.push(
-        await this.parseInsanceMeta(
-          relationMetaCollection.entity,
-          entityOrId,
-          abilities,
-          entityMeta,
-          expand,
-        ),
-      );
+      //如果对象只有一个ID
+      if (Object.keys(entityOrId).length === 1 && entityOrId.id) {
+        relationMetaCollection.ids.push(entityOrId.id);
+      } else {
+        relationMetaCollection.entities.push(
+          await this.parseInsanceMeta(
+            relationMetaCollection.entity,
+            entityOrId,
+            abilities,
+            entityMeta,
+            expand,
+          ),
+        );
+      }
     } else {
       relationMetaCollection.ids.push(entityOrId);
     }

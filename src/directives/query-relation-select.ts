@@ -1,6 +1,5 @@
 import { DirectiveType } from 'src/directive/directive-type';
 import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
-//import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryModelTakeDirective extends QueryRelationDirective {
   static description = `
