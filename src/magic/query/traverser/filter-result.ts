@@ -9,11 +9,11 @@ export async function filterResult(
   me: RxUser,
 ) {
   if (Array.isArray(result.data)) {
-    for (const instance of result.data) {
-      await filterOneInstance(instance, rootMeta, me);
+    for (let i = 0; i < result.data.length; i++) {
+      result.data[i] = await filterOneInstance(result.data[i], rootMeta, me);
     }
   } else {
-    await filterOneInstance(result.data, rootMeta, me);
+    result.data = await filterOneInstance(result.data, rootMeta, me);
   }
   //进行directive过滤
   for (const directive of rootMeta.directives) {
@@ -54,13 +54,21 @@ async function filterOneInstance(
   }
   //递归处理关联
   for (const relation of meta.relations) {
-    const relationInstance = instance[relation.name];
-    if (Array.isArray(relationInstance)) {
-      for (const obj of relationInstance) {
-        await filterOneInstance(obj, relation, me);
+    const relationInstances = instance[relation.name];
+    if (Array.isArray(relationInstances)) {
+      for (let i = 0; i < relationInstances.length; i++) {
+        relationInstances[i] = await filterOneInstance(
+          relationInstances[i],
+          relation,
+          me,
+        );
       }
     } else {
-      await filterOneInstance(relationInstance, relation, me);
+      instance[relation.name] = await filterOneInstance(
+        instance[relation.name],
+        relation,
+        me,
+      );
     }
   }
   return instance;
