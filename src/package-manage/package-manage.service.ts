@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { RxPackage } from 'src/entity/RxPackage';
 import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { RxPackage, SCHEMAS_DIR } from 'src/util/consts';
+import { SCHEMAS_DIR } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 @Injectable()
 export class PackageManageService {
   constructor(private readonly typeormSerivce: TypeOrmService) {}
 
   public async savePackage(aPackage: PackageMeta) {
-    const packageRepository = this.typeormSerivce.connection.getRepository<PackageMeta>(
-      RxPackage,
-    );
+    const packageRepository =
+      this.typeormSerivce.connection.getRepository<PackageMeta>(RxPackage);
     let systemPackage = await packageRepository.findOne({
       where: { uuid: aPackage.uuid },
     });
