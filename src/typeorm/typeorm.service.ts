@@ -54,6 +54,8 @@ export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
   async restart() {
     this.closeConection();
     this._connectionNumber++;
+    //重新加载模式
+    this.schemaService.reload();
     await this.createConnection();
   }
 

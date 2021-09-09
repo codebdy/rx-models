@@ -33,6 +33,10 @@ export class SchemaService {
     this.loadPublishedSchemas();
   }
 
+  public reload() {
+    this.loadPublishedSchemas();
+  }
+
   public get entitySchemas() {
     return this._entitySchemas;
   }
@@ -116,6 +120,7 @@ export class SchemaService {
   }
 
   private loadPublishedSchemas() {
+    this._entitySchemas = [];
     const entityMetas: EntityMeta[] = [];
     const abstractEntityMetas: EntityMeta[] = [];
     const relationMetas: RelationMeta[] = [];
