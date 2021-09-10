@@ -26,6 +26,7 @@ async function filterOneInstance(
   instance: any,
   meta: QueryEntityMeta,
   me: RxUser,
+  parentIntance?: any,
 ) {
   if (!instance) {
     return instance;
@@ -50,7 +51,7 @@ async function filterOneInstance(
   }
   //进行directive过滤
   for (const directive of meta.directives) {
-    instance = await directive.filterEntity(instance);
+    instance = await directive.filterEntity(instance, parentIntance);
   }
   //递归处理关联
   for (const relation of meta.relations) {
@@ -61,6 +62,7 @@ async function filterOneInstance(
           relationInstances[i],
           relation,
           me,
+          instance,
         );
       }
     } else {
@@ -68,6 +70,7 @@ async function filterOneInstance(
         instance[relation.name],
         relation,
         me,
+        instance,
       );
     }
   }
