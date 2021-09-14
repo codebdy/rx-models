@@ -26,9 +26,11 @@ export class PostRelationCascadeDirective extends PostDirective {
       [relationMetaCollection.relationName]: {},
       '@getOne': true,
     });
-    this.oldRelationIds = data.data[relationMetaCollection.relationName]?.map(
-      (relation: { id: number }) => relation.id,
-    );
+    if (data.data) {
+      this.oldRelationIds = data.data[relationMetaCollection.relationName]?.map(
+        (relation: { id: number }) => relation.id,
+      );
+    }
   }
 
   //该命令的权限通过magicService完成
