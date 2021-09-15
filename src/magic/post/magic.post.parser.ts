@@ -1,3 +1,4 @@
+import { DirectiveMeta } from 'src/directive/directive.meta';
 import { PostDirectiveService } from 'src/directive/post-directive.service';
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { MagicService } from 'src/magic-meta/magic.service';
@@ -93,6 +94,15 @@ export class MagicPostParser {
         entity,
       );
       if (relationModel) {
+        //如果是组合添加cascade指令
+        if (
+          this.schemaService.isCombinationRole(entityMeta.uuid, jsonUnit.key)
+        ) {
+          const cascade = 'cascade';
+          if (!jsonUnit.directives.find((dir) => dir.name === cascade)) {
+            jsonUnit.directives.push(new DirectiveMeta(cascade));
+          }
+        }
         instanceMeta.relations[jsonUnit.key] =
           await this.parseRelationMetaCollection(relationModel, jsonUnit);
       } else {
@@ -144,6 +154,7 @@ export class MagicPostParser {
         new directiveClass(directiveMeta, this.magicService),
       );
     });
+
     return relationMetaCollection;
   }
 

@@ -140,6 +140,26 @@ export class SchemaService {
     return relations;
   }
 
+  public isCombinationRole(entityUuid: string, roleName: string) {
+    const combinationRelations =
+      this.getEntityCombinationRelationMetas(entityUuid);
+    for (const relation of combinationRelations) {
+      if (
+        relation.sourceId === entityUuid &&
+        relation.roleOnSource === roleName
+      ) {
+        return true;
+      }
+      if (
+        relation.targetId === entityUuid &&
+        relation.roleOnTarget === roleName
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private loadPublishedSchemas() {
     this._entitySchemas = [];
     const entityMetas: EntityMeta[] = [];

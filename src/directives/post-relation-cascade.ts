@@ -42,8 +42,11 @@ export class PostRelationCascadeDirective extends PostDirective {
     const deleteIds = this.oldRelationIds.filter(
       (id) => !savedInstances.find((instance) => instance.id === id),
     );
-    await this.magicService.delete({
-      [relationMetaCollection.entity]: deleteIds,
-    });
+
+    if (deleteIds.length > 0) {
+      await this.magicService.delete({
+        [relationMetaCollection.entity]: deleteIds,
+      });
+    }
   }
 }
