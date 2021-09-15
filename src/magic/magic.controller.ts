@@ -148,7 +148,7 @@ export class MagicController {
   async post(@Request() req, @Body() body: any) {
     try {
       await sleep(500);
-      console.debug(JSON.stringify(body, null, 2));
+      console.debug(body);
       let result: any;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {

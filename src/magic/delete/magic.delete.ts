@@ -34,27 +34,76 @@ export class MagicDelete {
     return deletedInstances;
   }
 
+  private getCombinationRelationNames(entityName: string) {
+    const names: { roleName: string; entityName: string }[] = [];
+    const entity = this.schemaService.getEntityMetaOrFailed(entityName);
+    const combinationRelations =
+      this.schemaService.getEntityCombinationRelationMetas(entity.uuid);
+    for (const relation of combinationRelations) {
+      if (relation.sourceId === entity.uuid) {
+        names.push({
+          roleName: relation.roleOnSource,
+          entityName: this.schemaService.getEntityMetaOrFailedByUuid(
+            relation.targetId,
+          ).name,
+        });
+      }
+      if (relation.targetId === entity.uuid) {
+        names.push({
+          roleName: relation.roleOnTarget,
+          entityName: this.schemaService.getEntityMetaOrFailedByUuid(
+            relation.sourceId,
+          ).name,
+        });
+      }
+    }
+
+    return names;
+  }
+
+  private getCombinationInstancesToDelete(instances: any[]) {
+    const deleteJson = {};
+    return deleteJson;
+  }
+
   private async deleteOne(meta: DeleteMeta) {
     if (!this.magicService.me.isSupper) {
       await this.validateDelete(meta);
     }
     const entityRepository = this.entityManager.getRepository(meta.entity);
     const relationMetas = entityRepository.metadata.ownRelations;
-    const qb = entityRepository.createQueryBuilder(meta.entity);
-    const entites = await qb.whereInIds(meta.ids).getMany();
+
+    const queryJson = {
+      entity: meta.entity,
+    } as any;
+
+    if (meta.ids.length > 1) {
+      queryJson.where = `id in (${meta.ids.join(',')})`;
+    } else if (meta.ids.length === 1) {
+      queryJson.id = meta.ids[0];
+    } else {
+      throw new Error('No data to delete');
+    }
+
+    for (const relationData of this.getCombinationRelationNames(meta.entity)) {
+      queryJson[relationData.roleName] = {};
+    }
+
+    const instances = (await this.magicService.query(queryJson)).data;
+
     if (relationMetas && relationMetas.length > 0) {
-      for (const entity of entites) {
+      for (const instance of instances) {
         for (const relationMeta of relationMetas) {
           //解除所有关联关系，防止外键约束
-          entity[relationMeta.propertyName] = null;
+          instance[relationMeta.propertyName] = null;
         }
-        await entityRepository.save(entity);
+        await entityRepository.save(instance);
       }
     }
     meta.ids &&
       meta.ids.length > 0 &&
       (await entityRepository.delete(meta.ids));
-    return entites.map((entity: any) => entity.id);
+    return instances.map((entity: any) => entity.id);
   }
 
   private async validateDelete(deleteMeta: DeleteMeta) {

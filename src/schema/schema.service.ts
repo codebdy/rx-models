@@ -10,7 +10,10 @@ import { convertDefault } from './convert-default';
 import { convertType } from './convert-type';
 import { EntityMeta, EntityType } from './graph-meta-interface/entity-meta';
 import { PackageMeta } from './graph-meta-interface/package-meta';
-import { RelationMeta } from './graph-meta-interface/relation-meta';
+import {
+  CombinationType,
+  RelationMeta,
+} from './graph-meta-interface/relation-meta';
 import { RelationType } from './graph-meta-interface/relation-type';
 
 interface WithUuid {
@@ -117,6 +120,24 @@ export class SchemaService {
     return this.getEntityMetaOrFailed(
       this.getRelationSchemaNameOrFailed(relationName, entityName),
     );
+  }
+
+  public getEntityCombinationRelationMetas(enityUuid: string) {
+    const relations: RelationMeta[] = [];
+    for (const aPackage of this._packages) {
+      for (const relation of aPackage.relations) {
+        if (
+          (relation.sourceId === enityUuid &&
+            relation.combination === CombinationType.ON_SOURCE) ||
+          (relation.targetId === enityUuid &&
+            relation.combination === CombinationType.ON_TARGET)
+        ) {
+          relations.push(relation);
+        }
+      }
+    }
+
+    return relations;
   }
 
   private loadPublishedSchemas() {
