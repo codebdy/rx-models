@@ -24,10 +24,13 @@ export class PostRemoveOthersDirective extends PostDirective {
     };
     const data = await this.magicService.query(querMeta);
     const allIds = data.data?.map((instance: { id: number }) => instance.id);
-    await this.magicService.delete({
-      [instanceMetaCollection.entity]: allIds.filter(
-        (id: number) => !ids.find((id2) => id === id2),
-      ),
-    });
+    const deleteIds = allIds.filter(
+      (id: number) => !ids.find((id2) => id === id2),
+    );
+    if (deleteIds.length > 0) {
+      await this.magicService.delete({
+        [instanceMetaCollection.entity]: deleteIds,
+      });
+    }
   }
 }
