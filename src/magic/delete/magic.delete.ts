@@ -61,9 +61,32 @@ export class MagicDelete {
     return names;
   }
 
-  private getCombinationInstancesToDelete(instances: any[]) {
-    const deleteJson = {};
-    return deleteJson;
+  private getCombinationInstancesToDelete(
+    instances: any[],
+    entityName: string,
+  ) {
+    const deleteJson = {} as any;
+    const relationDatas = this.getCombinationRelationNames(entityName);
+    if (relationDatas.length === 0) {
+      return;
+    }
+    for (const relationData of relationDatas) {
+      const roleName = relationData.roleName;
+      const ids = [];
+      for (const instance of instances) {
+        const roleInstances = instance[roleName];
+        if (roleInstances && roleInstances.length) {
+          ids.push(...roleInstances.map((ins) => ins.id));
+        } else if (roleInstances.id) {
+          ids.push(roleInstances.id);
+        }
+      }
+
+      if (ids.length > 0) {
+        deleteJson[relationData.entityName] = ids;
+      }
+    }
+    return Object.keys(deleteJson).length > 0 ? deleteJson : undefined;
   }
 
   private async deleteOne(meta: DeleteMeta) {
@@ -91,6 +114,11 @@ export class MagicDelete {
 
     const instances = (await this.magicService.query(queryJson)).data;
 
+    const combinationInstances = this.getCombinationInstancesToDelete(
+      instances,
+      meta.entity,
+    );
+
     if (relationMetas && relationMetas.length > 0) {
       for (const instance of instances) {
         for (const relationMeta of relationMetas) {
@@ -100,6 +128,11 @@ export class MagicDelete {
         await entityRepository.save(instance);
       }
     }
+
+    if (combinationInstances) {
+      await this.magicService.delete(combinationInstances);
+    }
+
     meta.ids &&
       meta.ids.length > 0 &&
       (await entityRepository.delete(meta.ids));
