@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as sharp from 'sharp';
+//import * as sharp from 'sharp';
 import { StorageService } from 'src/storage/storage.service';
 import { FOLDER_UPLOADS } from 'src/util/consts';
 
@@ -12,7 +12,7 @@ export class MagicUploadService {
     await this.storageService.putFile(fileName, file, FOLDER_UPLOADS);
   }
 
-  async saveThumbnail(file: Express.Multer.File) {
+  /*async saveThumbnail(file: Express.Multer.File) {
     const thumbnail = `/thumbnails/${file.filename}`;
     if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
       sharp(file.path)
@@ -26,5 +26,5 @@ export class MagicUploadService {
     }
 
     return thumbnail;
-  }
+  }*/
 }

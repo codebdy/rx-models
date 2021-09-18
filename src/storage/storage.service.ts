@@ -21,9 +21,9 @@ export class StorageService {
     return await this.storageClient.putFile(name, file, bucket);
   }
 
-  async getTokenObject() {
+  /*async getTokenObject() {
     return await this.storageClient.creatUploadsOperateToken();
-  }
+  }*/
 
   async resizeImage(path: string, size?: ImageSize) {
     return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);

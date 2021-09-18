@@ -11,7 +11,7 @@ export class StorageController {
   @Get('get-token-object')
   async getTokenObject() {
     try {
-      return await this.service.getTokenObject();
+      //return await this.service.getTokenObject();
     } catch (error: any) {
       console.error('get-token-object error:', error);
       throw new HttpException(

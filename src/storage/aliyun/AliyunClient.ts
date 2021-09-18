@@ -1,18 +1,17 @@
-import { FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
-import { aliyunConfig, stsConfig } from './aliyun';
+import { ImageSize } from 'src/util/consts';
+import { aliyunConfig } from './aliyun';
 import { expaireTime } from './consts';
 import { urlCache } from './UrlCache';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const OSS = require('ali-oss');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { STS } = require('ali-oss');
-
-const client = new OSS(aliyunConfig);
+//const { STS } = require('ali-oss');
 
 export class AliyunClient {
   async checkAndCreateBucket(bucket: string) {
     try {
+      const client = new OSS(aliyunConfig);
       return await client.getBucketInfo(bucket);
     } catch (error) {
       // 指定的存储空间不存在。
@@ -25,6 +24,7 @@ export class AliyunClient {
   }
 
   async createBucket(bucket: string) {
+    const client = new OSS(aliyunConfig);
     const options = {
       storageClass: 'Standard', // 存储空间的默认存储类型为标准存储，即Standard。如果需要设置存储空间的存储类型为归档存储，请替换为Archive。
       acl: 'private', // 存储空间的默认读写权限为私有，即private。如果需要设置存储空间的读写权限为公共读，请替换为public-read。
@@ -35,16 +35,19 @@ export class AliyunClient {
   }
 
   async putFileData(name: string, data: any, bucket: string) {
+    const client = new OSS(aliyunConfig);
     client.useBucket(bucket);
     return await client.put(name, Buffer.from(data));
   }
 
   async putFile(name: string, file: Express.Multer.File, bucket: string) {
+    const client = new OSS(aliyunConfig);
     client.useBucket(bucket);
     return await client.put(name, file.buffer);
   }
 
   async resizeImage(path: string, bucket: string, size?: ImageSize) {
+    const client = new OSS(aliyunConfig);
     const urlInfo = urlCache.getUrlInfo(path, bucket, size);
     if (urlInfo) {
       return urlInfo.url;
@@ -68,7 +71,7 @@ export class AliyunClient {
   }
 
   //客户端上传OSS用的TOKEN，本方法暂时没用
-  async creatUploadsOperateToken() {
+  /*  async creatUploadsOperateToken() {
     await this.checkAndCreateBucket(FOLDER_UPLOADS);
     const client = new STS({
       accessKeyId: aliyunConfig.accessKeyId,
@@ -86,5 +89,5 @@ export class AliyunClient {
       SecurityToken: result.credentials.SecurityToken,
       Expiration: result.credentials.Expiration,
     };
-  }
+  }*/
 }
