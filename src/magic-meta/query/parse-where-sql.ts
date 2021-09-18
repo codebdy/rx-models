@@ -19,12 +19,18 @@ export function parseWhereSql(
 
   const parser = new SqlWhereParser();
   const params = {} as any;
-  const evaluator = (operatorValue, operands) => {
+  const evaluator = (operatorValueOrg, operandsOrg) => {
+    let operatorValue = operatorValueOrg;
+    const operands = operandsOrg;
     if (operatorValue === OPERATOR_UNARY_MINUS) {
       operatorValue = '-';
     }
     if (operatorValue === ',') {
       return [].concat(operands[0], operands[1]);
+    }
+
+    if (operatorValue === 'NOT') {
+      return { not: 'NOT ', value: operands[0] };
     }
 
     const paramName = `param${createId()}`;
@@ -34,6 +40,11 @@ export function parseWhereSql(
         return `(${operands.join(' OR ')})`;
       case 'AND':
         return `(${operands.join(' AND ')})`;
+      case 'IS':
+        if (operands[1]?.not) {
+          operatorValue = 'IS NOT';
+          operands[1] = operands[1].value;
+        }
       default:
         const arr = operands[0]?.split('.');
         let modelAlias = ownerMeta.alias;
