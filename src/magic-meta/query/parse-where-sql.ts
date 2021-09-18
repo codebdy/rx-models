@@ -35,9 +35,9 @@ export function parseWhereSql(
       case 'AND':
         return `(${operands.join(' AND ')})`;
       default:
-        const arr = operands[0].split('.');
+        const arr = operands[0]?.split('.');
         let modelAlias = ownerMeta.alias;
-        if (arr.length > 1) {
+        if (arr && arr.length > 1) {
           const relation = ownerMeta.findRelatiOrFailed(arr[0]);
           if (relation) {
             operands[0] = arr[1];
@@ -46,7 +46,7 @@ export function parseWhereSql(
         }
         operands[0] = `${modelAlias}.${operands[0]}`;
         if (operands[1]?.toString()?.startsWith('$me.')) {
-          const [, columnStr] = (operands[1] as string).split('.');
+          const [, columnStr] = (operands[1] as string)?.split('.');
           params[paramName] = me[columnStr];
         } else {
           params[paramName] = operands[1];
