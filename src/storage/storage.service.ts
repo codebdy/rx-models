@@ -1,13 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { AliyunConfig } from 'src/entity-interface/AliyunConfig';
+import { EntityRxConfig, RxConfig } from 'src/entity-interface/RxConfig';
+import { RxStorageType } from 'src/entity-interface/RxStorageType';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
+import { CONFIG_KEY_STORAGE, FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
 import { AliyunClient } from './aliyun/AliyunClient';
+import { DiskClient } from './disk/DiskClient';
+
+type StorageConfig = { type: RxStorageType } & AliyunConfig;
 
 @Injectable()
-export class StorageService {
+export class StorageService implements OnModuleInit {
   constructor(private readonly typeOrmService: TypeOrmService) {}
 
-  private storageClient = new AliyunClient();
+  private storageClient = new DiskClient();
+
+  async onModuleInit() {
+    //await this.createConnection();
+    const repository =
+      this.typeOrmService.connection.getRepository<RxConfig>(EntityRxConfig);
+    const rxConfig = await repository.findOne({
+      name: CONFIG_KEY_STORAGE,
+    });
+    if (!rxConfig) {
+      return;
+    }
+    const storageConfig = rxConfig.value as StorageConfig;
+    const { type: storageType, ...aliyunConfig } = storageConfig || {};
+    if (storageType === RxStorageType.Disk) {
+      return;
+    }
+
+    if (storageType === RxStorageType.AliyunOSS) {
+      this.storageClient = new AliyunClient(aliyunConfig);
+    }
+    console.debug('StorageService initializated');
+  }
 
   async checkAndCreateBucket(bucket: string) {
     return await this.storageClient.checkAndCreateBucket(bucket);
