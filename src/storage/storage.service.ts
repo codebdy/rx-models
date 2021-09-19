@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { AliyunConfig } from 'src/entity-interface/AliyunConfig';
 import { EntityRxConfig, RxConfig } from 'src/entity-interface/RxConfig';
 import { RxStorageType } from 'src/entity-interface/RxStorageType';
+import { RxBaseService } from 'src/rxbase/rxbase.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { CONFIG_KEY_STORAGE, FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
 import { AliyunClient } from './aliyun/AliyunClient';
@@ -14,7 +15,10 @@ type StorageConfig = { type: RxStorageType } & AliyunConfig;
 export class StorageService implements OnModuleInit {
   private storageClient: StorageClient;
   private storageType: RxStorageType = RxStorageType.Disk;
-  constructor(private readonly typeOrmService: TypeOrmService) {
+  constructor(
+    private readonly typeOrmService: TypeOrmService,
+    private readonly baseService: RxBaseService,
+  ) {
     this.storageClient = new DiskClient();
   }
 
@@ -58,8 +62,8 @@ export class StorageService implements OnModuleInit {
   }*/
 
   async resizeImage(path: string, size?: ImageSize) {
-    if (this.storageType === RxStorageType.Disk){
-      (this.storageClient as DiskClient).setHost(this.typeOrmService.getHost());
+    if (this.storageType === RxStorageType.Disk) {
+      (this.storageClient as DiskClient).setHost(this.baseService.getHost());
     }
     return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);
   }

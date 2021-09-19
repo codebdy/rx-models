@@ -31,6 +31,7 @@ import { getFileName, getFileType } from './upload/file-upload.utils';
 import { RxMedia } from 'src/entity-interface/RxMedia';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { StorageService } from 'src/storage/storage.service';
+import { RxBaseService } from 'src/rxbase/rxbase.service';
 
 @Controller()
 export class MagicController {
@@ -42,6 +43,7 @@ export class MagicController {
     private readonly schemaService: SchemaService,
     private readonly uploadService: MagicUploadService,
     protected readonly storageService: StorageService,
+    private readonly baseService: RxBaseService,
   ) {}
 
   /**
@@ -96,7 +98,7 @@ export class MagicController {
   async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
       console.debug('JSON QUERY String', jsonStr);
-      this.typeormSerivce.setHost('//' + req.headers.host);
+      this.baseService.setHost('//' + req.headers.host);
       await sleep(500);
       let result: QueryResult;
       await this.typeormSerivce.connection.transaction(

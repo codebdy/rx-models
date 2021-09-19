@@ -21,16 +21,9 @@ export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
   private readonly _logger = new Logger('TypeOrmWithSchemaService');
   private _connection?: Connection;
   private _connectionNumber = 1;
-  private host: string;
 
   constructor(private readonly schemaService: SchemaService) {}
-  setHost(host: string) {
-    this.host = host;
-  }
 
-  getHost() {
-    return this.host;
-  }
   async createConnection() {
     if (!PlatformTools.fileExist(DB_CONFIG_FILE)) {
       return;

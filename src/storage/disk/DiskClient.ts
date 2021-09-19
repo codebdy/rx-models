@@ -45,13 +45,13 @@ export class DiskClient implements StorageClient {
   }
 
   async resizeImage(path: string, bucket: string, size?: ImageSize) {
+    const fileName = DISK_STORAGE_PATH + bucket + '/' + path;
     if (size) {
       path =
         parse(path)?.name + `-${size.width}x${size.height}` + extname(path);
     }
 
     const nameWithBucket = bucket + '/' + path;
-    const fileName = DISK_STORAGE_PATH + nameWithBucket;
     const publicStoragePath = DISK_STORAGE_PUBLIC_PATH + nameWithBucket;
     const publicFileUrl =
       this.host + DISK_STORAGE_PUBLIC_URL_BASE + nameWithBucket;
