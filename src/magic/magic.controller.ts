@@ -96,6 +96,7 @@ export class MagicController {
   async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
       console.debug('JSON QUERY String', jsonStr);
+      this.typeormSerivce.setHost('//' + req.headers.host);
       await sleep(500);
       let result: QueryResult;
       await this.typeormSerivce.connection.transaction(

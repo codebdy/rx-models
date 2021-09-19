@@ -1,16 +1,22 @@
 import {
   DISK_STORAGE_PATH,
   DISK_STORAGE_PUBLIC_PATH,
+  DISK_STORAGE_PUBLIC_URL_BASE,
   ImageSize,
 } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { StorageClient } from '../storage.client';
-import { dirname, basename, extname } from 'path';
-import sharp from 'sharp';
+import { dirname, parse, extname } from 'path';
+import * as sharp from 'sharp';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
 export class DiskClient implements StorageClient {
+  private host: string;
+
+  setHost(host: string) {
+    this.host = host;
+  }
   async checkAndCreateBucket(bucket: string) {
     const folderName = DISK_STORAGE_PATH + bucket;
     await this.checkAndCreateDir(folderName);
@@ -39,60 +45,43 @@ export class DiskClient implements StorageClient {
   }
 
   async resizeImage(path: string, bucket: string, size?: ImageSize) {
-    const fileName = DISK_STORAGE_PATH + bucket + '/' + path;
-    const publicPath = DISK_STORAGE_PUBLIC_PATH + bucket;
-    let publicFileName = publicPath + '/' + path;
     if (size) {
-      publicFileName =
-        publicPath +
-        '/' +
-        basename(path) +
-        `${size.width}x${size.height}.` +
-        extname(path);
+      path =
+        parse(path)?.name + `-${size.width}x${size.height}` + extname(path);
     }
-    await this.checkAndCreateDir(dirname(publicFileName));
-    if (PlatformTools.fileExist(publicFileName)) {
-      return publicFileName;
+
+    const nameWithBucket = bucket + '/' + path;
+    const fileName = DISK_STORAGE_PATH + nameWithBucket;
+    const publicStoragePath = DISK_STORAGE_PUBLIC_PATH + nameWithBucket;
+    const publicFileUrl =
+      this.host + DISK_STORAGE_PUBLIC_URL_BASE + nameWithBucket;
+
+    await this.checkAndCreateDir(dirname(publicStoragePath));
+    if (PlatformTools.fileExist(publicStoragePath)) {
+      return publicFileUrl;
     }
 
     if (PlatformTools.fileExist(fileName)) {
-      console.log('哈哈', fileName, bucket);
-      if (extname(fileName).match(/\/(jpg|jpeg|png|gif)$/)) {
+      const extName = extname(fileName).replace('.', '').toLowerCase();
+      if (
+        extName === 'jpg' ||
+        extName === 'jpeg' ||
+        extName === 'png' ||
+        extName === 'gif'
+      ) {
         const srp = sharp(fileName);
         if (size) {
           srp.resize(size.width, size.height);
         }
-        srp.toFile(publicFileName, (err, info) => {
+        srp.toFile(publicStoragePath, (err, info) => {
           console.debug('Resize Success', info);
           if (err) {
             console.error('Resize Error', err);
           }
         });
-        return publicFileName;
+        return publicFileUrl;
       }
     }
-
-    /*const client = new OSS(aliyunConfig);
-    const urlInfo = urlCache.getUrlInfo(path, bucket, size);
-    if (urlInfo) {
-      return urlInfo.url;
-    }
-    client.useBucket(bucket);
-    const url = await client.signatureUrl(path, {
-      expires: expaireTime,
-      method: 'GET',
-      process: size
-        ? `image/resize,w_${size.width},h_${size.height}`
-        : undefined,
-    });
-    urlCache.addUrl({
-      path: path,
-      bucket: bucket,
-      size: size,
-      time: new Date(),
-      url: url,
-    });
-    return url;*/
     return '';
   }
 }

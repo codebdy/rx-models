@@ -12,9 +12,11 @@ type StorageConfig = { type: RxStorageType } & AliyunConfig;
 
 @Injectable()
 export class StorageService implements OnModuleInit {
-  constructor(private readonly typeOrmService: TypeOrmService) {}
-
-  private storageClient: StorageClient = new DiskClient();
+  private storageClient: StorageClient;
+  private storageType: RxStorageType = RxStorageType.Disk;
+  constructor(private readonly typeOrmService: TypeOrmService) {
+    this.storageClient = new DiskClient();
+  }
 
   async onModuleInit() {
     //await this.createConnection();
@@ -28,6 +30,7 @@ export class StorageService implements OnModuleInit {
     }
     const storageConfig = rxConfig.value as StorageConfig;
     const { type: storageType, ...aliyunConfig } = storageConfig || {};
+    this.storageType = storageType;
     if (storageType === RxStorageType.Disk) {
       return;
     }
@@ -55,6 +58,9 @@ export class StorageService implements OnModuleInit {
   }*/
 
   async resizeImage(path: string, size?: ImageSize) {
+    if (this.storageType === RxStorageType.Disk){
+      (this.storageClient as DiskClient).setHost(this.typeOrmService.getHost());
+    }
     return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);
   }
 }
