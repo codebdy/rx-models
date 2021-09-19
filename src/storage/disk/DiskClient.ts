@@ -6,6 +6,7 @@ import {
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { StorageClient } from '../storage.client';
 import { dirname, basename, extname } from 'path';
+import sharp from 'sharp';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
@@ -50,11 +51,27 @@ export class DiskClient implements StorageClient {
         extname(path);
     }
     await this.checkAndCreateDir(dirname(publicFileName));
-    console.log('哈哈', fileName, bucket);
     if (PlatformTools.fileExist(publicFileName)) {
       return publicFileName;
     }
-    
+
+    if (PlatformTools.fileExist(fileName)) {
+      console.log('哈哈', fileName, bucket);
+      if (extname(fileName).match(/\/(jpg|jpeg|png|gif)$/)) {
+        const srp = sharp(fileName);
+        if (size) {
+          srp.resize(size.width, size.height);
+        }
+        srp.toFile(publicFileName, (err, info) => {
+          console.debug('Resize Success', info);
+          if (err) {
+            console.error('Resize Error', err);
+          }
+        });
+        return publicFileName;
+      }
+    }
+
     /*const client = new OSS(aliyunConfig);
     const urlInfo = urlCache.getUrlInfo(path, bucket, size);
     if (urlInfo) {
