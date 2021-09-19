@@ -6,6 +6,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { CONFIG_KEY_STORAGE, FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
 import { AliyunClient } from './aliyun/AliyunClient';
 import { DiskClient } from './disk/DiskClient';
+import { StorageClient } from './storage.client';
 
 type StorageConfig = { type: RxStorageType } & AliyunConfig;
 
@@ -13,7 +14,7 @@ type StorageConfig = { type: RxStorageType } & AliyunConfig;
 export class StorageService implements OnModuleInit {
   constructor(private readonly typeOrmService: TypeOrmService) {}
 
-  private storageClient = new DiskClient();
+  private storageClient: StorageClient = new DiskClient();
 
   async onModuleInit() {
     //await this.createConnection();

@@ -1,13 +1,24 @@
-import { DISK_STORAGE_PATH, ImageSize } from 'src/util/consts';
+import {
+  DISK_STORAGE_PATH,
+  DISK_STORAGE_PUBLIC_PATH,
+  ImageSize,
+} from 'src/util/consts';
+import { PlatformTools } from 'typeorm/platform/PlatformTools';
+import { StorageClient } from '../storage.client';
+import { dirname, basename, extname } from 'path';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
-export class DiskClient {
+export class DiskClient implements StorageClient {
   async checkAndCreateBucket(bucket: string) {
     const folderName = DISK_STORAGE_PATH + bucket;
+    await this.checkAndCreateDir(folderName);
+  }
+
+  private async checkAndCreateDir(dir: string) {
     try {
-      if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
+      if (!fs.existsSync(dir)) {
+        await fs.mkdirSync(dir, { recursive: true });
       }
     } catch (error) {
       throw error;
@@ -15,20 +26,35 @@ export class DiskClient {
   }
 
   async putFileData(name: string, data: any, bucket: string) {
-    await this.checkAndCreateBucket(bucket);
-    //const client = new OSS(aliyunConfig);
-    //client.useBucket(bucket);
-    //return await client.put(name, Buffer.from(data));
+    const fileName = DISK_STORAGE_PATH + bucket + '/' + name;
+    await this.checkAndCreateBucket(dirname(fileName));
+    await PlatformTools.writeFile(fileName, data);
   }
 
   async putFile(name: string, file: Express.Multer.File, bucket: string) {
-    await this.checkAndCreateBucket(bucket);
-    //const client = new OSS(aliyunConfig);
-    //client.useBucket(bucket);
-    //return await client.put(name, file.buffer);
+    const fileName = DISK_STORAGE_PATH + bucket + '/' + name;
+    await this.checkAndCreateBucket(dirname(fileName));
+    await PlatformTools.writeFile(fileName, file.buffer);
   }
 
   async resizeImage(path: string, bucket: string, size?: ImageSize) {
+    const fileName = DISK_STORAGE_PATH + bucket + '/' + path;
+    const publicPath = DISK_STORAGE_PUBLIC_PATH + bucket;
+    let publicFileName = publicPath + '/' + path;
+    if (size) {
+      publicFileName =
+        publicPath +
+        '/' +
+        basename(path) +
+        `${size.width}x${size.height}.` +
+        extname(path);
+    }
+    await this.checkAndCreateDir(dirname(publicFileName));
+    console.log('哈哈', fileName, bucket);
+    if (PlatformTools.fileExist(publicFileName)) {
+      return publicFileName;
+    }
+    
     /*const client = new OSS(aliyunConfig);
     const urlInfo = urlCache.getUrlInfo(path, bucket, size);
     if (urlInfo) {
@@ -50,5 +76,6 @@ export class DiskClient {
       url: url,
     });
     return url;*/
+    return '';
   }
 }

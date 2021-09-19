@@ -1,4 +1,5 @@
 import { ImageSize } from 'src/util/consts';
+import { StorageClient } from '../storage.client';
 import { aliyunConfig } from './aliyun';
 import { expaireTime } from './consts';
 import { urlCache } from './UrlCache';
@@ -8,7 +9,7 @@ const OSS = require('ali-oss');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 //const { STS } = require('ali-oss');
 
-export class AliyunClient {
+export class AliyunClient implements StorageClient {
   client: any;
   constructor(aliyunConfig: any) {
     this.client = new OSS(aliyunConfig);
