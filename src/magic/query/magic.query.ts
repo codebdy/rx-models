@@ -1,6 +1,6 @@
 import { MagicQueryParser } from './magic.query.parser';
 import { QueryResult } from 'src/magic-meta/query/query-result';
-import { TOKEN_GET_MANY } from '../base/tokens';
+import { TOKEN_COUNT, TOKEN_GET_MANY } from '../base/tokens';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { AbilityService } from 'src/magic/ability.service';
 import { QueryDirectiveService } from 'src/directive/query-directive.service';
@@ -43,6 +43,11 @@ export class MagicQuery {
       qb,
       this.magicService.me,
     );
+
+    if (meta.fetchString === TOKEN_COUNT) {
+      totalCount = await qb.getCount();
+      return { totalCount, data: [] };
+    }
 
     if (meta.fetchString === TOKEN_GET_MANY) {
       totalCount = await qb.getCount();

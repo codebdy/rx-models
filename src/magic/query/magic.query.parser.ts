@@ -11,6 +11,7 @@ import { EntitySchemaRelationOptions } from 'typeorm';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 import {
+  TOKEN_COUNT,
   TOKEN_GET_MANY,
   TOKEN_GET_ONE,
   TOKEN_ON,
@@ -51,6 +52,8 @@ export class MagicQueryParser {
             meta.fetchString = TOKEN_GET_ONE;
           } else if (directiveMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
+          } else if (directiveMeta.name === TOKEN_COUNT) {
+            meta.fetchString = TOKEN_COUNT;
           } else {
             const directiveClass =
               this.queryDirectiveService.findEntityDirectiveOrFailed(
@@ -146,6 +149,8 @@ export class MagicQueryParser {
       meta instanceof QueryRootMeta
     ) {
       meta.fetchString = TOKEN_GET_ONE;
+    } else if (keyWithoutAt === TOKEN_COUNT && meta instanceof QueryRootMeta) {
+      meta.fetchString = TOKEN_COUNT;
     } else if (
       keyWithoutAt === TOKEN_ON ||
       keyWithoutAt === TOKEN_WHERE ||
