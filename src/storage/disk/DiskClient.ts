@@ -34,13 +34,13 @@ export class DiskClient implements StorageClient {
 
   async putFileData(name: string, data: any, bucket: string) {
     const fileName = DISK_STORAGE_PATH + bucket + '/' + name;
-    await this.checkAndCreateBucket(dirname(fileName));
+    await this.checkAndCreateDir(dirname(fileName));
     await PlatformTools.writeFile(fileName, data);
   }
 
   async putFile(name: string, file: Express.Multer.File, bucket: string) {
     const fileName = DISK_STORAGE_PATH + bucket + '/' + name;
-    await this.checkAndCreateBucket(dirname(fileName));
+    await this.checkAndCreateDir(dirname(fileName));
     await PlatformTools.writeFile(fileName, file.buffer);
   }
 
