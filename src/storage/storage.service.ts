@@ -28,6 +28,7 @@ export class StorageService implements OnModuleInit {
       this.inited = false;
       return;
     }
+    this.inited = true;
     //await this.createConnection();
     const repository =
       this.typeOrmService.connection.getRepository<RxConfig>(EntityRxConfig);
@@ -41,14 +42,12 @@ export class StorageService implements OnModuleInit {
     const { type: storageType, ...aliyunConfig } = storageConfig || {};
     this.storageType = storageType;
     if (storageType === RxStorageType.Disk) {
-      this.inited = true;
       return;
     }
 
     if (storageType === RxStorageType.AliyunOSS) {
       this.storageClient = new AliyunClient(aliyunConfig);
     }
-    this.inited = true;
     console.debug('StorageService initializated');
   }
 
