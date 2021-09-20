@@ -1,5 +1,5 @@
 {
-  "id": 1,
+  "id": 47,
   "uuid": "system-package-1",
   "name": "System",
   "entities": [
@@ -51,8 +51,8 @@
         {
           "uuid": "system-column-1-10",
           "name": "status",
-          "type": "String",
-          "default": "NORMAL"
+          "type": "Enum",
+          "typeEnityUuid": "13f069cf-0e7c-42be-9b75-7bb2a2325ae9"
         },
         {
           "uuid": "system-column-1-11",
@@ -111,72 +111,6 @@
       ]
     },
     {
-      "uuid": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
-      "name": "RxMedia",
-      "columns": [
-        {
-          "uuid": "c402b83a-dbc1-4fb1-93c7-c342fa0a7d33",
-          "name": "id",
-          "type": "Number",
-          "primary": true,
-          "generated": true
-        },
-        {
-          "uuid": "b9dc3084-8442-4258-96e5-8e8df402ce04",
-          "name": "name",
-          "type": "String"
-        },
-        {
-          "uuid": "1307934d-cd5f-41cc-a13b-a948b4fedfcf",
-          "name": "mimetype",
-          "type": "String",
-          "nullable": true
-        },
-        {
-          "uuid": "11bfd6b3-6725-42fe-9732-7e80c0dcf6da",
-          "name": "fileName",
-          "type": "String",
-          "nullable": true
-        },
-        {
-          "uuid": "9d02f63e-76c6-4276-876f-b20e1a97a570",
-          "name": "path",
-          "type": "String",
-          "nullable": true
-        },
-        {
-          "uuid": "7ce23a21-99b7-4a0a-8868-d66aaf758e00",
-          "name": "size",
-          "type": "Number",
-          "nullable": true
-        }
-      ]
-    },
-    {
-      "uuid": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
-      "name": "RxMediaFolder",
-      "columns": [
-        {
-          "uuid": "397a5afc-c4e9-40fd-8ccd-8e07d5d28815",
-          "name": "id",
-          "type": "Number",
-          "primary": true,
-          "generated": true
-        },
-        {
-          "uuid": "ea16fd94-aac9-4e23-9e8e-eef151f00875",
-          "name": "name",
-          "type": "String"
-        },
-        {
-          "uuid": "940bc72b-4546-4150-931b-e277ac985ce7",
-          "name": "order",
-          "type": "String",
-          "nullable": true
-        }
-      ]
-    },
-    {
       "uuid": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
       "name": "RxAbility",
       "columns": [
@@ -213,8 +147,7 @@
         {
           "uuid": "2ee93068-0e2a-4beb-b646-2abb6805aa37",
           "name": "abilityType",
-          "type": "Enum",
-          "enumEnityUuid": "1207fea9-ed2f-4688-8a01-eb39b5c16aa2"
+          "type": "Enum"
         }
       ]
     },
@@ -311,6 +244,245 @@
         "UPDATE": "update",
         "DELETE": "delete"
       }
+    },
+    {
+      "uuid": "6f938225-bf8a-4390-9501-6b48c884ea2c",
+      "name": "RxConfig",
+      "columns": [
+        {
+          "uuid": "de715cf4-00a9-4e61-85a4-02bb1d65eef9",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "3e3de554-a608-48fd-87d4-b998605fe965",
+          "name": "name",
+          "type": "String",
+          "unique": true
+        },
+        {
+          "uuid": "5d6f35f4-171b-4395-8bf6-b581f434cfa0",
+          "name": "value",
+          "type": "simple-json"
+        }
+      ]
+    },
+    {
+      "uuid": "4508f33e-f9e3-49c3-a9d3-82f1fd45949e",
+      "name": "Label",
+      "entityType": "Abstract",
+      "columns": [
+        {
+          "uuid": "4db328bf-338a-4def-9b04-33e250b624fe",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "d475ebf4-e801-4c2b-b810-2a50038140a6",
+          "name": "color",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "d1859fff-16b5-486e-80bd-7ad71a8fa254",
+          "name": "text",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "805fe9ca-e488-4c69-90c1-3e4cb3729a2c",
+          "name": "priority",
+          "type": "Number",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "uuid": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "name": "RxMediaFolder",
+      "columns": [
+        {
+          "uuid": "397a5afc-c4e9-40fd-8ccd-8e07d5d28815",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "ea16fd94-aac9-4e23-9e8e-eef151f00875",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "940bc72b-4546-4150-931b-e277ac985ce7",
+          "name": "order",
+          "type": "String",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "uuid": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+      "name": "RxMedia",
+      "columns": [
+        {
+          "uuid": "c402b83a-dbc1-4fb1-93c7-c342fa0a7d33",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "b9dc3084-8442-4258-96e5-8e8df402ce04",
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "uuid": "1307934d-cd5f-41cc-a13b-a948b4fedfcf",
+          "name": "mimetype",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "11bfd6b3-6725-42fe-9732-7e80c0dcf6da",
+          "name": "fileName",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "9d02f63e-76c6-4276-876f-b20e1a97a570",
+          "name": "path",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "7ce23a21-99b7-4a0a-8868-d66aaf758e00",
+          "name": "size",
+          "type": "Number",
+          "nullable": true
+        },
+        {
+          "uuid": "7ff2c784-55a0-4b4c-9fe1-2997d7244e47",
+          "name": "updatedAt",
+          "type": "Date",
+          "updateDate": true,
+          "nullable": true
+        },
+        {
+          "uuid": "ed77888a-7e86-4959-9231-508428d123f3",
+          "name": "createdAt",
+          "type": "Date",
+          "createDate": true,
+          "nullable": true
+        },
+        {
+          "uuid": "ffed782d-ff8d-4ed5-a655-2e65bf2fe8d0",
+          "name": "mediaType",
+          "type": "Enum",
+          "nullable": true,
+          "typeEnityUuid": "295045fb-ee10-450e-9c98-a1c50e5122e9"
+        }
+      ]
+    },
+    {
+      "uuid": "295045fb-ee10-450e-9c98-a1c50e5122e9",
+      "name": "RxMediaType",
+      "entityType": "Enum",
+      "columns": [],
+      "enumValues": {
+        "DOCUMENT": "document",
+        "IMAGE": "image",
+        "VIDEO": "video",
+        "AUDIO": "audio"
+      }
+    },
+    {
+      "uuid": "13f069cf-0e7c-42be-9b75-7bb2a2325ae9",
+      "name": "RxUserStatus",
+      "entityType": "Enum",
+      "columns": [],
+      "enumValues": {
+        "NORMAL": {
+          "value": "Normal",
+          "label": "正常"
+        },
+        "FORBIDDEN": {
+          "value": "Forbidden",
+          "label": "禁用"
+        }
+      }
+    },
+    {
+      "uuid": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9",
+      "name": "RxDepartment",
+      "columns": [
+        {
+          "uuid": "efc0a5d4-0d8d-4efd-9abc-a2bc29c81a4d",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "507c3fe8-9267-47b2-8c58-ad4d3f0b4686",
+          "name": "name",
+          "type": "String",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "uuid": "1895be25-d37c-493a-8f3b-826d799dbb68",
+          "name": "desctiption",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "a777d175-4487-4cd4-89eb-06367d538ba7",
+          "name": "uuid",
+          "type": "String",
+          "generated": "uuid",
+          "unique": true
+        }
+      ]
+    },
+    {
+      "uuid": "408b04a1-cbe4-456f-a9a4-dd8ec260c069",
+      "name": "RxStorageType",
+      "entityType": "Enum",
+      "columns": [],
+      "enumValues": {
+        "Disk": "Disk",
+        "AliyunOSS": "AliyunOSS"
+      }
+    },
+    {
+      "uuid": "7d3072af-b5cf-4fc2-b9c7-2280c4e84e0b",
+      "name": "AliyunConfig",
+      "entityType": "Interface",
+      "columns": [
+        {
+          "uuid": "cd06a82f-8973-4c1d-b94b-12647837bacb",
+          "name": "region",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "18757158-19d8-44ed-a112-b42463804528",
+          "name": "accessKeyId",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "71abdd02-20d1-489d-aad3-f51d08cc6509",
+          "name": "accessKeySecret",
+          "type": "String",
+          "nullable": true
+        }
+      ]
     }
   ],
   "diagrams": [
@@ -320,37 +492,70 @@
       "nodes": [
         {
           "id": "system-entity-1",
-          "x": 220,
-          "y": 90,
+          "x": 250,
+          "y": 90.00000000000057,
           "width": 200,
-          "height": 320
+          "height": 350
         },
         {
           "id": "system-entity-2",
-          "x": 540,
-          "y": 150,
+          "x": 650,
+          "y": 90.00000000000057,
           "width": 180,
           "height": 200
         },
         {
           "id": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
-          "x": 40,
-          "y": -205,
+          "x": 40.00000000000034,
+          "y": -305.0000000000004,
           "width": 180,
-          "height": 210
+          "height": 290
         },
         {
           "id": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
           "x": 420,
-          "y": -165,
+          "y": -225.0000000000004,
           "width": 180,
           "height": 130
+        },
+        {
+          "id": "6f938225-bf8a-4390-9501-6b48c884ea2c",
+          "x": 260,
+          "y": 470,
+          "width": 180,
+          "height": 120
+        },
+        {
+          "id": "295045fb-ee10-450e-9c98-a1c50e5122e9",
+          "x": 40,
+          "y": -432,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "13f069cf-0e7c-42be-9b75-7bb2a2325ae9",
+          "x": 410,
+          "y": -450,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9",
+          "x": 650,
+          "y": 390,
+          "width": 180,
+          "height": 150
         }
       ],
       "edges": [
         {
           "id": "system-relation-1",
-          "vertices": [],
+          "vertices": [
+            {
+              "x": 500,
+              "y": 190
+            }
+          ],
           "roleOnSourcePosition": {
             "distance": 0.2457627118644068,
             "offset": 20,
@@ -365,16 +570,16 @@
           "id": "4a468ed4-5fb8-4e25-a711-4ff700256bed",
           "vertices": [
             {
-              "x": 690,
-              "y": -100
+              "x": 660,
+              "y": -200
             },
             {
-              "x": 690,
-              "y": -210
+              "x": 660,
+              "y": -270
             },
             {
-              "x": 540,
-              "y": -210
+              "x": 510,
+              "y": -270
             }
           ],
           "roleOnSourcePosition": {
@@ -422,7 +627,7 @@
           "vertices": [
             {
               "x": 130,
-              "y": 250
+              "y": 265
             }
           ],
           "roleOnSourcePosition": {
@@ -508,6 +713,38 @@
             "offset": 35.50095916195933,
             "angle": 0
           }
+        },
+        {
+          "id": "7c3af19e-9d86-43fc-8e37-11d4e5c68cd0",
+          "vertices": [
+            {
+              "x": 490,
+              "y": 465
+            }
+          ],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": 0.932428393555097,
+            "offset": 37.36455714682299,
+            "angle": 0
+          }
+        },
+        {
+          "id": "cfe4c03d-3427-4eb1-b192-8569fce4b3ab",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 0.19387755102040816,
+            "offset": 40,
+            "angle": 0
+          },
+          "roleOnTargetPosition": {
+            "distance": 0.8061224489795918,
+            "offset": 60,
+            "angle": 0
+          }
         }
       ]
     },
@@ -524,8 +761,8 @@
         },
         {
           "id": "e5fee1e4-fe3e-4d50-82a2-e26df7c7edce",
-          "x": 490,
-          "y": 50,
+          "x": 480,
+          "y": 90,
           "width": 180,
           "height": 130
         },
@@ -565,6 +802,55 @@
           }
         }
       ]
+    },
+    {
+      "uuid": "938c8f7a-c718-4f48-a52d-c1b39eff70ef",
+      "name": "base ER",
+      "nodes": [
+        {
+          "id": "4508f33e-f9e3-49c3-a9d3-82f1fd45949e",
+          "x": 180,
+          "y": 130.00000000000017,
+          "width": 180,
+          "height": 180
+        },
+        {
+          "id": "1207fea9-ed2f-4688-8a01-eb39b5c16aa2",
+          "x": 180,
+          "y": 10,
+          "width": 180,
+          "height": 70
+        }
+      ],
+      "edges": []
+    },
+    {
+      "uuid": "1b29ee39-fd46-4f21-aa96-85bab299f651",
+      "name": "Storage",
+      "nodes": [
+        {
+          "id": "408b04a1-cbe4-456f-a9a4-dd8ec260c069",
+          "x": 220,
+          "y": 26,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "6f938225-bf8a-4390-9501-6b48c884ea2c",
+          "x": 430,
+          "y": 26,
+          "width": 180,
+          "height": 148
+        },
+        {
+          "id": "7d3072af-b5cf-4fc2-b9c7-2280c4e84e0b",
+          "x": 220,
+          "y": 140.00000000000023,
+          "width": 180,
+          "height": 160
+        }
+      ],
+      "edges": []
     }
   ],
   "relations": [
@@ -578,12 +864,39 @@
       "ownerId": "system-entity-1"
     },
     {
+      "uuid": "74c80152-fcb1-41fc-9a34-d65b562f3fdc",
+      "relationType": "many-to-one",
+      "sourceId": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+      "targetId": "system-entity-2",
+      "roleOnSource": "role",
+      "roleOnTarget": "abilities",
+      "ownerId": "system-entity-2"
+    },
+    {
+      "uuid": "af5a8311-53b5-43e8-9624-cf6e89afce16",
+      "relationType": "one-to-one",
+      "sourceId": "system-entity-1",
+      "targetId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
+      "roleOnSource": "avatar",
+      "roleOnTarget": "avatarOfUser",
+      "ownerId": "system-entity-1"
+    },
+    {
       "uuid": "4a468ed4-5fb8-4e25-a711-4ff700256bed",
       "relationType": "one-to-many",
       "sourceId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
       "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
       "roleOnSource": "children",
       "roleOnTarget": "parent",
+      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
+    },
+    {
+      "uuid": "6826ab16-43a6-4737-8871-83e6819a6345",
+      "relationType": "one-to-many",
+      "sourceId": "system-entity-1",
+      "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "roleOnSource": "mediaFolders",
+      "roleOnTarget": "user",
       "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
     },
     {
@@ -605,31 +918,31 @@
       "ownerId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7"
     },
     {
-      "uuid": "6826ab16-43a6-4737-8871-83e6819a6345",
+      "uuid": "7c3af19e-9d86-43fc-8e37-11d4e5c68cd0",
+      "relationType": "many-to-many",
+      "sourceId": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9",
+      "targetId": "system-entity-1",
+      "roleOnSource": "hasUsers",
+      "roleOnTarget": "belongsToDeparments",
+      "ownerId": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9"
+    },
+    {
+      "uuid": "16607071-1216-4509-9d67-92e282c281ad",
+      "relationType": "many-to-many",
+      "sourceId": "system-entity-2",
+      "targetId": "d7962e95-3c07-44a1-8aa4-37ebcbdd6b60",
+      "roleOnSource": "rxAuths",
+      "roleOnTarget": "assignToRoles",
+      "ownerId": "d7962e95-3c07-44a1-8aa4-37ebcbdd6b60"
+    },
+    {
+      "uuid": "cfe4c03d-3427-4eb1-b192-8569fce4b3ab",
       "relationType": "one-to-many",
-      "sourceId": "system-entity-1",
-      "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
-      "roleOnSource": "mediaFolders",
-      "roleOnTarget": "user",
-      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
-    },
-    {
-      "uuid": "74c80152-fcb1-41fc-9a34-d65b562f3fdc",
-      "relationType": "many-to-one",
-      "sourceId": "686dba1f-13f1-46bd-bd0d-c9bb74d87c78",
+      "sourceId": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9",
       "targetId": "system-entity-2",
-      "roleOnSource": "role",
-      "roleOnTarget": "abilities",
+      "roleOnSource": "roles",
+      "roleOnTarget": "belongsToDepartment",
       "ownerId": "system-entity-2"
-    },
-    {
-      "uuid": "af5a8311-53b5-43e8-9624-cf6e89afce16",
-      "relationType": "one-to-one",
-      "sourceId": "system-entity-1",
-      "targetId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
-      "roleOnSource": "avatar",
-      "roleOnTarget": "avatarOfUser",
-      "ownerId": "system-entity-1"
     }
   ],
   "status": "SYNCED"
