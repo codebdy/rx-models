@@ -41,6 +41,7 @@ export class StorageService implements OnModuleInit {
     const { type: storageType, ...aliyunConfig } = storageConfig || {};
     this.storageType = storageType;
     if (storageType === RxStorageType.Disk) {
+      this.inited = true;
       return;
     }
 
