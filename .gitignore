@@ -402,7 +402,7 @@ thumbnails
 dbconfig.json
 schemas
 aliyun.ts
-storage/rxmodels-uploads/
-storage/rxmodels-mails/
-public/storage/
+/storage/
+/storage/
+/public/storage/
 
