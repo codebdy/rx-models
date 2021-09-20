@@ -1,6 +1,5 @@
 import { ImageSize } from 'src/util/consts';
 import { StorageClient } from '../storage.client';
-import { aliyunConfig } from './aliyun';
 import { expaireTime } from './consts';
 import { urlCache } from './UrlCache';
 
@@ -43,19 +42,17 @@ export class AliyunClient implements StorageClient {
   }
 
   async putFile(name: string, file: Express.Multer.File, bucket: string) {
-    const client = new OSS(aliyunConfig);
-    client.useBucket(bucket);
-    return await client.put(name, file.buffer);
+    this.client.useBucket(bucket);
+    return await this.client.put(name, file.buffer);
   }
 
   async resizeImage(path: string, bucket: string, size?: ImageSize) {
-    const client = new OSS(aliyunConfig);
     const urlInfo = urlCache.getUrlInfo(path, bucket, size);
     if (urlInfo) {
       return urlInfo.url;
     }
-    client.useBucket(bucket);
-    const url = await client.signatureUrl(path, {
+    this.client.useBucket(bucket);
+    const url = await this.client.signatureUrl(path, {
       expires: expaireTime,
       method: 'GET',
       process: size

@@ -13,6 +13,7 @@ type StorageConfig = { type: RxStorageType } & AliyunConfig;
 
 @Injectable()
 export class StorageService implements OnModuleInit {
+  private inited = false;
   private storageClient: StorageClient;
   private storageType: RxStorageType = RxStorageType.Disk;
   constructor(
@@ -23,6 +24,10 @@ export class StorageService implements OnModuleInit {
   }
 
   async onModuleInit() {
+    if (!this.typeOrmService.connection) {
+      this.inited = false;
+      return;
+    }
     //await this.createConnection();
     const repository =
       this.typeOrmService.connection.getRepository<RxConfig>(EntityRxConfig);
@@ -42,18 +47,28 @@ export class StorageService implements OnModuleInit {
     if (storageType === RxStorageType.AliyunOSS) {
       this.storageClient = new AliyunClient(aliyunConfig);
     }
+    this.inited = true;
     console.debug('StorageService initializated');
   }
 
   async checkAndCreateBucket(bucket: string) {
+    if (!this.inited) {
+      await this.onModuleInit();
+    }
     return await this.storageClient.checkAndCreateBucket(bucket);
   }
 
   async putFileData(name: string, data: any, bucket: string) {
+    if (!this.inited) {
+      await this.onModuleInit();
+    }
     return await this.storageClient.putFileData(name, data, bucket);
   }
 
   async putFile(name: string, file: Express.Multer.File, bucket: string) {
+    if (!this.inited) {
+      await this.onModuleInit();
+    }
     return await this.storageClient.putFile(name, file, bucket);
   }
 
@@ -62,6 +77,9 @@ export class StorageService implements OnModuleInit {
   }*/
 
   async resizeImage(path: string, size?: ImageSize) {
+    if (!this.inited) {
+      await this.onModuleInit();
+    }
     if (this.storageType === RxStorageType.Disk) {
       (this.storageClient as DiskClient).setHost(this.baseService.getHost());
     }
