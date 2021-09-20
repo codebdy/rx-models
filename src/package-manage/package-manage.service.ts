@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
+import { EntityRxPackage, RxPackage } from 'src/entity-interface/RxPackage';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { RxPackage, SCHEMAS_DIR } from 'src/util/consts';
+import { SCHEMAS_DIR } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 @Injectable()
 export class PackageManageService {
   constructor(private readonly typeormSerivce: TypeOrmService) {}
 
-  public async savePackage(aPackage: PackageMeta) {
-    const packageRepository = this.typeormSerivce.connection.getRepository<PackageMeta>(
-      RxPackage,
-    );
+  public async savePackage(aPackage: RxPackage) {
+    const packageRepository =
+      this.typeormSerivce.connection.getRepository<RxPackage>(EntityRxPackage);
     let systemPackage = await packageRepository.findOne({
       where: { uuid: aPackage.uuid },
     });
@@ -29,7 +28,7 @@ export class PackageManageService {
     await packageRepository.save(systemPackage);
   }
 
-  public async publishPackages(packages: PackageMeta[]) {
+  public async publishPackages(packages: RxPackage[]) {
     if (!PlatformTools.fileExist(SCHEMAS_DIR)) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const fs = require('fs');

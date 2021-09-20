@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DirectiveStorage } from './directivestorage';
+import { DirectiveStorage } from './directive.storage';
 import { DeleteDirectiveClass } from './delete/delete.directive.class';
 
 @Injectable()

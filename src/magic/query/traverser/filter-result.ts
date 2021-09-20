@@ -3,17 +3,17 @@ import { QueryResult } from 'src/magic-meta/query/query-result';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 
-export function filterResult(
+export async function filterResult(
   result: QueryResult,
   rootMeta: QueryRootMeta,
   me: RxUser,
 ) {
   if (Array.isArray(result.data)) {
-    for (const instance of result.data) {
-      filterOneInstance(instance, rootMeta, me);
+    for (let i = 0; i < result.data.length; i++) {
+      result.data[i] = await filterOneInstance(result.data[i], rootMeta, me);
     }
   } else {
-    filterOneInstance(result.data, rootMeta, me);
+    result.data = await filterOneInstance(result.data, rootMeta, me);
   }
   //进行directive过滤
   for (const directive of rootMeta.directives) {
@@ -22,7 +22,12 @@ export function filterResult(
   return result;
 }
 
-function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
+async function filterOneInstance(
+  instance: any,
+  meta: QueryEntityMeta,
+  me: RxUser,
+  parentIntance?: any,
+) {
   if (!instance) {
     return instance;
   }
@@ -45,16 +50,28 @@ function filterOneInstance(instance: any, meta: QueryEntityMeta, me: RxUser) {
     }
   }
   //进行directive过滤
-
+  for (const directive of meta.directives) {
+    instance = await directive.filterEntity(instance, parentIntance);
+  }
   //递归处理关联
   for (const relation of meta.relations) {
-    const relationInstance = instance[relation.name];
-    if (Array.isArray(relationInstance)) {
-      for (const obj of relationInstance) {
-        filterOneInstance(obj, relation, me);
+    const relationInstances = instance[relation.name];
+    if (Array.isArray(relationInstances)) {
+      for (let i = 0; i < relationInstances.length; i++) {
+        relationInstances[i] = await filterOneInstance(
+          relationInstances[i],
+          relation,
+          me,
+          instance,
+        );
       }
     } else {
-      filterOneInstance(relationInstance, relation, me);
+      instance[relation.name] = await filterOneInstance(
+        instance[relation.name],
+        relation,
+        me,
+        instance,
+      );
     }
   }
   return instance;

@@ -6,10 +6,12 @@ import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
 import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 import { SchemaService } from 'src/schema/schema.service';
+import { StorageService } from 'src/storage/storage.service';
 import { EntitySchemaRelationOptions } from 'typeorm';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 import {
+  TOKEN_COUNT,
   TOKEN_GET_MANY,
   TOKEN_GET_ONE,
   TOKEN_ON,
@@ -25,6 +27,7 @@ export class MagicQueryParser {
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
+    private readonly storageService: StorageService,
   ) {}
 
   async parse(json: any): Promise<QueryRootMeta> {
@@ -49,10 +52,13 @@ export class MagicQueryParser {
             meta.fetchString = TOKEN_GET_ONE;
           } else if (directiveMeta.name === TOKEN_GET_MANY) {
             meta.fetchString = TOKEN_GET_MANY;
+          } else if (directiveMeta.name === TOKEN_COUNT) {
+            meta.fetchString = TOKEN_COUNT;
           } else {
-            const directiveClass = this.queryDirectiveService.findEntityDirectiveOrFailed(
-              directiveMeta.name,
-            );
+            const directiveClass =
+              this.queryDirectiveService.findEntityDirectiveOrFailed(
+                directiveMeta.name,
+              );
             const directive = new directiveClass(
               directiveMeta,
               this.rootMeta,
@@ -116,7 +122,7 @@ export class MagicQueryParser {
         relation = this.createAddonRelation(relationName, meta);
       }
 
-      this.paseConditionDirective(
+      this.parseConditionDirective(
         relationCondition,
         meta,
         relation.alias + '.' + fieldName,
@@ -129,10 +135,11 @@ export class MagicQueryParser {
     meta: QueryEntityMeta,
     keyStr: string,
   ) {
-    const relationEntitySchemaOptions = this.schemaService.findRelationEntitySchema(
-      meta.entityMeta.name,
-      jsonUnit.key,
-    );
+    const relationEntitySchemaOptions =
+      this.schemaService.findRelationEntitySchema(
+        meta.entityMeta.name,
+        jsonUnit.key,
+      );
     const keyWithoutAt = keyStr.replace('@', '');
     //如果是关联
     if (relationEntitySchemaOptions) {
@@ -142,6 +149,8 @@ export class MagicQueryParser {
       meta instanceof QueryRootMeta
     ) {
       meta.fetchString = TOKEN_GET_ONE;
+    } else if (keyWithoutAt === TOKEN_COUNT && meta instanceof QueryRootMeta) {
+      meta.fetchString = TOKEN_COUNT;
     } else if (
       keyWithoutAt === TOKEN_ON ||
       keyWithoutAt === TOKEN_WHERE ||
@@ -155,7 +164,7 @@ export class MagicQueryParser {
       if (jsonUnit.key.split('.').length > 1) {
         meta.relationConditions.push(jsonUnit);
       } else {
-        this.paseConditionDirective(
+        this.parseConditionDirective(
           jsonUnit,
           meta,
           meta.alias + '.' + jsonUnit.key,
@@ -164,7 +173,7 @@ export class MagicQueryParser {
     }
   }
 
-  private paseConditionDirective(
+  private parseConditionDirective(
     jsonUnit: JsonUnit,
     meta: QueryEntityMeta,
     field: string,
@@ -176,9 +185,8 @@ export class MagicQueryParser {
       directiveMeta = jsonUnit.directives[0];
       directiveMeta.value = jsonUnit.value;
     }
-    const directiveClass = this.queryDirectiveService.findConditionDirectiveOrFailed(
-      directiveName,
-    );
+    const directiveClass =
+      this.queryDirectiveService.findConditionDirectiveOrFailed(directiveName);
 
     meta.pushDirective(
       new directiveClass(
@@ -202,12 +210,25 @@ export class MagicQueryParser {
     const cmdMeta = new DirectiveMeta(name);
     cmdMeta.value = jsonUnit.value;
 
-    if (meta instanceof QueryRootMeta) {
-      const cmdClass = this.queryDirectiveService.findEntityDirectiveOrFailed(
-        name,
+    const fieldDirectiveClass =
+      this.queryDirectiveService.findFieldDirective(name);
+    if (fieldDirectiveClass) {
+      const directive = new fieldDirectiveClass(
+        cmdMeta,
+        this.rootMeta,
+        this.magicService,
+        this.schemaService,
+        this.storageService,
       );
+      meta.pushDirective(directive);
+      return;
+    }
+
+    if (meta instanceof QueryRootMeta) {
+      const directiveClass =
+        this.queryDirectiveService.findEntityDirectiveOrFailed(name);
       meta.pushDirective(
-        new cmdClass(
+        new directiveClass(
           cmdMeta,
           this.rootMeta,
           this.magicService,
@@ -215,11 +236,10 @@ export class MagicQueryParser {
         ),
       );
     } else {
-      const cmdClass = this.queryDirectiveService.findRelationDirectiveOrFailed(
-        name,
-      );
+      const directiveClass =
+        this.queryDirectiveService.findRelationDirectiveOrFailed(name);
       meta.pushDirective(
-        new cmdClass(
+        new directiveClass(
           cmdMeta,
           this.rootMeta,
           meta as QueryRelationMeta,
@@ -244,9 +264,10 @@ export class MagicQueryParser {
       relationEntitySchemaOptions.target.toString(),
     );
     jsonUnit.directives.forEach((directiveMeta) => {
-      const DirectiveClass = this.queryDirectiveService.findRelationDirectiveOrFailed(
-        directiveMeta.name,
-      );
+      const DirectiveClass =
+        this.queryDirectiveService.findRelationDirectiveOrFailed(
+          directiveMeta.name,
+        );
       relation.pushDirective(
         new DirectiveClass(
           directiveMeta,

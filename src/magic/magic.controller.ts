@@ -7,8 +7,9 @@ import {
   Post,
   UseGuards,
   Request,
-  UseInterceptors,
+  //UseInterceptors,
   UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilityService } from 'src/magic/ability.service';
@@ -22,10 +23,15 @@ import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
 import { RxUser } from 'src/entity-interface/RxUser';
-import { diskStorage } from 'multer';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter, fileName } from './upload/file-upload.utils';
+//import { diskStorage } from 'multer';
+//import { FileInterceptor } from '@nestjs/platform-express';
+//import { fileFilter, fileName } from './upload/file-upload.utils';
 import { MagicUploadService } from './upload/magic.upload.service';
+import { getFileName, getFileType } from './upload/file-upload.utils';
+import { RxMedia } from 'src/entity-interface/RxMedia';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { StorageService } from 'src/storage/storage.service';
+import { RxBaseService } from 'src/rxbase/rxbase.service';
 
 @Controller()
 export class MagicController {
@@ -36,6 +42,8 @@ export class MagicController {
     private readonly deleteDirectiveService: DeleteDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly uploadService: MagicUploadService,
+    protected readonly storageService: StorageService,
+    private readonly baseService: RxBaseService,
   ) {}
 
   /**
@@ -90,6 +98,7 @@ export class MagicController {
   async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
       console.debug('JSON QUERY String', jsonStr);
+      this.baseService.setHost('//' + req.headers.host);
       await sleep(500);
       let result: QueryResult;
       await this.typeormSerivce.connection.transaction(
@@ -142,7 +151,7 @@ export class MagicController {
   async post(@Request() req, @Body() body: any) {
     try {
       await sleep(500);
-      console.debug(body);
+      console.debug('Post JSON', body);
       let result: any;
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
@@ -257,7 +266,7 @@ export class MagicController {
    */
   @UseGuards(AuthGuard())
   @Post('upload')
-  @UseInterceptors(
+  /*@UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './public/uploads',
@@ -265,8 +274,13 @@ export class MagicController {
       }),
       fileFilter: fileFilter,
     }),
-  )
-  async uploadMedia(@Request() req, @UploadedFile() file, @Body() body: any) {
+  )*/
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadMedia(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: any,
+  ) {
     try {
       await sleep(500);
       let result: any;
@@ -279,16 +293,23 @@ export class MagicController {
             entityManger,
             req.user,
           );
-          this.uploadService.saveThumbnail(file);
-          console.debug(file, body);
+          const fileName = getFileName(file);
+          await this.uploadService.saveFile(file, fileName);
+          //this.uploadService.saveThumbnail(file);
           const { entity: entityName, ...modelData } = body;
-          modelData.fileName = file.filename;
-          modelData.mimetype = file.mimetype;
-          modelData.path = file.path;
-          modelData.size = file.size;
+          const model = {} as RxMedia;
+          model.name = modelData.name || file.originalname;
+          model.fileName = file.originalname;
+          model.mimetype = file.mimetype;
+          model.path = fileName;
+          model.size = file.size;
+          model.mediaType = getFileType(file);
+          model.folder =
+            !modelData.folder || modelData.folder === 'null'
+              ? null
+              : modelData.folder;
 
-          console.debug(modelData);
-          result = await entityService.post({ [entityName]: modelData });
+          result = await entityService.post({ [entityName]: model });
         },
       );
 
@@ -313,6 +334,7 @@ export class MagicController {
       this.postDirectiveService,
       this.deleteDirectiveService,
       this.schemaService,
+      this.storageService,
     );
   }
 }

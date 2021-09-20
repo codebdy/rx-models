@@ -3,8 +3,7 @@ import { MailReceiveConfig } from './MailReceiveConfig';
 
 
 export const EntityMailConfig = 'MailConfig';
-
-export interface MailConfig {
+export interface MailConfig  {
   id?: number;
   address?: string;
   password?: string;

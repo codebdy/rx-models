@@ -1,18 +1,21 @@
 import { RxMediaFolder } from './RxMediaFolder';
 import { RxUser } from './RxUser';
 import { Attachment } from './Attachment';
+import { RxMediaType } from './RxMediaType';
 
 export const EntityRxMedia = 'RxMedia';
-
 export interface RxMedia {
   id?: number;
-  name?: string;
+  name: string;
   mimetype?: string;
   fileName?: string;
   path?: string;
   size?: number;
-  user?: RxUser;
+  updatedAt?: Date;
+  createdAt?: Date;
+  mediaType: RxMediaType;
   avatarOfUser?: RxUser;
-  asMailAttachment?: Attachment;
+  user?: RxUser;
+  fileOfAttachment?: Attachment;
   folder?: RxMediaFolder;
 }

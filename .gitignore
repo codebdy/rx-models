@@ -402,4 +402,6 @@ thumbnails
 dbconfig.json
 schemas
 aliyun.ts
+storage/rxmodels-uploads/
+public/storage/
 

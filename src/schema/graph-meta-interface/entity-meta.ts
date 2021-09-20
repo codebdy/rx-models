@@ -3,6 +3,7 @@ import { ColumnMeta } from './column-meta';
 export enum EntityType {
   NORMAL = 'Normal',
   ENUM = 'Enum',
+  ABSTRACT = 'Abstract',
   INTERFACE = 'Interface',
 }
 

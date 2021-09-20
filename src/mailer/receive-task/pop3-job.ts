@@ -7,7 +7,11 @@ import { Job } from './job';
 import { JobOwner } from './job-owner';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
-import { BUCKET_MAILS, FOLEDR_INBOX } from 'src/util/consts';
+import {
+  BUCKET_MAILS,
+  FOLDER_ATTACHMENTS,
+  FOLDER_INBOX,
+} from 'src/util/consts';
 import {
   EntityMailIdentifier,
   MailIdentifier,
@@ -15,9 +19,10 @@ import {
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { MailTeller } from './mail-teller';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
+import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
+import { getExt } from 'src/util/get-ext';
+import { POP3Client } from './poplib';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const POP3Client = require('poplib');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
@@ -60,9 +65,37 @@ export class Pop3Job implements Job {
   }
 
   async saveMail(uidl: string, data: any) {
-    const fileName = `${this.mailAddress}/${FOLEDR_INBOX}/${uidl}.eml`;
+    const fileName = `${this.mailAddress}/${FOLDER_INBOX}/${uidl}.eml`;
     await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
     const parsed = await simpleParser(data);
+
+    const attachments = [];
+    for (let i = 0; i < parsed.attachments.length; i++) {
+      const attachementObj = parsed.attachments[i];
+      const path = `${
+        this.mailAddress
+      }/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
+      if (attachementObj.related) {
+        //可能不需要保存
+        continue;
+      }
+      await this.storageService.putFileData(
+        path,
+        attachementObj.content,
+        BUCKET_MAILS,
+      );
+      attachments.push(
+        await this.typeOrmService
+          .getRepository<Attachment>(EntityAttachment)
+          .save({
+            fileName: attachementObj.filename,
+            mimeType: attachementObj.contentType,
+            size: attachementObj.size,
+            path: path,
+          }),
+      );
+    }
+
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
       .save({
@@ -82,7 +115,8 @@ export class Pop3Job implements Job {
         priority: parsed.priority,
         belongsTo: { id: this.accountId },
         inMailBox: MailBoxType.INBOX,
-        //attachments:
+        fromAddress: parsed.from?.value[0]?.address,
+        attachments: attachments,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)
@@ -101,7 +135,7 @@ export class Pop3Job implements Job {
     });
 
     this.storageService
-      .checkAndCreateBacket(BUCKET_MAILS)
+      .checkAndCreateBucket(BUCKET_MAILS)
       .then(() => {
         this.readLocalMailList();
       })

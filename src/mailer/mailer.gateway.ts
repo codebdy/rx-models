@@ -5,7 +5,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { MailConfig } from 'src/entity-interface/MailConfig';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
+//import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import {
   CHANNEL_MAILER,
   EVENT_CANCEL_RECEIVE,
@@ -23,7 +23,7 @@ export class MailerGateway {
   constructor(
     private readonly clientsPool: MailerClientsPool,
     private readonly tasksPool: MailerReceiveTasksPool,
-    private readonly typeOrmService: TypeOrmService,
+    //private readonly typeOrmService: TypeOrmService,
   ) {}
 
   @SubscribeMessage(EVENT_REGISTER_MAIL_CLIENT)

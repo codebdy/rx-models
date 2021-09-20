@@ -9,6 +9,7 @@ import { InstallModule } from './install/install.module';
 import { PackageManageModule } from './package-manage/package-manage.module';
 import { MailerModule } from './mailer/mailer.module';
 import { StorageModule } from './storage/storage.module';
+import { RxBaseModule } from './rxbase/rxbase.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { StorageModule } from './storage/storage.module';
     AuthModule,
     MagicModule,
     MailerModule,
+    RxBaseModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

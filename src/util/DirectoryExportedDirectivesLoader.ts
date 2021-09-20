@@ -3,6 +3,12 @@ import { QueryDirectiveClass } from 'src/directive/query/query.directive.class';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require('glob');
+
+function requireUncached(module) {
+  delete require.cache[require.resolve(module)];
+  return require(module);
+}
+
 /**
  * Loads all exported directives from the given directory.
  */
@@ -54,7 +60,7 @@ export function importDirectivesFromDirectories(
         dtsExtension !== '.d.ts'
       );
     })
-    .map((file) => require(PlatformTools.pathResolve(file)));
+    .map((file) => requireUncached(PlatformTools.pathResolve(file)));
 
   return loadFileClasses(dirs, []);
 }
@@ -69,5 +75,5 @@ export function importJsonsFromDirectories(
 
   return allFiles
     .filter((file) => PlatformTools.pathExtname(file) === format)
-    .map((file) => require(PlatformTools.pathResolve(file)));
+    .map((file) => requireUncached(PlatformTools.pathResolve(file)));
 }

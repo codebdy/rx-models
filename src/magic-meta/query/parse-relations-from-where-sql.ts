@@ -21,6 +21,10 @@ export function parseRelationsFromWhereSql(sql: string): AddonRelationInfo[] {
       return [].concat(operands[0], operands[1]);
     }
 
+    if (operatorValue === 'NOT') {
+      return 'NOT ' + operands[0];
+    }
+
     const arr = operands[0]?.split('.');
     if (arr?.length > 1) {
       const [relationName, fieldName] = arr;

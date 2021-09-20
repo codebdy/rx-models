@@ -10,6 +10,7 @@ import { MagicDelete } from './delete/magic.delete';
 import { MagicPost } from './post/magic.post';
 import { MagicQuery } from './query/magic.query';
 import { MagicUpdate } from './update/magic.update';
+import { StorageService } from 'src/storage/storage.service';
 
 /**
  * 操作数据库通用类，所有数据库操作都应该通过该类进行，因为该类负责权限控制
@@ -24,6 +25,7 @@ export class MagicInstanceService implements MagicService {
     public readonly postDirectiveService: PostDirectiveService,
     public readonly deleteDirectiveService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
+    public readonly storageService: StorageService,
   ) {}
 
   get me() {
@@ -36,6 +38,7 @@ export class MagicInstanceService implements MagicService {
       this.abilityService,
       this.queryDirectiveService,
       this.schemaService,
+      this.storageService,
       this,
     ).query(json);
   }

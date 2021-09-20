@@ -11,9 +11,10 @@ import { convertType } from './convert-type';
 import { EntityMeta, EntityType } from './graph-meta-interface/entity-meta';
 import { PackageMeta } from './graph-meta-interface/package-meta';
 import {
+  CombinationType,
   RelationMeta,
-  RelationType,
 } from './graph-meta-interface/relation-meta';
+import { RelationType } from './graph-meta-interface/relation-type';
 
 interface WithUuid {
   uuid: string;
@@ -32,6 +33,10 @@ export class SchemaService {
   private _packages: PackageMeta[];
 
   constructor() {
+    this.loadPublishedSchemas();
+  }
+
+  public reload() {
     this.loadPublishedSchemas();
   }
 
@@ -117,8 +122,48 @@ export class SchemaService {
     );
   }
 
+  public getEntityCombinationRelationMetas(enityUuid: string) {
+    const relations: RelationMeta[] = [];
+    for (const aPackage of this._packages) {
+      for (const relation of aPackage.relations) {
+        if (
+          (relation.sourceId === enityUuid &&
+            relation.combination === CombinationType.ON_SOURCE) ||
+          (relation.targetId === enityUuid &&
+            relation.combination === CombinationType.ON_TARGET)
+        ) {
+          relations.push(relation);
+        }
+      }
+    }
+
+    return relations;
+  }
+
+  public isCombinationRole(entityUuid: string, roleName: string) {
+    const combinationRelations =
+      this.getEntityCombinationRelationMetas(entityUuid);
+    for (const relation of combinationRelations) {
+      if (
+        relation.sourceId === entityUuid &&
+        relation.roleOnSource === roleName
+      ) {
+        return true;
+      }
+      if (
+        relation.targetId === entityUuid &&
+        relation.roleOnTarget === roleName
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private loadPublishedSchemas() {
+    this._entitySchemas = [];
     const entityMetas: EntityMeta[] = [];
+    const abstractEntityMetas: EntityMeta[] = [];
     const relationMetas: RelationMeta[] = [];
     const packages: PackageMeta[] = importJsonsFromDirectories([
       SCHEMAS_DIR + '*.json',
@@ -132,6 +177,11 @@ export class SchemaService {
           (entity) =>
             entity.entityType !== EntityType.ENUM &&
             entity.entityType !== EntityType.INTERFACE,
+        ) || []),
+      );
+      abstractEntityMetas.push(
+        ...(aPackage.entities.filter(
+          (entity) => entity.entityType === EntityType.ABSTRACT,
         ) || []),
       );
       relationMetas.push(...(aPackage.relations || []));
@@ -154,14 +204,17 @@ export class SchemaService {
         };
       }
 
-      for (const relation of relationMetas) {
+      //处理关系，忽略继承关系
+      for (const relation of relationMetas.filter(
+        (rela) => rela.relationType !== RelationType.INHERIT,
+      )) {
         if (relation.sourceId === entityMeta.uuid) {
           relations[relation.roleOnSource] = {
             uuid: relation.uuid,
             target: entityMetas.find(
               (entity) => entity.uuid === relation.targetId,
             )?.name,
-            type: relation.relationType,
+            type: relation.relationType as any, //加any照顾继承
             inverseSide: relation.roleOnTarget,
             joinTable:
               relation.relationType === RelationType.MANY_TO_MANY &&
@@ -188,7 +241,7 @@ export class SchemaService {
             target: entityMetas.find(
               (entity) => entity.uuid === relation.sourceId,
             )?.name,
-            type: relationType,
+            type: relationType as any, //加any照顾继承
             inverseSide: relation.roleOnSource,
             joinTable:
               relationType === RelationType.MANY_TO_MANY &&
@@ -212,6 +265,29 @@ export class SchemaService {
       };
 
       this._entitySchemas.push(entitySchemaOption);
+    });
+
+    // 处理继承关系, 包含的父类部分引用，而不是副本，需要注意数据污染
+    for (const relation of relationMetas.filter(
+      (rela) => rela.relationType === RelationType.INHERIT,
+    )) {
+      const parent = this._entitySchemas.find(
+        (entity) => entity.uuid === relation.targetId,
+      );
+      const child = this._entitySchemas.find(
+        (entity) => entity.uuid === relation.sourceId,
+      );
+      if (parent && child) {
+        child.columns = { ...parent.columns, ...child.columns };
+        child.relations = { ...parent.relations, ...child.relations };
+      }
+    }
+
+    //删除 Abstract class
+    this._entitySchemas = this.entitySchemas.filter((entitySchema) => {
+      return !abstractEntityMetas.find(
+        (meta) => entitySchema.uuid === meta.uuid,
+      );
     });
   }
 }

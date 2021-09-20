@@ -1,19 +1,19 @@
 import { Attachment } from './Attachment';
 import { MailIdentifier } from './MailIdentifier';
 import { RxUser } from './RxUser';
-import { MailTag } from './MailTag';
+import { MailLabel } from './MailLabel';
 import { MailBoxType } from './MailBoxType';
+import { AddressObject } from './AddressObject';
 
 
 export const EntityMail = 'Mail';
-
-export interface Mail {
+export interface Mail  {
   id?: number;
   subject?: string;
-  from?: any;
-  to?: any;
-  cc?: any;
-  bcc?: any;
+  from?: AddressObject;
+  to?: AddressObject;
+  cc?: AddressObject;
+  bcc?: AddressObject;
   date?: Date;
   messageId?: string;
   inReplyTo?: string;
@@ -26,8 +26,11 @@ export interface Mail {
   readFlag?: boolean;
   isTop?: string;
   inMailBox?: MailBoxType;
-  belongsTo?: RxUser;
-  tags?: MailTag[];
+  finished?: boolean;
+  showAsOriginal?: boolean;
+  fromAddress?: string;
+  owner?: RxUser;
+  labels?: MailLabel[];
   attachments?: Attachment[];
   identifier?: MailIdentifier;
 }

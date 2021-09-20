@@ -1,4 +1,5 @@
-export interface MailReceiveConfig {
+
+export interface MailReceiveConfig  {
   name?: string;
   host?: string;
   port?: string;
