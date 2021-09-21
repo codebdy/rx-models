@@ -13,8 +13,8 @@ const Imap = require('imap'),
 
 export class Imap4Job extends Job {
   constructor(
-    private readonly typeOrmService: TypeOrmService,
-    private readonly storageService: StorageService,
+    protected readonly typeOrmService: TypeOrmService,
+    protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly imap4Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
@@ -23,7 +23,7 @@ export class Imap4Job extends Job {
     super(`${mailAddress}(IMAP4)`);
   }
 
-  start() {
+  receive() {
     const imap = new Imap({
       user: this.imap4Config.account,
       password: decypt(this.imap4Config.password, CRYPTO_KEY),
@@ -32,26 +32,7 @@ export class Imap4Job extends Job {
       tls: true,
     });
 
-    this.emit({
-      type: MailerEventType.checkStorage,
-      message: 'Check storage',
-    });
-
-    this.storageService
-      .checkAndCreateBucket(BUCKET_MAILS)
-      .then(() => {
-        this.emit({
-          type: MailerEventType.connect,
-          message: 'connecting to mail server ...',
-        });
-        imap.connect();
-      })
-      .catch((error) => {
-        console.error(error);
-        this.error('Storage error:' + error);
-      });
-
-    console.log('呵呵 not ready');
+    imap.connect();
     imap.once('ready', () => {
       console.log('哈哈ready');
       //imap.close();

@@ -28,13 +28,12 @@ const simpleParser = require('mailparser').simpleParser;
 
 export class Pop3Job extends Job {
   private readonly logger = new Logger('Mailer');
-  private mailTeller = new MailTeller();
   private isAborted = false;
   private client: any;
 
   constructor(
-    private readonly typeOrmService: TypeOrmService,
-    private readonly storageService: StorageService,
+    protected readonly typeOrmService: TypeOrmService,
+    protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
@@ -123,46 +122,6 @@ export class Pop3Job extends Job {
         mailAddress: this.mailAddress,
         file: fileName,
         mail: mail,
-      });
-  }
-
-  start(): void {
-    this.emit({
-      type: MailerEventType.checkStorage,
-      message: 'Check storage',
-    });
-
-    this.storageService
-      .checkAndCreateBucket(BUCKET_MAILS)
-      .then(() => {
-        this.readLocalMailList();
-      })
-      .catch((error) => {
-        console.error(error);
-        this.error('Storage error:' + error);
-      });
-  }
-
-  readLocalMailList(): void {
-    this.emit({
-      type: MailerEventType.readLocalMailList,
-      message: 'Read local mail list',
-    });
-
-    const repository =
-      this.typeOrmService.getRepository<MailIdentifier>(EntityMailIdentifier);
-    repository
-      .find({
-        select: ['uidl'],
-        where: { mailAddress: this.mailAddress },
-      })
-      .then((data) => {
-        this.mailTeller.localMailList = data.map((mail) => mail.uidl);
-        this.receive();
-      })
-      .catch((error) => {
-        console.error(error);
-        this.error('Read local mail list error:' + error);
       });
   }
 
