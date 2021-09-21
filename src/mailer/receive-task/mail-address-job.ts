@@ -47,7 +47,7 @@ export class MailAddressJob implements Job, JobOwner {
           typeOrmService,
           storageService,
           config.address,
-          config.pop3,
+          config.imap4,
           this,
           this.accountId,
         ),
