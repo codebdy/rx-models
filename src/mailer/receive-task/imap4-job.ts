@@ -35,9 +35,20 @@ export class Imap4Job extends Job {
 
     this.client.connect();
     this.client.once('ready', () => {
-      console.log('哈哈ready');
-      //imap.close();
-      this.client.destroy();
+      /*this.client.getBoxes((error, boxes) => {
+        console.log(`哈哈 ${this.mailAddress}:`, boxes);
+        this.client.destroy();
+      });*/
+      this.client.openBox('Sent', true, (error, box) => {
+        console.log(`哈哈 ${this.mailAddress}:`, error, box);
+        const f = this.client.seq.fetch(box.messages.total + ':*', {
+          bodies: ['HEADER.FIELDS (FROM)', 'TEXT'],
+        });
+        f.on('message', (msg, seqno) => {
+          console.log('Message #%d', seqno, msg);
+          //this.client.destroy();
+        });
+      });
     });
 
     this.client.once('error', (err) => {
@@ -54,6 +65,7 @@ export class Imap4Job extends Job {
       this.jobOwner.finishJob();
     });
   }
+
   abort() {
     this.isAborted = true;
     this.client.destroy();
