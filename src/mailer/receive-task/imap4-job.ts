@@ -1,10 +1,8 @@
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { BUCKET_MAILS } from 'src/util/consts';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
 
@@ -12,6 +10,9 @@ const Imap = require('imap'),
   inspect = require('util').inspect;
 
 export class Imap4Job extends Job {
+  private isAborted = false;
+  private client: any;
+
   constructor(
     protected readonly typeOrmService: TypeOrmService,
     protected readonly storageService: StorageService,
@@ -24,7 +25,7 @@ export class Imap4Job extends Job {
   }
 
   receive() {
-    const imap = new Imap({
+    this.client = new Imap({
       user: this.imap4Config.account,
       password: decypt(this.imap4Config.password, CRYPTO_KEY),
       host: this.imap4Config.host,
@@ -32,27 +33,29 @@ export class Imap4Job extends Job {
       tls: true,
     });
 
-    imap.connect();
-    imap.once('ready', () => {
+    this.client.connect();
+    this.client.once('ready', () => {
       console.log('哈哈ready');
       //imap.close();
-      imap.destroy();
+      this.client.destroy();
     });
 
-    imap.once('error', (err) => {
+    this.client.once('error', (err) => {
       console.log(err);
     });
 
-    imap.once('close', () => {
+    this.client.once('close', () => {
       console.log('Connection closed');
       this.jobOwner.finishJob();
     });
 
-    imap.once('end', () => {
+    this.client.once('end', () => {
       console.log('Connection ended');
       this.jobOwner.finishJob();
     });
   }
-  abort() {}
-  retry() {}
+  abort() {
+    this.isAborted = true;
+    this.client.destroy();
+  }
 }

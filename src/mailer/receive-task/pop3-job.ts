@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEvent, MailerEventType } from '../mailer.event';
+import { MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
@@ -17,7 +17,6 @@ import {
   MailIdentifier,
 } from 'src/entity-interface/MailIdentifier';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
-import { MailTeller } from './mail-teller';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
 import { getExt } from 'src/util/get-ext';
@@ -257,9 +256,5 @@ export class Pop3Job extends Job {
         this.jobOwner.finishJob();
       }
     });
-  }
-
-  retry(): void {
-    this.start();
   }
 }

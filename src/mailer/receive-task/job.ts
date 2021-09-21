@@ -83,7 +83,10 @@ export abstract class Job implements IJob {
       });
   }
 
+  retry(): void {
+    this.start();
+  }
+
   abstract receive(): void;
   abstract abort(): void;
-  abstract retry(): void;
 }
