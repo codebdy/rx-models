@@ -26,20 +26,22 @@ import { POP3Client } from './poplib';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
-export class Pop3Job implements Job {
+export class Pop3Job extends Job {
   private readonly logger = new Logger('Mailer');
   private mailTeller = new MailTeller();
   private isAborted = false;
   private client: any;
-  private isError = false;
+
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
-    private readonly mailAddress: string,
+    protected readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
     private readonly accountId: number,
-  ) {}
+  ) {
+    super(`${mailAddress}(POP3)`);
+  }
 
   abort(): void {
     this.isAborted = true;
@@ -50,10 +52,6 @@ export class Pop3Job implements Job {
     if (this.isAborted) {
       this.jobOwner.finishJob();
     }
-  }
-  emit(event: MailerEvent): void {
-    event.name = `${this.mailAddress}(POP3)`;
-    this.jobOwner.emit(event);
   }
 
   error(message: string) {

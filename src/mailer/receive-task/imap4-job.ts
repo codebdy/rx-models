@@ -1,23 +1,27 @@
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { BUCKET_MAILS } from 'src/util/consts';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
+import { MailerEventType } from '../mailer.event';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
 
 const Imap = require('imap'),
   inspect = require('util').inspect;
 
-export class Imap4Job implements Job {
+export class Imap4Job extends Job {
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
-    private readonly mailAddress: string,
+    protected readonly mailAddress: string,
     private readonly imap4Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
     private readonly accountId: number,
-  ) {}
+  ) {
+    super(`${mailAddress}(IMAP4)`);
+  }
 
   start() {
     const imap = new Imap({
@@ -27,7 +31,26 @@ export class Imap4Job implements Job {
       port: this.imap4Config.port,
       tls: true,
     });
-    imap.connect();
+
+    this.emit({
+      type: MailerEventType.checkStorage,
+      message: 'Check storage',
+    });
+
+    this.storageService
+      .checkAndCreateBucket(BUCKET_MAILS)
+      .then(() => {
+        this.emit({
+          type: MailerEventType.connect,
+          message: 'connecting to mail server ...',
+        });
+        imap.connect();
+      })
+      .catch((error) => {
+        console.error(error);
+        this.error('Storage error:' + error);
+      });
+
     console.log('呵呵 not ready');
     imap.once('ready', () => {
       console.log('哈哈ready');

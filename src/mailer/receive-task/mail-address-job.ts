@@ -3,13 +3,13 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerEvent } from '../mailer.event';
 import { Imap4Job } from './imap4-job';
-import { Job } from './job';
+import { IJob, Job } from './job';
 import { JobOwner } from './job-owner';
 import { Pop3Job } from './pop3-job';
 
-export class MailAddressJob implements Job, JobOwner {
-  private jobs: Job[] = [];
-  private currentJob: Job;
+export class MailAddressJob implements IJob, JobOwner {
+  private jobs: IJob[] = [];
+  private currentJob: IJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
@@ -62,7 +62,7 @@ export class MailAddressJob implements Job, JobOwner {
     this.currentJob?.retry();
   }
 
-  nextJob(): Job {
+  nextJob(): IJob {
     if (this.jobs.length === 0) {
       this.jobOwner.finishJob();
       return;

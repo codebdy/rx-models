@@ -5,13 +5,13 @@ import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { TasksPool } from '../mailer.receive-tasks-pool';
-import { Job } from './job';
+import { IJob } from './job';
 import { JobOwner } from './job-owner';
 import { MailAddressJob } from './mail-address-job';
 
 export class ReceiveTask implements JobOwner {
   lastEvent?: MailerEvent;
-  private currentJob: Job;
+  private currentJob: IJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
