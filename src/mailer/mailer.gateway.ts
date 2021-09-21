@@ -22,8 +22,7 @@ export class MailerGateway {
 
   constructor(
     private readonly clientsPool: MailerClientsPool,
-    private readonly tasksPool: MailerReceiveTasksPool,
-    //private readonly typeOrmService: TypeOrmService,
+    private readonly tasksPool: MailerReceiveTasksPool, //private readonly typeOrmService: TypeOrmService,
   ) {}
 
   @SubscribeMessage(EVENT_REGISTER_MAIL_CLIENT)
