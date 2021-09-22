@@ -10,6 +10,8 @@ import { JobOwner } from './job-owner';
 const Imap = require('imap'),
   inspect = require('util').inspect;
 
+const simpleParser = require('mailparser').simpleParser;
+
 export class Imap4Job extends Job {
   private isAborted = false;
   private client: any;
@@ -52,29 +54,31 @@ export class Imap4Job extends Job {
           if (!results || results.lenght === 0) {
             //没有结果时需要处理
           }
-          const f = this.client.fetch(results, { bodies: '' });
+          const f = this.client.fetch(results, {
+            bodies: ['HEADER.FIELDS (FROM SUBJECT)', ''],
+          });
           f.on('message', (msg, seqno) => {
             console.log('Message #%d', seqno);
             const prefix = '(#' + seqno + ') ';
             let uid = '';
-            const buffers = [];
-            msg.on('body', (stream, info) => {
-              console.log('哈哈body', info);
-              stream.on('error', (error) => {
-                throw error;
+            let parsedMail;
+            msg.on('body', function (stream, info) {
+              // use a specialized mail parsing library (https://github.com/andris9/mailparser)
+              simpleParser(stream, (err, mail) => {
+                parsedMail = mail;
+                console.log('吼吼', mail);
+                console.log(prefix + mail.text);
               });
-              stream.on('data', (data) => buffers.push(data));
-              stream.on('end', () => {
-                Buffer.concat(buffers);
-                console.log('嘿嘿', seqno, buffers.length);
-              });
+
+              // or, write to file
+              //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
             });
             msg.once('attributes', (attrs) => {
               console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
               uid = attrs?.uid;
             });
             msg.once('end', () => {
-              this.saveMail(uid, Buffer.from(buffers), MailBoxType.SENT);
+              //this.saveMail(uid, Buffer.from(buffers), MailBoxType.SENT);
               console.log(prefix + 'Finished2:', seqno);
             });
           });

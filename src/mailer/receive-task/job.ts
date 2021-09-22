@@ -93,9 +93,8 @@ export abstract class Job implements IJob {
 
   async saveMail(uidl: string, data: any, mailBox: MailBoxType) {
     const fileName = `${this.mailAddress}/${mailBox}/${uidl}.eml`;
-    await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
+    //await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
     const parsed = await simpleParser(data);
-
     const attachments = [];
     for (let i = 0; i < parsed.attachments.length; i++) {
       const attachementObj = parsed.attachments[i];
