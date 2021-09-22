@@ -11,10 +11,10 @@ export class MailTeller {
   /**
    * 识别新邮件
    */
-  tellIt(uidlData: string[]): void {
+  tellIt(uidlData: string[], startIndex = 1): void {
     this.uidlData = uidlData;
     this.newMailList = _.difference(this.uidlData, this.localMailList).splice(
-      1,
+      startIndex,
     );
     this.totalNew = this.newMailList.length;
   }

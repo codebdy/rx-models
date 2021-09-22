@@ -44,7 +44,7 @@ function getMailTargetBox(imap4Folder: { value: string; label: string }) {
 
 export class Imap4Job extends Job {
   private client: any;
-  private results: [] = [];
+  private results: string[] = [];
   private mailBoxes: string[] = [];
 
   constructor(
@@ -139,7 +139,10 @@ export class Imap4Job extends Job {
       this.client.search(['ALL'], (err, results) => {
         if (err) throw err;
         this.results = results;
-        this.mailTeller.tellIt(results);
+        this.mailTeller.tellIt(
+          this.results.map((uidl) => uidl.toString()),
+          0,
+        );
         if (
           !this.mailTeller.newMailList ||
           this.mailTeller.newMailList.length === 0
