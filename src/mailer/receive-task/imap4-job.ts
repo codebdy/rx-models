@@ -30,22 +30,28 @@ export class Imap4Job extends Job {
     super(`${mailAddress}(IMAP4)`);
   }
 
-  private async saveMail(parsedMail: any, uidl: string, mailBox: MailBoxType) {
-    //console.log('哈哈 保存邮件');
-    //await this.saveMailToStorage(uidl, data, mailBox);
-    await this.saveMailToDatabase(uidl, parsedMail, mailBox);
-  }
-
-  private checkAndSaveMail(
+  private async saveMail(
+    buffer: any,
     parsedMail: any,
     uidl: string,
     mailBox: MailBoxType,
   ) {
-    if (!parsedMail || !uidl) {
+    //console.log('哈哈 保存邮件');
+    await this.saveMailToStorage(uidl, buffer, mailBox);
+    await this.saveMailToDatabase(uidl, parsedMail, mailBox);
+  }
+
+  private checkAndSaveMail(
+    buffer: any,
+    parsedMail: any,
+    uidl: string,
+    mailBox: MailBoxType,
+  ) {
+    if (!buffer || !parsedMail || !uidl) {
       //还没有解析完，返回
       return;
     }
-    this.saveMail(parsedMail, uidl, mailBox).then(() => {
+    this.saveMail(buffer, parsedMail, uidl, mailBox).then(() => {
       //console.log('呵呵呵 保存成功');
       //this.retrOne();
     });
@@ -87,16 +93,33 @@ export class Imap4Job extends Job {
             const prefix = '(#' + seqno + ') ';
             let uid = '';
             let parsedMail;
-            const buffers = [];
-            let buffer;
-            console.log('哈哈哈 on Message', seqno);
+            let mailData;
             msg.on('body', (stream, info) => {
-              console.log('哈哈哈 on body', seqno);
-              // use a specialized mail parsing library (https://github.com/andris9/mailparser)
               simpleParser(stream, (err, mail) => {
                 parsedMail = mail;
-                console.log('快快快保存', uid);
-                this.checkAndSaveMail(parsedMail, uid, MailBoxType.SENT);
+                this.checkAndSaveMail(
+                  mailData,
+                  parsedMail,
+                  uid,
+                  MailBoxType.SENT,
+                );
+              });
+
+              let buffer = Buffer.from([]);
+              stream.on('data', (buf) => {
+                buffer = Buffer.concat([buffer, buf]);
+              });
+              stream.on('end', () => {
+                mailData = buffer;
+                this.checkAndSaveMail(
+                  mailData,
+                  parsedMail,
+                  uid,
+                  MailBoxType.SENT,
+                );
+              });
+              stream.on('error', () => {
+                throw error;
               });
               //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
             });
@@ -105,7 +128,12 @@ export class Imap4Job extends Job {
               uid = attrs?.uid;
             });
             msg.once('end', () => {
-              //this.checkAndSaveMail(parsedMail, uid, MailBoxType.SENT);
+              this.checkAndSaveMail(
+                mailData,
+                parsedMail,
+                uid,
+                MailBoxType.SENT,
+              );
             });
           });
           f.once('error', (err) => {
