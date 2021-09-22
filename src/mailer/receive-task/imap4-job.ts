@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { StorageService } from 'src/storage/storage.service';
@@ -7,12 +8,8 @@ import { CRYPTO_KEY } from '../consts';
 import { Job } from './job';
 import { JobOwner } from './job-owner';
 
-const Imap = require('imap'),
-  inspect = require('util').inspect;
-
+const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
-let fs = require('fs'),
-  fileStream;
 
 export class Imap4Job extends Job {
   private isAborted = false;
@@ -72,7 +69,10 @@ export class Imap4Job extends Job {
         console.log(`哈哈 ${this.mailAddress}:`, boxes);
         this.client.destroy();
       });*/
-      this.client.openBox('Sent', true, (error, box) => {
+      this.client.openBox('Sent', true, (error /*, box*/) => {
+        if (error) {
+          throw error;
+        }
         //console.log(`哈哈 ${this.mailAddress}:`, error, box);
         if (this.mailAddress !== '11011968@qq.com') {
           this.client.end();
@@ -88,13 +88,11 @@ export class Imap4Job extends Job {
           const f = this.client.fetch(this.results, {
             bodies: [''],
           });
-          f.on('message', (msg, seqno) => {
-            console.log('Message #%d', seqno);
-            const prefix = '(#' + seqno + ') ';
+          f.on('message', (msg /*, seqno*/) => {
             let uid = '';
             let parsedMail;
             let mailData;
-            msg.on('body', (stream, info) => {
+            msg.on('body', (stream /*, info*/) => {
               simpleParser(stream, (err, mail) => {
                 parsedMail = mail;
                 this.checkAndSaveMail(
@@ -118,13 +116,11 @@ export class Imap4Job extends Job {
                   MailBoxType.SENT,
                 );
               });
-              stream.on('error', () => {
+              stream.on('error', (error) => {
                 throw error;
               });
-              //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
             });
             msg.once('attributes', (attrs) => {
-              console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
               uid = attrs?.uid;
             });
             msg.once('end', () => {
@@ -138,9 +134,9 @@ export class Imap4Job extends Job {
           });
           f.once('error', (err) => {
             console.log('Fetch error: ' + err);
+            throw err;
           });
           f.once('end', () => {
-            console.log('Done fetching all messages!');
             this.client.end();
           });
         });
@@ -149,15 +145,16 @@ export class Imap4Job extends Job {
 
     this.client.once('error', (err) => {
       console.log(err);
+      throw err;
     });
 
     this.client.once('close', () => {
-      console.log('Connection closed');
+      console.debug('Connection closed');
       this.jobOwner.finishJob();
     });
 
     this.client.once('end', () => {
-      console.log('Connection ended');
+      console.debug('Connection ended');
       this.jobOwner.finishJob();
     });
   }
