@@ -1,3 +1,4 @@
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
@@ -55,16 +56,26 @@ export class Imap4Job extends Job {
           f.on('message', (msg, seqno) => {
             console.log('Message #%d', seqno);
             const prefix = '(#' + seqno + ') ';
+            let uid = '';
+            const buffers = [];
             msg.on('body', (stream, info) => {
               console.log('哈哈body', info);
-              var fs = require('fs'), fileStream;
-              //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.eml'));
+              stream.on('error', (error) => {
+                throw error;
+              });
+              stream.on('data', (data) => buffers.push(data));
+              stream.on('end', () => {
+                Buffer.concat(buffers);
+                console.log('嘿嘿', seqno, buffers.length);
+              });
             });
             msg.once('attributes', (attrs) => {
               console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+              uid = attrs?.uid;
             });
             msg.once('end', () => {
-              console.log(prefix + 'Finished');
+              this.saveMail(uid, Buffer.from(buffers), MailBoxType.SENT);
+              console.log(prefix + 'Finished2:', seqno);
             });
           });
           f.once('error', (err) => {

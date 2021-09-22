@@ -141,7 +141,7 @@ export abstract class Job implements IJob {
         textAsHtml: parsed.textAsHtml,
         priority: parsed.priority,
         belongsTo: { id: this.accountId },
-        inMailBox: MailBoxType.INBOX,
+        inMailBox: mailBox,
         fromAddress: parsed.from?.value[0]?.address,
         attachments: attachments,
       });
@@ -152,6 +152,7 @@ export abstract class Job implements IJob {
         mailAddress: this.mailAddress,
         file: fileName,
         mail: mail,
+        fromBox: mailBox,
       });
   }
 
