@@ -30,9 +30,16 @@ export abstract class Job implements IJob {
   protected readonly typeOrmService: TypeOrmService;
   protected readonly storageService: StorageService;
   protected readonly accountId: number;
+  protected isAborted = false;
 
   constructor(enventName: string) {
     this.eventName = enventName;
+  }
+
+  checkAbort() {
+    if (this.isAborted) {
+      this.jobOwner.finishJob();
+    }
   }
 
   emit(event: MailerEvent): void {

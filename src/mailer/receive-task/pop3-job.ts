@@ -14,7 +14,7 @@ const simpleParser = require('mailparser').simpleParser;
 
 export class Pop3Job extends Job {
   private readonly logger = new Logger('Mailer');
-  private isAborted = false;
+
   private client: any;
 
   constructor(
@@ -37,12 +37,6 @@ export class Pop3Job extends Job {
   abort(): void {
     this.isAborted = true;
     this.client?.quit();
-  }
-
-  checkAbort() {
-    if (this.isAborted) {
-      this.jobOwner.finishJob();
-    }
   }
 
   error(message: string) {
@@ -105,7 +99,7 @@ export class Pop3Job extends Job {
     });
 
     // Data is a 1-based index of messages, if there are any messages
-    client.on('list', (status, msgcount, msgnumber, data, rawdata) => {
+    client.on('list', (status, msgcount, msgnumber, data /*, rawdata*/) => {
       if (status === false) {
         this.error('LIST failed');
         client.quit();
@@ -145,8 +139,8 @@ export class Pop3Job extends Job {
 
     client.on('uidl', (status, msgnumber, data /*, rawdata*/) => {
       if (status === true) {
-        this.mailTeller.uidlData = data;
-        this.mailTeller.tellIt();
+        //this.mailTeller.uidlData = data;
+        this.mailTeller.tellIt(data);
         retrOne();
       } else {
         this.error('uidl failed');
@@ -174,12 +168,12 @@ export class Pop3Job extends Job {
       }
     });
 
-    client.on('dele', (status, msgnumber, data, rawdata) => {
+    client.on('dele', (status, msgnumber /*, data, rawdata*/) => {
       if (status === true) {
-        console.log('DELE success for msgnumber ' + msgnumber);
+        console.debug('DELE success for msgnumber ' + msgnumber);
         client.quit();
       } else {
-        console.log('DELE failed for msgnumber ' + msgnumber);
+        console.debug('DELE failed for msgnumber ' + msgnumber);
         client.quit();
       }
     });

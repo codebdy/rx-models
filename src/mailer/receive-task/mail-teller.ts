@@ -3,7 +3,7 @@ import _ = require('lodash');
 export class MailTeller {
   localMailList: string[] = [];
   newMailList: string[] = [];
-  uidlData: any;
+  protected uidlData: string[];
   sizeList: string[] = [];
 
   totalNew: number;
@@ -11,7 +11,8 @@ export class MailTeller {
   /**
    * 识别新邮件
    */
-  tellIt(): void {
+  tellIt(uidlData: string[]): void {
+    this.uidlData = uidlData;
     this.newMailList = _.difference(this.uidlData, this.localMailList).splice(
       1,
     );
