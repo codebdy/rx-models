@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { Imap4Folder } from 'src/entity-interface/Imap4Folder';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { StorageService } from 'src/storage/storage.service';
@@ -11,10 +12,41 @@ import { JobOwner } from './job-owner';
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
 
+function getMailSrouceBox(imap4Folder: Imap4Folder) {
+  if (imap4Folder === Imap4Folder.InBoxToInBox) {
+    return MailBoxType.INBOX;
+  }
+  if (imap4Folder === Imap4Folder.SentBoxToSentBox) {
+    return MailBoxType.SENT;
+  }
+  if (imap4Folder === Imap4Folder.SpamBoxToInBox) {
+    return MailBoxType.JUNK;
+  }
+  if (imap4Folder === Imap4Folder.SpamBoxToSpamBox) {
+    return MailBoxType.JUNK;
+  }
+}
+
+function getMailTargetBox(imap4Folder: Imap4Folder) {
+  if (imap4Folder === Imap4Folder.InBoxToInBox) {
+    return MailBoxType.INBOX;
+  }
+  if (imap4Folder === Imap4Folder.SentBoxToSentBox) {
+    return MailBoxType.SENT;
+  }
+  if (imap4Folder === Imap4Folder.SpamBoxToInBox) {
+    return MailBoxType.INBOX;
+  }
+  if (imap4Folder === Imap4Folder.SpamBoxToSpamBox) {
+    return MailBoxType.JUNK;
+  }
+}
+
 export class Imap4Job extends Job {
   private isAborted = false;
   private client: any;
   private results: [] = [];
+  private mailBoxes: string[] = [];
 
   constructor(
     protected readonly typeOrmService: TypeOrmService,
@@ -25,6 +57,7 @@ export class Imap4Job extends Job {
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(IMAP4)`);
+    this.mailBoxes = imap4Config.folders || [];
   }
 
   private async saveMail(
@@ -63,76 +96,7 @@ export class Imap4Job extends Job {
 
     this.client.connect();
     this.client.once('ready', () => {
-      this.client.openBox('Sent', true, (error /*, box*/) => {
-        if (error) {
-          throw error;
-        }
-        if (this.mailAddress !== '11011968@qq.com') {
-          this.client.end();
-          return;
-        }
-        this.client.search(['ALL'], (err, results) => {
-          if (err) throw err;
-          this.results = results;
-          if (!this.results || this.results.length === 0) {
-            this.client.end();
-          }
-          const f = this.client.fetch(this.results, {
-            bodies: [''],
-          });
-          f.on('message', (msg /*, seqno*/) => {
-            let uid = '';
-            let parsedMail;
-            let mailData;
-            msg.on('body', (stream /*, info*/) => {
-              simpleParser(stream, (err, mail) => {
-                parsedMail = mail;
-                this.checkAndSaveMail(
-                  mailData,
-                  parsedMail,
-                  uid,
-                  MailBoxType.SENT,
-                );
-              });
-
-              let buffer = Buffer.from([]);
-              stream.on('data', (buf) => {
-                buffer = Buffer.concat([buffer, buf]);
-              });
-              stream.on('end', () => {
-                mailData = buffer;
-                this.checkAndSaveMail(
-                  mailData,
-                  parsedMail,
-                  uid,
-                  MailBoxType.SENT,
-                );
-              });
-              stream.on('error', (error) => {
-                throw error;
-              });
-            });
-            msg.once('attributes', (attrs) => {
-              uid = attrs?.uid;
-            });
-            msg.once('end', () => {
-              this.checkAndSaveMail(
-                mailData,
-                parsedMail,
-                uid,
-                MailBoxType.SENT,
-              );
-            });
-          });
-          f.once('error', (err) => {
-            console.log('Fetch error: ' + err);
-            throw err;
-          });
-          f.once('end', () => {
-            this.client.end();
-          });
-        });
-      });
+      this.receiveOnBox();
     });
 
     this.client.once('error', (err) => {
@@ -148,6 +112,76 @@ export class Imap4Job extends Job {
     this.client.once('end', () => {
       console.debug('Connection ended');
       this.jobOwner.finishJob();
+    });
+  }
+
+  receiveOnBox() {
+    if (this.mailBoxes.length === 0) {
+      this.client.end();
+      return;
+    }
+    const imap4Folder = this.mailBoxes.pop();
+    const mailSourceBox = getMailSrouceBox(imap4Folder as any);
+    const mailTargetBox = getMailTargetBox(imap4Folder as any);
+    if (!mailSourceBox) {
+      this.receiveOnBox();
+      return;
+    }
+    this.eventName = `${this.mailAddress}(IMAP4)-${mailSourceBox}`;
+    this.client.openBox(mailSourceBox, true, (error /*, box*/) => {
+      if (error) {
+        throw error;
+      }
+      if (this.mailAddress !== '11011968@qq.com') {
+        this.client.end();
+        return;
+      }
+      this.client.search(['ALL'], (err, results) => {
+        if (err) throw err;
+        this.results = results;
+        if (!this.results || this.results.length === 0) {
+          this.client.end();
+        }
+        const f = this.client.fetch(this.results, {
+          bodies: [''],
+        });
+        f.on('message', (msg /*, seqno*/) => {
+          let uid = '';
+          let parsedMail;
+          let mailData;
+          msg.on('body', (stream /*, info*/) => {
+            simpleParser(stream, (err, mail) => {
+              parsedMail = mail;
+              this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+            });
+
+            let buffer = Buffer.from([]);
+            stream.on('data', (buf) => {
+              buffer = Buffer.concat([buffer, buf]);
+            });
+            stream.on('end', () => {
+              mailData = buffer;
+              this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+            });
+            stream.on('error', (error) => {
+              throw error;
+            });
+          });
+          msg.once('attributes', (attrs) => {
+            uid = attrs?.uid;
+          });
+          msg.once('end', () => {
+            this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+          });
+        });
+        f.once('error', (err) => {
+          console.log('Fetch error: ' + err);
+          throw err;
+        });
+        f.once('end', () => {
+          this.receiveOnBox();
+        });
+      });
     });
   }
 
