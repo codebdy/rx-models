@@ -33,7 +33,6 @@ export class Imap4Job extends Job {
     uidl: string,
     mailBox: MailBoxType,
   ) {
-    //console.log('哈哈 保存邮件');
     await this.saveMailToStorage(uidl, buffer, mailBox);
     await this.saveMailToDatabase(uidl, parsedMail, mailBox);
   }
@@ -49,8 +48,7 @@ export class Imap4Job extends Job {
       return;
     }
     this.saveMail(buffer, parsedMail, uidl, mailBox).then(() => {
-      //console.log('呵呵呵 保存成功');
-      //this.retrOne();
+      console.debug('save mail succeed!');
     });
   }
 
@@ -65,15 +63,10 @@ export class Imap4Job extends Job {
 
     this.client.connect();
     this.client.once('ready', () => {
-      /*this.client.getBoxes((error, boxes) => {
-        console.log(`哈哈 ${this.mailAddress}:`, boxes);
-        this.client.destroy();
-      });*/
       this.client.openBox('Sent', true, (error /*, box*/) => {
         if (error) {
           throw error;
         }
-        //console.log(`哈哈 ${this.mailAddress}:`, error, box);
         if (this.mailAddress !== '11011968@qq.com') {
           this.client.end();
           return;
@@ -81,7 +74,6 @@ export class Imap4Job extends Job {
         this.client.search(['ALL'], (err, results) => {
           if (err) throw err;
           this.results = results;
-          //console.log('哈哈 result', results);
           if (!this.results || this.results.length === 0) {
             this.client.end();
           }
