@@ -9,6 +9,8 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { POP3Client } from './poplib';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const simpleParser = require('mailparser').simpleParser;
 
 export class Pop3Job extends Job {
   private readonly logger = new Logger('Mailer');
@@ -24,6 +26,12 @@ export class Pop3Job extends Job {
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(POP3)`);
+  }
+
+  private async saveMail(uidl: string, data: any, mailBox: MailBoxType) {
+    await this.saveMailToStorage(uidl, data, mailBox);
+    const parsed = await simpleParser(data);
+    await this.saveMailToDatabase(uidl, parsed, mailBox);
   }
 
   abort(): void {

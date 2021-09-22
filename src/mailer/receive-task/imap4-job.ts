@@ -27,6 +27,16 @@ export class Imap4Job extends Job {
     super(`${mailAddress}(IMAP4)`);
   }
 
+  private async saveMail(
+    parsedMail: any,
+    uidl: string,
+    data: any,
+    mailBox: MailBoxType,
+  ) {
+    await this.saveMailToStorage(uidl, data, mailBox);
+    //const parsed = await simpleParser(data);
+    await this.saveMailToDatabase(uidl, parsedMail, mailBox);
+  }
   receive() {
     this.client = new Imap({
       user: this.imap4Config.account,
@@ -62,6 +72,7 @@ export class Imap4Job extends Job {
             const prefix = '(#' + seqno + ') ';
             let uid = '';
             let parsedMail;
+            const buffers = [];
             msg.on('body', function (stream, info) {
               // use a specialized mail parsing library (https://github.com/andris9/mailparser)
               simpleParser(stream, (err, mail) => {
@@ -69,7 +80,16 @@ export class Imap4Job extends Job {
                 console.log('吼吼', mail);
                 console.log(prefix + mail.text);
               });
-
+              stream.on('error', (error) => {
+                throw error;
+              });
+              stream.on('data', (data) => {
+                buffers.push(data);
+              });
+              stream.on('end', () => {
+                Buffer.concat(buffers);
+                console.log('嘿嘿', seqno, buffers.length);
+              });
               // or, write to file
               //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
             });
@@ -78,7 +98,14 @@ export class Imap4Job extends Job {
               uid = attrs?.uid;
             });
             msg.once('end', () => {
-              //this.saveMail(uid, Buffer.from(buffers), MailBoxType.SENT);
+              this.saveMail(
+                parsedMail,
+                uid,
+                Buffer.from(buffers),
+                MailBoxType.SENT,
+              ).then(() => {
+                console.log('保存成功');
+              });
               console.log(prefix + 'Finished2:', seqno);
             });
           });

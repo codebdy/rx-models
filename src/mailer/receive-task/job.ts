@@ -21,9 +21,6 @@ export interface IJob {
   retry(): void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const simpleParser = require('mailparser').simpleParser;
-
 export abstract class Job implements IJob {
   jobOwner: JobOwner;
   protected mailTeller = new MailTeller();
@@ -91,13 +88,19 @@ export abstract class Job implements IJob {
       });
   }
 
-  async saveMail(uidl: string, data: any, mailBox: MailBoxType) {
-    const fileName = `${this.mailAddress}/${mailBox}/${uidl}.eml`;
-    //await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
-    const parsed = await simpleParser(data);
+  async saveMailToStorage(uidl: string, data: any, mailBox: MailBoxType) {
+    const fileName = this.getMailFileName(uidl, mailBox);
+    await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
+  }
+
+  async saveMailToDatabase(
+    uidl: string,
+    passedMail: any,
+    mailBox: MailBoxType,
+  ) {
     const attachments = [];
-    for (let i = 0; i < parsed.attachments.length; i++) {
-      const attachementObj = parsed.attachments[i];
+    for (let i = 0; i < passedMail.attachments.length; i++) {
+      const attachementObj = passedMail.attachments[i];
       const path = `${
         this.mailAddress
       }/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
@@ -125,23 +128,23 @@ export abstract class Job implements IJob {
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
       .save({
-        subject: parsed.subject,
-        from: parsed.from,
-        to: parsed.to,
-        cc: parsed.cc,
-        bcc: parsed.bcc,
-        date: parsed.date,
-        messageId: parsed.messageId,
-        inReplyTo: parsed.inReplyTo,
-        replyTo: parsed.replyTo,
-        references: parsed.references,
-        html: parsed.html,
-        text: parsed.text,
-        textAsHtml: parsed.textAsHtml,
-        priority: parsed.priority,
+        subject: passedMail.subject,
+        from: passedMail.from,
+        to: passedMail.to,
+        cc: passedMail.cc,
+        bcc: passedMail.bcc,
+        date: passedMail.date,
+        messageId: passedMail.messageId,
+        inReplyTo: passedMail.inReplyTo,
+        replyTo: passedMail.replyTo,
+        references: passedMail.references,
+        html: passedMail.html,
+        text: passedMail.text,
+        textAsHtml: passedMail.textAsHtml,
+        priority: passedMail.priority,
         belongsTo: { id: this.accountId },
         inMailBox: mailBox,
-        fromAddress: parsed.from?.value[0]?.address,
+        fromAddress: passedMail.from?.value[0]?.address,
         attachments: attachments,
       });
     await this.typeOrmService
@@ -149,7 +152,7 @@ export abstract class Job implements IJob {
       .save({
         uidl: uidl,
         mailAddress: this.mailAddress,
-        file: fileName,
+        file: this.getMailFileName(uidl, mailBox),
         mail: mail,
         fromBox: mailBox,
       });
@@ -159,6 +162,9 @@ export abstract class Job implements IJob {
     this.start();
   }
 
+  private getMailFileName(uidl: string, mailBox: MailBoxType) {
+    return `${this.mailAddress}/${mailBox}/${uidl}.eml`;
+  }
   abstract receive(): void;
   abstract abort(): void;
 }
