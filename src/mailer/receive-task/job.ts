@@ -1,10 +1,14 @@
+import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
+import { EntityMail, Mail } from 'src/entity-interface/Mail';
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import {
   EntityMailIdentifier,
   MailIdentifier,
 } from 'src/entity-interface/MailIdentifier';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { BUCKET_MAILS } from 'src/util/consts';
+import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
+import { getExt } from 'src/util/get-ext';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { JobOwner } from './job-owner';
 import { MailTeller } from './mail-teller';
@@ -17,6 +21,9 @@ export interface IJob {
   retry(): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const simpleParser = require('mailparser').simpleParser;
+
 export abstract class Job implements IJob {
   jobOwner: JobOwner;
   protected mailTeller = new MailTeller();
@@ -25,6 +32,7 @@ export abstract class Job implements IJob {
   protected eventName = '';
   protected readonly typeOrmService: TypeOrmService;
   protected readonly storageService: StorageService;
+  protected readonly accountId: number;
 
   constructor(enventName: string) {
     this.eventName = enventName;
@@ -80,6 +88,70 @@ export abstract class Job implements IJob {
       .catch((error) => {
         console.error(error);
         this.error('Read local mail list error:' + error);
+      });
+  }
+
+  async saveMail(uidl: string, data: any, mailBox: MailBoxType) {
+    const fileName = `${this.mailAddress}/${mailBox}/${uidl}.eml`;
+    await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
+    const parsed = await simpleParser(data);
+
+    const attachments = [];
+    for (let i = 0; i < parsed.attachments.length; i++) {
+      const attachementObj = parsed.attachments[i];
+      const path = `${
+        this.mailAddress
+      }/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
+      if (attachementObj.related) {
+        //可能不需要保存
+        continue;
+      }
+      await this.storageService.putFileData(
+        path,
+        attachementObj.content,
+        BUCKET_MAILS,
+      );
+      attachments.push(
+        await this.typeOrmService
+          .getRepository<Attachment>(EntityAttachment)
+          .save({
+            fileName: attachementObj.filename,
+            mimeType: attachementObj.contentType,
+            size: attachementObj.size,
+            path: path,
+          }),
+      );
+    }
+
+    const mail = await this.typeOrmService
+      .getRepository<Mail>(EntityMail)
+      .save({
+        subject: parsed.subject,
+        from: parsed.from,
+        to: parsed.to,
+        cc: parsed.cc,
+        bcc: parsed.bcc,
+        date: parsed.date,
+        messageId: parsed.messageId,
+        inReplyTo: parsed.inReplyTo,
+        replyTo: parsed.replyTo,
+        references: parsed.references,
+        html: parsed.html,
+        text: parsed.text,
+        textAsHtml: parsed.textAsHtml,
+        priority: parsed.priority,
+        belongsTo: { id: this.accountId },
+        inMailBox: MailBoxType.INBOX,
+        fromAddress: parsed.from?.value[0]?.address,
+        attachments: attachments,
+      });
+    await this.typeOrmService
+      .getRepository<MailIdentifier>(EntityMailIdentifier)
+      .save({
+        uidl: uidl,
+        mailAddress: this.mailAddress,
+        file: fileName,
+        mail: mail,
       });
   }
 

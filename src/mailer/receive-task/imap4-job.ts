@@ -19,7 +19,7 @@ export class Imap4Job extends Job {
     protected readonly mailAddress: string,
     private readonly imap4Config: MailReceiveConfig,
     public readonly jobOwner: JobOwner,
-    private readonly accountId: number,
+    protected readonly accountId: number,
   ) {
     super(`${mailAddress}(IMAP4)`);
   }
@@ -41,12 +41,39 @@ export class Imap4Job extends Job {
       });*/
       this.client.openBox('Sent', true, (error, box) => {
         console.log(`哈哈 ${this.mailAddress}:`, error, box);
-        const f = this.client.seq.fetch(box.messages.total + ':*', {
-          bodies: ['HEADER.FIELDS (FROM)', 'TEXT'],
-        });
-        f.on('message', (msg, seqno) => {
-          console.log('Message #%d', seqno, msg);
-          //this.client.destroy();
+        if (this.mailAddress !== '11011968@qq.com') {
+          this.client.end();
+          return;
+        }
+        this.client.search(['ALL'], (err, results) => {
+          if (err) throw err;
+          console.log('哈哈 result', results);
+          if (!results || results.lenght === 0) {
+            //没有结果时需要处理
+          }
+          const f = this.client.fetch(results, { bodies: '' });
+          f.on('message', (msg, seqno) => {
+            console.log('Message #%d', seqno);
+            const prefix = '(#' + seqno + ') ';
+            msg.on('body', (stream, info) => {
+              console.log('哈哈body', info);
+              var fs = require('fs'), fileStream;
+              //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.eml'));
+            });
+            msg.once('attributes', (attrs) => {
+              console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+            });
+            msg.once('end', () => {
+              console.log(prefix + 'Finished');
+            });
+          });
+          f.once('error', (err) => {
+            console.log('Fetch error: ' + err);
+          });
+          f.once('end', () => {
+            console.log('Done fetching all messages!');
+            this.client.end();
+          });
         });
       });
     });
