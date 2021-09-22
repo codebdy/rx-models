@@ -29,13 +29,14 @@ export class Imap4Job extends Job {
   }
 
   private async saveMail(
-    pasedMany: any,
+    parsedMail: any,
     uidl: string,
     data: any,
     mailBox: MailBoxType,
   ) {
+    console.log('吼吼吼', parsedMail);
     await this.saveMailToStorage(uidl, data, mailBox);
-    await this.saveMailToDatabase(uidl, pasedMany, mailBox);
+    await this.saveMailToDatabase(uidl, parsedMail, mailBox);
   }
 
   private checkAndSaveMail(
@@ -65,12 +66,18 @@ export class Imap4Job extends Job {
       console.log('Message #%d', seqno);
       const prefix = '(#' + seqno + ') ';
       let uid = '';
-      const parsedMail = { mail: undefined };
+      let parsedMail;
       const buffers = [];
       msg.on('body', (stream, info) => {
         // use a specialized mail parsing library (https://github.com/andris9/mailparser)
         simpleParser(stream, (err, mail) => {
-          parsedMail.mail = mail;
+          parsedMail = mail;
+          this.checkAndSaveMail(
+            parsedMail,
+            uid,
+            Buffer.from(buffers),
+            MailBoxType.SENT,
+          );
         });
         stream.on('error', (error) => {
           throw error;
@@ -80,12 +87,6 @@ export class Imap4Job extends Job {
         });
         stream.on('end', () => {
           Buffer.concat(buffers);
-          this.checkAndSaveMail(
-            parsedMail,
-            uid,
-            Buffer.from(buffers),
-            MailBoxType.SENT,
-          );
         });
       });
       msg.once('attributes', (attrs) => {
