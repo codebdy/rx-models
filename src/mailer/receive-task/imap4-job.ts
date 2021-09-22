@@ -11,6 +11,8 @@ const Imap = require('imap'),
   inspect = require('util').inspect;
 
 const simpleParser = require('mailparser').simpleParser;
+let fs = require('fs'),
+  fileStream;
 
 export class Imap4Job extends Job {
   private isAborted = false;
@@ -28,86 +30,24 @@ export class Imap4Job extends Job {
     super(`${mailAddress}(IMAP4)`);
   }
 
-  private async saveMail(
-    parsedMail: any,
-    uidl: string,
-    data: any,
-    mailBox: MailBoxType,
-  ) {
-    console.log('吼吼吼', parsedMail);
-    await this.saveMailToStorage(uidl, data, mailBox);
+  private async saveMail(parsedMail: any, uidl: string, mailBox: MailBoxType) {
+    //console.log('哈哈 保存邮件');
+    //await this.saveMailToStorage(uidl, data, mailBox);
     await this.saveMailToDatabase(uidl, parsedMail, mailBox);
   }
 
   private checkAndSaveMail(
-    pasedMany: any,
+    parsedMail: any,
     uidl: string,
-    data: any,
     mailBox: MailBoxType,
   ) {
-    if (!pasedMany || !uidl) {
+    if (!parsedMail || !uidl) {
       //还没有解析完，返回
       return;
     }
-    this.saveMail(pasedMany, uidl, data, mailBox).then(() => {
-      console.log('保存成功');
-      this.retrOne();
-    });
-  }
-
-  retrOne() {
-    if (!this.results || this.results.length === 0) {
-      this.client.end();
-    }
-    const f = this.client.fetch(this.results.pop(), {
-      bodies: ['HEADER.FIELDS (FROM SUBJECT)', ''],
-    });
-    f.on('message', (msg, seqno) => {
-      console.log('Message #%d', seqno);
-      const prefix = '(#' + seqno + ') ';
-      let uid = '';
-      let parsedMail;
-      const buffers = [];
-      msg.on('body', (stream, info) => {
-        // use a specialized mail parsing library (https://github.com/andris9/mailparser)
-        simpleParser(stream, (err, mail) => {
-          parsedMail = mail;
-          this.checkAndSaveMail(
-            parsedMail,
-            uid,
-            Buffer.from(buffers),
-            MailBoxType.SENT,
-          );
-        });
-        stream.on('error', (error) => {
-          throw error;
-        });
-        stream.on('data', (data) => {
-          buffers.push(data);
-        });
-        stream.on('end', () => {
-          Buffer.concat(buffers);
-        });
-      });
-      msg.once('attributes', (attrs) => {
-        console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
-        uid = attrs?.uid;
-      });
-      msg.once('end', () => {
-        this.checkAndSaveMail(
-          parsedMail,
-          uid,
-          Buffer.from(buffers),
-          MailBoxType.SENT,
-        );
-      });
-    });
-    f.once('error', (err) => {
-      console.log('Fetch error: ' + err);
-    });
-    f.once('end', () => {
-      console.log('Done fetching all messages!');
-      this.client.end();
+    this.saveMail(parsedMail, uidl, mailBox).then(() => {
+      //console.log('呵呵呵 保存成功');
+      //this.retrOne();
     });
   }
 
@@ -127,7 +67,7 @@ export class Imap4Job extends Job {
         this.client.destroy();
       });*/
       this.client.openBox('Sent', true, (error, box) => {
-        console.log(`哈哈 ${this.mailAddress}:`, error, box);
+        //console.log(`哈哈 ${this.mailAddress}:`, error, box);
         if (this.mailAddress !== '11011968@qq.com') {
           this.client.end();
           return;
@@ -135,8 +75,46 @@ export class Imap4Job extends Job {
         this.client.search(['ALL'], (err, results) => {
           if (err) throw err;
           this.results = results;
-          console.log('哈哈 result', results);
-          this.retrOne();
+          //console.log('哈哈 result', results);
+          if (!this.results || this.results.length === 0) {
+            this.client.end();
+          }
+          const f = this.client.fetch(this.results, {
+            bodies: [''],
+          });
+          f.on('message', (msg, seqno) => {
+            console.log('Message #%d', seqno);
+            const prefix = '(#' + seqno + ') ';
+            let uid = '';
+            let parsedMail;
+            const buffers = [];
+            let buffer;
+            console.log('哈哈哈 on Message', seqno);
+            msg.on('body', (stream, info) => {
+              console.log('哈哈哈 on body', seqno);
+              // use a specialized mail parsing library (https://github.com/andris9/mailparser)
+              simpleParser(stream, (err, mail) => {
+                parsedMail = mail;
+                console.log('快快快保存', uid);
+                this.checkAndSaveMail(parsedMail, uid, MailBoxType.SENT);
+              });
+              //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
+            });
+            msg.once('attributes', (attrs) => {
+              console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+              uid = attrs?.uid;
+            });
+            msg.once('end', () => {
+              //this.checkAndSaveMail(parsedMail, uid, MailBoxType.SENT);
+            });
+          });
+          f.once('error', (err) => {
+            console.log('Fetch error: ' + err);
+          });
+          f.once('end', () => {
+            console.log('Done fetching all messages!');
+            this.client.end();
+          });
         });
       });
     });
