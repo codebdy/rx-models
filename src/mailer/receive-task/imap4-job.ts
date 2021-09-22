@@ -15,6 +15,7 @@ const simpleParser = require('mailparser').simpleParser;
 export class Imap4Job extends Job {
   private isAborted = false;
   private client: any;
+  private results: [] = [];
 
   constructor(
     protected readonly typeOrmService: TypeOrmService,
@@ -37,6 +38,66 @@ export class Imap4Job extends Job {
     //const parsed = await simpleParser(data);
     await this.saveMailToDatabase(uidl, parsedMail, mailBox);
   }
+
+  retrOne() {
+    if (!this.results || this.results.length === 0) {
+      this.client.end();
+    }
+    const f = this.client.fetch(this.results.pop(), {
+      bodies: ['HEADER.FIELDS (FROM SUBJECT)', ''],
+    });
+    f.on('message', (msg, seqno) => {
+      console.log('Message #%d', seqno);
+      const prefix = '(#' + seqno + ') ';
+      let uid = '';
+      let parsedMail;
+      const buffers = [];
+      msg.on('body', (stream, info) => {
+        // use a specialized mail parsing library (https://github.com/andris9/mailparser)
+        simpleParser(stream, (err, mail) => {
+          parsedMail = mail;
+          console.log('吼吼', info);
+          //console.log(prefix + mail.text);
+        });
+        stream.on('error', (error) => {
+          throw error;
+        });
+        stream.on('data', (data) => {
+          buffers.push(data);
+        });
+        stream.on('end', () => {
+          Buffer.concat(buffers);
+          console.log('嘿嘿', seqno, buffers.length);
+        });
+        // or, write to file
+        //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
+      });
+      msg.once('attributes', (attrs) => {
+        console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+        uid = attrs?.uid;
+      });
+      msg.once('end', () => {
+        this.saveMail(
+          parsedMail,
+          uid,
+          Buffer.from(buffers),
+          MailBoxType.SENT,
+        ).then(() => {
+          console.log('保存成功');
+          this.retrOne();
+        });
+        console.log(prefix + 'Finished2:', seqno);
+      });
+    });
+    f.once('error', (err) => {
+      console.log('Fetch error: ' + err);
+    });
+    f.once('end', () => {
+      console.log('Done fetching all messages!');
+      this.client.end();
+    });
+  }
+
   receive() {
     this.client = new Imap({
       user: this.imap4Config.account,
@@ -60,62 +121,9 @@ export class Imap4Job extends Job {
         }
         this.client.search(['ALL'], (err, results) => {
           if (err) throw err;
+          this.results = results;
           console.log('哈哈 result', results);
-          if (!results || results.lenght === 0) {
-            //没有结果时需要处理
-          }
-          const f = this.client.fetch(results, {
-            bodies: ['HEADER.FIELDS (FROM SUBJECT)', ''],
-          });
-          f.on('message', (msg, seqno) => {
-            console.log('Message #%d', seqno);
-            const prefix = '(#' + seqno + ') ';
-            let uid = '';
-            let parsedMail;
-            const buffers = [];
-            msg.on('body', function (stream, info) {
-              // use a specialized mail parsing library (https://github.com/andris9/mailparser)
-              simpleParser(stream, (err, mail) => {
-                parsedMail = mail;
-                console.log('吼吼', mail);
-                console.log(prefix + mail.text);
-              });
-              stream.on('error', (error) => {
-                throw error;
-              });
-              stream.on('data', (data) => {
-                buffers.push(data);
-              });
-              stream.on('end', () => {
-                Buffer.concat(buffers);
-                console.log('嘿嘿', seqno, buffers.length);
-              });
-              // or, write to file
-              //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
-            });
-            msg.once('attributes', (attrs) => {
-              console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
-              uid = attrs?.uid;
-            });
-            msg.once('end', () => {
-              this.saveMail(
-                parsedMail,
-                uid,
-                Buffer.from(buffers),
-                MailBoxType.SENT,
-              ).then(() => {
-                console.log('保存成功');
-              });
-              console.log(prefix + 'Finished2:', seqno);
-            });
-          });
-          f.once('error', (err) => {
-            console.log('Fetch error: ' + err);
-          });
-          f.once('end', () => {
-            console.log('Done fetching all messages!');
-            this.client.end();
-          });
+          this.retrOne();
         });
       });
     });

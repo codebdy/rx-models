@@ -99,6 +99,9 @@ export abstract class Job implements IJob {
     mailBox: MailBoxType,
   ) {
     const attachments = [];
+    if (!passedMail) {
+      throw new Error('NO parsed mail is provided');
+    }
     for (let i = 0; i < passedMail.attachments.length; i++) {
       const attachementObj = passedMail.attachments[i];
       const path = `${
