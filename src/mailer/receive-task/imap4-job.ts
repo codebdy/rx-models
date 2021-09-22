@@ -29,14 +29,29 @@ export class Imap4Job extends Job {
   }
 
   private async saveMail(
-    parsedMail: any,
+    pasedMany: any,
     uidl: string,
     data: any,
     mailBox: MailBoxType,
   ) {
     await this.saveMailToStorage(uidl, data, mailBox);
-    //const parsed = await simpleParser(data);
-    await this.saveMailToDatabase(uidl, parsedMail, mailBox);
+    await this.saveMailToDatabase(uidl, pasedMany, mailBox);
+  }
+
+  private checkAndSaveMail(
+    pasedMany: any,
+    uidl: string,
+    data: any,
+    mailBox: MailBoxType,
+  ) {
+    if (!pasedMany || !uidl) {
+      //还没有解析完，返回
+      return;
+    }
+    this.saveMail(pasedMany, uidl, data, mailBox).then(() => {
+      console.log('保存成功');
+      this.retrOne();
+    });
   }
 
   retrOne() {
@@ -50,14 +65,12 @@ export class Imap4Job extends Job {
       console.log('Message #%d', seqno);
       const prefix = '(#' + seqno + ') ';
       let uid = '';
-      let parsedMail;
+      const parsedMail = { mail: undefined };
       const buffers = [];
       msg.on('body', (stream, info) => {
         // use a specialized mail parsing library (https://github.com/andris9/mailparser)
         simpleParser(stream, (err, mail) => {
-          parsedMail = mail;
-          console.log('吼吼', info);
-          //console.log(prefix + mail.text);
+          parsedMail.mail = mail;
         });
         stream.on('error', (error) => {
           throw error;
@@ -67,26 +80,25 @@ export class Imap4Job extends Job {
         });
         stream.on('end', () => {
           Buffer.concat(buffers);
-          console.log('嘿嘿', seqno, buffers.length);
+          this.checkAndSaveMail(
+            parsedMail,
+            uid,
+            Buffer.from(buffers),
+            MailBoxType.SENT,
+          );
         });
-        // or, write to file
-        //stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
       });
       msg.once('attributes', (attrs) => {
         console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
         uid = attrs?.uid;
       });
       msg.once('end', () => {
-        this.saveMail(
+        this.checkAndSaveMail(
           parsedMail,
           uid,
           Buffer.from(buffers),
           MailBoxType.SENT,
-        ).then(() => {
-          console.log('保存成功');
-          this.retrOne();
-        });
-        console.log(prefix + 'Finished2:', seqno);
+        );
       });
     });
     f.once('error', (err) => {
