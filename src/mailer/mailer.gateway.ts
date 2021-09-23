@@ -4,8 +4,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import { MailConfig } from 'entity-interface/MailConfig';
-//import { TypeOrmService } from 'typeorm/typeorm.service';
+import { MailConfig } from 'src/entity-interface/MailConfig';
+//import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import {
   CHANNEL_MAILER,
   EVENT_CANCEL_RECEIVE,

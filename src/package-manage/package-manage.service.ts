@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRxPackage, RxPackage } from 'entity-interface/RxPackage';
-import { TypeOrmService } from 'typeorm/typeorm.service';
-import { SCHEMAS_DIR } from 'util/consts';
+import { EntityRxPackage, RxPackage } from 'src/entity-interface/RxPackage';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { SCHEMAS_DIR } from 'src/util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 @Injectable()
 export class PackageManageService {

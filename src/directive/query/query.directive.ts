@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { QueryResult } from 'magic-meta/query/query-result';
-import { MagicService } from 'magic-meta/magic.service';
-import { QueryRootMeta } from 'magic-meta/query/query.root-meta';
-import { SchemaService } from 'schema/schema.service';
+import { QueryResult } from 'src/magic-meta/query/query-result';
+import { MagicService } from 'src/magic-meta/magic.service';
+import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
+import { SchemaService } from 'src/schema/schema.service';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { DirectiveMeta } from '../directive.meta';
 

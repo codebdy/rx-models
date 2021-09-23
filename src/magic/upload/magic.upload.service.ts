@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 //import * as sharp from 'sharp';
-import { StorageService } from 'storage/storage.service';
-import { FOLDER_UPLOADS } from 'util/consts';
+import { StorageService } from 'src/storage/storage.service';
+import { FOLDER_UPLOADS } from 'src/util/consts';
 
 @Injectable()
 export class MagicUploadService {

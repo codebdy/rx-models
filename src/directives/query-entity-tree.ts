@@ -1,7 +1,7 @@
-import { QueryDirective } from 'directive/query/query.directive';
-import { DirectiveType } from 'directive/directive-type';
-import { QueryResult } from 'magic-meta/query/query-result';
-import { TOKEN_GET_ONE } from 'magic/base/tokens';
+import { QueryDirective } from 'src/directive/query/query.directive';
+import { DirectiveType } from 'src/directive/directive-type';
+import { QueryResult } from 'src/magic-meta/query/query-result';
+import { TOKEN_GET_ONE } from 'src/magic/base/tokens';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryEntityTreeDirective extends QueryDirective {

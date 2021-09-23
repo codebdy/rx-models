@@ -1,4 +1,4 @@
-import { ImageSize } from 'util/consts';
+import { ImageSize } from 'src/util/consts';
 
 export interface StorageClient {
   checkAndCreateBucket(bucket: string): Promise<void>;

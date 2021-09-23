@@ -1,5 +1,5 @@
-import { RxAbility } from 'entity-interface/RxAbility';
-import { EntityMeta } from 'schema/graph-meta-interface/entity-meta';
+import { RxAbility } from 'src/entity-interface/RxAbility';
+import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { TOKEN_IDS } from '../../magic/base/tokens';
 export class ModelUpdateMeta {
   private _ids: number[] = [];

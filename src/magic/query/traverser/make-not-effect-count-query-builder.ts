@@ -1,4 +1,4 @@
-import { QueryEntityMeta } from 'magic-meta/query/query.entity-meta';
+import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { SelectQueryBuilder } from 'typeorm';
 import { getDirectivesWhereStatement } from './get-directives-where-statement';
 

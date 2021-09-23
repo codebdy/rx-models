@@ -1,4 +1,4 @@
-import { MagicService } from 'magic-meta/magic.service';
+import { MagicService } from 'src/magic-meta/magic.service';
 import { DirectiveType } from '../directive-type';
 import { DirectiveMeta } from '../directive.meta';
 import { DeleteDirective } from './delete.directive';

@@ -1,4 +1,4 @@
-import { ImageSize } from 'util/consts';
+import { ImageSize } from 'src/util/consts';
 import { cacheSize, expaireTime, refetchPeriod } from './consts';
 
 export interface UrlInfo {

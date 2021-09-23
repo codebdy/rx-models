@@ -1,6 +1,6 @@
-import { DirectiveType } from 'directive/directive-type';
-import { PostDirective } from 'directive/post/post.directive';
-import { InstanceMetaCollection } from 'magic-meta/post/instance.meta.colletion';
+import { DirectiveType } from 'src/directive/directive-type';
+import { PostDirective } from 'src/directive/post/post.directive';
+import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 
 export class PostRemoveOthersDirective extends PostDirective {
   static description = `Remove records that not saved.此命令会删除POST之外的所有记录，请谨慎使用该命令`;

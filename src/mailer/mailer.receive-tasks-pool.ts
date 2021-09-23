@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { MailConfig } from 'entity-interface/MailConfig';
-import { StorageService } from 'storage/storage.service';
-import { TypeOrmService } from 'typeorm/typeorm.service';
+import { MailConfig } from 'src/entity-interface/MailConfig';
+import { StorageService } from 'src/storage/storage.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { ReceiveTask } from './receive-task/receive-task';
 

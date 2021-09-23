@@ -1,5 +1,5 @@
-import { RxUser } from 'entity-interface/RxUser';
-import { createId } from 'util/create-id';
+import { RxUser } from 'src/entity-interface/RxUser';
+import { createId } from 'src/util/create-id';
 import { QueryEntityMeta } from './query.entity-meta';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

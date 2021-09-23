@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { MagicService } from 'magic-meta/magic.service';
-import { InstanceMeta } from 'magic-meta/post/instance.meta';
-import { InstanceMetaCollection } from 'magic-meta/post/instance.meta.colletion';
-import { RelationMetaCollection } from 'magic-meta/post/relation.meta.colletion';
-import { SchemaService } from 'schema/schema.service';
+import { MagicService } from 'src/magic-meta/magic.service';
+import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
+import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
+import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
+import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager, EntitySchemaRelationOptions } from 'typeorm';
 import { DirectiveMeta } from '../directive.meta';
 

@@ -1,7 +1,7 @@
-import { RxUser } from 'entity-interface/RxUser';
-import { QueryResult } from 'magic-meta/query/query-result';
-import { QueryEntityMeta } from 'magic-meta/query/query.entity-meta';
-import { QueryRootMeta } from 'magic-meta/query/query.root-meta';
+import { RxUser } from 'src/entity-interface/RxUser';
+import { QueryResult } from 'src/magic-meta/query/query-result';
+import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
+import { QueryRootMeta } from 'src/magic-meta/query/query.root-meta';
 
 export async function filterResult(
   result: QueryResult,

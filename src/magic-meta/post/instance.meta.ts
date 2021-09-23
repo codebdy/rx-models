@@ -1,5 +1,5 @@
-import { RxAbility } from 'entity-interface/RxAbility';
-import { EntityMeta } from 'schema/graph-meta-interface/entity-meta';
+import { RxAbility } from 'src/entity-interface/RxAbility';
+import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { RelationMetaCollection } from './relation.meta.colletion';
 
 export class InstanceMeta {

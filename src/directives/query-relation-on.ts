@@ -1,6 +1,6 @@
-import { DirectiveType } from 'directive/directive-type';
-import { QueryRelationDirective } from 'directive/query/query.relation-directive';
-import { parseWhereSql } from 'magic-meta/query/parse-where-sql';
+import { DirectiveType } from 'src/directive/directive-type';
+import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
+import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
 
 export class QueryModelOrderByDirective extends QueryRelationDirective {
   static description = `

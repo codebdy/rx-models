@@ -1,8 +1,8 @@
-import { QueryDirective } from 'directive/query/query.directive';
-import { RxAbility } from 'entity-interface/RxAbility';
-import { JsonUnit } from 'magic/base/json-unit';
-import { EntityMeta } from 'schema/graph-meta-interface/entity-meta';
-import { createId } from 'util/create-id';
+import { QueryDirective } from 'src/directive/query/query.directive';
+import { RxAbility } from 'src/entity-interface/RxAbility';
+import { JsonUnit } from 'src/magic/base/json-unit';
+import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
+import { createId } from 'src/util/create-id';
 import { AddonRelationInfo } from './addon-relation-info';
 import { QueryRelationMeta } from './query.relation-meta';
 

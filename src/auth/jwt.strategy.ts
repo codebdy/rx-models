@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
-import { TypeOrmService } from 'typeorm/typeorm.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

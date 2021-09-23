@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { extname } from 'path';
-import { RxMediaType } from 'entity-interface/RxMediaType';
+import { RxMediaType } from 'src/entity-interface/RxMediaType';
 import { v4 as uuid } from 'uuid';
 
 export const fileFilter = (req: any, file: any, cb: any) => {

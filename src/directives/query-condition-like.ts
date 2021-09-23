@@ -1,6 +1,6 @@
-import { DirectiveType } from 'directive/directive-type';
-import { QueryConditionDirective } from 'directive/query/query.condition-directive';
-import { createId } from 'util/create-id';
+import { DirectiveType } from 'src/directive/directive-type';
+import { QueryConditionDirective } from 'src/directive/query/query.condition-directive';
+import { createId } from 'src/util/create-id';
 
 export class QueryConditionEqualDirective extends QueryConditionDirective {
   static description = `Condition like irective.`;

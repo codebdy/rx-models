@@ -1,5 +1,5 @@
-import { DirectiveType } from 'directive/directive-type';
-import { QueryRelationDirective } from 'directive/query/query.relation-directive';
+import { DirectiveType } from 'src/directive/directive-type';
+import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
 
 export class QueryModelMergeDirective extends QueryRelationDirective {
   static description = `

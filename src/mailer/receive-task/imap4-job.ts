@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Imap4Folder } from 'entity-interface/Imap4Folder';
-import { MailBoxType } from 'entity-interface/MailBoxType';
-import { MailReceiveConfig } from 'entity-interface/MailReceiveConfig';
-import { StorageService } from 'storage/storage.service';
-import { TypeOrmService } from 'typeorm/typeorm.service';
-import { decypt } from 'util/cropt-js';
+import { Imap4Folder } from 'src/entity-interface/Imap4Folder';
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
+import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
+import { StorageService } from 'src/storage/storage.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
 import { MailerEventType } from '../mailer.event';
 import { Job } from './job';
@@ -58,7 +58,6 @@ export class Imap4Job extends Job {
   ) {
     super(`${mailAddress}(IMAP4)`);
     this.mailBoxes = imap4Config.folders || [];
-    console.debug('启动 Imap4 Job', this.mailBoxes, mailAddress);
   }
 
   private async saveMail(
@@ -95,8 +94,6 @@ export class Imap4Job extends Job {
       tls: true,
     });
 
-    console.log('哈哈we 1', this.mailBoxes);
-
     this.client.connect();
     this.emit({
       type: MailerEventType.connect,
@@ -124,7 +121,6 @@ export class Imap4Job extends Job {
   }
 
   receiveOneBox() {
-    console.log('哈哈1', this.mailBoxes);
     if (this.mailBoxes.length === 0) {
       this.client.end();
       return;
@@ -138,7 +134,6 @@ export class Imap4Job extends Job {
       return;
     }
     this.eventName = `${this.mailAddress}(IMAP4)-${mailSourceBox}`;
-    console.log('哈哈', this.eventName);
     this.emit({
       type: MailerEventType.openMailBox,
       message: 'Open mail box ...',
@@ -148,6 +143,10 @@ export class Imap4Job extends Job {
       if (error) {
         this.error(`Open mail box(${mailSourceBox}) error:` + error);
         this.client.end();
+      }
+      if (this.mailAddress !== '11011968@qq.com') {
+        this.client.end();
+        return;
       }
 
       this.emit({
@@ -178,11 +177,6 @@ export class Imap4Job extends Job {
           let uid = '';
           let parsedMail;
           let mailData;
-
-          if (this.isAborted) {
-            this.client.end();
-            return;
-          }
 
           msg.on('body', (stream, info) => {
             this.emit({
@@ -232,6 +226,6 @@ export class Imap4Job extends Job {
 
   abort() {
     this.isAborted = true;
-    this.client?.end();
+    this.client.destroy();
   }
 }

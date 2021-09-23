@@ -1,6 +1,6 @@
-import { DirectiveType } from 'directive/directive-type';
-import { QueryRelationDirective } from 'directive/query/query.relation-directive';
-import { QueryResult } from 'magic-meta/query/query-result';
+import { DirectiveType } from 'src/directive/directive-type';
+import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
+import { QueryResult } from 'src/magic-meta/query/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryRelationCountDirective extends QueryRelationDirective {

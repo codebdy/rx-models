@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PackageManageModule } from 'package-manage/package-manage.module';
+import { PackageManageModule } from 'src/package-manage/package-manage.module';
 import { InstallController } from './install.controller';
 import { InstallService } from './install.service';
 

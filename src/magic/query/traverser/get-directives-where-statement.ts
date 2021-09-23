@@ -1,4 +1,4 @@
-import { QueryDirective } from 'directive/query/query.directive';
+import { QueryDirective } from 'src/directive/query/query.directive';
 
 export function getDirectivesWhereStatement(
   directives: QueryDirective[],

@@ -12,26 +12,26 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AbilityService } from 'magic/ability.service';
-import { DeleteDirectiveService } from 'directive/delete-directive.service';
-import { PostDirectiveService } from 'directive/post-directive.service';
-import { QueryDirectiveService } from 'directive/query-directive.service';
-import { QueryResult } from 'magic-meta/query/query-result';
-import { SchemaService } from 'schema/schema.service';
-import { TypeOrmService } from 'typeorm/typeorm.service';
-import { sleep } from 'util/sleep';
+import { AbilityService } from 'src/magic/ability.service';
+import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
+import { PostDirectiveService } from 'src/directive/post-directive.service';
+import { QueryDirectiveService } from 'src/directive/query-directive.service';
+import { QueryResult } from 'src/magic-meta/query/query-result';
+import { SchemaService } from 'src/schema/schema.service';
+import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
-import { RxUser } from 'entity-interface/RxUser';
+import { RxUser } from 'src/entity-interface/RxUser';
 //import { diskStorage } from 'multer';
 //import { FileInterceptor } from '@nestjs/platform-express';
 //import { fileFilter, fileName } from './upload/file-upload.utils';
 import { MagicUploadService } from './upload/magic.upload.service';
 import { getFileName, getFileType } from './upload/file-upload.utils';
-import { RxMedia } from 'entity-interface/RxMedia';
+import { RxMedia } from 'src/entity-interface/RxMedia';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { StorageService } from 'storage/storage.service';
-import { RxBaseService } from 'rxbase/rxbase.service';
+import { StorageService } from 'src/storage/storage.service';
+import { RxBaseService } from 'src/rxbase/rxbase.service';
 
 @Controller()
 export class MagicController {
