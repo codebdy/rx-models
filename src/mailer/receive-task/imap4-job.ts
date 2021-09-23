@@ -153,7 +153,7 @@ export class Imap4Job extends Job {
           const errMsg = `Open mail box(${mailSourceBox}) error:` + error;
           console.debug(errMsg);
           this.error(errMsg);
-          this.client.end();
+          this.client?.end();
         }
 
         this.emit({
@@ -165,7 +165,7 @@ export class Imap4Job extends Job {
             const errMsg = `List mail box(${mailSourceBox}) error:` + err;
             console.debug(errMsg);
             this.error(errMsg);
-            this.client.end();
+            this.client?.end();
           }
           this.results = results;
           this.mailTeller.tellIt(
@@ -218,7 +218,7 @@ export class Imap4Job extends Job {
                 const errMsg = 'Stream error:' + error;
                 console.debug(errMsg);
                 this.error(errMsg);
-                this.client.end();
+                this.client?.end();
               });
             });
             msg.once('attributes', (attrs) => {
@@ -234,7 +234,6 @@ export class Imap4Job extends Job {
             this.error(errMsg);
             this.client?.destroy();
             this.client = undefined;
-            //this.client.end();
           });
           f.once('end', () => {
             this.receiveOneBox();
@@ -248,7 +247,13 @@ export class Imap4Job extends Job {
   }
 
   abort() {
-    this.isAborted = true;
-    this.client.destroy();
+    try {
+      this.isAborted = true;
+      this.client?.end();
+    } catch (error) {
+      const errorMsg = 'Abort error:' + error;
+      console.error(errorMsg);
+      this.error(errorMsg);
+    }
   }
 }
