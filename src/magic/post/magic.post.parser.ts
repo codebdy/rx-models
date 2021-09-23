@@ -1,12 +1,12 @@
-import { DirectiveMeta } from 'src/directive/directive.meta';
-import { PostDirectiveService } from 'src/directive/post-directive.service';
-import { RxAbility } from 'src/entity-interface/RxAbility';
-import { MagicService } from 'src/magic-meta/magic.service';
-import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
-import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
-import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
-import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
-import { SchemaService } from 'src/schema/schema.service';
+import { DirectiveMeta } from 'directive/directive.meta';
+import { PostDirectiveService } from 'directive/post-directive.service';
+import { RxAbility } from 'entity-interface/RxAbility';
+import { MagicService } from 'magic-meta/magic.service';
+import { InstanceMeta } from 'magic-meta/post/instance.meta';
+import { InstanceMetaCollection } from 'magic-meta/post/instance.meta.colletion';
+import { RelationMetaCollection } from 'magic-meta/post/relation.meta.colletion';
+import { EntityMeta } from 'schema/graph-meta-interface/entity-meta';
+import { SchemaService } from 'schema/schema.service';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 

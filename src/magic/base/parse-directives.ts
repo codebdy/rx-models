@@ -1,4 +1,4 @@
-import { DirectiveMeta } from 'src/directive/directive.meta';
+import { DirectiveMeta } from 'directive/directive.meta';
 
 function stringArrayToDirectives(strArray: string[]): DirectiveMeta[] {
   const directives = [];

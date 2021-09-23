@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, HttpException } from '@nestjs/common';
-import { PackageManageService } from 'src/package-manage/package-manage.service';
-import { sleep } from 'src/util/sleep';
+import { PackageManageService } from 'package-manage/package-manage.service';
+import { sleep } from 'util/sleep';
 import { InstallService } from './install.service';
 
 @Controller()

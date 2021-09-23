@@ -1,16 +1,16 @@
-import { AbilityService } from 'src/magic/ability.service';
-import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
-import { PostDirectiveService } from 'src/directive/post-directive.service';
-import { QueryDirectiveService } from 'src/directive/query-directive.service';
-import { QueryResult } from 'src/magic-meta/query/query-result';
-import { MagicService } from 'src/magic-meta/magic.service';
-import { SchemaService } from 'src/schema/schema.service';
+import { AbilityService } from 'magic/ability.service';
+import { DeleteDirectiveService } from 'directive/delete-directive.service';
+import { PostDirectiveService } from 'directive/post-directive.service';
+import { QueryDirectiveService } from 'directive/query-directive.service';
+import { QueryResult } from 'magic-meta/query/query-result';
+import { MagicService } from 'magic-meta/magic.service';
+import { SchemaService } from 'schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { MagicDelete } from './delete/magic.delete';
 import { MagicPost } from './post/magic.post';
 import { MagicQuery } from './query/magic.query';
 import { MagicUpdate } from './update/magic.update';
-import { StorageService } from 'src/storage/storage.service';
+import { StorageService } from 'storage/storage.service';
 
 /**
  * 操作数据库通用类，所有数据库操作都应该通过该类进行，因为该类负责权限控制

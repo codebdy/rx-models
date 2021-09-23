@@ -1,10 +1,10 @@
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { SchemaService } from 'src/schema/schema.service';
-import { RxUser } from 'src/entity-interface/RxUser';
-import { RxAbility } from 'src/entity-interface/RxAbility';
-import { RxEntityAuthSettings } from 'src/entity-interface/RxEntityAuthSettings';
+import { TypeOrmService } from 'typeorm/typeorm.service';
+import { SchemaService } from 'schema/schema.service';
+import { RxUser } from 'entity-interface/RxUser';
+import { RxAbility } from 'entity-interface/RxAbility';
+import { RxEntityAuthSettings } from 'entity-interface/RxEntityAuthSettings';
 import { HttpException } from '@nestjs/common';
-import { AbilityType } from 'src/entity-interface/AbilityType';
+import { AbilityType } from 'entity-interface/AbilityType';
 
 export class AbilityService {
   constructor(

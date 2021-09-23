@@ -1,10 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { AliyunConfig } from 'src/entity-interface/AliyunConfig';
-import { EntityRxConfig, RxConfig } from 'src/entity-interface/RxConfig';
-import { RxStorageType } from 'src/entity-interface/RxStorageType';
-import { RxBaseService } from 'src/rxbase/rxbase.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { CONFIG_KEY_STORAGE, FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
+import { AliyunConfig } from 'entity-interface/AliyunConfig';
+import { EntityRxConfig, RxConfig } from 'entity-interface/RxConfig';
+import { RxStorageType } from 'entity-interface/RxStorageType';
+import { RxBaseService } from 'rxbase/rxbase.service';
+import { TypeOrmService } from 'typeorm/typeorm.service';
+import { CONFIG_KEY_STORAGE, FOLDER_UPLOADS, ImageSize } from 'util/consts';
 import { AliyunClient } from './aliyun/AliyunClient';
 import { DiskClient } from './disk/DiskClient';
 import { StorageClient } from './storage.client';

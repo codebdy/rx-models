@@ -1,5 +1,5 @@
-import { QueryDirective } from 'src/directive/query/query.directive';
-import { DirectiveType } from 'src/directive/directive-type';
+import { QueryDirective } from 'directive/query/query.directive';
+import { DirectiveType } from 'directive/directive-type';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryEntitySelectDirective extends QueryDirective {

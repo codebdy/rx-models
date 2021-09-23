@@ -1,7 +1,7 @@
-import { RxAbility } from 'src/entity-interface/RxAbility';
-import { RxUser } from 'src/entity-interface/RxUser';
-import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
+import { RxAbility } from 'entity-interface/RxAbility';
+import { RxUser } from 'entity-interface/RxUser';
+import { parseWhereSql } from 'magic-meta/query/parse-where-sql';
+import { QueryEntityMeta } from 'magic-meta/query/query.entity-meta';
 import { SelectQueryBuilder } from 'typeorm';
 
 export function makeAbilitiesQueryBuilder(

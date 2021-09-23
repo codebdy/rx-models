@@ -1,4 +1,4 @@
-import { SchemaService } from 'src/schema/schema.service';
+import { SchemaService } from 'schema/schema.service';
 import { ModelUpdateMeta } from '../../magic-meta/update/model.update.meta';
 import { AbilityService } from '../ability.service';
 export class MagicUpdateParser {

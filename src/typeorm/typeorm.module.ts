@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { SchemaModule } from 'src/schema/schema.module';
+import { SchemaModule } from 'schema/schema.module';
 import { TypeOrmService } from './typeorm.service';
 
 @Global()

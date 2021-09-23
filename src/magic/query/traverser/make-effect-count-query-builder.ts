@@ -1,5 +1,5 @@
-import { RxUser } from 'src/entity-interface/RxUser';
-import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
+import { RxUser } from 'entity-interface/RxUser';
+import { QueryEntityMeta } from 'magic-meta/query/query.entity-meta';
 import { SelectQueryBuilder } from 'typeorm';
 import { getDirectivesWhereStatement } from './get-directives-where-statement';
 import { makeAbilitiesQueryBuilder } from './make-abilities-query-builder';

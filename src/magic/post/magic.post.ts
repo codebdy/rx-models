@@ -1,13 +1,13 @@
-import { AbilityService } from 'src/magic/ability.service';
-import { PostDirectiveService } from 'src/directive/post-directive.service';
-import { MagicService } from 'src/magic-meta/magic.service';
-import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
-import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
-import { SchemaService } from 'src/schema/schema.service';
+import { AbilityService } from 'magic/ability.service';
+import { PostDirectiveService } from 'directive/post-directive.service';
+import { MagicService } from 'magic-meta/magic.service';
+import { InstanceMetaCollection } from 'magic-meta/post/instance.meta.colletion';
+import { RelationMetaCollection } from 'magic-meta/post/relation.meta.colletion';
+import { SchemaService } from 'schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
-import { AbilityType } from 'src/entity-interface/AbilityType';
+import { AbilityType } from 'entity-interface/AbilityType';
 
 export class MagicPost {
   constructor(

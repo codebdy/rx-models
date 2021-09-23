@@ -1,14 +1,14 @@
-import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
-import { EntityMail, Mail } from 'src/entity-interface/Mail';
-import { MailBoxType } from 'src/entity-interface/MailBoxType';
+import { Attachment, EntityAttachment } from 'entity-interface/Attachment';
+import { EntityMail, Mail } from 'entity-interface/Mail';
+import { MailBoxType } from 'entity-interface/MailBoxType';
 import {
   EntityMailIdentifier,
   MailIdentifier,
-} from 'src/entity-interface/MailIdentifier';
-import { StorageService } from 'src/storage/storage.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
-import { getExt } from 'src/util/get-ext';
+} from 'entity-interface/MailIdentifier';
+import { StorageService } from 'storage/storage.service';
+import { TypeOrmService } from 'typeorm/typeorm.service';
+import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'util/consts';
+import { getExt } from 'util/get-ext';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { JobOwner } from './job-owner';
 import { MailTeller } from './mail-teller';

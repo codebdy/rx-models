@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RxUser } from 'src/entity-interface/RxUser';
-import { PackageManageService } from 'src/package-manage/package-manage.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { DB_CONFIG_FILE, SALT_OR_ROUNDS } from 'src/util/consts';
+import { RxUser } from 'entity-interface/RxUser';
+import { PackageManageService } from 'package-manage/package-manage.service';
+import { TypeOrmService } from 'typeorm/typeorm.service';
+import { DB_CONFIG_FILE, SALT_OR_ROUNDS } from 'util/consts';
 import { EntitySchema } from 'typeorm';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import * as bcrypt from 'bcrypt';
 import { InstallData } from './install.data';
 import * as packagesFromJson from './install.seed.json';
-import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
+import { PackageMeta } from 'schema/graph-meta-interface/package-meta';
 
 const packageSeed = packagesFromJson as PackageMeta;
 

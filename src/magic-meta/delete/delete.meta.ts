@@ -1,6 +1,6 @@
-import { DeleteDirective } from 'src/directive/delete/delete.directive';
-import { RxAbility } from 'src/entity-interface/RxAbility';
-import { JsonUnit } from 'src/magic/base/json-unit';
+import { DeleteDirective } from 'directive/delete/delete.directive';
+import { RxAbility } from 'entity-interface/RxAbility';
+import { JsonUnit } from 'magic/base/json-unit';
 
 export class DeleteMeta {
   private _jsonUnit: JsonUnit;

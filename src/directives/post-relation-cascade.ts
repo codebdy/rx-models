@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DirectiveType } from 'src/directive/directive-type';
-import { PostDirective } from 'src/directive/post/post.directive';
-import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
-import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
+import { DirectiveType } from 'directive/directive-type';
+import { PostDirective } from 'directive/post/post.directive';
+import { InstanceMeta } from 'magic-meta/post/instance.meta';
+import { RelationMetaCollection } from 'magic-meta/post/relation.meta.colletion';
 import { EntityManager } from 'typeorm';
 
 export class PostRelationCascadeDirective extends PostDirective {

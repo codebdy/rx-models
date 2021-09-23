@@ -1,4 +1,4 @@
-import { ColumnType as MetaColumnType } from 'src/schema/graph-meta-interface/column-type';
+import { ColumnType as MetaColumnType } from 'schema/graph-meta-interface/column-type';
 import { ColumnType } from 'typeorm';
 
 export function convertType(type: MetaColumnType): ColumnType {

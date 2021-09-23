@@ -1,5 +1,5 @@
-import { DirectiveType } from 'src/directive/directive-type';
-import { QueryFieldDirective } from 'src/directive/query/query.field-directive';
+import { DirectiveType } from 'directive/directive-type';
+import { QueryFieldDirective } from 'directive/query/query.field-directive';
 
 export class QueryFieldMapValuelDirective extends QueryFieldDirective {
   static description = `映射字段值，@mapValue(field, oldValue, newValue)`;

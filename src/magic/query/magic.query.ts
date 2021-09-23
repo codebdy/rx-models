@@ -1,16 +1,16 @@
 import { MagicQueryParser } from './magic.query.parser';
-import { QueryResult } from 'src/magic-meta/query/query-result';
+import { QueryResult } from 'magic-meta/query/query-result';
 import { TOKEN_COUNT, TOKEN_GET_MANY } from '../base/tokens';
-import { MagicService } from 'src/magic-meta/magic.service';
-import { AbilityService } from 'src/magic/ability.service';
-import { QueryDirectiveService } from 'src/directive/query-directive.service';
-import { SchemaService } from 'src/schema/schema.service';
+import { MagicService } from 'magic-meta/magic.service';
+import { AbilityService } from 'magic/ability.service';
+import { QueryDirectiveService } from 'directive/query-directive.service';
+import { SchemaService } from 'schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-count-query-builder';
 import { makeRelationsBuilder } from './traverser/make-relations-builder';
 import { makeEffectCountQueryBuilder } from './traverser/make-effect-count-query-builder';
 import { filterResult } from './traverser/filter-result';
-import { StorageService } from 'src/storage/storage.service';
+import { StorageService } from 'storage/storage.service';
 
 export class MagicQuery {
   constructor(

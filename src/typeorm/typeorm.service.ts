@@ -4,8 +4,8 @@ import {
   OnApplicationShutdown,
   OnModuleInit,
 } from '@nestjs/common';
-import { SchemaService } from 'src/schema/schema.service';
-import { DB_CONFIG_FILE } from 'src/util/consts';
+import { SchemaService } from 'schema/schema.service';
+import { DB_CONFIG_FILE } from 'util/consts';
 import {
   Connection,
   createConnection,

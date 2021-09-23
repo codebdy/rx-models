@@ -1,7 +1,7 @@
-import { DirectiveType } from 'src/directive/directive-type';
-import { PostDirective } from 'src/directive/post/post.directive';
-import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
-import { SALT_OR_ROUNDS } from 'src/util/consts';
+import { DirectiveType } from 'directive/directive-type';
+import { PostDirective } from 'directive/post/post.directive';
+import { InstanceMeta } from 'magic-meta/post/instance.meta';
+import { SALT_OR_ROUNDS } from 'util/consts';
 import * as bcrypt from 'bcrypt';
 
 export class PostEntityBcryptDirective extends PostDirective {

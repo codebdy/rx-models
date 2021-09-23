@@ -1,4 +1,4 @@
-import { PostDirective } from 'src/directive/post/post.directive';
+import { PostDirective } from 'directive/post/post.directive';
 import { InstanceMeta } from './instance.meta';
 
 export class RelationMetaCollection {

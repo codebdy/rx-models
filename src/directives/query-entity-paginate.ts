@@ -1,6 +1,6 @@
-import { QueryDirective } from 'src/directive/query/query.directive';
-import { DirectiveType } from 'src/directive/directive-type';
-import { QueryResult } from 'src/magic-meta/query/query-result';
+import { QueryDirective } from 'directive/query/query.directive';
+import { DirectiveType } from 'directive/directive-type';
+import { QueryResult } from 'magic-meta/query/query-result';
 import { SelectQueryBuilder } from 'typeorm';
 
 export class QueryEntityPaginateDirective extends QueryDirective {

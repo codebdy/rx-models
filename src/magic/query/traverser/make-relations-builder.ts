@@ -1,5 +1,5 @@
-import { RxUser } from 'src/entity-interface/RxUser';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { RxUser } from 'entity-interface/RxUser';
+import { QueryRelationMeta } from 'magic-meta/query/query.relation-meta';
 import { SelectQueryBuilder } from 'typeorm';
 import { getEntityQueryAbilitySql } from './make-abilities-query-builder';
 

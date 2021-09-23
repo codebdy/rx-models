@@ -1,4 +1,4 @@
-import { ImageSize } from 'src/util/consts';
+import { ImageSize } from 'util/consts';
 import { StorageClient } from '../storage.client';
 import { expaireTime } from './consts';
 import { urlCache } from './UrlCache';

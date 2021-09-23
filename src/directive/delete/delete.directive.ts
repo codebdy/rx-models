@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DeleteMeta } from 'src/magic-meta/delete/delete.meta';
-import { MagicService } from 'src/magic-meta/magic.service';
+import { DeleteMeta } from 'magic-meta/delete/delete.meta';
+import { MagicService } from 'magic-meta/magic.service';
 import { DirectiveMeta } from '../directive.meta';
 
 export class DeleteDirective {

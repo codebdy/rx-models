@@ -1,5 +1,5 @@
-import { PostDirectiveClass } from 'src/directive/post/post.directive.class';
-import { QueryDirectiveClass } from 'src/directive/query/query.directive.class';
+import { PostDirectiveClass } from 'directive/post/post.directive.class';
+import { QueryDirectiveClass } from 'directive/query/query.directive.class';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require('glob');

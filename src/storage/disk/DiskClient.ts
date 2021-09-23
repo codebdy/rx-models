@@ -3,7 +3,7 @@ import {
   DISK_STORAGE_PUBLIC_PATH,
   DISK_STORAGE_PUBLIC_URL_BASE,
   ImageSize,
-} from 'src/util/consts';
+} from 'util/consts';
 import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import { StorageClient } from '../storage.client';
 import { dirname, parse, extname } from 'path';

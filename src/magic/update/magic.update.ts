@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MagicService } from 'src/magic-meta/magic.service';
-import { ModelUpdateMeta } from 'src/magic-meta/update/model.update.meta';
-import { AbilityService } from 'src/magic/ability.service';
-import { SchemaService } from 'src/schema/schema.service';
+import { MagicService } from 'magic-meta/magic.service';
+import { ModelUpdateMeta } from 'magic-meta/update/model.update.meta';
+import { AbilityService } from 'magic/ability.service';
+import { SchemaService } from 'schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { MagicUpdateParser } from './magic.update.parser';
 

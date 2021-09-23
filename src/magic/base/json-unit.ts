@@ -1,6 +1,6 @@
 import { TOKEN_ENTITY } from './tokens';
 import { parseDirectives } from './parse-directives';
-import { DirectiveMeta } from 'src/directive/directive.meta';
+import { DirectiveMeta } from 'directive/directive.meta';
 
 export class JsonUnit {
   key = '';

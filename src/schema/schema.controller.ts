@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RxUser } from 'src/entity-interface/RxUser';
+import { RxUser } from 'entity-interface/RxUser';
 import { SchemaService } from './schema.service';
 
 @Controller()

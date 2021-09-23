@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { importDirectivesFromDirectories } from 'src/util/DirectoryExportedDirectivesLoader';
+import { importDirectivesFromDirectories } from 'util/DirectoryExportedDirectivesLoader';
 import { DirectiveType } from './directive-type';
 import { DeleteDirectiveClass } from './delete/delete.directive.class';
 import { PostDirectiveClass } from './post/post.directive.class';

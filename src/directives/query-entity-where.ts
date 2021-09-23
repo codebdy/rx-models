@@ -1,8 +1,8 @@
-import { QueryDirective } from 'src/directive/query/query.directive';
-import { DirectiveType } from 'src/directive/directive-type';
-import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
-import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { QueryDirective } from 'directive/query/query.directive';
+import { DirectiveType } from 'directive/directive-type';
+import { parseWhereSql } from 'magic-meta/query/parse-where-sql';
+import { parseRelationsFromWhereSql } from 'magic-meta/query/parse-relations-from-where-sql';
+import { QueryRelationMeta } from 'magic-meta/query/query.relation-meta';
 
 export class QueryEntityWhereDirective extends QueryDirective {
   static description = `

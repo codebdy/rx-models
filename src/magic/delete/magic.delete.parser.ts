@@ -1,9 +1,9 @@
 import { JsonUnit } from '../base/json-unit';
 import { DeleteMeta } from '../../magic-meta/delete/delete.meta';
-import { MagicService } from 'src/magic-meta/magic.service';
-import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
+import { MagicService } from 'magic-meta/magic.service';
+import { DeleteDirectiveService } from 'directive/delete-directive.service';
 import { AbilityService } from '../ability.service';
-import { SchemaService } from 'src/schema/schema.service';
+import { SchemaService } from 'schema/schema.service';
 
 export class MagicDeleteParser {
   constructor(
