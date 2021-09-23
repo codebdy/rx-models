@@ -94,6 +94,7 @@ export class Imap4Job extends Job {
       host: this.imap4Config.host,
       port: this.imap4Config.port,
       tls: true,
+      //debug: console.error,
     });
 
     this.client.connect();
@@ -108,129 +109,142 @@ export class Imap4Job extends Job {
 
     this.client.once('error', (err) => {
       console.debug('Imap Error', err);
-      this.error('Receive error:' + err);
-      this.client.end();
+      this.error('Imap error:' + err);
+      //this.client.end();
     });
 
     this.client.once('close', () => {
       console.debug('Connection closed');
-      this.jobOwner.finishJob();
+      //this.jobOwner.finishJob();
     });
 
     this.client.once('end', () => {
       console.debug('Connection ended');
+      this.client.destroy();
+      this.client = undefined;
       this.jobOwner.finishJob();
     });
   }
 
   receiveOneBox() {
-    if (this.mailBoxes.length === 0) {
-      this.client.end();
-      return;
-    }
-    const imap4Folder = this.mailBoxes.pop();
-
-    const mailSourceBox = getMailSrouceBox(imap4Folder as any);
-    const mailTargetBox = getMailTargetBox(imap4Folder as any);
-    console.debug(`准备接收邮件箱${this.mailAddress}-${mailSourceBox}`);
-
-    if (!mailSourceBox) {
-      this.receiveOneBox();
-      return;
-    }
-    this.eventName = `${this.mailAddress}(IMAP4)-${mailSourceBox}`;
-    this.emit({
-      type: MailerEventType.openMailBox,
-      message: 'Open mail box ...',
-    });
-
-    this.client.openBox(mailSourceBox, true, (error /*, box*/) => {
-      if (error) {
-        const errMsg = `Open mail box(${mailSourceBox}) error:` + error;
-        console.debug(errMsg);
-        this.error(errMsg);
-        this.client.end();
+    try {
+      if (this.mailBoxes.length === 0 || !this.client) {
+        this.client?.end();
+        return;
       }
+      const imap4Folder = this.mailBoxes.pop();
 
+      const mailSourceBox = getMailSrouceBox(imap4Folder as any);
+      const mailTargetBox = getMailTargetBox(imap4Folder as any);
+      console.debug(`准备接收邮件箱${this.mailAddress}-${mailSourceBox}`);
+
+      if (!mailSourceBox) {
+        this.receiveOneBox();
+        return;
+      }
+      this.eventName = `${this.mailAddress}(IMAP4)-${mailSourceBox}`;
       this.emit({
-        type: MailerEventType.list,
-        message: 'Get mail list ...',
+        type: MailerEventType.openMailBox,
+        message: 'Open mail box ...',
       });
-      this.client.search(['ALL'], (err, results) => {
-        if (err) {
-          const errMsg = `List mail box(${mailSourceBox}) error:` + err;
+
+      this.client.openBox(mailSourceBox, true, (error /*, box*/) => {
+        if (error) {
+          const errMsg = `Open mail box(${mailSourceBox}) error:` + error;
           console.debug(errMsg);
           this.error(errMsg);
           this.client.end();
         }
-        this.results = results;
-        this.mailTeller.tellIt(
-          this.results.map((uidl) => uidl.toString()),
-          0,
-        );
-        if (
-          !this.mailTeller.newMailList ||
-          this.mailTeller.newMailList.length === 0
-        ) {
-          console.debug('没有新邮件:' + this.mailAddress + '-' + mailSourceBox);
-          this.receiveOneBox();
-          return;
-        }
-        const f = this.client.fetch(this.mailTeller.newMailList, {
-          bodies: [''],
-        });
-        f.on('message', (msg, seqno) => {
-          let uid = '';
-          let parsedMail;
-          let mailData;
 
-          msg.on('body', (stream, info) => {
-            this.emit({
-              type: MailerEventType.progress,
-              message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
-                this.mailTeller.totalNew
-              }`,
-              total: this.mailTeller.totalNew,
-              current: seqno,
-              size: info.size,
+        this.emit({
+          type: MailerEventType.list,
+          message: 'Get mail list ...',
+        });
+        this.client.search(['ALL'], (err, results) => {
+          if (err) {
+            const errMsg = `List mail box(${mailSourceBox}) error:` + err;
+            console.debug(errMsg);
+            this.error(errMsg);
+            this.client.end();
+          }
+          this.results = results;
+          this.mailTeller.tellIt(
+            this.results.map((uidl) => uidl.toString()),
+            0,
+          );
+          if (
+            !this.mailTeller.newMailList ||
+            this.mailTeller.newMailList.length === 0
+          ) {
+            console.debug(
+              '没有新邮件:' + this.mailAddress + '-' + mailSourceBox,
+            );
+            this.receiveOneBox();
+            return;
+          }
+          console.log('哈哈', this.mailTeller.newMailList);
+          const f = this.client.fetch(this.mailTeller.newMailList, {
+            bodies: [''],
+          });
+          f.on('message', (msg, seqno) => {
+            let uid = '';
+            let parsedMail;
+            let mailData;
+
+            msg.on('body', (stream, info) => {
+              this.emit({
+                type: MailerEventType.progress,
+                message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
+                  this.mailTeller.totalNew
+                }`,
+                total: this.mailTeller.totalNew,
+                current: seqno,
+                size: info.size,
+              });
+              simpleParser(stream, (err, mail) => {
+                parsedMail = mail;
+                this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+              });
+
+              let buffer = Buffer.from([]);
+              stream.on('data', (buf) => {
+                buffer = Buffer.concat([buffer, buf]);
+              });
+              stream.on('end', () => {
+                mailData = buffer;
+                this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+              });
+              stream.on('error', (error) => {
+                const errMsg = 'Stream error:' + error;
+                console.debug(errMsg);
+                this.error(errMsg);
+                this.client.end();
+              });
             });
-            simpleParser(stream, (err, mail) => {
-              parsedMail = mail;
+            msg.once('attributes', (attrs) => {
+              uid = attrs?.uid;
+            });
+            msg.once('end', () => {
               this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
             });
-
-            let buffer = Buffer.from([]);
-            stream.on('data', (buf) => {
-              buffer = Buffer.concat([buffer, buf]);
-            });
-            stream.on('end', () => {
-              mailData = buffer;
-              this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
-            });
-            stream.on('error', (error) => {
-              const errMsg = 'Stream error:' + error;
-              console.debug(errMsg);
-              this.error(errMsg);
-              this.client.end();
-            });
           });
-          msg.once('attributes', (attrs) => {
-            uid = attrs?.uid;
+          f.once('error', (err) => {
+            const errMsg = 'Fetch error:' + err;
+            console.debug(errMsg);
+            this.error(errMsg);
+            this.client?.destroy();
+            this.client = undefined;
+            //this.client.end();
           });
-          msg.once('end', () => {
-            this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+          f.once('end', () => {
+            this.receiveOneBox();
           });
-        });
-        f.once('error', (err) => {
-          const errMsg = 'Fetch error:' + err;
-          console.debug(errMsg);
-          this.client.end();
-        });
-        f.once('end', () => {
-          this.receiveOneBox();
         });
       });
-    });
+    } catch (error) {
+      console.error('捉到一个未知异常:', error);
+      this.error('未知异常' + error);
+    }
   }
 
   abort() {

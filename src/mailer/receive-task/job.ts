@@ -18,7 +18,7 @@ export interface IJob {
 
   start(): void;
   abort(): void;
-  retry(): void;
+  continue(): void;
 }
 
 export abstract class Job implements IJob {
@@ -168,7 +168,7 @@ export abstract class Job implements IJob {
       });
   }
 
-  retry(): void {
+  continue(): void {
     this.start();
   }
 

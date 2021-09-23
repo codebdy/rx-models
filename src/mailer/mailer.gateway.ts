@@ -11,7 +11,7 @@ import {
   EVENT_CANCEL_RECEIVE,
   EVENT_RECEIVEMAILS,
   EVENT_REGISTER_MAIL_CLIENT,
-  EVENT_RETRY_RECEIVE,
+  EVENT_CONTINUE_RECEIVE,
 } from './consts';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { MailerReceiveTasksPool } from './mailer.receive-tasks-pool';
@@ -45,11 +45,15 @@ export class MailerGateway {
     client: Socket,
     message: { accountId: number; configs: MailConfig[] },
   ) {
-    console.debug('receive emails', client.id);
-    if (!this.clientsPool.has(client.id)) {
-      this.registerClient(client, { accountId: message.accountId });
+    try {
+      console.debug('receive emails', client.id);
+      if (!this.clientsPool.has(client.id)) {
+        this.registerClient(client, { accountId: message.accountId });
+      }
+      this.tasksPool.createTask(message.accountId, message.configs);
+    } catch (error) {
+      console.error('捉到一个未知异常', error);
     }
-    this.tasksPool.createTask(message.accountId, message.configs);
   }
 
   @SubscribeMessage(EVENT_CANCEL_RECEIVE)
@@ -57,8 +61,8 @@ export class MailerGateway {
     this.tasksPool.getTask(message.accountId)?.abort();
   }
 
-  @SubscribeMessage(EVENT_RETRY_RECEIVE)
+  @SubscribeMessage(EVENT_CONTINUE_RECEIVE)
   retryReceive(client: Socket, message: { accountId: number }) {
-    this.tasksPool.getTask(message.accountId)?.retry();
+    this.tasksPool.getTask(message.accountId)?.continue();
   }
 }

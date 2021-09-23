@@ -58,8 +58,8 @@ export class MailAddressJob implements IJob, JobOwner {
     this.nextJob()?.start();
   }
 
-  retry(): void {
-    this.currentJob?.retry();
+  continue(): void {
+    this.currentJob?.continue();
   }
 
   nextJob(): IJob {

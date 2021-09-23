@@ -94,8 +94,8 @@ export class ReceiveTask implements JobOwner {
     this.configs = [];
   }
 
-  retry() {
+  continue() {
     this.lastEvent = undefined;
-    this.currentJob?.retry();
+    this.currentJob?.continue();
   }
 }
