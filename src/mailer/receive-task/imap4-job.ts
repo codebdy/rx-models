@@ -58,6 +58,7 @@ export class Imap4Job extends Job {
   ) {
     super(`${mailAddress}(IMAP4)`);
     this.mailBoxes = imap4Config.folders || [];
+    console.debug(`开始用IMAP4接收邮件:${mailAddress}`);
   }
 
   private async saveMail(
@@ -78,6 +79,7 @@ export class Imap4Job extends Job {
   ) {
     if (!buffer || !parsedMail || !uidl) {
       //还没有解析完，返回
+      console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
       return;
     }
     this.saveMail(buffer, parsedMail, uidl, mailBox).then(() => {
@@ -143,10 +145,6 @@ export class Imap4Job extends Job {
       if (error) {
         this.error(`Open mail box(${mailSourceBox}) error:` + error);
         this.client.end();
-      }
-      if (this.mailAddress !== '11011968@qq.com') {
-        this.client.end();
-        return;
       }
 
       this.emit({
