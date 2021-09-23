@@ -101,12 +101,13 @@ export class Imap4Job extends Job {
       type: MailerEventType.connect,
       message: 'Connect to server...',
     });
+    console.debug('准备接收邮件', this.mailAddress, this.mailBoxes);
     this.client.once('ready', () => {
       this.receiveOneBox();
     });
 
     this.client.once('error', (err) => {
-      console.log(err);
+      console.debug('Imap Error', err);
       this.error('Receive error:' + err);
       this.client.end();
     });
@@ -128,8 +129,10 @@ export class Imap4Job extends Job {
       return;
     }
     const imap4Folder = this.mailBoxes.pop();
+
     const mailSourceBox = getMailSrouceBox(imap4Folder as any);
     const mailTargetBox = getMailTargetBox(imap4Folder as any);
+    console.debug(`准备接收邮件箱${this.mailAddress}-${mailSourceBox}`);
 
     if (!mailSourceBox) {
       this.receiveOneBox();
@@ -143,7 +146,9 @@ export class Imap4Job extends Job {
 
     this.client.openBox(mailSourceBox, true, (error /*, box*/) => {
       if (error) {
-        this.error(`Open mail box(${mailSourceBox}) error:` + error);
+        const errMsg = `Open mail box(${mailSourceBox}) error:` + error;
+        console.debug(errMsg);
+        this.error(errMsg);
         this.client.end();
       }
 
@@ -153,7 +158,9 @@ export class Imap4Job extends Job {
       });
       this.client.search(['ALL'], (err, results) => {
         if (err) {
-          this.error(`List mail box(${mailSourceBox}) error:` + err);
+          const errMsg = `List mail box(${mailSourceBox}) error:` + err;
+          console.debug(errMsg);
+          this.error(errMsg);
           this.client.end();
         }
         this.results = results;
@@ -165,7 +172,8 @@ export class Imap4Job extends Job {
           !this.mailTeller.newMailList ||
           this.mailTeller.newMailList.length === 0
         ) {
-          this.client.end();
+          console.debug('没有新邮件:' + this.mailAddress + '-' + mailSourceBox);
+          this.receiveOneBox();
           return;
         }
         const f = this.client.fetch(this.mailTeller.newMailList, {
@@ -200,7 +208,9 @@ export class Imap4Job extends Job {
               this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
             });
             stream.on('error', (error) => {
-              this.error('Stream error:' + error);
+              const errMsg = 'Stream error:' + error;
+              console.debug(errMsg);
+              this.error(errMsg);
               this.client.end();
             });
           });
@@ -212,7 +222,8 @@ export class Imap4Job extends Job {
           });
         });
         f.once('error', (err) => {
-          this.error('Fetch error:' + err);
+          const errMsg = 'Fetch error:' + err;
+          console.debug(errMsg);
           this.client.end();
         });
         f.once('end', () => {
