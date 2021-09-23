@@ -17,6 +17,7 @@ export enum MailerEventType {
   cancelling = 'cancelling',
   finished = 'finished',
   aborted = 'aborted',
+  openMailBox = 'openMailBox',
 }
 
 export interface MailerEvent {
