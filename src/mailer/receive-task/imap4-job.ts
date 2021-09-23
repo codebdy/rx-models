@@ -182,7 +182,6 @@ export class Imap4Job extends Job {
             this.receiveOneBox();
             return;
           }
-          console.log('哈哈', this.mailTeller.newMailList);
           this.receiveOnChunk(mailTargetBox, 0);
         });
       });
