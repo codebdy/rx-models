@@ -110,7 +110,7 @@ export class Imap4Job extends Job {
     this.client.once('error', (err) => {
       console.debug('Imap Error', err);
       this.error('Imap error:' + err);
-      //this.client.end();
+      this.client?.end();
     });
 
     this.client.once('close', () => {
