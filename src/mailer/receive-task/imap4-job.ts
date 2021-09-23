@@ -202,19 +202,18 @@ export class Imap4Job extends Job {
     const f = this.client.fetch(mailsToReceive, {
       bodies: [''],
     });
-    f.on('message', (msg, seqno) => {
+    f.on('message', (msg /*, seqno*/) => {
       let uid = '';
       let parsedMail;
       let mailData;
+      this.mailTeller.currentMailIndex++;
 
       msg.on('body', (stream, info) => {
         this.emit({
           type: MailerEventType.progress,
-          message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
-            this.mailTeller.totalNew
-          }`,
+          message: `Recieving ${this.mailTeller.currentMailIndex} of ${this.mailTeller.totalNew}`,
           total: this.mailTeller.totalNew,
-          current: chunkIndex + seqno,
+          current: this.mailTeller.currentMailIndex,
           size: info.size,
         });
         simpleParser(stream, (err, mail) => {

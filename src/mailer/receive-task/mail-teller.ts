@@ -8,6 +8,8 @@ export class MailTeller {
 
   totalNew: number;
 
+  currentMailIndex = 0;
+
   /**
    * 识别新邮件
    */
@@ -17,6 +19,7 @@ export class MailTeller {
       startIndex,
     );
     this.totalNew = this.newMailList.length;
+    this.currentMailIndex = 0;
   }
 
   getUidl(msg: string): string {

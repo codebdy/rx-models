@@ -3,7 +3,7 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerEvent } from '../mailer.event';
 import { Imap4Job } from './imap4-job';
-import { IJob, Job } from './job';
+import { IJob } from './job';
 import { JobOwner } from './job-owner';
 import { Pop3Job } from './pop3-job';
 
