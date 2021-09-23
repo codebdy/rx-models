@@ -183,67 +183,77 @@ export class Imap4Job extends Job {
             return;
           }
           console.log('哈哈', this.mailTeller.newMailList);
-          const f = this.client.fetch(this.mailTeller.newMailList, {
-            bodies: [''],
-          });
-          f.on('message', (msg, seqno) => {
-            let uid = '';
-            let parsedMail;
-            let mailData;
-
-            msg.on('body', (stream, info) => {
-              this.emit({
-                type: MailerEventType.progress,
-                message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
-                  this.mailTeller.totalNew
-                }`,
-                total: this.mailTeller.totalNew,
-                current: seqno,
-                size: info.size,
-              });
-              simpleParser(stream, (err, mail) => {
-                parsedMail = mail;
-                this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
-              });
-
-              let buffer = Buffer.from([]);
-              stream.on('data', (buf) => {
-                buffer = Buffer.concat([buffer, buf]);
-              });
-              stream.on('end', () => {
-                mailData = buffer;
-                this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
-              });
-              stream.on('error', (error) => {
-                const errMsg = 'Stream error:' + error;
-                console.debug(errMsg);
-                this.error(errMsg);
-                this.client?.end();
-              });
-            });
-            msg.once('attributes', (attrs) => {
-              uid = attrs?.uid;
-            });
-            msg.once('end', () => {
-              this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
-            });
-          });
-          f.once('error', (err) => {
-            const errMsg = 'Fetch error:' + err;
-            console.debug(errMsg);
-            this.error(errMsg);
-            this.client?.destroy();
-            this.client = undefined;
-          });
-          f.once('end', () => {
-            this.receiveOneBox();
-          });
+          this.receiveOnChunk(mailTargetBox, 0);
         });
       });
     } catch (error) {
       console.error('捉到一个未知异常:', error);
       this.error('未知异常' + error);
     }
+  }
+
+  private receiveOnChunk(mailTargetBox: MailBoxType, chunkIndex: number) {
+    const mailsToReceive = this.mailTeller.newMailList.splice(chunkIndex, 10);
+    if (!mailsToReceive || mailsToReceive.length === 0) {
+      this.receiveOneBox();
+      return;
+    }
+
+    const f = this.client.fetch(mailsToReceive, {
+      bodies: [''],
+    });
+    f.on('message', (msg, seqno) => {
+      let uid = '';
+      let parsedMail;
+      let mailData;
+
+      msg.on('body', (stream, info) => {
+        this.emit({
+          type: MailerEventType.progress,
+          message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
+            this.mailTeller.totalNew
+          }`,
+          total: this.mailTeller.totalNew,
+          current: chunkIndex + seqno,
+          size: info.size,
+        });
+        simpleParser(stream, (err, mail) => {
+          parsedMail = mail;
+          this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+        });
+
+        let buffer = Buffer.from([]);
+        stream.on('data', (buf) => {
+          buffer = Buffer.concat([buffer, buf]);
+        });
+        stream.on('end', () => {
+          mailData = buffer;
+          this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+        });
+        stream.on('error', (error) => {
+          const errMsg = 'Stream error:' + error;
+          console.debug(errMsg);
+          this.error(errMsg);
+          this.client?.end();
+        });
+      });
+      msg.once('attributes', (attrs) => {
+        uid = attrs?.uid;
+      });
+      msg.once('end', () => {
+        this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+      });
+    });
+    f.once('error', (err) => {
+      const errMsg = 'Fetch error:' + err;
+      console.debug(errMsg);
+      this.error(errMsg);
+      this.client?.destroy();
+      this.client = undefined;
+    });
+    f.once('end', () => {
+      this.receiveOnChunk(mailTargetBox, chunkIndex);
+    });
   }
 
   abort() {
