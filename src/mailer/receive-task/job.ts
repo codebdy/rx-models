@@ -152,7 +152,7 @@ export abstract class Job implements IJob {
         text: passedMail.text,
         textAsHtml: passedMail.textAsHtml,
         priority: passedMail.priority,
-        belongsTo: { id: this.accountId },
+        owner: { id: this.accountId },
         inMailBox: mailBox,
         fromAddress: passedMail.from?.value[0]?.address,
         attachments: attachments,
