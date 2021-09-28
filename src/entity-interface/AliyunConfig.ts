@@ -1,4 +1,5 @@
-export interface AliyunConfig {
+
+export interface AliyunConfig  {
   region?: string;
   accessKeyId?: string;
   accessKeySecret?: string;
