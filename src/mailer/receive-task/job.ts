@@ -1,6 +1,8 @@
 import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
+import { EmailAddress, EntityEmailAddress } from 'src/entity-interface/EmailAddress';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
+import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import {
   EntityMailIdentifier,
   MailIdentifier,
@@ -135,6 +137,18 @@ export abstract class Job implements IJob {
       );
     }
 
+    let fromOldCustomer = false;
+    const fromAddress = passedMail.from?.value[0]?.address;
+    fromOldCustomer = !!(await this.typeOrmService
+      .getRepository<MailConfig>(EntityMailConfig)
+      .findOne({ address: fromAddress }));
+
+    if (!fromOldCustomer) {
+      fromOldCustomer = !!(await this.typeOrmService
+        .getRepository<EmailAddress>(EntityEmailAddress)
+        .findOne({ address: fromAddress }));
+    }
+
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
       .save({
@@ -154,8 +168,9 @@ export abstract class Job implements IJob {
         priority: passedMail.priority,
         owner: { id: this.accountId },
         inMailBox: mailBox,
-        fromAddress: passedMail.from?.value[0]?.address,
+        fromAddress: fromAddress,
         attachments: attachments,
+        fromOldCustomer: fromOldCustomer,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)

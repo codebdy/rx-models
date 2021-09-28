@@ -4,13 +4,11 @@ import { RxMediaFolder } from './RxMediaFolder';
 import { MailConfig } from './MailConfig';
 import { Mail } from './Mail';
 import { MailLabel } from './MailLabel';
-import { CustomerLabel } from './CustomerLabel';
-import { Customer } from './Customer';
 import { RxDepartment } from './RxDepartment';
 import { RxUserStatus } from './RxUserStatus';
 
 export const EntityRxUser = 'RxUser';
-export interface RxUser  {
+export interface RxUser {
   id?: number;
   name: string;
   loginName: string;
@@ -29,6 +27,4 @@ export interface RxUser  {
   mailConfigs?: MailConfig[];
   mails?: Mail[];
   mailLabels?: MailLabel[];
-  customerLabels?: CustomerLabel[];
-  customers?: Customer[];
 }

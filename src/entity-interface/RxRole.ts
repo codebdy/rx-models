@@ -1,4 +1,3 @@
-import { RxAuth } from './RxAuth';
 import { RxUser } from './RxUser';
 import { RxAbility } from './RxAbility';
 import { RxDepartment } from './RxDepartment';
@@ -13,5 +12,4 @@ export interface RxRole  {
   users?: RxUser[];
   abilities?: RxAbility[];
   belongsToDepartment?: RxDepartment;
-  rxAuths?: RxAuth[];
 }
