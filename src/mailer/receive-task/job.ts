@@ -1,5 +1,8 @@
 import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
-import { EmailAddress, EntityEmailAddress } from 'src/entity-interface/EmailAddress';
+import {
+  EmailAddress,
+  EntityEmailAddress,
+} from 'src/entity-interface/EmailAddress';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
