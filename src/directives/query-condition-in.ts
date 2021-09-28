@@ -14,7 +14,7 @@ export class QueryConditionBetweenDirective extends QueryConditionDirective {
   getWhereStatement(): [string, any] {
     const field = this.field;
     const value = this.value;
-    if (!value || !value.length) {
+    if (!value) {
       throw new Error(
         `Field "${field}" value "${value}" can not be used to in directive`,
       );
