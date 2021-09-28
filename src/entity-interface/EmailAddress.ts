@@ -1,3 +1,4 @@
+
 export const EntityEmailAddress = 'EmailAddress';
 export interface EmailAddress  {
   id?: number;

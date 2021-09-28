@@ -9,4 +9,6 @@ export enum MailBoxType {
 
   JUNK = 'Junk',
 
+  OUTBOX = 'Outbox',
+
 }

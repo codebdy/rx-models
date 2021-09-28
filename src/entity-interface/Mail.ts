@@ -35,6 +35,7 @@ export interface Mail  {
   forwarded?: boolean;
   spam?: boolean;
   fromOldCustomer?: boolean;
+  size?: number;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];
