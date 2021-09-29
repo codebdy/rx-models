@@ -49,16 +49,20 @@ export class MagicQuery {
       return { totalCount, data: [] };
     }
 
+    makeEffectCountQueryBuilder(meta, qb, this.magicService.me);
+
     if (meta.fetchString === TOKEN_GET_MANY) {
-      totalCount = await qb.getCount();
-      if (totalCount > 1000) {
+      const count = await qb.getCount();
+      const LIMIT_COUNT = 1000;
+      if (
+        (meta.maxCount === undefined && count > LIMIT_COUNT) ||
+        meta.maxCount > LIMIT_COUNT
+      ) {
         throw new Error(
           'The result is too large, please use paginate directive',
         );
       }
     }
-
-    makeEffectCountQueryBuilder(meta, qb, this.magicService.me);
 
     console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
