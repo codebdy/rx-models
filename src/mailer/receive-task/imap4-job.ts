@@ -66,9 +66,10 @@ export class Imap4Job extends Job {
     parsedMail: any,
     uidl: string,
     mailBox: MailBoxType,
+    size: number,
   ) {
     await this.saveMailToStorage(uidl, buffer, mailBox);
-    await this.saveMailToDatabase(uidl, parsedMail, mailBox);
+    await this.saveMailToDatabase(uidl, parsedMail, mailBox, size);
   }
 
   private checkAndSaveMail(
@@ -76,13 +77,14 @@ export class Imap4Job extends Job {
     parsedMail: any,
     uidl: string,
     mailBox: MailBoxType,
+    size: number,
   ) {
     if (!buffer || !parsedMail || !uidl) {
       //还没有解析完，返回
       console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
       return;
     }
-    this.saveMail(buffer, parsedMail, uidl, mailBox).then(() => {
+    this.saveMail(buffer, parsedMail, uidl, mailBox, size).then(() => {
       console.debug('save mail succeed!');
     });
   }
@@ -206,8 +208,10 @@ export class Imap4Job extends Job {
       let parsedMail;
       let mailData;
       this.mailTeller.currentMailIndex++;
+      let size = 0;
 
       msg.on('body', (stream, info) => {
+        size = info.size;
         this.emit({
           type: MailerEventType.progress,
           message: `Recieving ${this.mailTeller.currentMailIndex} of ${this.mailTeller.totalNew}`,
@@ -217,7 +221,13 @@ export class Imap4Job extends Job {
         });
         simpleParser(stream, (err, mail) => {
           parsedMail = mail;
-          this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+          this.checkAndSaveMail(
+            mailData,
+            parsedMail,
+            uid,
+            mailTargetBox,
+            info.size,
+          );
         });
 
         let buffer = Buffer.from([]);
@@ -226,7 +236,13 @@ export class Imap4Job extends Job {
         });
         stream.on('end', () => {
           mailData = buffer;
-          this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+          this.checkAndSaveMail(
+            mailData,
+            parsedMail,
+            uid,
+            mailTargetBox,
+            info.size,
+          );
         });
         stream.on('error', (error) => {
           const errMsg = 'Stream error:' + error;
@@ -239,7 +255,7 @@ export class Imap4Job extends Job {
         uid = attrs?.uid;
       });
       msg.once('end', () => {
-        this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox);
+        this.checkAndSaveMail(mailData, parsedMail, uid, mailTargetBox, size);
       });
     });
     f.once('error', (err) => {

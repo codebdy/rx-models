@@ -28,10 +28,15 @@ export class Pop3Job extends Job {
     super(`${mailAddress}(POP3)`);
   }
 
-  private async saveMail(uidl: string, data: any, mailBox: MailBoxType) {
+  private async saveMail(
+    uidl: string,
+    data: any,
+    mailBox: MailBoxType,
+    size: number,
+  ) {
     await this.saveMailToStorage(uidl, data, mailBox);
     const parsed = await simpleParser(data);
-    await this.saveMailToDatabase(uidl, parsed, mailBox);
+    await this.saveMailToDatabase(uidl, parsed, mailBox, size);
   }
 
   abort(): void {
@@ -121,6 +126,7 @@ export class Pop3Job extends Job {
 
     const retrOne = () => {
       const msg = this.mailTeller.nextMsgNumber();
+      const size = this.mailTeller.sizeList[msg];
       if (msg) {
         this.emit({
           type: MailerEventType.progress,
@@ -129,7 +135,7 @@ export class Pop3Job extends Job {
           }`,
           total: this.mailTeller.totalNew,
           current: this.mailTeller.cunrrentNumber(),
-          size: this.mailTeller.sizeList[msg],
+          size: size,
         });
         client.retr(msg);
       } else {
@@ -149,11 +155,18 @@ export class Pop3Job extends Job {
     });
 
     client.on('retr', (status, msgnumber, data /*, rawdata*/) => {
+      let size = 0;
+      try {
+        size = parseInt(this.mailTeller.sizeList[msgnumber]?.toString());
+      } catch (e) {
+        console.error('邮件大小转换出错', e);
+      }
       if (status === true) {
         this.saveMail(
           this.mailTeller.getUidl(msgnumber),
           data,
           MailBoxType.INBOX,
+          size,
         )
           .then(() => {
             retrOne();

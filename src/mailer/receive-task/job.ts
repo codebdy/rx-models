@@ -109,6 +109,7 @@ export abstract class Job implements IJob {
     uidl: string,
     passedMail: any,
     mailBox: MailBoxType,
+    size: number,
   ) {
     const attachments = [];
     if (!passedMail) {
@@ -174,6 +175,7 @@ export abstract class Job implements IJob {
         fromAddress: fromAddress,
         attachments: attachments,
         fromOldCustomer: fromOldCustomer,
+        size: size,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)
