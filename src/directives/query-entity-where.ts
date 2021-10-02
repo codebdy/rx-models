@@ -28,7 +28,9 @@ export class QueryEntityWhereDirective extends QueryDirective {
       );
       relation.name = relationInfo.name;
       relation.parentEntityMeta = meta;
-      meta.addAddOnRelation(relation);
+      if (!meta.relations.find((rela) => rela.name === relation.name)) {
+        meta.addAddOnRelation(relation);
+      }
     }
 
     return parseWhereSql(
