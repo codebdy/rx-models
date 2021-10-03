@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CRYPTO_KEY } from './consts';
 
@@ -12,4 +12,7 @@ export class MailerController {
   cryptoKey() {
     return { cryptoKey: CRYPTO_KEY };
   }
+
+  @Post('send-mail')
+  sendMail() {}
 }
