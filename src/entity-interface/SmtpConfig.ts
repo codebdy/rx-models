@@ -5,9 +5,9 @@ export interface SmtpConfig  {
   host?: string;
   port?: string;
   timeout?: number;
-  isSSL?: boolean;
-  isStartTLS?: boolean;
-  isAuth?: boolean;
+  useSSL?: boolean;
+  requireTLS?: boolean;
+  requiresAuth?: boolean;
   account?: string;
   password?: string;
 }

@@ -36,16 +36,16 @@ export class SendService {
     const option = {
       host: mailConfig.smtp.host,
       port: mailConfig.smtp.port,
-      secure: mailConfig.smtp.port?.trim() == '465' ? true : false, // true for 465, false for other ports
+      secure: mailConfig.smtp.useSSL, // true for 465, false for other ports
       //service: 'Hotmail',
+      //secureConnection: false, // use SSL
+      requiresAuth: mailConfig.smtp.requiresAuth,
+      ignoreTLS: !mailConfig.smtp.requireTLS || false,
+      requireTLS: mailConfig.smtp.requireTLS || false,
       auth: {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
       },
-      secureConnection: false, // use SSL
-      requiresAuth: mailConfig.smtp.isAuth,
-      ignoreTLS: !mailConfig.smtp.isStartTLS || false,
-      requireTLS: mailConfig.smtp.isStartTLS || false,
     };
     const transporter = nodemailer.createTransport(option);
 
