@@ -38,7 +38,11 @@ export class MailerController {
   ) {
     try {
       await sleep(500);
-      return await this.sendService.sendMessage(body);
+      //不等待处理结束就返回结果
+      this.sendService.sendMessage(body);
+      return {
+        status: 'sending',
+      };
     } catch (error: any) {
       console.error('Send mail error:', error);
       throw new HttpException(

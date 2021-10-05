@@ -16,6 +16,9 @@ export interface MailMessage {
   html?: string;
   attachments?: File[];
   replyTo?: string | AddressObject;
+  inReplyTo?: string;
+  references?: string[];
   priority?: 'high' | 'normal' | 'low';
+  owner: { id?: number };
   [key: string]: any;
 }

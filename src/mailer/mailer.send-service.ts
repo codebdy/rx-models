@@ -7,8 +7,5 @@ export class SendService {
   constructor(private readonly clientsPool: MailerClientsPool) {}
 
   async sendMessage(message: MailMessage) {
-    return {
-      status: 'sending',
-    };
   }
 }
