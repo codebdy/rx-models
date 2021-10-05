@@ -40,6 +40,7 @@ export class SendService {
         mailConfig.smtp.port?.trim() == '465'
           ? true
           : mailConfig.smtp.isStartTLS || false, // true for 465, false for other ports
+      //service: 'Hotmail',
       auth: {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
@@ -53,7 +54,7 @@ export class SendService {
     };
     const transporter = nodemailer.createTransport(option);
 
-    console.log('哈哈', option);
+    console.log('哈哈', option, JSON.stringify(message.to));
 
     try {
       // send mail with defined transport object
