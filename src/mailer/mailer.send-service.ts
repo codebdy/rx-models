@@ -44,6 +44,10 @@ export class SendService {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
       },
+      requiresAuth: mailConfig.smtp.isAuth,
+      tls: {
+        ciphers: 'SSLv3',
+      },
       ignoreTLS: !mailConfig.smtp.isStartTLS || false,
       requireTLS: mailConfig.smtp.isStartTLS || false,
     };
