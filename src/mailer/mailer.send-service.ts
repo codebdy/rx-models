@@ -36,19 +36,14 @@ export class SendService {
     const option = {
       host: mailConfig.smtp.host,
       port: mailConfig.smtp.port,
-      secure:
-        mailConfig.smtp.port?.trim() == '465'
-          ? true
-          : mailConfig.smtp.isStartTLS || false, // true for 465, false for other ports
+      secure: mailConfig.smtp.port?.trim() == '465' ? true : false, // true for 465, false for other ports
       //service: 'Hotmail',
       auth: {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
       },
+      secureConnection: false, // use SSL
       requiresAuth: mailConfig.smtp.isAuth,
-      tls: {
-        ciphers: 'SSLv3',
-      },
       ignoreTLS: !mailConfig.smtp.isStartTLS || false,
       requireTLS: mailConfig.smtp.isStartTLS || false,
     };
