@@ -33,31 +33,43 @@ export class SendService {
       throw Error('Can not find mail stmp config by id');
     }
     //const mailFileName = await this.compileAndSaveMessage(message);
-    const transporter = nodemailer.createTransport({
+    const option = {
       host: mailConfig.smtp.host,
       port: mailConfig.smtp.port,
-      secure: mailConfig.smtp.port?.trim() == '465' ? true : false, // true for 465, false for other ports
+      secure:
+        mailConfig.smtp.port?.trim() == '465'
+          ? true
+          : mailConfig.smtp.isStartTLS || false, // true for 465, false for other ports
       auth: {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
       },
-    });
+      ignoreTLS: !mailConfig.smtp.isStartTLS || false,
+      requireTLS: mailConfig.smtp.isStartTLS || false,
+    };
+    const transporter = nodemailer.createTransport(option);
 
-    // send mail with defined transport object
-    const info = await transporter.sendMail({
-      from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
-      to: message.to, // list of receivers
-      subject: message.subject, // Subject line
-      text: message.text, // plain text body
-      html: message.text, // html body
-    });
+    console.log('哈哈', option);
 
-    console.log('Message sent: %s', info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    try {
+      // send mail with defined transport object
+      const info = await transporter.sendMail({
+        from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
+        to: message.to, // list of receivers
+        subject: message.subject, // Subject line
+        text: message.text, // plain text body
+        html: message.text, // html body
+      });
 
-    // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+      console.log('Message sent: %s', info.messageId);
+      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+      // Preview only available when sending through an Ethereal account
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /*async saveMailToDatabase(
