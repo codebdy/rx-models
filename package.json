@@ -38,6 +38,7 @@
     "mailparser": "^3.3.0",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.5",
+    "nodemailer-plugin-inline-base64": "^2.1.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
