@@ -49,7 +49,7 @@ export class SendService {
     };
     const transporter = nodemailer.createTransport(option);
 
-    console.log('哈哈', option, JSON.stringify(message.to));
+    console.log('哈哈', option, message.to[0]);
 
     try {
       // send mail with defined transport object

@@ -39,7 +39,10 @@ export class MailerController {
     try {
       await sleep(500);
       //不等待处理结束就返回结果
-      this.sendService.sendMessage(body);
+      this.sendService.sendMessage({
+        attachments: body.attachments,
+        ...JSON.parse(body.others),
+      });
       return {
         status: 'sending',
       };
