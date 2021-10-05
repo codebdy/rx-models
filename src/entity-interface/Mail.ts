@@ -3,6 +3,7 @@ import { MailIdentifier } from './MailIdentifier';
 import { RxUser } from './RxUser';
 import { MailLabel } from './MailLabel';
 import { MailBoxType } from './MailBoxType';
+import { MailStatus } from './MailStatus';
 import { AddressObject } from './AddressObject';
 
 
@@ -29,13 +30,16 @@ export interface Mail  {
   fromAddress?: string;
   seen?: boolean;
   answered?: boolean;
-  flagged?: boolean;
   deleted?: boolean;
-  draft?: boolean;
   forwarded?: boolean;
-  spam?: boolean;
   fromOldCustomer?: boolean;
   size?: number;
+  inMailBoxBeforeDelete?: MailBoxType;
+  scheduleSendDate?: Date;
+  isSeparateSend?: boolean;
+  status?: MailStatus;
+  sendErrorMessage?: string;
+  fromConfigId?: number;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];
