@@ -7,14 +7,18 @@ import {
   UseGuards,
   Request,
   UseInterceptors,
+  HttpException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { sleep } from 'src/util/sleep';
 import { CRYPTO_KEY } from './consts';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SendService } from './mailer.send-service';
 
 @Controller('mailer')
 export class MailerController {
+  constructor(private readonly sendService: SendService) {}
+
   /**
    * @returns 用户给邮件password字段加密的KEY
    */
@@ -32,7 +36,18 @@ export class MailerController {
     @UploadedFile() attachments: Express.Multer.File,
     @Body() body: any,
   ) {
-
-    await sleep(1000);
+    try {
+      await sleep(500);
+      return await this.sendService.sendMessage(body);
+    } catch (error: any) {
+      console.error('Send mail error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 }
