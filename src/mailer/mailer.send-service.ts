@@ -14,7 +14,6 @@ import { getExt } from 'src/util/get-ext';
 import { CRYPTO_KEY } from './consts';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { MailMessage } from './mailer.mail-message';
-const MailComposer = require('nodemailer/lib/mail-composer');
 const nodemailer = require('nodemailer');
 
 @Injectable()
@@ -56,9 +55,11 @@ export class SendService {
       const info = await transporter.sendMail({
         from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
         to: message.to, // list of receivers
+        cc: message.cc,
+        bcc: message.bcc,
         subject: message.subject, // Subject line
         text: message.text, // plain text body
-        html: message.text, // html body
+        html: message.html, // html body
       });
 
       console.log('Message sent: %s', info.messageId);
@@ -150,19 +151,5 @@ export class SendService {
     return `${this.mailAddress}/${mailBox}/${uidl}.eml`;
   }
 
-  private async compileAndSaveMessage(uidl: string, message: MailMessage) {
-    const mail = new MailComposer(message);
-    return new Promise<string>((resolve, reject) => {
-      console.log('Initial');
-
-      mail.compile().build(function (err, message) {
-        if (err) {
-          reject(err);
-        }
-        this.storageService.saveMailToStorage(uidl, message, MailBoxType.SENT);
-        //process.stdout.write(message);
-        resolve('');
-      });
-    });
-  }*/
+  */
 }
