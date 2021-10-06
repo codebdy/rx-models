@@ -2,13 +2,14 @@ import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerEvent } from '../mailer.event';
-import { Job } from './job';
+import { Imap4Job } from './imap4-job';
+import { IJob } from './job';
 import { JobOwner } from './job-owner';
 import { Pop3Job } from './pop3-job';
 
-export class MailAddressJob implements Job, JobOwner {
-  private jobs: Job[] = [];
-  private currentJob: Job;
+export class MailAddressJob implements IJob, JobOwner {
+  private jobs: IJob[] = [];
+  private currentJob: IJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
@@ -16,7 +17,13 @@ export class MailAddressJob implements Job, JobOwner {
     public readonly jobOwner: JobOwner,
     private readonly accountId: number,
   ) {
-    if (config.pop3 && !config.stop) {
+    if (
+      config.pop3?.account &&
+      config.pop3?.host &&
+      config.pop3.host &&
+      config.pop3.password &&
+      !config.stop
+    ) {
       this.jobs.push(
         new Pop3Job(
           typeOrmService,
@@ -28,16 +35,34 @@ export class MailAddressJob implements Job, JobOwner {
         ),
       );
     }
+    if (
+      config.imap4?.account &&
+      config.imap4?.host &&
+      config.imap4.host &&
+      config.imap4.password &&
+      !config.stop
+    ) {
+      this.jobs.push(
+        new Imap4Job(
+          typeOrmService,
+          storageService,
+          config.address,
+          config.imap4,
+          this,
+          this.accountId,
+        ),
+      );
+    }
   }
   start() {
     this.nextJob()?.start();
   }
 
-  retry(): void {
-    this.currentJob?.retry();
+  continue(): void {
+    this.currentJob?.continue();
   }
 
-  nextJob(): Job {
+  nextJob(): IJob {
     if (this.jobs.length === 0) {
       this.jobOwner.finishJob();
       return;

@@ -3,19 +3,23 @@ import _ = require('lodash');
 export class MailTeller {
   localMailList: string[] = [];
   newMailList: string[] = [];
-  uidlData: any;
+  protected uidlData: string[];
   sizeList: string[] = [];
 
   totalNew: number;
 
+  currentMailIndex = 0;
+
   /**
    * 识别新邮件
    */
-  tellIt(): void {
+  tellIt(uidlData: string[], startIndex = 1): void {
+    this.uidlData = uidlData;
     this.newMailList = _.difference(this.uidlData, this.localMailList).splice(
-      1,
+      startIndex,
     );
     this.totalNew = this.newMailList.length;
+    this.currentMailIndex = 0;
   }
 
   getUidl(msg: string): string {

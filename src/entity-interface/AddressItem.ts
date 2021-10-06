@@ -1,6 +1,6 @@
 
 export interface AddressItem  {
   name?: string;
-  address?: string;
-  group?: any[];
+  address: string;
+  group: any[];
 }

@@ -1,9 +1,5 @@
+import { Injectable } from '@nestjs/common';
 import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
-import {
-  EmailAddress,
-  EntityEmailAddress,
-} from 'src/entity-interface/EmailAddress';
-import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import {
@@ -13,99 +9,71 @@ import {
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
+import { decypt } from 'src/util/cropt-js';
 import { getExt } from 'src/util/get-ext';
-import { MailerEvent, MailerEventType } from '../mailer.event';
-import { JobOwner } from './job-owner';
-import { MailTeller } from './mail-teller';
+import { CRYPTO_KEY } from './consts';
+import { MailerClientsPool } from './mailer.clients-pool';
+import { MailMessage } from './mailer.mail-message';
+const nodemailer = require('nodemailer');
 
-export interface IJob {
-  jobOwner: JobOwner;
+@Injectable()
+export class SendService {
+  constructor(
+    private readonly clientsPool: MailerClientsPool,
+    protected readonly storageService: StorageService,
+    protected readonly typeOrmService: TypeOrmService,
+  ) {}
 
-  start(): void;
-  abort(): void;
-  continue(): void;
-}
+  async sendMessage(message: MailMessage) {
+    const mailConfig = await this.typeOrmService
+      .getRepository<MailConfig>(EntityMailConfig)
+      .findOne(message.fromConfigId);
+    if (!mailConfig?.smtp) {
+      throw Error('Can not find mail stmp config by id');
+    }
+    //const mailFileName = await this.compileAndSaveMessage(message);
+    const option = {
+      host: mailConfig.smtp.host,
+      port: mailConfig.smtp.port,
+      secure: mailConfig.smtp.useSSL, // true for 465, false for other ports
+      //service: 'Hotmail',
+      //secureConnection: false, // use SSL
+      requiresAuth: mailConfig.smtp.requiresAuth,
+      ignoreTLS: !mailConfig.smtp.requireTLS || false,
+      requireTLS: mailConfig.smtp.requireTLS || false,
+      auth: {
+        user: mailConfig.smtp.account,
+        pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
+      },
+    };
+    const transporter = nodemailer.createTransport(option);
 
-export abstract class Job implements IJob {
-  jobOwner: JobOwner;
-  protected mailTeller = new MailTeller();
-  protected mailAddress: string;
-  protected isError = false;
-  protected eventName = '';
-  protected readonly typeOrmService: TypeOrmService;
-  protected readonly storageService: StorageService;
-  protected readonly accountId: number;
-  protected isAborted = false;
+    console.log('哈哈', option, message.to[0]);
 
-  constructor(enventName: string) {
-    this.eventName = enventName;
-  }
+    try {
+      // send mail with defined transport object
+      const info = await transporter.sendMail({
+        from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
+        to: message.to, // list of receivers
+        cc: message.cc,
+        bcc: message.bcc,
+        subject: message.subject, // Subject line
+        text: message.text, // plain text body
+        html: message.html, // html body
+      });
 
-  checkAbort() {
-    if (this.isAborted) {
-      this.jobOwner.finishJob();
+      console.log('Message sent: %s', info.messageId);
+      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+      // Preview only available when sending through an Ethereal account
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  emit(event: MailerEvent): void {
-    event.name = this.eventName;
-    this.jobOwner.emit(event);
-  }
-
-  error(message: string) {
-    this.emit({
-      type: MailerEventType.error,
-      message: message,
-    });
-    this.isError = true;
-  }
-
-  start(): void {
-    this.emit({
-      type: MailerEventType.checkStorage,
-      message: 'Check storage',
-    });
-
-    this.storageService
-      .checkAndCreateBucket(BUCKET_MAILS)
-      .then(() => {
-        this.readLocalMailList();
-      })
-      .catch((error) => {
-        console.error(error);
-        this.error('Storage error:' + error);
-      });
-  }
-
-  readLocalMailList(): void {
-    this.emit({
-      type: MailerEventType.readLocalMailList,
-      message: 'Read local mail list',
-    });
-
-    const repository =
-      this.typeOrmService.getRepository<MailIdentifier>(EntityMailIdentifier);
-    repository
-      .find({
-        select: ['uidl'],
-        where: { mailAddress: this.mailAddress },
-      })
-      .then((data) => {
-        this.mailTeller.localMailList = data.map((mail) => mail.uidl);
-        this.receive();
-      })
-      .catch((error) => {
-        console.error(error);
-        this.error('Read local mail list error:' + error);
-      });
-  }
-
-  async saveMailToStorage(uidl: string, data: any, mailBox: MailBoxType) {
-    const fileName = this.getMailFileName(uidl, mailBox);
-    await this.storageService.putFileData(fileName, data, BUCKET_MAILS);
-  }
-
-  async saveMailToDatabase(
+  /*async saveMailToDatabase(
     uidl: string,
     passedMail: any,
     mailBox: MailBoxType,
@@ -143,15 +111,6 @@ export abstract class Job implements IJob {
 
     let fromOldCustomer = false;
     const fromAddress = passedMail.from?.value[0]?.address;
-    fromOldCustomer = !!(await this.typeOrmService
-      .getRepository<MailConfig>(EntityMailConfig)
-      .findOne({ address: fromAddress }));
-
-    if (!fromOldCustomer) {
-      fromOldCustomer = !!(await this.typeOrmService
-        .getRepository<EmailAddress>(EntityEmailAddress)
-        .findOne({ address: fromAddress }));
-    }
 
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
@@ -188,13 +147,9 @@ export abstract class Job implements IJob {
       });
   }
 
-  continue(): void {
-    this.start();
-  }
-
   private getMailFileName(uidl: string, mailBox: MailBoxType) {
     return `${this.mailAddress}/${mailBox}/${uidl}.eml`;
   }
-  abstract receive(): void;
-  abstract abort(): void;
+
+  */
 }

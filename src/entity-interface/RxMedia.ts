@@ -4,7 +4,7 @@ import { Attachment } from './Attachment';
 import { RxMediaType } from './RxMediaType';
 
 export const EntityRxMedia = 'RxMedia';
-export interface RxMedia {
+export interface RxMedia  {
   id?: number;
   name: string;
   mimetype?: string;
@@ -13,7 +13,7 @@ export interface RxMedia {
   size?: number;
   updatedAt?: Date;
   createdAt?: Date;
-  mediaType: RxMediaType;
+  mediaType?: RxMediaType;
   avatarOfUser?: RxUser;
   user?: RxUser;
   fileOfAttachment?: Attachment;

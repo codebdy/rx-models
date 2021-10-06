@@ -1,8 +1,8 @@
 import { MailerEvent } from '../mailer.event';
-import { Job } from './job';
+import { IJob } from './job';
 
 export interface JobOwner {
-  nextJob(): Job;
+  nextJob(): IJob;
   finishJob(): void;
   emit(event: MailerEvent): void;
 }

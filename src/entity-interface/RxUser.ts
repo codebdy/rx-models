@@ -3,24 +3,28 @@ import { RxMedia } from './RxMedia';
 import { RxMediaFolder } from './RxMediaFolder';
 import { MailConfig } from './MailConfig';
 import { Mail } from './Mail';
+import { MailLabel } from './MailLabel';
+import { RxDepartment } from './RxDepartment';
+import { RxUserStatus } from './RxUserStatus';
 
 export const EntityRxUser = 'RxUser';
-
 export interface RxUser {
   id?: number;
-  name?: string;
-  loginName?: string;
+  name: string;
+  loginName: string;
   email?: string;
-  password?: string;
+  password: string;
   isSupper?: boolean;
   isDemo?: boolean;
-  status?: string;
+  status?: RxUserStatus;
   createdAt?: Date;
   updatedAt?: Date;
+  belongsToDeparments?: RxDepartment[];
   roles?: RxRole[];
-  medias?: RxMedia[];
-  mediaFolders?: RxMediaFolder[];
   avatar?: RxMedia;
+  mediaFolders?: RxMediaFolder[];
+  medias?: RxMedia[];
   mailConfigs?: MailConfig[];
   mails?: Mail[];
+  mailLabels?: MailLabel[];
 }

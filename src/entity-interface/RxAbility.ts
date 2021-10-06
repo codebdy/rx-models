@@ -2,13 +2,12 @@ import { RxRole } from './RxRole';
 
 
 export const EntityRxAbility = 'RxAbility';
-
-export interface RxAbility {
+export interface RxAbility  {
   id?: number;
-  entityUuid?: string;
+  entityUuid: string;
   columnUuid?: string;
-  can?: boolean;
+  can: boolean;
   expression?: string;
-  abilityType?: string;
+  abilityType: string;
   role?: RxRole;
 }

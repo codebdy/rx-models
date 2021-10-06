@@ -8,9 +8,10 @@ import { PlatformTools } from 'typeorm/platform/PlatformTools';
 import * as bcrypt from 'bcrypt';
 import { InstallData } from './install.data';
 import * as packagesFromJson from './install.seed.json';
-import { PackageMeta } from 'src/schema/graph-meta-interface/package-meta';
+import { RxPackage } from 'src/entity-interface/RxPackage';
+import { RxUserStatus } from 'src/entity-interface/RxUserStatus';
 
-const packageSeed = packagesFromJson as PackageMeta;
+const packageSeed = packagesFromJson as RxPackage;
 
 export const CONNECTION_WITH_SCHEMA_NAME = 'withSchema';
 
@@ -52,7 +53,7 @@ export class InstallService {
       loginName: data.admin,
       password: await bcrypt.hash(data.adminPassword, SALT_OR_ROUNDS),
       isSupper: true,
-      status: 'NORMAL',
+      status: RxUserStatus.NORMAL,
     });
 
     //创建演示账号
@@ -62,7 +63,7 @@ export class InstallService {
         loginName: 'demo',
         password: await bcrypt.hash('demo', SALT_OR_ROUNDS),
         isDemo: true,
-        status: 'NORMAL',
+        status: RxUserStatus.NORMAL,
       });
     }
 

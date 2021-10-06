@@ -1,7 +1,14 @@
 export enum MailBoxType {
-  INBOX = 'inbox',
-  DRAFT = 'draft',
-  SENT = 'sent',
-  DELETEED = 'deleted',
-  SPAM = 'spam',
+  INBOX = 'Inbox',
+
+  DRAFT = 'Draft',
+
+  SENT = 'Sent',
+
+  DELETEED = 'Deleted',
+
+  JUNK = 'Junk',
+
+  OUTBOX = 'Outbox',
+
 }

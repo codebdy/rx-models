@@ -30,6 +30,7 @@ export class QueryEntityPaginateDirective extends QueryDirective {
       'Too few pagination parmas',
     );
     qb.skip(this.pageSize * this.pageIndex).take(this.pageSize);
+    this.rootMeta.maxCount = this.pageSize;
     return qb;
   }
 

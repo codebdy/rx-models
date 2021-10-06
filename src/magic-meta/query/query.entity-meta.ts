@@ -24,6 +24,8 @@ export class QueryEntityMeta {
   //关联条件，如user.id
   relationConditions: JsonUnit[] = [];
 
+  maxCount?: number;
+
   constructor() {
     this.id = createId();
   }

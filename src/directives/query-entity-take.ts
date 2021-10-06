@@ -21,6 +21,7 @@ export class QueryEntityTakeDirective extends QueryDirective {
 
   addToQueryBuilder(qb: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
     qb.take(this.count);
+    this.rootMeta.maxCount = this.count;
     return qb;
   }
 }

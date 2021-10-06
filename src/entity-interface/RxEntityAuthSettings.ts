@@ -1,7 +1,7 @@
-export const EntityRxEntityAuthSettings = 'RxEntityAuthSettings';
 
-export interface RxEntityAuthSettings {
+export const EntityRxEntityAuthSettings = 'RxEntityAuthSettings';
+export interface RxEntityAuthSettings  {
   id?: number;
-  entityUuid?: string;
+  entityUuid: string;
   expand?: boolean;
 }
