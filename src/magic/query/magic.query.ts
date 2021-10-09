@@ -64,7 +64,7 @@ export class MagicQuery {
       }
     }
 
-    console.debug('SQL:', qb.getSql());
+    //console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
     const result =
       meta.fetchString === TOKEN_GET_MANY

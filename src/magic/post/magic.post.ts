@@ -40,7 +40,6 @@ export class MagicPost {
         this.entityManager,
       );
     }
-
     return savedEntites;
   }
 

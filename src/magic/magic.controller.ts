@@ -97,10 +97,10 @@ export class MagicController {
   @Get('get/:jsonStr?')
   async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
-      console.debug('JSON QUERY String', jsonStr);
       this.baseService.setHost('//' + req.headers.host);
       await sleep(500);
       let result: QueryResult;
+      console.time(jsonStr);
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
           const entityService = this.createEntityService(
@@ -110,6 +110,7 @@ export class MagicController {
           result = await entityService.query(JSON.parse(jsonStr || '{}'));
         },
       );
+      console.timeEnd(jsonStr);
       return result;
     } catch (error: any) {
       console.error('getEntities error:', error);
