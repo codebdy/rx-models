@@ -158,7 +158,17 @@ export class MagicPost {
       await directive.afterSaveInstance(inststance, filterdInstanceMeta.entity);
     }
 
-    return inststance;
+    //过滤数据，只返回提供的字段
+    const filteredInstance = {} as any;
+    filteredInstance['id'] = inststance['id'];
+    for (const key in instanceMeta) {
+      filteredInstance[key] = inststance[key];
+    }
+    for (const key in relations) {
+      filteredInstance[key] = inststance[key];
+    }
+
+    return filteredInstance;
   }
 
   private async validateUpdate(instanceMeta: InstanceMeta) {
