@@ -163,6 +163,10 @@ export class MagicPost {
     for (const key in instanceMeta.meta) {
       filteredInstance[key] = inststance[key];
     }
+    for (const key in instanceMeta.relations) {
+      filteredInstance[key] = inststance[key];
+    }
+
     return filteredInstance;
   }
 
