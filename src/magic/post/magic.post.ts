@@ -160,14 +160,9 @@ export class MagicPost {
 
     //过滤数据，只返回提供的字段
     const filteredInstance = {} as any;
-    filteredInstance['id'] = inststance['id'];
-    for (const key in instanceMeta) {
+    for (const key in instanceMeta.meta) {
       filteredInstance[key] = inststance[key];
     }
-    for (const key in relations) {
-      filteredInstance[key] = inststance[key];
-    }
-
     return filteredInstance;
   }
 
