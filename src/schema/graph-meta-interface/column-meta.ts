@@ -19,6 +19,9 @@ export interface ColumnMeta {
    * Specifies if column's value must be unique or not.
    */
   unique?: boolean;
+
+  index?: boolean;
+
   /**
    * Column comment.
    */

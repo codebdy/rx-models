@@ -262,6 +262,13 @@ export class SchemaService {
         name: entityMeta.name,
         columns: columns,
         relations: relations,
+        indices: entityMeta.columns
+          ?.filter((column) => column.index)
+          .map((column) => {
+            return {
+              columns: [column.name],
+            };
+          }),
       };
 
       this._entitySchemas.push(entitySchemaOption);
