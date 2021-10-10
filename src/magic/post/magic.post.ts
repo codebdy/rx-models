@@ -8,6 +8,7 @@ import { EntityManager } from 'typeorm';
 import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
 import { AbilityType } from 'src/entity-interface/AbilityType';
+import { MailerSendService } from 'src/mailer/mailer.send-service';
 
 export class MagicPost {
   constructor(
@@ -16,6 +17,7 @@ export class MagicPost {
     private readonly postDirectiveService: PostDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
+    protected readonly mailerSendService: MailerSendService,
   ) {}
 
   async post(json: any) {
@@ -25,6 +27,7 @@ export class MagicPost {
       this.schemaService,
       this.magicService,
       this.abilityService,
+      this.mailerSendService,
     ).parse(json);
 
     if (instances.length === 0) {

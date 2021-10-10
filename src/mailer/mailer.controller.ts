@@ -13,11 +13,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { sleep } from 'src/util/sleep';
 import { CRYPTO_KEY } from './consts';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { SendService } from './mailer.send-service';
+import { MailerSendService } from './mailer.send-service';
 
 @Controller('mailer')
 export class MailerController {
-  constructor(private readonly sendService: SendService) {}
+  constructor(private readonly sendService: MailerSendService) {}
 
   /**
    * @returns 用户给邮件password字段加密的KEY

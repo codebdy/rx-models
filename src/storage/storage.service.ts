@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { AliyunConfig } from 'src/entity-interface/AliyunConfig';
 import { EntityRxConfig, RxConfig } from 'src/entity-interface/RxConfig';
 import { RxStorageType } from 'src/entity-interface/RxStorageType';
@@ -17,6 +17,7 @@ export class StorageService implements OnModuleInit {
   private storageClient: StorageClient;
   private storageType: RxStorageType = RxStorageType.Disk;
   constructor(
+    @Inject(forwardRef(() => TypeOrmService))
     private readonly typeOrmService: TypeOrmService,
     private readonly baseService: RxBaseService,
   ) {

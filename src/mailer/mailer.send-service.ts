@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Attachment, EntityAttachment } from 'src/entity-interface/Attachment';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
@@ -17,10 +17,11 @@ import { MailMessage } from './mailer.mail-message';
 const nodemailer = require('nodemailer');
 
 @Injectable()
-export class SendService {
+export class MailerSendService {
   constructor(
     private readonly clientsPool: MailerClientsPool,
     protected readonly storageService: StorageService,
+    @Inject(forwardRef(() => TypeOrmService))
     protected readonly typeOrmService: TypeOrmService,
   ) {}
 

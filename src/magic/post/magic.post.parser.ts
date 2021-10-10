@@ -5,6 +5,7 @@ import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
+import { MailerSendService } from 'src/mailer/mailer.send-service';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { AbilityService } from '../ability.service';
@@ -16,6 +17,7 @@ export class MagicPostParser {
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     private readonly abilityService: AbilityService,
+    protected readonly mailerSendService: MailerSendService,
   ) {}
 
   async parse(json: any) {
@@ -68,7 +70,11 @@ export class MagicPostParser {
         directiveMeta.name,
       );
       instanceCollection.directives.push(
-        new directiveClass(directiveMeta, this.magicService),
+        new directiveClass(
+          directiveMeta,
+          this.magicService,
+          this.mailerSendService,
+        ),
       );
     });
     return instanceCollection;
@@ -151,7 +157,11 @@ export class MagicPostParser {
       const directiveClass =
         this.directiveService.findRelationDirectiveOrFailed(directiveMeta.name);
       relationMetaCollection.directives.push(
-        new directiveClass(directiveMeta, this.magicService),
+        new directiveClass(
+          directiveMeta,
+          this.magicService,
+          this.mailerSendService,
+        ),
       );
     });
 
