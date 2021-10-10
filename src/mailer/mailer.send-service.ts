@@ -25,10 +25,13 @@ export class MailerSendService {
     protected readonly typeOrmService: TypeOrmService,
   ) {}
 
-  async sendMails(ids?: number[]) {
+  //注意，这是一个非异步函数
+  sendMails(ids?: number[]) {
     if (!ids) {
       return;
     }
+
+    console.log('哈哈 发送邮件', ids);
   }
 
   async sendMessage(message: MailMessage) {

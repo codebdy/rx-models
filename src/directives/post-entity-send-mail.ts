@@ -29,6 +29,6 @@ export class PostEntitySendMailDirective extends PostDirective {
       mailIds = savedInstances?.map((instance) => instance.id);
     }
 
-    await this.mailerSendService.sendMails(mailIds);
+    this.mailerSendService.sendMails(mailIds);
   }
 }
