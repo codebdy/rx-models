@@ -4,7 +4,7 @@ import { EntityMail } from 'src/entity-interface/Mail';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 
 export class PostEntitySendMailDirective extends PostDirective {
-  static description = `发送邮件，格式sendMail(id?)`;
+  static description = `发送邮件，格式sendMail(ids?:number[])`;
 
   static version = '1.0';
 
