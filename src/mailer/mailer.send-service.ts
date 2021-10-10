@@ -25,6 +25,12 @@ export class MailerSendService {
     protected readonly typeOrmService: TypeOrmService,
   ) {}
 
+  async sendMails(ids?: number[]) {
+    if (!ids) {
+      return;
+    }
+  }
+
   async sendMessage(message: MailMessage) {
     const mailConfig = await this.typeOrmService
       .getRepository<MailConfig>(EntityMailConfig)
