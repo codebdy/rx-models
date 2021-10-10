@@ -170,9 +170,6 @@ export class MagicPost {
     for (const key in instanceMeta.relations) {
       filteredInstance[key] = inststance[key];
     }
-
-    console.log(filteredInstance, instanceMeta);
-
     return filteredInstance;
   }
 
