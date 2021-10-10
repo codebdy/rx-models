@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     try {
-      console.debug('JwtStrategy payload', payload);
+      //console.debug('JwtStrategy payload', payload);
       const userId = payload.sub;
       const user = await this.typeormSerivce
         .getRepository('RxUser')
