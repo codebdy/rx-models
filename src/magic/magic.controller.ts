@@ -115,7 +115,8 @@ export class MagicController {
       console.timeEnd(jsonStr);
       return result;
     } catch (error: any) {
-      console.error('getEntities error:', error);
+      console.error('getEntities error', error);
+      console.debug('出错JSON:', jsonStr);
       throw new HttpException(
         {
           status: 500,

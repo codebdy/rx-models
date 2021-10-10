@@ -11,4 +11,6 @@ export enum MailBoxType {
 
   OUTBOX = 'Outbox',
 
+  ERROR = 'Error',
+
 }

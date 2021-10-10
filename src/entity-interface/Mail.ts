@@ -1,11 +1,11 @@
 import { Attachment } from './Attachment';
 import { MailIdentifier } from './MailIdentifier';
+import { DraftAttachment } from './DraftAttachment';
 import { RxUser } from './RxUser';
 import { MailLabel } from './MailLabel';
 import { MailBoxType } from './MailBoxType';
-import { MailStatus } from './MailStatus';
+import { SendStatus } from './SendStatus';
 import { AddressObject } from './AddressObject';
-
 
 export const EntityMail = 'Mail';
 export interface Mail  {
@@ -25,7 +25,6 @@ export interface Mail  {
   textAsHtml?: string;
   priority?: string;
   inMailBox: MailBoxType;
-  finished?: boolean;
   showAsOriginal?: boolean;
   fromAddress?: string;
   seen?: boolean;
@@ -37,11 +36,14 @@ export interface Mail  {
   inMailBoxBeforeDelete?: MailBoxType;
   scheduleSendDate?: Date;
   isSeparateSend?: boolean;
-  status?: MailStatus;
-  sendErrorMessage?: string;
+  sendStatus?: SendStatus;
+  sendErrorMessage?: any[];
   fromConfigId?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];
   identifier?: MailIdentifier;
+  draftAttachments?: DraftAttachment[];
 }
