@@ -23,7 +23,7 @@ export class AbilityService {
 
   async getEntityQueryAbilities(entityUuid: string) {
     const user = this.me;
-    console.debug('Read权限筛查用户：', user.name);
+    //console.debug('Read权限筛查用户：', user.name);
     this.loginCheck(user);
     if (user.isSupper || user.isDemo) {
       return [];
