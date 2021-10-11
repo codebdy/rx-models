@@ -43,9 +43,8 @@ export class MagicQuery {
       qb,
       this.magicService.me,
     );
-
+    totalCount = await qb.getCount();
     if (meta.fetchString === TOKEN_COUNT) {
-      totalCount = await qb.getCount();
       return { totalCount, data: [] };
     }
 
