@@ -6,6 +6,18 @@ import { QueryEntityMeta } from './query.entity-meta';
 const SqlWhereParser = require('sql-where-parser');
 const OPERATOR_UNARY_MINUS = Symbol('-');
 
+const converValue = (value: any) => {
+  if (typeof value == 'string') {
+    if (value.toLowerCase() === 'false') {
+      return false;
+    }
+    if (value.toLowerCase() === 'true') {
+      return true;
+    }
+  }
+  return value;
+};
+
 export function parseWhereSql(
   sql: string,
   ownerMeta: QueryEntityMeta,
@@ -60,7 +72,7 @@ export function parseWhereSql(
           const [, columnStr] = (operands[1] as string)?.split('.');
           params[paramName] = me[columnStr];
         } else {
-          params[paramName] = operands[1];
+          params[paramName] = converValue(operands[1]);
         }
 
         if (operatorValue === 'IN') {
