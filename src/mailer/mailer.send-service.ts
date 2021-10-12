@@ -14,12 +14,13 @@ import { getExt } from 'src/util/get-ext';
 import { CRYPTO_KEY } from './consts';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { MailMessage } from './mailer.mail-message';
+import { MailerReceiveTasksPool } from './receive/receive-tasks-pool';
 const nodemailer = require('nodemailer');
 
 @Injectable()
 export class MailerSendService {
   constructor(
-    private readonly clientsPool: MailerClientsPool,
+    private readonly tasksPool: MailerReceiveTasksPool,
     protected readonly storageService: StorageService,
     @Inject(forwardRef(() => TypeOrmService))
     protected readonly typeOrmService: TypeOrmService,

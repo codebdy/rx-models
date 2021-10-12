@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
@@ -11,6 +11,7 @@ export class MailerReceiveTasksPool implements IReceiveTasksPool {
   private pool = new Map<number, ReceiveTask>();
 
   constructor(
+    @Inject(forwardRef(() => TypeOrmService))
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
