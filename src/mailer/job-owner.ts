@@ -1,5 +1,5 @@
-import { MailerEvent } from '../mailer.event';
 import { IJob } from './job';
+import { MailerEvent } from './mailer.event';
 
 export interface JobOwner {
   nextJob(): IJob;

@@ -2,35 +2,34 @@ import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
+import { IJob } from '../job';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
-import { IReceiveTasksPool } from './i-receive-tasks-pool';
-import { IJob } from '../job';
-import { MailAddressJob } from './mail-address-job';
-import { JobOwner } from '../job-owner';
+import { ISendTasksPool } from './i-send-tasks-pool';
 
-export class ReceiveTask implements JobOwner {
+export class SendTask {
   lastEvent?: MailerEvent;
   private currentJob: IJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
-    private readonly tasksPool: IReceiveTasksPool,
+    private readonly tasksPool: ISendTasksPool,
     private readonly accountId: number,
     private configs: MailConfig[],
   ) {}
 
-  nextJob() {
+  nextJob(): IJob | undefined {
     if (this.configs.length > 0) {
-      this.currentJob = new MailAddressJob(
+      /*this.currentJob = new MailAddressJob(
         this.typeOrmService,
         this.storageService,
         this.configs.pop(),
         this,
         this.accountId,
       );
-      return this.currentJob;
+      return this.currentJob;*/
+      return undefined;
     } else {
       //结束任务
       this.tasksPool.removeTask(this.accountId);

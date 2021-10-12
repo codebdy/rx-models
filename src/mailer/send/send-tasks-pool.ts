@@ -3,12 +3,12 @@ import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerClientsPool } from '../mailer.clients-pool';
-import { ReceiveTask } from './receive-task';
-import { IReceiveTasksPool } from './i-receive-tasks-pool';
+import { SendTask } from './send-task';
+import { ISendTasksPool } from './i-send-tasks-pool';
 
 @Injectable()
-export class MailerReceiveTasksPool implements IReceiveTasksPool {
-  private pool = new Map<number, ReceiveTask>();
+export class MailerSendTasksPool implements ISendTasksPool {
+  private pool = new Map<number, SendTask>();
 
   constructor(
     private readonly typeOrmService: TypeOrmService,
@@ -19,7 +19,7 @@ export class MailerReceiveTasksPool implements IReceiveTasksPool {
   createTask(accountId: number, configs: MailConfig[]) {
     let task = this.pool.get(accountId);
     if (!task) {
-      task = new ReceiveTask(
+      task = new SendTask(
         this.typeOrmService,
         this.storageService,
         this.clientsPool,

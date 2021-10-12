@@ -1,7 +1,6 @@
-import { ReceiveTask } from './receive/receive-task';
+import { ReceiveTask } from './receive-task';
 
-
-export interface TasksPool {
+export interface IReceiveTasksPool {
   getTask(accountId: number): ReceiveTask;
   removeTask(accountId: number): void;
 }

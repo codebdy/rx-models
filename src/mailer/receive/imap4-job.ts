@@ -7,8 +7,8 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
 import { MailerEventType } from '../mailer.event';
-import { Job } from './job';
-import { JobOwner } from './job-owner';
+import { Job } from '../job';
+import { JobOwner } from '../job-owner';
 
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
