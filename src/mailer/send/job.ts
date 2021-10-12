@@ -14,17 +14,10 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
-import { MailerEvent, MailerEventType } from './mailer.event';
-import { JobOwner } from './job-owner';
-import { MailTeller } from './receive/mail-teller';
-
-export interface IJob {
-  jobOwner: JobOwner;
-
-  start(): void;
-  abort(): void;
-  continue(): void;
-}
+import { MailerEvent, MailerEventType } from '../mailer.event';
+import { JobOwner } from '../job/job-owner';
+import { MailTeller } from '../receive/mail-teller';
+import { IJob } from '../job/i-job';
 
 export abstract class Job implements IJob {
   jobOwner: JobOwner;

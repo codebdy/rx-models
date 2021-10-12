@@ -3,9 +3,9 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { MailerEvent } from '../mailer.event';
 import { Imap4Job } from './imap4-job';
-import { IJob } from '../job';
+import { IJob } from "../job/i-job";
 import { Pop3Job } from './pop3-job';
-import { JobOwner } from '../job-owner';
+import { JobOwner } from '../job/job-owner';
 
 export class MailAddressJob implements IJob, JobOwner {
   private jobs: IJob[] = [];

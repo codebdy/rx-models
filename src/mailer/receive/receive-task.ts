@@ -5,9 +5,9 @@ import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { IReceiveTasksPool } from './i-receive-tasks-pool';
-import { IJob } from '../job';
+import { IJob } from "../job/i-job";
 import { MailAddressJob } from './mail-address-job';
-import { JobOwner } from '../job-owner';
+import { JobOwner } from '../job/job-owner';
 
 export class ReceiveTask implements JobOwner {
   lastEvent?: MailerEvent;

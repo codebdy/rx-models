@@ -2,7 +2,7 @@ import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
-import { IJob } from '../job';
+import { IJob } from '../job/i-job';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { ISendTasksPool } from './i-send-tasks-pool';
