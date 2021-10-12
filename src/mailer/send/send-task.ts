@@ -3,11 +3,12 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { IJob } from '../job/i-job';
+import { JobOwner } from '../job/job-owner';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { ISendTasksPool } from './i-send-tasks-pool';
 
-export class SendTask {
+export class SendTask implements JobOwner {
   lastEvent?: MailerEvent;
   private currentJob: IJob;
   constructor(
