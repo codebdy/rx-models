@@ -34,6 +34,7 @@ export class MailerSendService {
     console.log('哈哈 发送邮件', ids);
   }
 
+
   async sendMessage(message: MailMessage) {
     const mailConfig = await this.typeOrmService
       .getRepository<MailConfig>(EntityMailConfig)

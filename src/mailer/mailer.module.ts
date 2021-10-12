@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { MailerController } from './mailer.controller';
 import { MailerGateway } from './mailer.gateway';
-import { MailerReceiveTasksPool } from './mailer.receive-tasks-pool';
+import { MailerReceiveTasksPool } from './receive/receive-tasks-pool';
 import { MailerSendService } from './mailer.send-service';
 
 @Module({

@@ -2,13 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { MailerClientsPool } from './mailer.clients-pool';
-import { ReceiveTask } from './receive-task/receive-task';
-
-export interface TasksPool {
-  getTask(accountId: number): ReceiveTask;
-  removeTask(accountId: number): void;
-}
+import { MailerClientsPool } from '../mailer.clients-pool';
+import { ReceiveTask } from './receive-task';
+import { TasksPool } from '../tasks-pool';
 
 @Injectable()
 export class MailerReceiveTasksPool implements TasksPool {

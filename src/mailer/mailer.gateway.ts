@@ -14,7 +14,7 @@ import {
   EVENT_CONTINUE_RECEIVE,
 } from './consts';
 import { MailerClientsPool } from './mailer.clients-pool';
-import { MailerReceiveTasksPool } from './mailer.receive-tasks-pool';
+import { MailerReceiveTasksPool } from './receive/receive-tasks-pool';
 
 @WebSocketGateway({ namespace: CHANNEL_MAILER })
 export class MailerGateway {

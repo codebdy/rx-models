@@ -4,7 +4,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
-import { TasksPool } from '../mailer.receive-tasks-pool';
+import { TasksPool } from '../tasks-pool';
 import { IJob } from './job';
 import { JobOwner } from './job-owner';
 import { MailAddressJob } from './mail-address-job';
