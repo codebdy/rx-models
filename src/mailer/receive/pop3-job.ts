@@ -3,7 +3,7 @@ import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
 import { MailerEventType } from '../mailer.event';
-import { Job } from '../send/job';
+import { ReceiveJob } from './receive-job';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
@@ -12,7 +12,7 @@ import { JobOwner } from '../job/job-owner';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
-export class Pop3Job extends Job {
+export class Pop3Job extends ReceiveJob {
   private readonly logger = new Logger('Mailer');
 
   private client: any;

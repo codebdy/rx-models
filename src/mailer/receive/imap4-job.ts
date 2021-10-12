@@ -7,7 +7,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
 import { MailerEventType } from '../mailer.event';
-import { Job } from '../send/job';
+import { ReceiveJob } from './receive-job';
 import { JobOwner } from '../job/job-owner';
 
 const Imap = require('imap');
@@ -43,7 +43,7 @@ function getMailTargetBox(imap4Folder: { value: string; label: string }) {
   }
 }
 
-export class Imap4Job extends Job {
+export class Imap4Job extends ReceiveJob {
   private client: any;
   private results: string[] = [];
   private mailBoxes: string[] = [];

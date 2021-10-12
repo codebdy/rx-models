@@ -16,10 +16,10 @@ import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { JobOwner } from '../job/job-owner';
-import { MailTeller } from '../receive/mail-teller';
+import { MailTeller } from './mail-teller';
 import { IJob } from '../job/i-job';
 
-export abstract class Job implements IJob {
+export abstract class ReceiveJob implements IJob {
   jobOwner: JobOwner;
   protected mailTeller = new MailTeller();
   protected mailAddress: string;
