@@ -6,8 +6,8 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { CRYPTO_KEY } from '../consts';
 import { IJob } from '../job/i-job';
 import { JobOwner } from '../job/job-owner';
-import { MailMessage } from '../mailer.mail-message';
 import { decypt } from 'src/util/cropt-js';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
 enum SendStatus {
@@ -22,30 +22,34 @@ type AddressItemWithStatus = AddressItem & {
 export class SendJob implements IJob {
   private aborted = false;
   constructor(
-    public readonly jobOwner: JobOwner,
     protected readonly typeOrmService: TypeOrmService,
     protected readonly storageService: StorageService,
-    protected readonly mailAddress: string,
+    public readonly jobOwner: JobOwner,
     private readonly mail: Mail,
   ) {}
 
-  start(): void {
-    throw new Error('Method not implemented.');
+  async start() {
+    const mailConfig = await this.typeOrmService
+      .getRepository<MailConfig>(EntityMailConfig)
+      .findOne(this.mail.fromConfigId);
+    if (!mailConfig?.smtp) {
+      throw Error('Can not find mail stmp config by id');
+    }
+
+    if (!this.mail.isSeparateSend) {
+      this.sendMessage(this.mail, mailConfig);
+    }
   }
+
   abort(): void {
     this.aborted = true;
   }
+
   continue(): void {
     throw new Error('Method not implemented.');
   }
 
-  private async sendMessage(message: MailMessage) {
-    const mailConfig = await this.typeOrmService
-      .getRepository<MailConfig>(EntityMailConfig)
-      .findOne(message.fromConfigId);
-    if (!mailConfig?.smtp) {
-      throw Error('Can not find mail stmp config by id');
-    }
+  private async sendMessage(message: Mail, mailConfig: MailConfig) {
     //const mailFileName = await this.compileAndSaveMessage(message);
     const option = {
       host: mailConfig.smtp.host,

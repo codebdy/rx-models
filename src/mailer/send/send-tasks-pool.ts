@@ -17,7 +17,7 @@ export class MailerSendTasksPool implements ISendTasksPool {
     private readonly clientsPool: MailerClientsPool,
   ) {}
 
-  createTask(mail: Mail) {
+  async createTask(mail: Mail) {
     let task = this.pool.get(mail.owner.id);
     if (!task) {
       task = new SendTask(
@@ -29,7 +29,7 @@ export class MailerSendTasksPool implements ISendTasksPool {
         [mail],
       );
       this.pool.set(mail.owner.id, task);
-      task.start();
+      await task.start();
     } else {
       task.addMail(mail);
     }

@@ -28,7 +28,7 @@ export class MailerSendService {
       .getMany();
 
     for (const mail of mails) {
-      this.tasksPool.createTask(mail);
+      await this.tasksPool.createTask(mail);
     }
   }
 }

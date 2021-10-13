@@ -7,6 +7,7 @@ import { JobOwner } from '../job/job-owner';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
 import { ISendTasksPool } from './i-send-tasks-pool';
+import { SendJob } from './send-job';
 
 export class SendTask implements JobOwner {
   lastEvent?: MailerEvent;
@@ -23,15 +24,13 @@ export class SendTask implements JobOwner {
 
   nextJob(): IJob | undefined {
     if (this.mails.length) {
-      /*this.currentJob = new MailAddressJob(
+      this.currentJob = new SendJob(
         this.typeOrmService,
         this.storageService,
-        this.configs.pop(),
         this,
-        this.accountId,
+        this.mails.pop(),
       );
-      return this.currentJob;*/
-      return undefined;
+      return this.currentJob;
     } else {
       //结束任务
       this.tasksPool.removeTask(this.accountId);
@@ -51,8 +50,8 @@ export class SendTask implements JobOwner {
     this.mails.push(mail);
   }
 
-  start() {
-    this.nextJob()?.start();
+  async start() {
+    await this.nextJob()?.start();
   }
 
   emit(event: MailerEvent) {
