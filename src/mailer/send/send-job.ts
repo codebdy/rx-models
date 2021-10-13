@@ -73,7 +73,7 @@ export class SendJob implements IJob {
       // send mail with defined transport object
       const info = await transporter.sendMail({
         from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
-        to: message.to, // list of receivers
+        to: message.to?.value, // list of receivers
         cc: message.cc,
         bcc: message.bcc,
         subject: message.subject, // Subject line
