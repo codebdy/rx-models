@@ -1,7 +1,7 @@
 import { Mail } from 'src/entity-interface/Mail';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
+import { EVENT_MAIL_SEND_PROGRESS } from '../consts';
 import { IJob } from '../job/i-job';
 import { JobOwner } from '../job/job-owner';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
@@ -17,11 +17,12 @@ export class SendTask implements JobOwner {
     private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
     private readonly tasksPool: ISendTasksPool,
-    private readonly mail: Mail,
+    private readonly accountId: number,
+    private readonly mails: Mail[],
   ) {}
 
   nextJob(): IJob | undefined {
-    if (this.mail.id) {
+    if (this.mails.length) {
       /*this.currentJob = new MailAddressJob(
         this.typeOrmService,
         this.storageService,
@@ -33,7 +34,7 @@ export class SendTask implements JobOwner {
       return undefined;
     } else {
       //结束任务
-      this.tasksPool.removeTask(this.mail?.id);
+      this.tasksPool.removeTask(this.accountId);
       this.lastEvent = {
         type: MailerEventType.finished,
       };
@@ -46,6 +47,10 @@ export class SendTask implements JobOwner {
     this.nextJob()?.start();
   }
 
+  addMail(mail: Mail) {
+    this.mails.push(mail);
+  }
+
   start() {
     this.nextJob()?.start();
   }
@@ -56,7 +61,7 @@ export class SendTask implements JobOwner {
   }
 
   emitStatusEvent() {
-    const client = this.clientsPool.getByAccountId(this.mail.owner?.id);
+    const client = this.clientsPool.getByAccountId(this.accountId);
     if (client && client.socket.connected) {
       this.emitStatusToClient(client);
     }
@@ -64,7 +69,7 @@ export class SendTask implements JobOwner {
 
   emitStatusToClient(client: MailClient) {
     if (this.lastEvent) {
-      client.socket.emit(EVENT_MAIL_RECEIVE_PROGRESS, this.lastEvent);
+      client.socket.emit(EVENT_MAIL_SEND_PROGRESS, this.lastEvent);
     }
   }
 
@@ -73,7 +78,7 @@ export class SendTask implements JobOwner {
       this.lastEvent = {
         type: MailerEventType.aborted,
       };
-      this.tasksPool.removeTask(this.mail.id);
+      this.tasksPool.removeTask(this.accountId);
     } else {
       this.lastEvent = {
         type: MailerEventType.cancelling,

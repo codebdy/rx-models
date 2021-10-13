@@ -17,25 +17,28 @@ export class MailerSendTasksPool implements ISendTasksPool {
   ) {}
 
   createTask(mail: Mail) {
-    let task = this.pool.get(mail.id);
+    let task = this.pool.get(mail.owner.id);
     if (!task) {
       task = new SendTask(
         this.typeOrmService,
         this.storageService,
         this.clientsPool,
         this,
-        mail,
+        mail.owner.id,
+        [mail],
       );
-      this.pool.set(mail.id, task);
+      this.pool.set(mail.owner.id, task);
       task.start();
+    } else {
+      task.addMail(mail);
     }
   }
 
-  removeTask(mailId: number) {
-    this.pool.delete(mailId);
+  removeTask(accountId: number) {
+    this.pool.delete(accountId);
   }
 
-  getTask(mailId: number) {
-    return this.pool.get(mailId);
+  getTask(accountId: number) {
+    return this.pool.get(accountId);
   }
 }
