@@ -22,8 +22,8 @@ export class MailerSendService {
     const mails = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
       .createQueryBuilder('mail')
-      .leftJoinAndSelect('user.owner', 'owner')
-      .leftJoinAndSelect('user.draftAttachments', 'attachments')
+      .leftJoinAndSelect('mail.owner', 'owner')
+      .leftJoinAndSelect('mail.draftAttachments', 'attachments')
       .where('mail.id in (:...ids)', { ids: ids })
       .getMany();
 
