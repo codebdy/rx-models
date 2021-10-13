@@ -8,7 +8,7 @@ import { EntityManager } from 'typeorm';
 import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
 import { AbilityType } from 'src/entity-interface/AbilityType';
-import { MailerSendService } from 'src/mailer/mailer.send-service';
+import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 
 export class MagicPost {
   constructor(

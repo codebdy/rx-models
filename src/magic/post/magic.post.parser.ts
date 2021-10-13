@@ -5,7 +5,7 @@ import { MagicService } from 'src/magic-meta/magic.service';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { InstanceMetaCollection } from 'src/magic-meta/post/instance.meta.colletion';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
-import { MailerSendService } from 'src/mailer/mailer.send-service';
+import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { AbilityService } from '../ability.service';

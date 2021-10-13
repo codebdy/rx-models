@@ -32,7 +32,7 @@ import { RxMedia } from 'src/entity-interface/RxMedia';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { StorageService } from 'src/storage/storage.service';
 import { RxBaseService } from 'src/rxbase/rxbase.service';
-import { MailerSendService } from 'src/mailer/mailer.send-service';
+import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 
 @Controller()
 export class MagicController {

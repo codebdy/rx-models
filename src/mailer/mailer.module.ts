@@ -3,7 +3,7 @@ import { MailerClientsPool } from './mailer.clients-pool';
 import { MailerController } from './mailer.controller';
 import { MailerGateway } from './mailer.gateway';
 import { MailerReceiveTasksPool } from './receive/receive-tasks-pool';
-import { MailerSendService } from './mailer.send-service';
+import { MailerSendService } from './send/mailer.send.service';
 import { MailerSendTasksPool } from './send/send-tasks-pool';
 
 @Module({
