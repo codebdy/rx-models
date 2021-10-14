@@ -1,7 +1,7 @@
 import { Mail } from 'src/entity-interface/Mail';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { EVENT_MAIL_SEND_PROGRESS } from '../consts';
+import { EVENT_MAIL_SEND_QUEUE } from '../consts';
 import { IJob } from '../job/i-job';
 import { JobOwner } from '../job/job-owner';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
@@ -68,7 +68,7 @@ export class SendTask implements JobOwner {
 
   emitStatusToClient(client: MailClient) {
     if (this.lastEvent) {
-      client.socket.emit(EVENT_MAIL_SEND_PROGRESS, this.lastEvent);
+      client.socket.emit(EVENT_MAIL_SEND_QUEUE, this.lastEvent);
     }
   }
 
