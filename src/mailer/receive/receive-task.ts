@@ -64,9 +64,11 @@ export class ReceiveTask implements JobOwner {
   }
 
   emitStatusEvent() {
-    const client = this.clientsPool.getByAccountId(this.accountId);
-    if (client && client.socket.connected) {
-      this.emitStatusToClient(client);
+    const clients = this.clientsPool.getByAccountId(this.accountId);
+    for (const client of clients) {
+      if (client && client.socket.connected) {
+        this.emitStatusToClient(client);
+      }
     }
   }
 

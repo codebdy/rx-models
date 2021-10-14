@@ -12,6 +12,7 @@ export class MailerClientsPool {
 
   addClient(id: string, client: MailClient) {
     this.pool.set(id, client);
+    console.debug('socket client counts：', this.pool.size);
   }
 
   removeClient(id: string) {
@@ -23,10 +24,13 @@ export class MailerClientsPool {
   }
 
   getByAccountId(id: number) {
+    const items = [];
     for (const item of this.pool) {
       if (item[1].accountId === id) {
-        return item[1];
+        items.push(item[1]);
       }
     }
+
+    return items;
   }
 }
