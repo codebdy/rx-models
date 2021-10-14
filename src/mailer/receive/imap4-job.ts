@@ -84,9 +84,14 @@ export class Imap4Job extends ReceiveJob {
       console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
       return;
     }
-    this.saveMail(buffer, parsedMail, uidl, mailBox, size).then(() => {
-      console.debug('save mail succeed!');
-    });
+    this.saveMail(buffer, parsedMail, uidl, mailBox, size)
+      .then(() => {
+        console.debug('save mail succeed!');
+      })
+      .catch((error) => {
+        console.debug('save mail Error:', error?.message);
+        this.error('Save mail error:' + error);
+      });
   }
 
   receive() {
