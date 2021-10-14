@@ -45,10 +45,11 @@ export abstract class ReceiveJob implements IJob {
     this.jobOwner.emit(event);
   }
 
-  error(message: string) {
+  error(message: string, subject?: string) {
     this.emit({
       type: MailerEventType.error,
       message: message,
+      subject: subject,
     });
     this.isError = true;
   }

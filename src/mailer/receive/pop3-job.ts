@@ -36,20 +36,16 @@ export class Pop3Job extends ReceiveJob {
   ) {
     await this.saveMailToStorage(uidl, data, mailBox);
     const parsed = await simpleParser(data);
-    await this.saveMailToDatabase(uidl, parsed, mailBox, size);
+    try {
+      await this.saveMailToDatabase(uidl, parsed, mailBox, size);
+    } catch (error) {
+      this.error('Save mail error:' + error, parsed.subject);
+    }
   }
 
   abort(): void {
     this.isAborted = true;
     this.client?.quit();
-  }
-
-  error(message: string) {
-    this.emit({
-      type: MailerEventType.error,
-      message: message,
-    });
-    this.isError = true;
   }
 
   receive(): void {

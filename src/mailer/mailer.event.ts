@@ -28,4 +28,5 @@ export interface MailerEvent {
   size?: number;
   mailAddress?: string;
   name?: string;
+  subject?: string;
 }

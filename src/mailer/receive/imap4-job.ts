@@ -90,7 +90,7 @@ export class Imap4Job extends ReceiveJob {
       })
       .catch((error) => {
         console.debug('save mail Error:', error?.message);
-        this.error('Save mail error:' + error);
+        this.error('Save mail error:' + error, parsedMail?.subject);
       });
   }
 
