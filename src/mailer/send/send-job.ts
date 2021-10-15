@@ -52,17 +52,19 @@ export class SendJob implements ISendJob {
 
   onFiished() {
     this.status = SendStatus.SUCCESS;
-    this.jobOwner.onQueueChange();
     this.jobOwner.emit({
       type: MailerSendEventType.sentOneMail,
       mailId: this.mail.id,
       mailSubject: this.mail.subject,
     });
     this.jobOwner.nextJob()?.start();
+    this.jobOwner.onQueueChange();
   }
 
   async start() {
     try {
+      this.status = SendStatus.SENDING;
+      this.jobOwner.onQueueChange();
       const mailConfig = await this.typeOrmService
         .getRepository<MailConfig>(EntityMailConfig)
         .findOne(this.mail.fromConfigId);
@@ -103,27 +105,22 @@ export class SendJob implements ISendJob {
 
     console.log('哈哈', option, message.to[0]);
 
-    try {
-      // send mail with defined transport object
-      const info = await transporter.sendMail({
-        from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
-        to: message.to?.value, // list of receivers
-        cc: message.cc,
-        bcc: message.bcc,
-        subject: message.subject, // Subject line
-        text: message.text, // plain text body
-        html: message.html, // html body
-      });
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+      from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
+      to: message.to?.value, // list of receivers
+      cc: message.cc,
+      bcc: message.bcc,
+      subject: message.subject, // Subject line
+      text: message.text, // plain text body
+      html: message.html, // html body
+    });
 
-      console.log('Message sent: %s', info.messageId);
-      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    console.log('Message sent: %s', info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
-      // Preview only available when sending through an Ethereal account
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-      // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-    } catch (err) {
-      this.onError('Send error:' + err);
-      console.error(err);
-    }
+    // Preview only available when sending through an Ethereal account
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
   }
 }
