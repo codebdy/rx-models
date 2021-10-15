@@ -4,29 +4,29 @@ import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { CRYPTO_KEY } from '../consts';
-import { IJob } from '../job/i-job';
-import { JobOwner } from '../job/job-owner';
 import { decypt } from 'src/util/cropt-js';
+import { SendStatus } from 'src/entity-interface/SendStatus';
+import { ISendJob } from './i-send-job';
+import { MailOnQueue } from './mail-on-queue';
+import { ISendJobOwner } from './i-send-job-owner';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
-
-enum SendStatus {
-  finished = 'finished',
-  sending = 'sending',
-  error = 'error',
-}
 
 type AddressItemWithStatus = AddressItem & {
   status?: SendStatus;
 };
-export class SendJob implements IJob {
+export class SendJob implements ISendJob {
   private aborted = false;
   constructor(
     protected readonly typeOrmService: TypeOrmService,
     protected readonly storageService: StorageService,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: ISendJobOwner,
     private readonly mail: Mail,
   ) {}
+
+  toQueueItem(): MailOnQueue {
+    throw new Error('Method not implemented.');
+  }
 
   async start() {
     const mailConfig = await this.typeOrmService
@@ -43,10 +43,6 @@ export class SendJob implements IJob {
 
   abort(): void {
     this.aborted = true;
-  }
-
-  continue(): void {
-    throw new Error('Method not implemented.');
   }
 
   private async sendMessage(message: Mail, mailConfig: MailConfig) {

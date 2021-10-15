@@ -8,7 +8,7 @@ import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
 import { MailerEventType } from '../mailer.event';
 import { ReceiveJob } from './receive-job';
-import { JobOwner } from '../job/job-owner';
+import { IJobOwner } from '../job/i-job-owner';
 
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
@@ -53,7 +53,7 @@ export class Imap4Job extends ReceiveJob {
     protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly imap4Config: MailReceiveConfig,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: IJobOwner,
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(IMAP4)`);
@@ -89,7 +89,7 @@ export class Imap4Job extends ReceiveJob {
         console.debug('save mail succeed!');
       })
       .catch((error) => {
-        console.debug('save mail Error:', error?.message, parsedMail?.to);
+        console.debug('save mail Error:', error?.message, parsedMail?.from);
         this.error('Save mail error:' + error, parsedMail?.subject);
       });
   }

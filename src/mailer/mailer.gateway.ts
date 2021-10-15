@@ -11,7 +11,6 @@ import {
   EVENT_CANCEL_RECEIVE,
   EVENT_RECEIVEMAILS,
   EVENT_REGISTER_MAIL_CLIENT,
-  EVENT_CONTINUE_RECEIVE,
 } from './consts';
 import { MailerClientsPool } from './mailer.clients-pool';
 import { MailerReceiveTasksPool } from './receive/receive-tasks-pool';
@@ -61,8 +60,8 @@ export class MailerGateway {
     this.tasksPool.getTask(message.accountId)?.abort();
   }
 
-  @SubscribeMessage(EVENT_CONTINUE_RECEIVE)
-  retryReceive(client: Socket, message: { accountId: number }) {
-    this.tasksPool.getTask(message.accountId)?.continue();
-  }
+  //@SubscribeMessage(EVENT_CONTINUE_RECEIVE)
+  //retryReceive(client: Socket, message: { accountId: number }) {
+  //  this.tasksPool.getTask(message.accountId)?.continue();
+  //}
 }

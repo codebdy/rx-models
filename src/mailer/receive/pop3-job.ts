@@ -8,7 +8,7 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { POP3Client } from './poplib';
-import { JobOwner } from '../job/job-owner';
+import { IJobOwner } from '../job/i-job-owner';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
@@ -22,7 +22,7 @@ export class Pop3Job extends ReceiveJob {
     protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: IJobOwner,
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(POP3)`);

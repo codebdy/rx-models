@@ -1,7 +1,7 @@
 import { IJob } from './i-job';
 import { MailerEvent } from '../mailer.event';
 
-export interface JobOwner {
+export interface IJobOwner {
   nextJob(): IJob;
   finishJob(): void;
   emit(event: MailerEvent): void;

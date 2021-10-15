@@ -3,15 +3,17 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_SEND_QUEUE } from '../consts';
 import { IJob } from '../job/i-job';
-import { JobOwner } from '../job/job-owner';
+import { IJobOwner } from '../job/i-job-owner';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { MailerEvent, MailerEventType } from '../mailer.event';
+import { ISendJob } from './i-send-job';
+import { ISendJobOwner } from './i-send-job-owner';
 import { ISendTasksPool } from './i-send-tasks-pool';
 import { SendJob } from './send-job';
 
-export class SendTask implements JobOwner {
+export class SendTask implements ISendJobOwner {
   lastEvent?: MailerEvent;
-  private currentJob: IJob;
+  private currentJob: ISendJob;
   private aborted = false;
   constructor(
     private readonly typeOrmService: TypeOrmService,
@@ -22,7 +24,11 @@ export class SendTask implements JobOwner {
     private readonly mails: Mail[],
   ) {}
 
-  nextJob(): IJob | undefined {
+  onQueueChange(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  nextJob(): ISendJob | undefined {
     if (this.mails.length) {
       this.currentJob = new SendJob(
         this.typeOrmService,

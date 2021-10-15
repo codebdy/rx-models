@@ -5,7 +5,7 @@ export enum MailerEventType {
   checkStorage = 'checkStorage',
   readLocalMailList = 'readLocalMailList',
   connect = 'connect',
-  invalidState = 'invalid-state',
+  invalidState = 'invalidState',
   locked = 'locked',
   login = 'login',
   list = 'list',
@@ -18,6 +18,10 @@ export enum MailerEventType {
   finished = 'finished',
   aborted = 'aborted',
   openMailBox = 'openMailBox',
+  receivedOneMailToInbox = 'receivedOneMailToInbox',
+  receivedOneMailToSpam = 'receivedOneMailToSpam',
+  sentOneMail = 'sentOneMail',
+  sendQueue = 'sendQueue',
 }
 
 export interface MailerEvent {

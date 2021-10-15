@@ -1,9 +1,9 @@
-import { JobOwner } from './job-owner';
+import { IJobOwner } from './i-job-owner';
 
 export interface IJob {
-  jobOwner: JobOwner;
+  jobOwner: IJobOwner;
 
   start(): void | Promise<void>;
   abort(): void;
-  continue(): void;
+  //continue(): void;
 }

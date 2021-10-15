@@ -15,12 +15,12 @@ import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
 import { MailerEvent, MailerEventType } from '../mailer.event';
-import { JobOwner } from '../job/job-owner';
+import { IJobOwner } from '../job/i-job-owner';
 import { MailTeller } from './mail-teller';
 import { IJob } from '../job/i-job';
 
 export abstract class ReceiveJob implements IJob {
-  jobOwner: JobOwner;
+  jobOwner: IJobOwner;
   protected mailTeller = new MailTeller();
   protected mailAddress: string;
   protected eventName = '';

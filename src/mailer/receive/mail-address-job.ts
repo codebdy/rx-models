@@ -5,16 +5,16 @@ import { MailerEvent } from '../mailer.event';
 import { Imap4Job } from './imap4-job';
 import { IJob } from '../job/i-job';
 import { Pop3Job } from './pop3-job';
-import { JobOwner } from '../job/job-owner';
+import { IJobOwner } from '../job/i-job-owner';
 
-export class MailAddressJob implements IJob, JobOwner {
+export class MailAddressJob implements IJob, IJobOwner {
   private jobs: IJob[] = [];
   private currentJob: IJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
     private readonly config: MailConfig,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: IJobOwner,
     private readonly accountId: number,
   ) {
     if (
@@ -58,9 +58,9 @@ export class MailAddressJob implements IJob, JobOwner {
     this.nextJob()?.start();
   }
 
-  continue(): void {
-    this.currentJob?.continue();
-  }
+  //continue(): void {
+  //  this.currentJob?.continue();
+  //}
 
   nextJob(): IJob {
     if (this.jobs.length === 0) {

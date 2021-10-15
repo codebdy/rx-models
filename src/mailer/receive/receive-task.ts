@@ -7,9 +7,9 @@ import { MailerEvent, MailerEventType } from '../mailer.event';
 import { IReceiveTasksPool } from './i-receive-tasks-pool';
 import { IJob } from '../job/i-job';
 import { MailAddressJob } from './mail-address-job';
-import { JobOwner } from '../job/job-owner';
+import { IJobOwner } from '../job/i-job-owner';
 
-export class ReceiveTask implements JobOwner {
+export class ReceiveTask implements IJobOwner {
   lastEvent?: MailerEvent;
   private currentJob: IJob;
   constructor(
@@ -94,10 +94,5 @@ export class ReceiveTask implements JobOwner {
     this.emitStatusEvent();
     this.currentJob?.abort();
     this.configs = [];
-  }
-
-  continue() {
-    this.lastEvent = undefined;
-    this.currentJob?.continue();
   }
 }
