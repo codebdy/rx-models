@@ -23,7 +23,6 @@ export abstract class ReceiveJob implements IJob {
   jobOwner: JobOwner;
   protected mailTeller = new MailTeller();
   protected mailAddress: string;
-  protected isError = false;
   protected eventName = '';
   protected readonly typeOrmService: TypeOrmService;
   protected readonly storageService: StorageService;
@@ -51,7 +50,6 @@ export abstract class ReceiveJob implements IJob {
       message: message,
       subject: subject,
     });
-    this.isError = true;
   }
 
   start(): void {

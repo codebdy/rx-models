@@ -89,7 +89,7 @@ export class Imap4Job extends ReceiveJob {
         console.debug('save mail succeed!');
       })
       .catch((error) => {
-        console.debug('save mail Error:', error?.message);
+        console.debug('save mail Error:', error?.message, parsedMail?.to);
         this.error('Save mail error:' + error, parsedMail?.subject);
       });
   }
@@ -134,6 +134,9 @@ export class Imap4Job extends ReceiveJob {
   }
 
   receiveOneBox() {
+    if (this.isAborted) {
+      return;
+    }
     try {
       if (this.mailBoxes.length === 0 || !this.client) {
         this.client?.end();
@@ -189,7 +192,7 @@ export class Imap4Job extends ReceiveJob {
             this.receiveOneBox();
             return;
           }
-          this.receiveOnChunk(mailTargetBox, 0);
+          this.receiveOneChunk(mailTargetBox, 0);
         });
       });
     } catch (error) {
@@ -198,7 +201,10 @@ export class Imap4Job extends ReceiveJob {
     }
   }
 
-  private receiveOnChunk(mailTargetBox: MailBoxType, chunkIndex: number) {
+  private receiveOneChunk(mailTargetBox: MailBoxType, chunkIndex: number) {
+    if (this.isAborted) {
+      return;
+    }
     const mailsToReceive = this.mailTeller.newMailList.splice(chunkIndex, 10);
     if (!mailsToReceive || mailsToReceive.length === 0) {
       this.receiveOneBox();
@@ -271,7 +277,7 @@ export class Imap4Job extends ReceiveJob {
       this.client = undefined;
     });
     f.once('end', () => {
-      this.receiveOnChunk(mailTargetBox, chunkIndex);
+      this.receiveOneChunk(mailTargetBox, chunkIndex);
     });
   }
 

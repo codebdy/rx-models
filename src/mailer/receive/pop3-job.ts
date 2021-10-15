@@ -121,6 +121,10 @@ export class Pop3Job extends ReceiveJob {
     });
 
     const retrOne = () => {
+      if (this.abort) {
+        client.quit();
+        return;
+      }
       const msg = this.mailTeller.nextMsgNumber();
       const size = this.mailTeller.sizeList[msg];
       if (msg) {
@@ -155,6 +159,7 @@ export class Pop3Job extends ReceiveJob {
       try {
         size = parseInt(this.mailTeller.sizeList[msgnumber]?.toString());
       } catch (e) {
+        this.error('邮件大小转换出错', e);
         console.error('邮件大小转换出错', e);
       }
       if (status === true) {
@@ -188,9 +193,7 @@ export class Pop3Job extends ReceiveJob {
     });
 
     client.on('quit', (/*status, rawdata*/) => {
-      if (!this.isError) {
-        this.jobOwner.finishJob();
-      }
+      this.jobOwner.finishJob();
     });
   }
 }
