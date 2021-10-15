@@ -1,6 +1,10 @@
-import { IJob } from '../job/i-job';
+import { ISendJobOwner } from './i-send-job-owner';
 import { MailOnQueue } from './mail-on-queue';
 
-export interface ISendJob extends IJob {
+export interface ISendJob {
+  jobOwner: ISendJobOwner;
+
+  start(): void | Promise<void>;
+  abort(): void;
   toQueueItem(): MailOnQueue;
 }

@@ -1,6 +1,6 @@
 export const MAILER_EVENT_NAME = 'mailerEvent';
 
-export enum MailerEventType {
+export enum MailerSendEventType {
   error = 'error',
   checkStorage = 'checkStorage',
   readLocalMailList = 'readLocalMailList',
@@ -24,8 +24,8 @@ export enum MailerEventType {
   sendQueue = 'sendQueue',
 }
 
-export interface MailerEvent {
-  type: MailerEventType;
+export interface MailerSendEvent {
+  type: MailerSendEventType;
   message?: string;
   total?: number;
   current?: number;

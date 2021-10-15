@@ -1,18 +1,14 @@
 import { Mail } from 'src/entity-interface/Mail';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { EVENT_MAIL_SEND_QUEUE } from '../consts';
-import { IJob } from '../job/i-job';
-import { IJobOwner } from '../job/i-job-owner';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
-import { MailerEvent, MailerEventType } from '../mailer.event';
 import { ISendJob } from './i-send-job';
 import { ISendJobOwner } from './i-send-job-owner';
 import { ISendTasksPool } from './i-send-tasks-pool';
+import { MailerSendEvent } from './send-event';
 import { SendJob } from './send-job';
 
 export class SendTask implements ISendJobOwner {
-  lastEvent?: MailerEvent;
   private currentJob: ISendJob;
   private aborted = false;
   constructor(
@@ -40,11 +36,11 @@ export class SendTask implements ISendJobOwner {
     } else {
       //结束任务
       this.tasksPool.removeTask(this.accountId);
-      this.lastEvent = {
+      /*this.lastEvent = {
         type: MailerEventType.finished,
       };
       this.emitStatusEvent();
-      this.lastEvent = undefined;
+      this.lastEvent = undefined;*/
     }
   }
 
@@ -60,10 +56,9 @@ export class SendTask implements ISendJobOwner {
     await this.nextJob()?.start();
   }
 
-  emit(event: MailerEvent) {
-    this.lastEvent = event;
-    this.emitStatusEvent();
-  }
+  //emit(event: MailerSendEvent) {
+  //  this.emitStatusEvent();
+  //}
 
   emitStatusEvent() {
     const clients = this.clientsPool.getByAccountId(this.accountId);
@@ -75,13 +70,11 @@ export class SendTask implements ISendJobOwner {
   }
 
   emitStatusToClient(client: MailClient) {
-    if (this.lastEvent) {
-      client.socket.emit(EVENT_MAIL_SEND_QUEUE, this.lastEvent);
-    }
+    //client.socket.emit(EVENT_MAIL_SEND_QUEUE, this.lastEvent);
   }
 
   abort() {
-    if (this.lastEvent?.type === MailerEventType.error) {
+   /* if (this.lastEvent?.type === MailerEventType.error) {
       this.lastEvent = {
         type: MailerEventType.aborted,
       };
@@ -91,7 +84,7 @@ export class SendTask implements ISendJobOwner {
         type: MailerEventType.cancelling,
         message: 'Cancelling...',
       };
-    }
+    }*/
 
     this.emitStatusEvent();
     this.currentJob?.abort();

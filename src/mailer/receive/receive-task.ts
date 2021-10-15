@@ -3,15 +3,15 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
-import { MailerEvent, MailerEventType } from '../mailer.event';
 import { IReceiveTasksPool } from './i-receive-tasks-pool';
-import { IJob } from '../job/i-job';
+import { IReceiveJob } from './i-receive-job';
 import { MailAddressJob } from './mail-address-job';
-import { IJobOwner } from '../job/i-job-owner';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEventType, MailerReceiveEvent } from './receive-event';
 
-export class ReceiveTask implements IJobOwner {
-  lastEvent?: MailerEvent;
-  private currentJob: IJob;
+export class ReceiveTask implements IReceiveJobOwner {
+  lastEvent?: MailerReceiveEvent;
+  private currentJob: IReceiveJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
@@ -35,7 +35,7 @@ export class ReceiveTask implements IJobOwner {
       //结束任务
       this.tasksPool.removeTask(this.accountId);
       this.lastEvent = {
-        type: MailerEventType.finished,
+        type: MailerReceiveEventType.finished,
       };
       this.emitStatusEvent();
       this.lastEvent = undefined;
@@ -58,7 +58,7 @@ export class ReceiveTask implements IJobOwner {
     this.nextJob()?.start();
   }
 
-  emit(event: MailerEvent) {
+  emit(event: MailerReceiveEvent) {
     this.lastEvent = event;
     this.emitStatusEvent();
   }
@@ -79,14 +79,14 @@ export class ReceiveTask implements IJobOwner {
   }
 
   abort() {
-    if (this.lastEvent?.type === MailerEventType.error) {
+    if (this.lastEvent?.type === MailerReceiveEventType.error) {
       this.lastEvent = {
-        type: MailerEventType.aborted,
+        type: MailerReceiveEventType.aborted,
       };
       this.tasksPool.removeTask(this.accountId);
     } else {
       this.lastEvent = {
-        type: MailerEventType.cancelling,
+        type: MailerReceiveEventType.cancelling,
         message: 'Cancelling...',
       };
     }

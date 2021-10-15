@@ -14,13 +14,13 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
-import { MailerEvent, MailerEventType } from '../mailer.event';
-import { IJobOwner } from '../job/i-job-owner';
+import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailTeller } from './mail-teller';
-import { IJob } from '../job/i-job';
+import { IReceiveJob } from './i-receive-job';
+import { MailerReceiveEvent, MailerReceiveEventType } from './receive-event';
 
-export abstract class ReceiveJob implements IJob {
-  jobOwner: IJobOwner;
+export abstract class ReceiveJob implements IReceiveJob {
+  jobOwner: IReceiveJobOwner;
   protected mailTeller = new MailTeller();
   protected mailAddress: string;
   protected eventName = '';
@@ -39,14 +39,14 @@ export abstract class ReceiveJob implements IJob {
     }
   }
 
-  emit(event: MailerEvent): void {
+  emit(event: MailerReceiveEvent): void {
     event.name = this.eventName;
     this.jobOwner.emit(event);
   }
 
   error(message: string, subject?: string) {
     this.emit({
-      type: MailerEventType.error,
+      type: MailerReceiveEventType.error,
       message: message,
       subject: subject,
     });
@@ -54,7 +54,7 @@ export abstract class ReceiveJob implements IJob {
 
   start(): void {
     this.emit({
-      type: MailerEventType.checkStorage,
+      type: MailerReceiveEventType.checkStorage,
       message: 'Check storage',
     });
 
@@ -71,7 +71,7 @@ export abstract class ReceiveJob implements IJob {
 
   readLocalMailList(): void {
     this.emit({
-      type: MailerEventType.readLocalMailList,
+      type: MailerReceiveEventType.readLocalMailList,
       message: 'Read local mail list',
     });
 

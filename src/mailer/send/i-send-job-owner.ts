@@ -1,5 +1,7 @@
-import { IJobOwner } from '../job/i-job-owner';
+import { ISendJob } from './i-send-job';
 
-export interface ISendJobOwner extends IJobOwner {
+export interface ISendJobOwner {
+  nextJob(): ISendJob;
+  finishJob(): void;
   onQueueChange(): void;
 }

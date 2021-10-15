@@ -6,9 +6,9 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEventType } from '../mailer.event';
 import { ReceiveJob } from './receive-job';
-import { IJobOwner } from '../job/i-job-owner';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEventType } from './receive-event';
 
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
@@ -53,7 +53,7 @@ export class Imap4Job extends ReceiveJob {
     protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly imap4Config: MailReceiveConfig,
-    public readonly jobOwner: IJobOwner,
+    public readonly jobOwner: IReceiveJobOwner,
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(IMAP4)`);
@@ -106,7 +106,7 @@ export class Imap4Job extends ReceiveJob {
 
     this.client.connect();
     this.emit({
-      type: MailerEventType.connect,
+      type: MailerReceiveEventType.connect,
       message: 'Connect to server...',
     });
     console.debug('准备接收邮件', this.mailAddress, this.mailBoxes);
@@ -154,7 +154,7 @@ export class Imap4Job extends ReceiveJob {
       }
       this.eventName = `${this.mailAddress}(IMAP4)-${mailSourceBox}`;
       this.emit({
-        type: MailerEventType.openMailBox,
+        type: MailerReceiveEventType.openMailBox,
         message: 'Open mail box ...',
       });
 
@@ -167,7 +167,7 @@ export class Imap4Job extends ReceiveJob {
         }
 
         this.emit({
-          type: MailerEventType.list,
+          type: MailerReceiveEventType.list,
           message: 'Get mail list ...',
         });
         this.client.search(['ALL'], (err, results) => {
@@ -224,7 +224,7 @@ export class Imap4Job extends ReceiveJob {
       msg.on('body', (stream, info) => {
         size = info.size;
         this.emit({
-          type: MailerEventType.progress,
+          type: MailerReceiveEventType.progress,
           message: `Recieving ${this.mailTeller.currentMailIndex} of ${this.mailTeller.totalNew}`,
           total: this.mailTeller.totalNew,
           current: this.mailTeller.currentMailIndex,

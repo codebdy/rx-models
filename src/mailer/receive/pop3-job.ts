@@ -2,13 +2,13 @@ import { Logger } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEventType } from '../mailer.event';
 import { ReceiveJob } from './receive-job';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { POP3Client } from './poplib';
-import { IJobOwner } from '../job/i-job-owner';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEventType } from './receive-event';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
@@ -22,7 +22,7 @@ export class Pop3Job extends ReceiveJob {
     protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
-    public readonly jobOwner: IJobOwner,
+    public readonly jobOwner: IReceiveJobOwner,
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(POP3)`);
@@ -51,7 +51,7 @@ export class Pop3Job extends ReceiveJob {
   receive(): void {
     const config = this.pop3Config;
     this.emit({
-      type: MailerEventType.connect,
+      type: MailerReceiveEventType.connect,
       message: 'connecting to mail server ...',
     });
 
@@ -70,7 +70,7 @@ export class Pop3Job extends ReceiveJob {
     client.on('connect', (data) => {
       console.log('connect:', data);
       this.emit({
-        type: MailerEventType.login,
+        type: MailerReceiveEventType.login,
         message: 'Logging ...',
       });
       client.login(config.account, decypt(config.password, CRYPTO_KEY));
@@ -89,7 +89,7 @@ export class Pop3Job extends ReceiveJob {
     client.on('login', (status /*, rawdata*/) => {
       if (status) {
         this.emit({
-          type: MailerEventType.list,
+          type: MailerReceiveEventType.list,
           message: 'Listing ...',
         });
         client.list();
@@ -109,7 +109,7 @@ export class Pop3Job extends ReceiveJob {
         this.mailTeller.sizeList = data;
         if (msgcount > 0) {
           this.emit({
-            type: MailerEventType.uidl,
+            type: MailerReceiveEventType.uidl,
             message: 'Get uidl',
           });
           client.uidl();
@@ -129,7 +129,7 @@ export class Pop3Job extends ReceiveJob {
       const size = this.mailTeller.sizeList[msg];
       if (msg) {
         this.emit({
-          type: MailerEventType.progress,
+          type: MailerReceiveEventType.progress,
           message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
             this.mailTeller.totalNew
           }`,
