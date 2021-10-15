@@ -16,28 +16,57 @@ type AddressItemWithStatus = AddressItem & {
   status?: SendStatus;
 };
 export class SendJob implements ISendJob {
+  public error?: string;
   private aborted = false;
+  private status = SendStatus.WAITING;
+  private canCancel = false;
   constructor(
     protected readonly typeOrmService: TypeOrmService,
     protected readonly storageService: StorageService,
     public readonly jobOwner: ISendJobOwner,
     private readonly mail: Mail,
-  ) {}
+  ) {
+    if (mail.isSeparateSend) {
+      this.canCancel = true;
+    }
+  }
 
   toQueueItem(): MailOnQueue {
-    throw new Error('Method not implemented.');
+    return {
+      mailId: this.mail.id,
+      mailSubject: this.mail.subject,
+      details: this.error,
+      status: this.status,
+      canCancel: this.canCancel,
+    };
+  }
+
+  onError(errorMsg: string) {
+    this.error = errorMsg;
+    this.status = SendStatus.ERROR;
+    this.jobOwner.onQueueChange();
+  }
+
+  onFiished() {
+    this.status = SendStatus.SUCCESS;
+    this.jobOwner.onQueueChange();
   }
 
   async start() {
-    const mailConfig = await this.typeOrmService
-      .getRepository<MailConfig>(EntityMailConfig)
-      .findOne(this.mail.fromConfigId);
-    if (!mailConfig?.smtp) {
-      throw Error('Can not find mail stmp config by id');
-    }
+    try {
+      const mailConfig = await this.typeOrmService
+        .getRepository<MailConfig>(EntityMailConfig)
+        .findOne(this.mail.fromConfigId);
+      if (!mailConfig?.smtp) {
+        throw Error('Can not find mail stmp config by id');
+      }
 
-    if (!this.mail.isSeparateSend) {
-      this.sendMessage(this.mail, mailConfig);
+      if (!this.mail.isSeparateSend) {
+        await this.sendMessage(this.mail, mailConfig);
+        this.onFiished();
+      }
+    } catch (error) {
+      this.onError('Send error:' + error);
     }
   }
 
@@ -84,6 +113,7 @@ export class SendJob implements ISendJob {
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
     } catch (err) {
+      this.onError('Send error:' + err);
       console.error(err);
     }
   }

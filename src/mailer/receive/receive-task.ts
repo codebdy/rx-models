@@ -1,7 +1,7 @@
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
+import { EVENT_MAIL_RECEIVING_EVENT } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
 import { IReceiveTasksPool } from './i-receive-tasks-pool';
 import { IReceiveJob } from './i-receive-job';
@@ -74,7 +74,7 @@ export class ReceiveTask implements IReceiveJobOwner {
 
   emitStatusToClient(client: MailClient) {
     if (this.lastEvent) {
-      client.socket.emit(EVENT_MAIL_RECEIVE_PROGRESS, this.lastEvent);
+      client.socket.emit(EVENT_MAIL_RECEIVING_EVENT, this.lastEvent);
     }
   }
 

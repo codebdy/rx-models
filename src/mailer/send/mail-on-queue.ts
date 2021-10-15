@@ -1,8 +1,4 @@
-export enum SendStatus {
-  sending = 'sending',
-  waiting = 'waiting',
-  error = 'error',
-}
+import { SendStatus } from 'src/entity-interface/SendStatus';
 
 export interface MailOnQueue {
   mailId: number;

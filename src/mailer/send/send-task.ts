@@ -8,6 +8,9 @@ import { ISendTasksPool } from './i-send-tasks-pool';
 import { MailerSendEvent } from './send-event';
 import { SendJob } from './send-job';
 
+/**
+ * 一个Task对应一个账号
+ */
 export class SendTask implements ISendJobOwner {
   private currentJob: ISendJob;
   private aborted = false;
@@ -19,6 +22,10 @@ export class SendTask implements ISendJobOwner {
     private readonly accountId: number,
     private readonly mails: Mail[],
   ) {}
+
+  emit(event: MailerSendEvent): void {
+    throw new Error('Method not implemented.');
+  }
 
   onQueueChange(): void {
     throw new Error('Method not implemented.');

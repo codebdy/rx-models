@@ -7,4 +7,6 @@ export enum SendStatus {
 
   PART_SUCCESS = 'PartSuccess',
 
+  WAITING = 'Waiting',
+
 }
