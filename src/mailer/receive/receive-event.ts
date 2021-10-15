@@ -1,5 +1,3 @@
-export const MAILER_EVENT_NAME = 'mailerEvent';
-
 export enum MailerReceiveEventType {
   error = 'error',
   checkStorage = 'checkStorage',
@@ -20,8 +18,6 @@ export enum MailerReceiveEventType {
   openMailBox = 'openMailBox',
   receivedOneMailToInbox = 'receivedOneMailToInbox',
   receivedOneMailToSpam = 'receivedOneMailToSpam',
-  sentOneMail = 'sentOneMail',
-  sendQueue = 'sendQueue',
 }
 
 export interface MailerReceiveEvent {
