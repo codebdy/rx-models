@@ -1,11 +1,13 @@
 import { Mail } from 'src/entity-interface/Mail';
+import { SendStatus } from 'src/entity-interface/SendStatus';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
+import { EVENT_MAIL_SENDING_EVENT } from '../consts';
+import { MailerClientsPool } from '../mailer.clients-pool';
 import { ISendJob } from './i-send-job';
 import { ISendJobOwner } from './i-send-job-owner';
 import { ISendTasksPool } from './i-send-tasks-pool';
-import { MailerSendEvent } from './send-event';
+import { MailerSendEvent, MailerSendEventType } from './send-event';
 import { SendJob } from './send-job';
 
 /**
@@ -14,6 +16,7 @@ import { SendJob } from './send-job';
 export class SendTask implements ISendJobOwner {
   private currentJob: ISendJob;
   private aborted = false;
+  private errorJobs: ISendJob[] = [];
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
@@ -23,12 +26,38 @@ export class SendTask implements ISendJobOwner {
     private readonly mails: Mail[],
   ) {}
 
+  onErrorJob(job: ISendJob): void {
+    this.errorJobs.push(job);
+  }
+
   emit(event: MailerSendEvent): void {
-    throw new Error('Method not implemented.');
+    const clients = this.clientsPool.getByAccountId(this.accountId);
+    for (const client of clients) {
+      if (client && client.socket.connected) {
+        client.socket.emit(EVENT_MAIL_SENDING_EVENT, event);
+      }
+    }
   }
 
   onQueueChange(): void {
-    throw new Error('Method not implemented.');
+    const queue = this.currentJob ? [this.currentJob.toQueueItem()] : [];
+    for (const errorJob of this.errorJobs) {
+      queue.push(errorJob.toQueueItem());
+    }
+
+    for (const waitingMail of this.mails) {
+      queue.push({
+        mailId: waitingMail.id,
+        mailSubject: waitingMail.subject,
+        status: SendStatus.WAITING,
+        canCancel: true,
+      });
+    }
+
+    this.emit({
+      type: MailerSendEventType.sendQueue,
+      mailsQueue: queue,
+    });
   }
 
   nextJob(): ISendJob | undefined {
@@ -43,11 +72,7 @@ export class SendTask implements ISendJobOwner {
     } else {
       //结束任务
       this.tasksPool.removeTask(this.accountId);
-      /*this.lastEvent = {
-        type: MailerEventType.finished,
-      };
-      this.emitStatusEvent();
-      this.lastEvent = undefined;*/
+      this.currentJob = undefined;
     }
   }
 
@@ -63,25 +88,8 @@ export class SendTask implements ISendJobOwner {
     await this.nextJob()?.start();
   }
 
-  //emit(event: MailerSendEvent) {
-  //  this.emitStatusEvent();
-  //}
-
-  emitStatusEvent() {
-    const clients = this.clientsPool.getByAccountId(this.accountId);
-    for (const client of clients) {
-      if (client && client.socket.connected) {
-        this.emitStatusToClient(client);
-      }
-    }
-  }
-
-  emitStatusToClient(client: MailClient) {
-    //client.socket.emit(EVENT_MAIL_SEND_QUEUE, this.lastEvent);
-  }
-
   abort() {
-   /* if (this.lastEvent?.type === MailerEventType.error) {
+    /* if (this.lastEvent?.type === MailerEventType.error) {
       this.lastEvent = {
         type: MailerEventType.aborted,
       };
@@ -93,8 +101,11 @@ export class SendTask implements ISendJobOwner {
       };
     }*/
 
-    this.emitStatusEvent();
+    //this.emitStatusEvent();
     this.currentJob?.abort();
+    this.mails.length = 0;
+    this.currentJob = undefined;
     this.aborted = true;
+    this.onQueueChange();
   }
 }

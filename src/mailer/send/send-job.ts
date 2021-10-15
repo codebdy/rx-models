@@ -9,6 +9,7 @@ import { SendStatus } from 'src/entity-interface/SendStatus';
 import { ISendJob } from './i-send-job';
 import { MailOnQueue } from './mail-on-queue';
 import { ISendJobOwner } from './i-send-job-owner';
+import { MailerSendEventType } from './send-event';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
@@ -44,12 +45,20 @@ export class SendJob implements ISendJob {
   onError(errorMsg: string) {
     this.error = errorMsg;
     this.status = SendStatus.ERROR;
+    this.jobOwner.onErrorJob(this);
+    this.jobOwner.nextJob()?.start();
     this.jobOwner.onQueueChange();
   }
 
   onFiished() {
     this.status = SendStatus.SUCCESS;
     this.jobOwner.onQueueChange();
+    this.jobOwner.emit({
+      type: MailerSendEventType.sentOneMail,
+      mailId: this.mail.id,
+      mailSubject: this.mail.subject,
+    });
+    this.jobOwner.nextJob()?.start();
   }
 
   async start() {

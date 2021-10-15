@@ -6,4 +6,5 @@ export interface ISendJobOwner {
   finishJob(): void;
   emit(event: MailerSendEvent): void;
   onQueueChange(): void;
+  onErrorJob(job: ISendJob): void;
 }
