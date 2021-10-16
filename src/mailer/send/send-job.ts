@@ -117,9 +117,8 @@ export class SendJob implements ISendJob {
         href: fileUrlOrPath?.startsWith('http') ? fileUrlOrPath : undefined,
       });
     }
-    console.log('哈哈', attachments);
     // send mail with defined transport object
-     const info = await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
       to: message.to?.value, // list of receivers
       cc: message.cc,
