@@ -77,6 +77,7 @@ export class SendJob implements ISendJob {
         this.onFiished();
       }
     } catch (error) {
+      console.debug('Send error:', error);
       this.onError('Send error:' + error);
     }
   }
