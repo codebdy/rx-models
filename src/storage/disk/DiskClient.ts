@@ -84,4 +84,12 @@ export class DiskClient implements StorageClient {
     }
     return '';
   }
+
+  async fileUrlOrPath(path: string, bucket: string) {
+    const nameWithBucket = bucket + '/' + path;
+
+    const publicFileUrl =
+      this.host + DISK_STORAGE_PUBLIC_URL_BASE + nameWithBucket;
+    return publicFileUrl;
+  }
 }

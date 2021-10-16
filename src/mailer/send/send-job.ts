@@ -106,6 +106,16 @@ export class SendJob implements ISendJob {
 
     console.log('哈哈', option, message.to[0]);
 
+    const attachments = message.draftAttachments?.map(async (attachment) => {
+      const fileUrlOrPath = await this.storageService.fileUrlOrPath(
+        attachment.rxMedia?.path,
+      );
+      return {
+        filename: attachment.rxMedia.name,
+        path: fileUrlOrPath?.startsWith('http') ? undefined : fileUrlOrPath,
+        href: fileUrlOrPath?.startsWith('http') ? fileUrlOrPath : undefined,
+      };
+    });
     // send mail with defined transport object
     const info = await transporter.sendMail({
       from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
@@ -115,6 +125,7 @@ export class SendJob implements ISendJob {
       subject: message.subject, // Subject line
       text: message.text, // plain text body
       html: message.html, // html body
+      attachments: attachments,
     });
 
     console.log('Message sent: %s', info.messageId);

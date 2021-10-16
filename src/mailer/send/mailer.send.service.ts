@@ -24,6 +24,7 @@ export class MailerSendService {
       .createQueryBuilder('mail')
       .leftJoinAndSelect('mail.owner', 'owner')
       .leftJoinAndSelect('mail.draftAttachments', 'attachments')
+      .leftJoinAndSelect('attachments.rxMedia', 'rxMedia')
       .where('mail.id in (:...ids)', { ids: ids })
       .getMany();
 
