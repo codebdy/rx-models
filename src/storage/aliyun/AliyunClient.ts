@@ -69,7 +69,7 @@ export class AliyunClient implements StorageClient {
     return url;
   }
 
-  async fileUrlOrPath(path: string, bucket: string) {
+  async fileLocalPath(path: string, bucket: string) {
     const urlInfo = urlCache.getUrlInfo(path, bucket);
     if (urlInfo) {
       return urlInfo.url;

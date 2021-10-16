@@ -87,13 +87,13 @@ export class StorageService implements OnModuleInit {
     return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);
   }
 
-  async fileUrlOrPath(path: string) {
+  async fileLocalPath(path: string) {
     if (!this.inited) {
       await this.onModuleInit();
     }
     if (this.storageType === RxStorageType.Disk) {
       (this.storageClient as DiskClient).setHost(this.baseService.getHost());
     }
-    return await this.storageClient.fileUrlOrPath(path, FOLDER_UPLOADS);
+    return await this.storageClient.fileLocalPath(path, FOLDER_UPLOADS);
   }
 }

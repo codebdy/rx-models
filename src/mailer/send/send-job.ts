@@ -106,18 +106,20 @@ export class SendJob implements ISendJob {
 
     console.log('哈哈', option, message.to[0]);
 
-    const attachments = message.draftAttachments?.map(async (attachment) => {
-      const fileUrlOrPath = await this.storageService.fileUrlOrPath(
+    const attachments = [];
+    for (const attachment of message.draftAttachments || []) {
+      const fileUrlOrPath = await this.storageService.fileLocalPath(
         attachment.rxMedia?.path,
       );
-      return {
+      attachments.push({
         filename: attachment.rxMedia.name,
         path: fileUrlOrPath?.startsWith('http') ? undefined : fileUrlOrPath,
         href: fileUrlOrPath?.startsWith('http') ? fileUrlOrPath : undefined,
-      };
-    });
+      });
+    }
+    console.log('哈哈', attachments);
     // send mail with defined transport object
-    const info = await transporter.sendMail({
+     const info = await transporter.sendMail({
       from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
       to: message.to?.value, // list of receivers
       cc: message.cc,
