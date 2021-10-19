@@ -149,10 +149,10 @@ export abstract class ReceiveJob implements IReceiveJob {
       .getRepository<Mail>(EntityMail)
       .save({
         subject: passedMail.subject,
-        from: passedMail.from,
-        to: passedMail.to,
-        cc: passedMail.cc,
-        bcc: passedMail.bcc,
+        from: passedMail.from?.value ? passedMail.from?.value[0] : undefined,
+        to: passedMail.to?.value,
+        cc: passedMail.cc?.value,
+        bcc: passedMail.bcc?.value,
         date: passedMail.date,
         messageId: passedMail.messageId,
         inReplyTo: passedMail.inReplyTo,
@@ -160,7 +160,6 @@ export abstract class ReceiveJob implements IReceiveJob {
         references: passedMail.references,
         html: passedMail.html,
         text: passedMail.text,
-        textAsHtml: passedMail.textAsHtml,
         priority: passedMail.priority,
         owner: { id: this.accountId },
         inMailBox: mailBox,

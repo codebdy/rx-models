@@ -89,8 +89,16 @@ export class Imap4Job extends ReceiveJob {
         console.debug('save mail succeed!');
       })
       .catch((error) => {
-        console.debug('save mail Error:', error?.message, parsedMail?.from);
-        this.error('Save mail error:' + error, parsedMail?.subject);
+        console.debug(
+          'save mail Error:',
+          error?.message,
+          parsedMail?.from,
+          uidl,
+        );
+        this.error(
+          'Save mail error(' + uidl + '):' + error,
+          parsedMail.subject,
+        );
       });
   }
 
@@ -230,16 +238,23 @@ export class Imap4Job extends ReceiveJob {
           current: this.mailTeller.currentMailIndex,
           size: info.size,
         });
-        simpleParser(stream, (err, mail) => {
-          parsedMail = mail;
-          this.checkAndSaveMail(
-            mailData,
-            parsedMail,
-            uid,
-            mailTargetBox,
-            info.size,
-          );
-        });
+        simpleParser(
+          stream,
+          {
+            skipHtmlToText: true,
+            skipTextToHtml: true,
+          },
+          (err, mail) => {
+            parsedMail = mail;
+            this.checkAndSaveMail(
+              mailData,
+              parsedMail,
+              uid,
+              mailTargetBox,
+              info.size,
+            );
+          },
+        );
 
         let buffer = Buffer.from([]);
         stream.on('data', (buf) => {
