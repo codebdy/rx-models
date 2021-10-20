@@ -1,20 +1,20 @@
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { MailerEvent } from '../mailer.event';
 import { Imap4Job } from './imap4-job';
-import { IJob } from './job';
-import { JobOwner } from './job-owner';
+import { IReceiveJob } from './i-receive-job';
 import { Pop3Job } from './pop3-job';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEvent } from './receive-event';
 
-export class MailAddressJob implements IJob, JobOwner {
-  private jobs: IJob[] = [];
-  private currentJob: IJob;
+export class MailAddressJob implements IReceiveJob, IReceiveJobOwner {
+  private jobs: IReceiveJob[] = [];
+  private currentJob: IReceiveJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
     private readonly config: MailConfig,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: IReceiveJobOwner,
     private readonly accountId: number,
   ) {
     if (
@@ -58,11 +58,11 @@ export class MailAddressJob implements IJob, JobOwner {
     this.nextJob()?.start();
   }
 
-  continue(): void {
-    this.currentJob?.continue();
-  }
+  //continue(): void {
+  //  this.currentJob?.continue();
+  //}
 
-  nextJob(): IJob {
+  nextJob(): IReceiveJob {
     if (this.jobs.length === 0) {
       this.jobOwner.finishJob();
       return;
@@ -75,7 +75,7 @@ export class MailAddressJob implements IJob, JobOwner {
     this.nextJob()?.start();
   }
 
-  emit(event: MailerEvent): void {
+  emit(event: MailerReceiveEvent): void {
     event.mailAddress = this.config.address;
     this.jobOwner.emit(event);
   }

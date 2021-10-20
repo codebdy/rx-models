@@ -32,6 +32,7 @@ import { RxMedia } from 'src/entity-interface/RxMedia';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { StorageService } from 'src/storage/storage.service';
 import { RxBaseService } from 'src/rxbase/rxbase.service';
+import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 
 @Controller()
 export class MagicController {
@@ -44,6 +45,7 @@ export class MagicController {
     private readonly uploadService: MagicUploadService,
     protected readonly storageService: StorageService,
     private readonly baseService: RxBaseService,
+    protected readonly mailerSendService: MailerSendService,
   ) {}
 
   /**
@@ -97,10 +99,10 @@ export class MagicController {
   @Get('get/:jsonStr?')
   async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
-      console.debug('JSON QUERY String', jsonStr);
       this.baseService.setHost('//' + req.headers.host);
       await sleep(500);
       let result: QueryResult;
+      console.time(jsonStr);
       await this.typeormSerivce.connection.transaction(
         async (entityManger: EntityManager) => {
           const entityService = this.createEntityService(
@@ -110,9 +112,11 @@ export class MagicController {
           result = await entityService.query(JSON.parse(jsonStr || '{}'));
         },
       );
+      console.timeEnd(jsonStr);
       return result;
     } catch (error: any) {
-      console.error('getEntities error:', error);
+      console.error('getEntities error', error);
+      console.debug('出错JSON:', jsonStr);
       throw new HttpException(
         {
           status: 500,
@@ -335,6 +339,7 @@ export class MagicController {
       this.deleteDirectiveService,
       this.schemaService,
       this.storageService,
+      this.mailerSendService,
     );
   }
 }

@@ -6,9 +6,9 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEventType } from '../mailer.event';
-import { Job } from './job';
-import { JobOwner } from './job-owner';
+import { ReceiveJob } from './receive-job';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEventType } from './receive-event';
 
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
@@ -43,7 +43,7 @@ function getMailTargetBox(imap4Folder: { value: string; label: string }) {
   }
 }
 
-export class Imap4Job extends Job {
+export class Imap4Job extends ReceiveJob {
   private client: any;
   private results: string[] = [];
   private mailBoxes: string[] = [];
@@ -53,7 +53,7 @@ export class Imap4Job extends Job {
     protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly imap4Config: MailReceiveConfig,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: IReceiveJobOwner,
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(IMAP4)`);
@@ -84,9 +84,22 @@ export class Imap4Job extends Job {
       console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
       return;
     }
-    this.saveMail(buffer, parsedMail, uidl, mailBox, size).then(() => {
-      console.debug('save mail succeed!');
-    });
+    this.saveMail(buffer, parsedMail, uidl, mailBox, size)
+      .then(() => {
+        console.debug('save mail succeed!');
+      })
+      .catch((error) => {
+        console.debug(
+          'save mail Error:',
+          error?.message,
+          parsedMail?.from,
+          uidl,
+        );
+        this.error(
+          'Save mail error(' + uidl + '):' + error,
+          parsedMail.subject,
+        );
+      });
   }
 
   receive() {
@@ -101,7 +114,7 @@ export class Imap4Job extends Job {
 
     this.client.connect();
     this.emit({
-      type: MailerEventType.connect,
+      type: MailerReceiveEventType.connect,
       message: 'Connect to server...',
     });
     console.debug('准备接收邮件', this.mailAddress, this.mailBoxes);
@@ -129,6 +142,9 @@ export class Imap4Job extends Job {
   }
 
   receiveOneBox() {
+    if (this.isAborted) {
+      return;
+    }
     try {
       if (this.mailBoxes.length === 0 || !this.client) {
         this.client?.end();
@@ -146,7 +162,7 @@ export class Imap4Job extends Job {
       }
       this.eventName = `${this.mailAddress}(IMAP4)-${mailSourceBox}`;
       this.emit({
-        type: MailerEventType.openMailBox,
+        type: MailerReceiveEventType.openMailBox,
         message: 'Open mail box ...',
       });
 
@@ -159,7 +175,7 @@ export class Imap4Job extends Job {
         }
 
         this.emit({
-          type: MailerEventType.list,
+          type: MailerReceiveEventType.list,
           message: 'Get mail list ...',
         });
         this.client.search(['ALL'], (err, results) => {
@@ -184,7 +200,7 @@ export class Imap4Job extends Job {
             this.receiveOneBox();
             return;
           }
-          this.receiveOnChunk(mailTargetBox, 0);
+          this.receiveOneChunk(mailTargetBox, 0);
         });
       });
     } catch (error) {
@@ -193,7 +209,10 @@ export class Imap4Job extends Job {
     }
   }
 
-  private receiveOnChunk(mailTargetBox: MailBoxType, chunkIndex: number) {
+  private receiveOneChunk(mailTargetBox: MailBoxType, chunkIndex: number) {
+    if (this.isAborted) {
+      return;
+    }
     const mailsToReceive = this.mailTeller.newMailList.splice(chunkIndex, 10);
     if (!mailsToReceive || mailsToReceive.length === 0) {
       this.receiveOneBox();
@@ -213,22 +232,29 @@ export class Imap4Job extends Job {
       msg.on('body', (stream, info) => {
         size = info.size;
         this.emit({
-          type: MailerEventType.progress,
+          type: MailerReceiveEventType.progress,
           message: `Recieving ${this.mailTeller.currentMailIndex} of ${this.mailTeller.totalNew}`,
           total: this.mailTeller.totalNew,
           current: this.mailTeller.currentMailIndex,
           size: info.size,
         });
-        simpleParser(stream, (err, mail) => {
-          parsedMail = mail;
-          this.checkAndSaveMail(
-            mailData,
-            parsedMail,
-            uid,
-            mailTargetBox,
-            info.size,
-          );
-        });
+        simpleParser(
+          stream,
+          {
+            skipHtmlToText: true,
+            skipTextToHtml: true,
+          },
+          (err, mail) => {
+            parsedMail = mail;
+            this.checkAndSaveMail(
+              mailData,
+              parsedMail,
+              uid,
+              mailTargetBox,
+              info.size,
+            );
+          },
+        );
 
         let buffer = Buffer.from([]);
         stream.on('data', (buf) => {
@@ -266,7 +292,7 @@ export class Imap4Job extends Job {
       this.client = undefined;
     });
     f.once('end', () => {
-      this.receiveOnChunk(mailTargetBox, chunkIndex);
+      this.receiveOneChunk(mailTargetBox, chunkIndex);
     });
   }
 

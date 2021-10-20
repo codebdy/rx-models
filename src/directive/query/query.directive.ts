@@ -41,7 +41,7 @@ export class QueryDirective {
    * @param result 查询结果
    * @returns 过滤后的查询结果
    */
-  filterResult(result: QueryResult): QueryResult {
+  async filterResult(result: QueryResult): Promise<QueryResult> {
     return result;
   }
 

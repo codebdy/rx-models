@@ -14,23 +14,15 @@ import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
-import { MailerEvent, MailerEventType } from '../mailer.event';
-import { JobOwner } from './job-owner';
+import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailTeller } from './mail-teller';
+import { IReceiveJob } from './i-receive-job';
+import { MailerReceiveEvent, MailerReceiveEventType } from './receive-event';
 
-export interface IJob {
-  jobOwner: JobOwner;
-
-  start(): void;
-  abort(): void;
-  continue(): void;
-}
-
-export abstract class Job implements IJob {
-  jobOwner: JobOwner;
+export abstract class ReceiveJob implements IReceiveJob {
+  jobOwner: IReceiveJobOwner;
   protected mailTeller = new MailTeller();
   protected mailAddress: string;
-  protected isError = false;
   protected eventName = '';
   protected readonly typeOrmService: TypeOrmService;
   protected readonly storageService: StorageService;
@@ -47,22 +39,22 @@ export abstract class Job implements IJob {
     }
   }
 
-  emit(event: MailerEvent): void {
+  emit(event: MailerReceiveEvent): void {
     event.name = this.eventName;
     this.jobOwner.emit(event);
   }
 
-  error(message: string) {
+  error(message: string, subject?: string) {
     this.emit({
-      type: MailerEventType.error,
+      type: MailerReceiveEventType.error,
       message: message,
+      subject: subject,
     });
-    this.isError = true;
   }
 
   start(): void {
     this.emit({
-      type: MailerEventType.checkStorage,
+      type: MailerReceiveEventType.checkStorage,
       message: 'Check storage',
     });
 
@@ -79,7 +71,7 @@ export abstract class Job implements IJob {
 
   readLocalMailList(): void {
     this.emit({
-      type: MailerEventType.readLocalMailList,
+      type: MailerReceiveEventType.readLocalMailList,
       message: 'Read local mail list',
     });
 
@@ -157,10 +149,10 @@ export abstract class Job implements IJob {
       .getRepository<Mail>(EntityMail)
       .save({
         subject: passedMail.subject,
-        from: passedMail.from,
-        to: passedMail.to,
-        cc: passedMail.cc,
-        bcc: passedMail.bcc,
+        from: passedMail.from?.value ? passedMail.from?.value[0] : undefined,
+        to: passedMail.to?.value,
+        cc: passedMail.cc?.value,
+        bcc: passedMail.bcc?.value,
         date: passedMail.date,
         messageId: passedMail.messageId,
         inReplyTo: passedMail.inReplyTo,
@@ -168,7 +160,6 @@ export abstract class Job implements IJob {
         references: passedMail.references,
         html: passedMail.html,
         text: passedMail.text,
-        textAsHtml: passedMail.textAsHtml,
         priority: passedMail.priority,
         owner: { id: this.accountId },
         inMailBox: mailBox,
@@ -176,6 +167,7 @@ export abstract class Job implements IJob {
         attachments: attachments,
         fromOldCustomer: fromOldCustomer,
         size: size,
+        receivedAddress: this.mailAddress,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)

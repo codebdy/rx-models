@@ -20,7 +20,7 @@ export class QueryEntityTreeDirective extends QueryDirective {
     return qb.leftJoinAndSelect(`${this.rootMeta.alias}.parent`, 'parent');
   }
 
-  filterResult(result: QueryResult): QueryResult {
+  async filterResult(result: QueryResult) {
     result.data = this.do(result.data);
     return result;
   }

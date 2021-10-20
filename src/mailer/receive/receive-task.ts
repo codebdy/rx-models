@@ -1,22 +1,22 @@
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { EVENT_MAIL_RECEIVE_PROGRESS } from '../consts';
+import { EVENT_MAIL_RECEIVING_EVENT } from '../consts';
 import { MailClient, MailerClientsPool } from '../mailer.clients-pool';
-import { MailerEvent, MailerEventType } from '../mailer.event';
-import { TasksPool } from '../mailer.receive-tasks-pool';
-import { IJob } from './job';
-import { JobOwner } from './job-owner';
+import { IReceiveTasksPool } from './i-receive-tasks-pool';
+import { IReceiveJob } from './i-receive-job';
 import { MailAddressJob } from './mail-address-job';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEventType, MailerReceiveEvent } from './receive-event';
 
-export class ReceiveTask implements JobOwner {
-  lastEvent?: MailerEvent;
-  private currentJob: IJob;
+export class ReceiveTask implements IReceiveJobOwner {
+  lastEvent?: MailerReceiveEvent;
+  private currentJob: IReceiveJob;
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
-    private readonly tasksPool: TasksPool,
+    private readonly tasksPool: IReceiveTasksPool,
     private readonly accountId: number,
     private configs: MailConfig[],
   ) {}
@@ -35,7 +35,7 @@ export class ReceiveTask implements JobOwner {
       //结束任务
       this.tasksPool.removeTask(this.accountId);
       this.lastEvent = {
-        type: MailerEventType.finished,
+        type: MailerReceiveEventType.finished,
       };
       this.emitStatusEvent();
       this.lastEvent = undefined;
@@ -58,33 +58,35 @@ export class ReceiveTask implements JobOwner {
     this.nextJob()?.start();
   }
 
-  emit(event: MailerEvent) {
+  emit(event: MailerReceiveEvent) {
     this.lastEvent = event;
     this.emitStatusEvent();
   }
 
   emitStatusEvent() {
-    const client = this.clientsPool.getByAccountId(this.accountId);
-    if (client && client.socket.connected) {
-      this.emitStatusToClient(client);
+    const clients = this.clientsPool.getByAccountId(this.accountId);
+    for (const client of clients) {
+      if (client && client.socket.connected) {
+        this.emitStatusToClient(client);
+      }
     }
   }
 
   emitStatusToClient(client: MailClient) {
     if (this.lastEvent) {
-      client.socket.emit(EVENT_MAIL_RECEIVE_PROGRESS, this.lastEvent);
+      client.socket.emit(EVENT_MAIL_RECEIVING_EVENT, this.lastEvent);
     }
   }
 
   abort() {
-    if (this.lastEvent?.type === MailerEventType.error) {
+    if (this.lastEvent?.type === MailerReceiveEventType.error) {
       this.lastEvent = {
-        type: MailerEventType.aborted,
+        type: MailerReceiveEventType.aborted,
       };
       this.tasksPool.removeTask(this.accountId);
     } else {
       this.lastEvent = {
-        type: MailerEventType.cancelling,
+        type: MailerReceiveEventType.cancelling,
         message: 'Cancelling...',
       };
     }
@@ -92,10 +94,5 @@ export class ReceiveTask implements JobOwner {
     this.emitStatusEvent();
     this.currentJob?.abort();
     this.configs = [];
-  }
-
-  continue() {
-    this.lastEvent = undefined;
-    this.currentJob?.continue();
   }
 }

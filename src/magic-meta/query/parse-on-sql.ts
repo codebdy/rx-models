@@ -1,36 +1,20 @@
-import { RxUser } from 'src/entity-interface/RxUser';
-import { createId } from 'src/util/create-id';
-import { QueryEntityMeta } from './query.entity-meta';
+import { QueryRelationMeta } from './query.relation-meta';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SqlWhereParser = require('sql-where-parser');
 const OPERATOR_UNARY_MINUS = Symbol('-');
 
-const converValue = (value: any) => {
-  if (typeof value == 'string') {
-    if (value.toLowerCase() === 'false') {
-      return false;
-    }
-    if (value.toLowerCase() === 'true') {
-      return true;
-    }
-  }
-  return value;
-};
-
-export function parseWhereSql(
+export function parseOnSql(
   sql: string,
-  ownerMeta: QueryEntityMeta,
-  me: RxUser,
-): [string, any] {
+  relationMeta: QueryRelationMeta,
+): string {
   if (!sql) {
     throw new Error(
       'Not assign sql statement to where directive or expression',
     );
   }
-
+  const ownerMeta = relationMeta.parentEntityMeta;
   const parser = new SqlWhereParser();
-  const params = {} as any;
   const evaluator = (operatorValueOrg, operandsOrg) => {
     let operatorValue = operatorValueOrg;
     const operands = operandsOrg;
@@ -44,8 +28,6 @@ export function parseWhereSql(
     if (operatorValue === 'NOT') {
       return { not: 'NOT ', value: operands[0] };
     }
-
-    const paramName = `param${createId()}`;
 
     switch (operatorValue) {
       case 'OR':
@@ -65,24 +47,32 @@ export function parseWhereSql(
           if (relation) {
             operands[0] = arr[1];
             modelAlias = relation.alias;
+          } else if (relationMeta.name === arr[0]) {
+            operands[0] = arr[1];
+            modelAlias = relationMeta.alias;
           }
         }
         operands[0] = `${modelAlias}.${operands[0]}`;
-        if (operands[1]?.toString()?.startsWith('$me.')) {
-          const [, columnStr] = (operands[1] as string)?.split('.');
-          params[paramName] = me[columnStr];
-        } else {
-          params[paramName] = converValue(operands[1]);
+        const arr2 = operands[1]?.split('.');
+        if (arr2 && arr2.length > 1) {
+          const relation = ownerMeta.findRelatiOrFailed(arr2[0]);
+          if (relation) {
+            operands[1] = arr2[1];
+            modelAlias = relation.alias;
+          } else if (relationMeta.name === arr2[0]) {
+            operands[1] = arr2[1];
+            modelAlias = relationMeta.alias;
+          }
         }
-
+        operands[1] = `${modelAlias}.${operands[1]}`;
         if (operatorValue === 'IN') {
-          return `${operands[0]} ${operatorValue} (:...${paramName})`;
+          throw new Error('Can not use IN operator in @on directive');
         }
-        return `${operands[0]} ${operatorValue} :${paramName}`;
+        return `${operands[0]} ${operatorValue} ${operands[1]}`;
     }
   };
 
   const parsed = parser.parse(sql, evaluator);
 
-  return [parsed, params];
+  return parsed;
 }

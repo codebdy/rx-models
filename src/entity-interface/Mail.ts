@@ -1,31 +1,31 @@
 import { Attachment } from './Attachment';
 import { MailIdentifier } from './MailIdentifier';
+import { DraftAttachment } from './DraftAttachment';
 import { RxUser } from './RxUser';
 import { MailLabel } from './MailLabel';
+import { MailPriority } from './MailPriority';
 import { MailBoxType } from './MailBoxType';
-import { MailStatus } from './MailStatus';
-import { AddressObject } from './AddressObject';
+import { SendStatus } from './SendStatus';
+import { AddressItem } from './AddressItem';
 
 
 export const EntityMail = 'Mail';
 export interface Mail  {
   id?: number;
   subject?: string;
-  from?: AddressObject;
-  to?: AddressObject;
-  cc?: AddressObject;
-  bcc?: AddressObject;
+  from?: AddressItem;
+  to?: AddressItem[];
+  cc?: AddressItem[];
+  bcc?: AddressItem[];
   date?: Date;
   messageId?: string;
   inReplyTo?: string;
   replyTo?: any;
-  references?: any[];
+  references?: any;
   html?: string;
   text?: string;
-  textAsHtml?: string;
-  priority?: string;
+  priority?: MailPriority;
   inMailBox: MailBoxType;
-  finished?: boolean;
   showAsOriginal?: boolean;
   fromAddress?: string;
   seen?: boolean;
@@ -37,11 +37,17 @@ export interface Mail  {
   inMailBoxBeforeDelete?: MailBoxType;
   scheduleSendDate?: Date;
   isSeparateSend?: boolean;
-  status?: MailStatus;
-  sendErrorMessage?: string;
+  sendStatus?: SendStatus;
+  sendErrorMessage?: any[];
   fromConfigId?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  isPlainText?: boolean;
+  headers?: any;
+  receivedAddress?: string;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];
   identifier?: MailIdentifier;
+  draftAttachments?: DraftAttachment[];
 }

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { AliyunConfig } from 'src/entity-interface/AliyunConfig';
 import { EntityRxConfig, RxConfig } from 'src/entity-interface/RxConfig';
 import { RxStorageType } from 'src/entity-interface/RxStorageType';
@@ -17,6 +17,7 @@ export class StorageService implements OnModuleInit {
   private storageClient: StorageClient;
   private storageType: RxStorageType = RxStorageType.Disk;
   constructor(
+    @Inject(forwardRef(() => TypeOrmService))
     private readonly typeOrmService: TypeOrmService,
     private readonly baseService: RxBaseService,
   ) {
@@ -84,5 +85,15 @@ export class StorageService implements OnModuleInit {
       (this.storageClient as DiskClient).setHost(this.baseService.getHost());
     }
     return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);
+  }
+
+  async fileLocalPath(path: string) {
+    if (!this.inited) {
+      await this.onModuleInit();
+    }
+    if (this.storageType === RxStorageType.Disk) {
+      (this.storageClient as DiskClient).setHost(this.baseService.getHost());
+    }
+    return await this.storageClient.fileLocalPath(path, FOLDER_UPLOADS);
   }
 }

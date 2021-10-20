@@ -12,4 +12,6 @@ export interface StorageClient {
   ): Promise<void>;
 
   resizeImage(path: string, bucket: string, size?: ImageSize): Promise<string>;
+
+  fileLocalPath(path: string, bucket: string): Promise<string>;
 }

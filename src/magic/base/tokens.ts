@@ -13,3 +13,6 @@ export const TOKEN_COUNT = 'count';
 export const TOKEN_CASCADE = 'cascade';
 export const TOKEN_TREE = 'tree';
 export const TOKEN_IDS = 'ids';
+export const TOKEN_FAKE_RELATION = 'fakeRelation';
+export const TOKEN_RELATION_NAME = 'relationName';
+export const TOKEN_LINKE_FIELDS = 'linkFields';

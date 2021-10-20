@@ -1,20 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { MailerClientsPool } from './mailer.clients-pool';
-import { ReceiveTask } from './receive-task/receive-task';
-
-export interface TasksPool {
-  getTask(accountId: number): ReceiveTask;
-  removeTask(accountId: number): void;
-}
+import { MailerClientsPool } from '../mailer.clients-pool';
+import { ReceiveTask } from './receive-task';
+import { IReceiveTasksPool } from './i-receive-tasks-pool';
 
 @Injectable()
-export class MailerReceiveTasksPool implements TasksPool {
+export class MailerReceiveTasksPool implements IReceiveTasksPool {
   private pool = new Map<number, ReceiveTask>();
 
   constructor(
+    @Inject(forwardRef(() => TypeOrmService))
     private readonly typeOrmService: TypeOrmService,
     private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,

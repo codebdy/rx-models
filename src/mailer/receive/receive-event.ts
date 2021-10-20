@@ -1,11 +1,9 @@
-export const MAILER_EVENT_NAME = 'mailerEvent';
-
-export enum MailerEventType {
+export enum MailerReceiveEventType {
   error = 'error',
   checkStorage = 'checkStorage',
   readLocalMailList = 'readLocalMailList',
   connect = 'connect',
-  invalidState = 'invalid-state',
+  invalidState = 'invalidState',
   locked = 'locked',
   login = 'login',
   list = 'list',
@@ -18,14 +16,17 @@ export enum MailerEventType {
   finished = 'finished',
   aborted = 'aborted',
   openMailBox = 'openMailBox',
+  receivedOneMailToInbox = 'receivedOneMailToInbox',
+  receivedOneMailToSpam = 'receivedOneMailToSpam',
 }
 
-export interface MailerEvent {
-  type: MailerEventType;
+export interface MailerReceiveEvent {
+  type: MailerReceiveEventType;
   message?: string;
   total?: number;
   current?: number;
   size?: number;
   mailAddress?: string;
   name?: string;
+  subject?: string;
 }

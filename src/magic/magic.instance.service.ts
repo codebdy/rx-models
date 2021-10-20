@@ -11,6 +11,7 @@ import { MagicPost } from './post/magic.post';
 import { MagicQuery } from './query/magic.query';
 import { MagicUpdate } from './update/magic.update';
 import { StorageService } from 'src/storage/storage.service';
+import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 
 /**
  * 操作数据库通用类，所有数据库操作都应该通过该类进行，因为该类负责权限控制
@@ -26,6 +27,7 @@ export class MagicInstanceService implements MagicService {
     public readonly deleteDirectiveService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
     public readonly storageService: StorageService,
+    protected readonly mailerSendService: MailerSendService,
   ) {}
 
   get me() {
@@ -50,6 +52,7 @@ export class MagicInstanceService implements MagicService {
       this.postDirectiveService,
       this.schemaService,
       this,
+      this.mailerSendService,
     ).post(json);
   }
 

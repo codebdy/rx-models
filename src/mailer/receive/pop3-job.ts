@@ -2,17 +2,17 @@ import { Logger } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { decypt } from 'src/util/cropt-js';
 import { CRYPTO_KEY } from '../consts';
-import { MailerEventType } from '../mailer.event';
-import { Job } from './job';
-import { JobOwner } from './job-owner';
+import { ReceiveJob } from './receive-job';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { POP3Client } from './poplib';
+import { IReceiveJobOwner } from './i-receive-job-owner';
+import { MailerReceiveEventType } from './receive-event';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
-export class Pop3Job extends Job {
+export class Pop3Job extends ReceiveJob {
   private readonly logger = new Logger('Mailer');
 
   private client: any;
@@ -22,7 +22,7 @@ export class Pop3Job extends Job {
     protected readonly storageService: StorageService,
     protected readonly mailAddress: string,
     private readonly pop3Config: MailReceiveConfig,
-    public readonly jobOwner: JobOwner,
+    public readonly jobOwner: IReceiveJobOwner,
     protected readonly accountId: number,
   ) {
     super(`${mailAddress}(POP3)`);
@@ -35,8 +35,15 @@ export class Pop3Job extends Job {
     size: number,
   ) {
     await this.saveMailToStorage(uidl, data, mailBox);
-    const parsed = await simpleParser(data);
-    await this.saveMailToDatabase(uidl, parsed, mailBox, size);
+    const parsed = await simpleParser(data, {
+      skipHtmlToText: true,
+      skipTextToHtml: true,
+    });
+    try {
+      await this.saveMailToDatabase(uidl, parsed, mailBox, size);
+    } catch (error) {
+      this.error('Save mail error(' + uidl + '):' + error, parsed.subject);
+    }
   }
 
   abort(): void {
@@ -44,18 +51,10 @@ export class Pop3Job extends Job {
     this.client?.quit();
   }
 
-  error(message: string) {
-    this.emit({
-      type: MailerEventType.error,
-      message: message,
-    });
-    this.isError = true;
-  }
-
   receive(): void {
     const config = this.pop3Config;
     this.emit({
-      type: MailerEventType.connect,
+      type: MailerReceiveEventType.connect,
       message: 'connecting to mail server ...',
     });
 
@@ -74,7 +73,7 @@ export class Pop3Job extends Job {
     client.on('connect', (data) => {
       console.log('connect:', data);
       this.emit({
-        type: MailerEventType.login,
+        type: MailerReceiveEventType.login,
         message: 'Logging ...',
       });
       client.login(config.account, decypt(config.password, CRYPTO_KEY));
@@ -93,7 +92,7 @@ export class Pop3Job extends Job {
     client.on('login', (status /*, rawdata*/) => {
       if (status) {
         this.emit({
-          type: MailerEventType.list,
+          type: MailerReceiveEventType.list,
           message: 'Listing ...',
         });
         client.list();
@@ -113,7 +112,7 @@ export class Pop3Job extends Job {
         this.mailTeller.sizeList = data;
         if (msgcount > 0) {
           this.emit({
-            type: MailerEventType.uidl,
+            type: MailerReceiveEventType.uidl,
             message: 'Get uidl',
           });
           client.uidl();
@@ -125,11 +124,15 @@ export class Pop3Job extends Job {
     });
 
     const retrOne = () => {
+      if (this.abort) {
+        client.quit();
+        return;
+      }
       const msg = this.mailTeller.nextMsgNumber();
       const size = this.mailTeller.sizeList[msg];
       if (msg) {
         this.emit({
-          type: MailerEventType.progress,
+          type: MailerReceiveEventType.progress,
           message: `Recieving ${this.mailTeller.cunrrentNumber()} of ${
             this.mailTeller.totalNew
           }`,
@@ -159,6 +162,7 @@ export class Pop3Job extends Job {
       try {
         size = parseInt(this.mailTeller.sizeList[msgnumber]?.toString());
       } catch (e) {
+        this.error('邮件大小转换出错', e);
         console.error('邮件大小转换出错', e);
       }
       if (status === true) {
@@ -192,9 +196,7 @@ export class Pop3Job extends Job {
     });
 
     client.on('quit', (/*status, rawdata*/) => {
-      if (!this.isError) {
-        this.jobOwner.finishJob();
-      }
+      this.jobOwner.finishJob();
     });
   }
 }
