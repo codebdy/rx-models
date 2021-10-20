@@ -13,3 +13,4 @@ export const TOKEN_COUNT = 'count';
 export const TOKEN_CASCADE = 'cascade';
 export const TOKEN_TREE = 'tree';
 export const TOKEN_IDS = 'ids';
+export const TOKEN_FAKE_RELATION = 'fakeRelation';

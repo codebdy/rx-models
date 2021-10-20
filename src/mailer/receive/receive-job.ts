@@ -167,6 +167,7 @@ export abstract class ReceiveJob implements IReceiveJob {
         attachments: attachments,
         fromOldCustomer: fromOldCustomer,
         size: size,
+        receivedAddress: this.mailAddress,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)

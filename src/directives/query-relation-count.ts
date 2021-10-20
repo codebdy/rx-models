@@ -20,7 +20,7 @@ export class QueryRelationCountDirective extends QueryRelationDirective {
     return qb;
   }
 
-  filterResult(result: QueryResult): QueryResult {
-    throw new Error('Method not implemented.');
+  async filterResult(/*result: QueryResult*/): Promise<QueryResult> {
+    throw new Error('Method not implemented in QueryRelationCountDirective.');
   }
 }

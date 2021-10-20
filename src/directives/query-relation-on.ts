@@ -1,10 +1,11 @@
 import { DirectiveType } from 'src/directive/directive-type';
 import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
-import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
+import { parseOnSql } from 'src/magic-meta/query/parse-on-sql';
 
 export class QueryModelOrderByDirective extends QueryRelationDirective {
   static description = `
     Relation on directive.
+    该指令目前不能正常使用。
   `;
 
   static version = '1.0';
@@ -14,10 +15,7 @@ export class QueryModelOrderByDirective extends QueryRelationDirective {
   static directiveName = 'on';
 
   getWhereStatement(): [string, any] | void {
-    return parseWhereSql(
-      this.directiveMeta.value,
-      this.relationMeta,
-      this.magicService.me,
-    );
+    const sql = parseOnSql(this.directiveMeta.value, this.relationMeta);
+    return [sql, {}];
   }
 }

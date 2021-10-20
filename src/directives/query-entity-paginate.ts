@@ -34,7 +34,7 @@ export class QueryEntityPaginateDirective extends QueryDirective {
     return qb;
   }
 
-  filterResult(result: QueryResult): QueryResult {
+  async filterResult(result: QueryResult) {
     result.pagination = {
       pageSize: this.pageSize,
       pageIndex: this.pageIndex,

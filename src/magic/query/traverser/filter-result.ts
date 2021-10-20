@@ -17,7 +17,7 @@ export async function filterResult(
   }
   //进行directive过滤
   for (const directive of rootMeta.directives) {
-    result = directive.filterResult(result);
+    result = await directive.filterResult(result);
   }
   return result;
 }
