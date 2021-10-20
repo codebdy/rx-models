@@ -120,7 +120,7 @@ export class SendJob implements ISendJob {
     // send mail with defined transport object
     const info = await transporter.sendMail({
       from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
-      to: message.to?.value, // list of receivers
+      to: message.to, // list of receivers
       cc: message.cc,
       bcc: message.bcc,
       subject: message.subject, // Subject line
