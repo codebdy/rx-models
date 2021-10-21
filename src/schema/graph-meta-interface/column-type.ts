@@ -9,4 +9,5 @@ export enum ColumnType {
   Date = 'Date',
   SimpleJson = 'simple-json',
   SimpleArray = 'simple-array',
+  JsonArray = 'json-array',
 }

@@ -28,7 +28,7 @@ export function convertType(type: MetaColumnType): ColumnType {
     return Date;
   }
 
-  if (type === MetaColumnType.SimpleJson) {
+  if (type === MetaColumnType.SimpleJson || type === MetaColumnType.JsonArray) {
     return 'simple-json';
   }
 
