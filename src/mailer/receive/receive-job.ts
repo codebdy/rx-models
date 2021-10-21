@@ -109,9 +109,8 @@ export abstract class ReceiveJob implements IReceiveJob {
     }
     for (let i = 0; i < passedMail.attachments?.length; i++) {
       const attachementObj = passedMail.attachments[i];
-      const path = `${
-        this.mailAddress
-      }/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
+      const ext = getExt(attachementObj.filename);
+      const path = `${this.mailAddress}/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${ext}`;
       if (attachementObj.related) {
         //可能不需要保存
         continue;
