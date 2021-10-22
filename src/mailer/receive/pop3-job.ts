@@ -55,6 +55,7 @@ export class Pop3Job extends ReceiveJob {
   }
 
   receive(): void {
+    const self = this;
     const config = this.pop3Config;
     this.emit({
       type: MailerReceiveEventType.connect,
@@ -63,10 +64,10 @@ export class Pop3Job extends ReceiveJob {
     this.connecting = false;
 
     setTimeout(() => {
-      if (this.connecting) {
-        this.connecting = false;
+      if (self.connecting) {
+        self.connecting = false;
         console.log('Connect time out');
-        this.error('Connect time out');
+        self.error('Connect time out');
       }
     }, (config.timeout || DEFAULT_TIME_OUT) * 1000);
     const client = new POP3Client(config.port, config.host, {
