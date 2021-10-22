@@ -71,7 +71,7 @@ export class Pop3Job extends ReceiveJob {
     }, (config.timeout || DEFAULT_TIME_OUT) * 1000);
     const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
-      enabletls: false,
+      enabletls: config.ssl,
       debug: false,
     });
     this.client = client;
