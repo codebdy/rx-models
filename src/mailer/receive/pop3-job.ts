@@ -17,7 +17,7 @@ export class Pop3Job extends ReceiveJob {
   private readonly logger = new Logger('Mailer');
 
   private client: any;
-  private connecting: false;
+  private connecting = false;
 
   constructor(
     protected readonly typeOrmService: TypeOrmService,
@@ -55,19 +55,18 @@ export class Pop3Job extends ReceiveJob {
   }
 
   receive(): void {
-    const self = this;
     const config = this.pop3Config;
     this.emit({
       type: MailerReceiveEventType.connect,
       message: 'connecting to mail server ...',
     });
-    this.connecting = false;
+    this.connecting = true;
 
     setTimeout(() => {
-      if (self.connecting) {
-        self.connecting = false;
+      if (this.connecting) {
+        this.connecting = false;
         console.log('Connect time out');
-        self.error('Connect time out');
+        this.error('Connect time out');
       }
     }, (config.timeout || DEFAULT_TIME_OUT) * 1000);
     const client = new POP3Client(config.port, config.host, {
