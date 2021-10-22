@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
-import { sleep } from 'src/util/sleep';
 import { CRYPTO_KEY } from './consts';
 import { MailerTestService } from './mailer.test-service';
 import { MailerSendService } from './send/mailer.send.service';
@@ -50,7 +49,6 @@ export class MailerController {
   @Post('test-imap4')
   async testIMAP4() {
     try {
-      await sleep(500);
       return { status: false };
     } catch (error: any) {
       console.error('testIMAP4 error:', error);
@@ -68,7 +66,6 @@ export class MailerController {
   @Post('test-smtp')
   async testSMTP() {
     try {
-      await sleep(500);
       return { status: false };
     } catch (error: any) {
       console.error('testSMTP error:', error);
