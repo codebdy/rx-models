@@ -14,9 +14,12 @@ export interface TestResult {
 export class MailerTestService {
   testPOP3(config: MailReceiveConfig): Promise<TestResult> {
     return new Promise<TestResult>((resolve) => {
+      let connecting = true;
       setTimeout(() => {
-        console.debug('Connect time out');
-        resolve({ status: false, message: 'Connect time out' });
+        if (connecting) {
+          console.debug('Connect time out');
+          resolve({ status: false, message: 'Connect time out' });
+        }
       }, (config.timeout || DEFAULT_TIME_OUT) * 1000);
 
       const client = new POP3Client(config.port, config.host, {
@@ -26,15 +29,18 @@ export class MailerTestService {
       });
 
       client.on('connect', (data) => {
+        connecting = false;
         console.debug('connect:', data);
         client.login(config.account, decypt(config.password, CRYPTO_KEY));
       });
 
       client.on('login', (status, rawdata) => {
+        connecting = false;
         resolve({ status: status, message: rawdata });
       });
 
       client.on('error', (err) => {
+        connecting = false;
         console.debug(err.toString() + ' errno:' + err.errno);
         resolve({ status: false, message: err.toString() });
       });
