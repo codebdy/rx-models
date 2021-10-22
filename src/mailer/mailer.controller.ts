@@ -1,5 +1,6 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { sleep } from 'src/util/sleep';
 import { CRYPTO_KEY } from './consts';
 import { MailerSendService } from './send/mailer.send.service';
 
@@ -19,18 +20,54 @@ export class MailerController {
   @UseGuards(AuthGuard())
   @Post('test-pop3')
   async testPOP3() {
-    return { status: false };
+    try {
+      await sleep(500);
+      return { status: false };
+    } catch (error: any) {
+      console.error('testPOP3 error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
   @Post('test-imap4')
   async testIMAP4() {
-    return { status: false };
+    try {
+      await sleep(500);
+      return { status: false };
+    } catch (error: any) {
+      console.error('testIMAP4 error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
   @Post('test-smtp')
   async testSMTP() {
-    return { status: false };
+    try {
+      await sleep(500);
+      return { status: false };
+    } catch (error: any) {
+      console.error('testSMTP error:', error);
+      throw new HttpException(
+        {
+          status: 500,
+          error: error.message,
+        },
+        500,
+      );
+    }
   }
 }
