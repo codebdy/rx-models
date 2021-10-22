@@ -97,6 +97,7 @@ export class SendJob implements ISendJob {
       requiresAuth: mailConfig.smtp.requiresAuth,
       ignoreTLS: !mailConfig.smtp.requireTLS || false,
       requireTLS: mailConfig.smtp.requireTLS || false,
+      connectionTimeout: mailConfig.smtp.timeout * 1000, //单位是毫秒
       auth: {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
