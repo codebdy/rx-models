@@ -1,12 +1,24 @@
-import { Controller, Get, HttpException, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { sleep } from 'src/util/sleep';
 import { CRYPTO_KEY } from './consts';
+import { MailerTestService } from './mailer.test-service';
 import { MailerSendService } from './send/mailer.send.service';
 
 @Controller('mailer')
 export class MailerController {
-  constructor(private readonly sendService: MailerSendService) {}
+  constructor(
+    private readonly sendService: MailerSendService,
+    private readonly testService: MailerTestService,
+  ) {}
 
   /**
    * @returns 用户给邮件password字段加密的KEY
@@ -19,10 +31,9 @@ export class MailerController {
 
   @UseGuards(AuthGuard())
   @Post('test-pop3')
-  async testPOP3() {
+  async testPOP3(@Body() body: MailReceiveConfig) {
     try {
-      await sleep(500);
-      return { status: false };
+      return await this.testService.testPOP3(body);
     } catch (error: any) {
       console.error('testPOP3 error:', error);
       throw new HttpException(
