@@ -13,32 +13,32 @@ import { MailerReceiveEventType } from './receive-event';
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
 
-function getMailSrouceBox(imap4Folder: { value: string; label: string }) {
-  if (imap4Folder.value === Imap4Folder.InBoxToInBox) {
+function getMailSrouceBox(imap4Folder: string) {
+  if (imap4Folder === Imap4Folder.InBoxToInBox) {
     return MailBoxType.INBOX;
   }
-  if (imap4Folder.value === Imap4Folder.SentBoxToSentBox) {
+  if (imap4Folder === Imap4Folder.SentBoxToSentBox) {
     return MailBoxType.SENT;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToInBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToInBox) {
     return MailBoxType.JUNK;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToSpamBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToSpamBox) {
     return MailBoxType.JUNK;
   }
 }
 
-function getMailTargetBox(imap4Folder: { value: string; label: string }) {
-  if (imap4Folder.value === Imap4Folder.InBoxToInBox) {
+function getMailTargetBox(imap4Folder: string) {
+  if (imap4Folder === Imap4Folder.InBoxToInBox) {
     return MailBoxType.INBOX;
   }
-  if (imap4Folder.value === Imap4Folder.SentBoxToSentBox) {
+  if (imap4Folder === Imap4Folder.SentBoxToSentBox) {
     return MailBoxType.SENT;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToInBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToInBox) {
     return MailBoxType.INBOX;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToSpamBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToSpamBox) {
     return MailBoxType.JUNK;
   }
 }
