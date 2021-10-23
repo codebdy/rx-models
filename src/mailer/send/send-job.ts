@@ -1,5 +1,5 @@
 import { AddressItem } from 'src/entity-interface/AddressItem';
-import { Mail } from 'src/entity-interface/Mail';
+import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
@@ -10,6 +10,7 @@ import { ISendJob } from './i-send-job';
 import { MailOnQueue } from './mail-on-queue';
 import { ISendJobOwner } from './i-send-job-owner';
 import { MailerSendEventType } from './send-event';
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
@@ -136,11 +137,16 @@ export class SendJob implements ISendJob {
       references: message.references,
     });
 
-    console.log('Message sent: %s', info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    await this.typeOrmService.getRepository<Mail>(EntityMail).save({
+      id: message.id,
+      inMailBox: MailBoxType.LOCAL_OUTBOX,
+      messageId: info.messageId,
+    });
 
-    // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    this.jobOwner.emit({
+      type: MailerSendEventType.sentOneMail,
+      mailId: message.id,
+      mailSubject: message.subject,
+    });
   }
 }
