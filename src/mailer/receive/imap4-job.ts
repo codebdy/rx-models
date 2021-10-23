@@ -81,7 +81,7 @@ export class Imap4Job extends ReceiveJob {
   ) {
     if (!buffer || !parsedMail || !uidl) {
       //还没有解析完，返回
-      console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
+      //console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
       return;
     }
     this.saveMail(buffer, parsedMail, uidl, mailBox, size)
@@ -224,6 +224,9 @@ export class Imap4Job extends ReceiveJob {
       bodies: [''],
     });
     f.on('message', (msg /*, seqno*/) => {
+      if (this.isAborted) {
+        return;
+      }
       let uid = '';
       let parsedMail;
       let mailData;
@@ -300,6 +303,7 @@ export class Imap4Job extends ReceiveJob {
   abort() {
     try {
       this.isAborted = true;
+      console.debug('Imap4终止, isAborted:' + this.isAborted);
       this.client?.end();
     } catch (error) {
       const errorMsg = 'Abort error:' + error;
