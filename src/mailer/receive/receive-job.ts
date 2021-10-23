@@ -12,7 +12,7 @@ import {
 } from 'src/entity-interface/MailIdentifier';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
+import { BUCKET_MAILS, BUCKET_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
 import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailTeller } from './mail-teller';
@@ -110,7 +110,7 @@ export abstract class ReceiveJob implements IReceiveJob {
     for (let i = 0; i < passedMail.attachments?.length; i++) {
       const attachementObj = passedMail.attachments[i];
       const ext = getExt(attachementObj.filename);
-      const path = `${this.mailAddress}/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${ext}`;
+      const path = `${this.mailAddress}/${BUCKET_ATTACHMENTS}/${uidl}-${i}.${ext}`;
       if (attachementObj.related) {
         //可能不需要保存
         continue;

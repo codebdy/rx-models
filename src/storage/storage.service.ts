@@ -4,7 +4,7 @@ import { EntityRxConfig, RxConfig } from 'src/entity-interface/RxConfig';
 import { RxStorageType } from 'src/entity-interface/RxStorageType';
 import { RxBaseService } from 'src/rxbase/rxbase.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { CONFIG_KEY_STORAGE, FOLDER_UPLOADS, ImageSize } from 'src/util/consts';
+import { CONFIG_KEY_STORAGE, BUCKET_UPLOADS, ImageSize } from 'src/util/consts';
 import { AliyunClient } from './aliyun/AliyunClient';
 import { DiskClient } from './disk/DiskClient';
 import { StorageClient } from './storage.client';
@@ -82,9 +82,11 @@ export class StorageService implements OnModuleInit {
       await this.onModuleInit();
     }
     if (this.storageType === RxStorageType.Disk) {
-      (this.storageClient as DiskClient).setHost(this.baseService.getHost());
+      (this.storageClient as unknown as DiskClient).setHost(
+        this.baseService.getHost(),
+      );
     }
-    return await this.storageClient.resizeImage(path, FOLDER_UPLOADS, size);
+    return await this.storageClient.resizeImage(path, BUCKET_UPLOADS, size);
   }
 
   async fileLocalPath(path: string) {
@@ -92,8 +94,14 @@ export class StorageService implements OnModuleInit {
       await this.onModuleInit();
     }
     if (this.storageType === RxStorageType.Disk) {
-      (this.storageClient as DiskClient).setHost(this.baseService.getHost());
+      (this.storageClient as unknown as DiskClient).setHost(
+        this.baseService.getHost(),
+      );
     }
-    return await this.storageClient.fileLocalPath(path, FOLDER_UPLOADS);
+    return await this.storageClient.fileLocalPath(path, BUCKET_UPLOADS);
+  }
+
+  async fileUrl(path: string, bucket: string = BUCKET_UPLOADS) {
+    return await this.storageClient.fileUrl(path, bucket);
   }
 }
