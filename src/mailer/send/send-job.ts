@@ -121,6 +121,9 @@ export class SendJob implements ISendJob {
     // send mail with defined transport object
     const info = await transporter.sendMail({
       from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
+      replyTo: `"${mailConfig.sendName}" <${
+        mailConfig.smtp?.replyTo || mailConfig.address
+      }>`,
       to: message.to, // list of receivers
       cc: message.cc,
       bcc: message.bcc,
@@ -128,6 +131,8 @@ export class SendJob implements ISendJob {
       text: message.text, // plain text body
       html: message.html, // html body
       attachments: attachments,
+      inReplyTo: message.inReplyTo,
+      references: message.references,
     });
 
     console.log('Message sent: %s', info.messageId);

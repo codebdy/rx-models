@@ -155,7 +155,7 @@ export abstract class ReceiveJob implements IReceiveJob {
         date: passedMail.date,
         messageId: passedMail.messageId,
         inReplyTo: passedMail.inReplyTo,
-        replyTo: passedMail.replyTo,
+        replyTo: passedMail.replyTo?.value,
         references: passedMail.references,
         html: passedMail.html ? passedMail.html : null,
         text: passedMail.text ? passedMail.text : null,
