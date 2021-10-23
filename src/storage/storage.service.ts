@@ -85,12 +85,15 @@ export class StorageService implements OnModuleInit {
     return await this.storageClient.resizeImage(path, BUCKET_UPLOADS, size);
   }
 
-  async fileLocalPath(path: string) {
+  async fileLocalPath(path: string, bucket: string) {
     if (!this.inited) {
       await this.onModuleInit();
     }
     this.setHost();
-    return await this.storageClient.fileLocalPath(path, BUCKET_UPLOADS);
+    return await this.storageClient.fileLocalPath(
+      path,
+      bucket || BUCKET_UPLOADS,
+    );
   }
 
   async fileUrl(path: string, bucket?: string) {

@@ -108,12 +108,13 @@ export class SendJob implements ISendJob {
     console.log('哈哈', option, message.to[0]);
 
     const attachments = [];
-    for (const attachment of message.draftAttachments || []) {
+    for (const attachment of message.attachments || []) {
       const fileUrlOrPath = await this.storageService.fileLocalPath(
-        attachment.rxMedia?.path,
+        attachment.path,
+        attachment.bucket,
       );
       attachments.push({
-        filename: attachment.rxMedia.name,
+        filename: attachment.fileName,
         path: fileUrlOrPath?.startsWith('http') ? undefined : fileUrlOrPath,
         href: fileUrlOrPath?.startsWith('http') ? fileUrlOrPath : undefined,
       });

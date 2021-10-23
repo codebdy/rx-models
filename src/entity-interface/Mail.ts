@@ -1,6 +1,5 @@
 import { Attachment } from './Attachment';
 import { MailIdentifier } from './MailIdentifier';
-import { DraftAttachment } from './DraftAttachment';
 import { RxUser } from './RxUser';
 import { MailLabel } from './MailLabel';
 import { MailPriority } from './MailPriority';
@@ -49,5 +48,4 @@ export interface Mail  {
   labels?: MailLabel[];
   attachments?: Attachment[];
   identifier?: MailIdentifier;
-  draftAttachments?: DraftAttachment[];
 }
