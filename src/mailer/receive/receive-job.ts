@@ -182,7 +182,7 @@ export abstract class ReceiveJob implements IReceiveJob {
       message: 'Recevied one mail',
       subject: passedMail.subject,
       inMailbox: mailBox,
-    })
+    });
   }
 
   continue(): void {
