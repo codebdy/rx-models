@@ -1,4 +1,4 @@
-import { MailBoxType } from "src/entity-interface/MailBoxType";
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
 
 export enum MailerReceiveEventType {
   error = 'error',
