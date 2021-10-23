@@ -23,8 +23,7 @@ export class MailerSendService {
       .getRepository<Mail>(EntityMail)
       .createQueryBuilder('mail')
       .leftJoinAndSelect('mail.owner', 'owner')
-      .leftJoinAndSelect('mail.draftAttachments', 'attachments')
-      .leftJoinAndSelect('attachments.rxMedia', 'rxMedia')
+      .leftJoinAndSelect('mail.attachments', 'attachments')
       .where('mail.id in (:...ids)', { ids: ids })
       .getMany();
 
