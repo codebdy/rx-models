@@ -101,7 +101,10 @@ export class StorageService implements OnModuleInit {
     return await this.storageClient.fileLocalPath(path, BUCKET_UPLOADS);
   }
 
-  async fileUrl(path: string, bucket: string = BUCKET_UPLOADS) {
-    return await this.storageClient.fileUrl(path, bucket);
+  async fileUrl(path: string, bucket?: string) {
+    return await this.storageClient.fileUrl(
+      path,
+      bucket ? bucket : BUCKET_UPLOADS,
+    );
   }
 }
