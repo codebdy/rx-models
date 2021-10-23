@@ -7,6 +7,8 @@ import { CRYPTO_KEY } from './consts';
 import { POP3Client } from './receive/poplib';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Imap = require('imap');
 
 export interface TestResult {
   status: boolean;
@@ -72,11 +74,36 @@ export class MailerTestService {
 
       transporter.verify(function (error) {
         if (error) {
-          console.debug(error);
+          console.debug('Test Smtp Error', error);
           resolve({ status: false, message: error.toString() });
         } else {
           resolve({ status: true });
         }
+      });
+    });
+  }
+
+  testIMAP4(config: MailReceiveConfig): Promise<TestResult> {
+    return new Promise<TestResult>((resolve) => {
+      const client = new Imap({
+        user: config.account,
+        password: decypt(config.password, CRYPTO_KEY),
+        host: config.host,
+        port: config.port,
+        tls: config.ssl,
+        connTimeout: config.timeout * 1000,
+        //debug: console.error,
+      });
+      client.connect();
+      client.once('ready', () => {
+        resolve({ status: true });
+        client.destroy();
+      });
+
+      client.once('error', (error) => {
+        console.debug('Test imap Error', error);
+        resolve({ status: false, message: error.toString() });
+        client.destroy();
       });
     });
   }

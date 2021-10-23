@@ -108,7 +108,8 @@ export class Imap4Job extends ReceiveJob {
       password: decypt(this.imap4Config.password, CRYPTO_KEY),
       host: this.imap4Config.host,
       port: this.imap4Config.port,
-      tls: true,
+      tls: this.imap4Config.ssl,
+      connTimeout: this.imap4Config.timeout * 1000,
       //debug: console.error,
     });
 

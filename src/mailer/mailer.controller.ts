@@ -48,9 +48,9 @@ export class MailerController {
 
   @UseGuards(AuthGuard())
   @Post('test-imap4')
-  async testIMAP4() {
+  async testIMAP4(@Body() body: MailReceiveConfig) {
     try {
-      return { status: false };
+      return await this.testService.testIMAP4(body);
     } catch (error: any) {
       console.error('testIMAP4 error:', error);
       throw new HttpException(

@@ -23,4 +23,4 @@ export const DISK_STORAGE_PATH = './storage/';
 export const DISK_STORAGE_PUBLIC_PATH = './public/storage/';
 export const DISK_STORAGE_PUBLIC_URL_BASE = '/storage/';
 export const CONFIG_KEY_STORAGE = 'storage';
-export const DEFAULT_TIME_OUT = 60;
+export const DEFAULT_TIME_OUT = 30;
