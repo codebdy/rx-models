@@ -11,6 +11,7 @@ import { DirectiveMeta } from '../directive.meta';
 
 export class PostDirective {
   constructor(
+    protected readonly entityManger: EntityManager,
     protected readonly directiveMeta: DirectiveMeta,
     protected readonly magicService: MagicService,
     protected readonly mailerSendService: MailerSendService,

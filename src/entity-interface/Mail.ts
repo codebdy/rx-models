@@ -7,9 +7,8 @@ import { MailBoxType } from './MailBoxType';
 import { SendStatus } from './SendStatus';
 import { AddressItem } from './AddressItem';
 
-
 export const EntityMail = 'Mail';
-export interface Mail  {
+export interface Mail {
   id?: number;
   subject?: string;
   from?: AddressItem;

@@ -2,7 +2,6 @@ import { AddressItem } from 'src/entity-interface/AddressItem';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { CRYPTO_KEY } from '../consts';
 import { decypt } from 'src/util/cropt-js';
 import { SendStatus } from 'src/entity-interface/SendStatus';
@@ -11,6 +10,7 @@ import { MailOnQueue } from './mail-on-queue';
 import { ISendJobOwner } from './i-send-job-owner';
 import { MailerSendEventType } from './send-event';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
+import { EntityManager } from 'typeorm';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
@@ -23,7 +23,7 @@ export class SendJob implements ISendJob {
   private status = SendStatus.WAITING;
   private canCancel = false;
   constructor(
-    protected readonly typeOrmService: TypeOrmService,
+    private readonly entityManger: EntityManager,
     protected readonly storageService: StorageService,
     public readonly jobOwner: ISendJobOwner,
     private readonly mail: Mail,
@@ -66,7 +66,7 @@ export class SendJob implements ISendJob {
     try {
       this.status = SendStatus.SENDING;
       this.jobOwner.onQueueChange();
-      const mailConfig = await this.typeOrmService
+      const mailConfig = await this.entityManger
         .getRepository<MailConfig>(EntityMailConfig)
         .findOne(this.mail.fromConfigId);
       if (!mailConfig?.smtp) {
@@ -137,7 +137,7 @@ export class SendJob implements ISendJob {
       references: message.references,
     });
 
-    await this.typeOrmService.getRepository<Mail>(EntityMail).save({
+    await this.entityManger.getRepository<Mail>(EntityMail).save({
       id: message.id,
       inMailBox: MailBoxType.LOCAL_OUTBOX,
       messageId: info.messageId,

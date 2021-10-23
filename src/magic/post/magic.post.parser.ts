@@ -8,11 +8,13 @@ import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.collet
 import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { SchemaService } from 'src/schema/schema.service';
+import { EntityManager } from 'typeorm';
 import { AbilityService } from '../ability.service';
 import { JsonUnit } from '../base/json-unit';
 
 export class MagicPostParser {
   constructor(
+    private readonly entityManager: EntityManager,
     private readonly directiveService: PostDirectiveService,
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
@@ -71,6 +73,7 @@ export class MagicPostParser {
       );
       instanceCollection.directives.push(
         new directiveClass(
+          this.entityManager,
           directiveMeta,
           this.magicService,
           this.mailerSendService,
@@ -158,6 +161,7 @@ export class MagicPostParser {
         this.directiveService.findRelationDirectiveOrFailed(directiveMeta.name);
       relationMetaCollection.directives.push(
         new directiveClass(
+          this.entityManager,
           directiveMeta,
           this.magicService,
           this.mailerSendService,

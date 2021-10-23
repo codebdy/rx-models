@@ -23,6 +23,7 @@ export class MagicPost {
   async post(json: any) {
     const savedEntites = {};
     const instances = await new MagicPostParser(
+      this.entityManager,
       this.postDirectiveService,
       this.schemaService,
       this.magicService,
