@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
+import { SmtpConfig } from 'src/entity-interface/SmtpConfig';
 import { CRYPTO_KEY } from './consts';
 import { MailerTestService } from './mailer.test-service';
 import { MailerSendService } from './send/mailer.send.service';
@@ -64,9 +65,9 @@ export class MailerController {
 
   @UseGuards(AuthGuard())
   @Post('test-smtp')
-  async testSMTP() {
+  async testSMTP(@Body() body: SmtpConfig) {
     try {
-      return { status: false };
+      return await this.testService.testSMTP(body);
     } catch (error: any) {
       console.error('testSMTP error:', error);
       throw new HttpException(
