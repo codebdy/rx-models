@@ -107,7 +107,7 @@ export class StorageService implements OnModuleInit {
   private setHost() {
     if (this.storageType === RxStorageType.Disk) {
       (this.storageClient as unknown as DiskClient).setHost(
-        this.baseService.getHost()
+        this.baseService.getHost(),
       );
     }
   }

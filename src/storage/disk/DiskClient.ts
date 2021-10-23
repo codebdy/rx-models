@@ -99,8 +99,6 @@ export class DiskClient implements StorageClient {
     const publicFileUrl =
       this.host + DISK_STORAGE_PUBLIC_URL_BASE + nameWithBucket;
 
-    console.log('追踪地址', this.host, publicFileUrl);
-
     await this.checkAndCreateDir(dirname(publicStoragePath));
     if (PlatformTools.fileExist(publicStoragePath)) {
       return publicFileUrl;
