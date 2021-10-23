@@ -177,6 +177,12 @@ export abstract class ReceiveJob implements IReceiveJob {
         mail: mail,
         fromBox: mailBox,
       });
+    this.emit({
+      type: MailerReceiveEventType.receivedOneMail,
+      message: 'Recevied one mail',
+      subject: passedMail.subject,
+      inMailbox: mailBox,
+    })
   }
 
   continue(): void {
