@@ -43,6 +43,7 @@ export interface Mail {
   isPlainText?: boolean;
   headers?: any;
   receivedAddress?: string;
+  toAddress?: string;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];

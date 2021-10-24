@@ -135,6 +135,7 @@ export abstract class ReceiveJob implements IReceiveJob {
 
     let fromOldCustomer = false;
     const fromAddress = passedMail.from?.value[0]?.address;
+    const toAddress = passedMail.to?.value[0]?.address;
     fromOldCustomer = !!(await this.typeOrmService
       .getRepository<MailConfig>(EntityMailConfig)
       .findOne({ address: fromAddress }));
@@ -164,6 +165,7 @@ export abstract class ReceiveJob implements IReceiveJob {
         owner: { id: this.accountId },
         inMailBox: mailBox,
         fromAddress: fromAddress,
+        toAddress: toAddress,
         attachments: attachments,
         fromOldCustomer: fromOldCustomer,
         size: size,
