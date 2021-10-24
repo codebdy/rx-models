@@ -2,7 +2,7 @@ import { AddressItem } from 'src/entity-interface/AddressItem';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
-import { CRYPTO_KEY } from '../consts';
+import { CRYPTO_KEY, RX_MAIL_SIGN_ID, RX_MAIL_TO_ID } from '../consts';
 import { decypt } from 'src/util/cropt-js';
 import { SendStatus } from 'src/entity-interface/SendStatus';
 import { ISendJob } from './i-send-job';
@@ -11,6 +11,7 @@ import { ISendJobOwner } from './i-send-job-owner';
 import { MailerSendEventType } from './send-event';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { EntityManager } from 'typeorm';
+import _ from 'lodash';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
@@ -131,7 +132,9 @@ export class SendJob implements ISendJob {
       bcc: message.bcc,
       subject: message.subject, // Subject line
       text: message.text, // plain text body
-      html: message.html, // html body
+      html: message.html
+        ?.replace(RX_MAIL_SIGN_ID, 'rx-mailer-' + _.uniqueId())
+        .replace(RX_MAIL_TO_ID, 'rx-mailer-' + _.uniqueId()), //删掉邮件编辑用的id
       attachments: attachments,
       inReplyTo: message.inReplyTo,
       references: message.references,
