@@ -142,7 +142,7 @@ export class SendJob implements ISendJob {
 
     await this.entityManger.getRepository<Mail>(EntityMail).save({
       id: message.id,
-      inMailBox: MailBoxType.LOCAL_OUTBOX,
+      inMailBox: MailBoxType.LOCAL_SENT,
       messageId: info.messageId,
     });
 
