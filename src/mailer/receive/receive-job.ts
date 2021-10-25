@@ -170,10 +170,10 @@ export abstract class ReceiveJob implements IReceiveJob {
         fromOldCustomer: fromOldCustomer,
         size: size,
         receivedAddress: this.mailAddress,
-        seen:
+        unRead:
           mailBox === MailBoxType.INBOX || mailBox === MailBoxType.JUNK
-            ? false
-            : true,
+            ? true
+            : undefined,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)

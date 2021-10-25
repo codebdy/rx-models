@@ -26,7 +26,7 @@ export interface Mail {
   inMailBox: MailBoxType;
   showAsOriginal?: boolean;
   fromAddress?: string;
-  seen?: boolean;
+  unRead?: boolean;
   answered?: boolean;
   deleted?: boolean;
   forwarded?: boolean;
