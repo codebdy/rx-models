@@ -29,10 +29,18 @@ export class QueryDirective {
   }
 
   /**
-   * 构建条件SQL，请不要包含where
+   * 构建条件SQL，请不要包含where， AND条件
    * @returns 返回构建好的SQL语句跟参数
    */
-  getWhereStatement(): [string, any] | void {
+  getAndWhereStatement(): [string, any] | void {
+    return;
+  }
+
+  /**
+   * 构建条件SQL，请不要包含where， OR条件
+   * @returns
+   */
+  getOrWhereStatement(): [string, any] | void {
     return;
   }
 

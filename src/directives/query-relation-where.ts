@@ -14,7 +14,7 @@ export class QueryModelWhereDirective extends QueryRelationDirective {
 
   static directiveName = 'where';
 
-  getWhereStatement(): [string, any] | void {
+  getAndWhereStatement(): [string, any] | void {
     const sql = parseOnSql(this.directiveMeta.value, this.relationMeta);
     return [sql, {}];
   }

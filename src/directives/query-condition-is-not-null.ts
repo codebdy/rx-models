@@ -10,7 +10,7 @@ export class QueryConditionEqualDirective extends QueryConditionDirective {
 
   static directiveName = 'isNotNull';
 
-  getWhereStatement(): [string, any] {
+  getAndWhereStatement(): [string, any] {
     //const paramName = 'param' + createId();
     //const paramValue = this.value;
     return [`${this.field} IS NOT NULL `, {}];

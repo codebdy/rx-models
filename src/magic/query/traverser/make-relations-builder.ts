@@ -20,13 +20,17 @@ function makeOneRelationBuilder(
   qb: SelectQueryBuilder<any>,
   me: RxUser,
 ) {
-  const whereStringArray: string[] = [];
-  let whereParams: any = {};
+  const whereAndStringArray: string[] = [];
+  let whereAndParams: any = {};
   for (const directive of relationMeta.directives) {
-    const [whereStr, param] = directive.getWhereStatement() || [];
-    if (whereStr) {
-      whereStringArray.push(whereStr);
-      whereParams = { ...whereParams, ...param };
+    const [whereStrAnd, paramAnd] = directive.getAndWhereStatement() || [];
+    if (whereStrAnd) {
+      whereAndStringArray.push(whereStrAnd);
+      whereAndParams = { ...whereAndParams, ...paramAnd };
+    }
+    const [whereStrOr, paramOr] = directive.getOrWhereStatement() || [];
+    if (whereStrOr) {
+      qb.orWhere(whereStrOr, paramOr);
     }
     directive.addToQueryBuilder(qb);
   }
@@ -38,14 +42,14 @@ function makeOneRelationBuilder(
   );
 
   if (whereArray.length > 0) {
-    whereStringArray.push(whereArray.join(' OR '));
+    whereAndStringArray.push(whereArray.join(' OR '));
   }
 
   qb.leftJoinAndSelect(
     `${relationMeta.parentEntityMeta.alias}.${relationMeta.name}`,
     relationMeta.alias,
-    whereStringArray.join(' AND '),
-    { ...whereParams, ...params },
+    whereAndStringArray.join(' AND '),
+    { ...whereAndParams, ...params },
   );
 
   qb = makeRelationsBuilder(
