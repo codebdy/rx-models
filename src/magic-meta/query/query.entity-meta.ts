@@ -70,13 +70,23 @@ export class QueryEntityMeta {
     }
   }
 
-  findRelatiOrFailed(relationName: string): QueryRelationMeta {
+  /**
+   *
+   * @param relationString 格式relationName.otherName.otherName
+   * @returns
+   */
+  findRelatiOrFailed(relationString: string): QueryRelationMeta {
+    console.log('哈哈哈', relationString);
+    const [relationName, leftString] = relationString.split('.');
     const relation = this.findRelation(relationName);
     if (relation) {
+      if (leftString) {
+        return relation.findRelatiOrFailed(leftString);
+      }
       return relation;
     }
     throw new Error(
-      `Please add relation ${relationName} of ${this.entity} to query meta`,
+      `Please add relation ${relationString} of ${this.entity} to query meta`,
     );
   }
 }

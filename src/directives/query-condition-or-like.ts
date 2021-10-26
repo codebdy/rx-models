@@ -3,7 +3,7 @@ import { QueryConditionDirective } from 'src/directive/query/query.condition-dir
 import { createId } from 'src/util/create-id';
 
 export class QueryConditionOrLikeDirective extends QueryConditionDirective {
-  static description = `Condition orLike irective.`;
+  static description = `Condition orLike irective. 本指令未仔细测试`;
 
   static version = '1.0';
 

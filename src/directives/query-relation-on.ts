@@ -1,6 +1,6 @@
 import { DirectiveType } from 'src/directive/directive-type';
 import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
-import { parseOnSql } from 'src/magic-meta/query/parse-on-sql';
+//import { parseOnSql } from 'src/magic-meta/query/parse-on-sql';
 
 export class QueryModelOnDirective extends QueryRelationDirective {
   static description = `
@@ -14,8 +14,8 @@ export class QueryModelOnDirective extends QueryRelationDirective {
 
   static directiveName = 'on';
 
-  getAndWhereStatement(): [string, any] | void {
-    const sql = parseOnSql(this.directiveMeta.value, this.relationMeta);
-    return [sql, {}];
-  }
+  //getAndWhereStatement(): [string, any] | void {
+    //const sql = parseOnSql(this.directiveMeta.value, this.relationMeta);
+    //return [sql, {}];
+  //}
 }

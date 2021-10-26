@@ -21,19 +21,30 @@ function makeOneRelationBuilder(
   me: RxUser,
 ) {
   const whereAndStringArray: string[] = [];
-  let whereAndParams: any = {};
+  const whereOrStringArray: string[] = [];
+  let whereParams: any = {};
   for (const directive of relationMeta.directives) {
     const [whereStrAnd, paramAnd] = directive.getAndWhereStatement() || [];
     if (whereStrAnd) {
       whereAndStringArray.push(whereStrAnd);
-      whereAndParams = { ...whereAndParams, ...paramAnd };
+      whereParams = { ...whereParams, ...paramAnd };
     }
     const [whereStrOr, paramOr] = directive.getOrWhereStatement() || [];
     if (whereStrOr) {
-      qb.orWhere(whereStrOr, paramOr);
+      whereOrStringArray.push(whereStrOr);
+      whereParams = { ...whereParams, ...paramOr };
     }
+    //if (whereStrOr) {
+    //  qb.orWhere(whereStrOr, paramOr);
+    //}
     directive.addToQueryBuilder(qb);
   }
+
+  //本部分代码并未严格测试
+  const orSQLString =
+    whereOrStringArray.length > 0
+      ? ' OR ' + whereOrStringArray.join(' OR ')
+      : '';
 
   const [whereArray, params] = getEntityQueryAbilitySql(
     relationMeta.abilities,
@@ -48,8 +59,8 @@ function makeOneRelationBuilder(
   qb.leftJoinAndSelect(
     `${relationMeta.parentEntityMeta.alias}.${relationMeta.name}`,
     relationMeta.alias,
-    whereAndStringArray.join(' AND '),
-    { ...whereAndParams, ...params },
+    whereAndStringArray.join(' AND ') + orSQLString,
+    { ...whereParams, ...params },
   );
 
   qb = makeRelationsBuilder(
