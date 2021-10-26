@@ -79,6 +79,10 @@ export function parseWhereSql(
         if (operatorValue === 'IN') {
           return `${operands[0]} ${operatorValue} (:...${paramName})`;
         }
+
+        if (operatorValue === 'LIKE') {
+          return `LOWER(${operands[0]}) ${operatorValue} LOWER(:${paramName})`;
+        }
         return `${operands[0]} ${operatorValue} :${paramName}`;
     }
   };
