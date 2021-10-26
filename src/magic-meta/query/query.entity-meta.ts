@@ -76,7 +76,6 @@ export class QueryEntityMeta {
    * @returns
    */
   findRelatiOrFailed(relationString: string): QueryRelationMeta {
-    console.log('哈哈哈', relationString);
     const [relationName, leftString] = relationString.split('.');
     const relation = this.findRelation(relationName);
     if (relation) {
