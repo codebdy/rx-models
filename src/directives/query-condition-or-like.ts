@@ -2,17 +2,18 @@ import { DirectiveType } from 'src/directive/directive-type';
 import { QueryConditionDirective } from 'src/directive/query/query.condition-directive';
 import { createId } from 'src/util/create-id';
 
-export class QueryConditionLikeDirective extends QueryConditionDirective {
-  static description = `Condition like irective.`;
+export class QueryConditionOrLikeDirective extends QueryConditionDirective {
+  static description = `Condition orLike irective. 本指令未仔细测试`;
 
   static version = '1.0';
 
   static directiveType = DirectiveType.QUERY_CONDITION_DIRECTIVE;
 
-  static directiveName = 'like';
+  static directiveName = 'orLike';
 
-  getAndWhereStatement(): [string, any] {
+  getOrWhereStatement(): [string, any] | void {
     const paramName = 'param' + createId();
+    console.log('getOrWhereStatement 被调用');
     return [
       `${this.field} LIKE :${paramName} `,
       {

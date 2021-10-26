@@ -1,7 +1,7 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { StorageService } from 'src/storage/storage.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { EntityManager } from 'typeorm';
 import { MailerSendTasksPool } from './send-tasks-pool';
 
 @Injectable()
@@ -9,27 +9,24 @@ export class MailerSendService {
   constructor(
     private readonly tasksPool: MailerSendTasksPool,
     protected readonly storageService: StorageService,
-    @Inject(forwardRef(() => TypeOrmService))
-    protected readonly typeOrmService: TypeOrmService,
   ) {}
 
   //注意，这是一个异步函数
-  async sendMails(ids?: number[]) {
+  async sendMails(ids: number[], entityManger: EntityManager) {
     if (!ids?.length) {
       return;
     }
 
-    const mails = await this.typeOrmService
+    const mails = await entityManger
       .getRepository<Mail>(EntityMail)
       .createQueryBuilder('mail')
       .leftJoinAndSelect('mail.owner', 'owner')
-      .leftJoinAndSelect('mail.draftAttachments', 'attachments')
-      .leftJoinAndSelect('attachments.rxMedia', 'rxMedia')
+      .leftJoinAndSelect('mail.attachments', 'attachments')
       .where('mail.id in (:...ids)', { ids: ids })
       .getMany();
 
     for (const mail of mails) {
-      await this.tasksPool.createTask(mail);
+      await this.tasksPool.createTask(mail, entityManger);
     }
   }
 }

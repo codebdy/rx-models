@@ -15,7 +15,7 @@ export class QueryEntityWhereDirective extends QueryDirective {
 
   static directiveName = 'where';
 
-  getWhereStatement(): [string, any] | void {
+  getAndWhereStatement(): [string, any] | void {
     const meta = this.rootMeta;
     //添加条件用到的关联
     const relationInfos = parseRelationsFromWhereSql(this.directiveMeta.value);

@@ -1,15 +1,17 @@
 import { AddressItem } from 'src/entity-interface/AddressItem';
-import { Mail } from 'src/entity-interface/Mail';
+import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { CRYPTO_KEY } from '../consts';
+import { CRYPTO_KEY, RX_MAIL_SIGN_ID, RX_MAIL_TO_ID } from '../consts';
 import { decypt } from 'src/util/cropt-js';
 import { SendStatus } from 'src/entity-interface/SendStatus';
 import { ISendJob } from './i-send-job';
 import { MailOnQueue } from './mail-on-queue';
 import { ISendJobOwner } from './i-send-job-owner';
 import { MailerSendEventType } from './send-event';
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
+import { EntityManager } from 'typeorm';
+import _ from 'lodash';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
@@ -22,7 +24,7 @@ export class SendJob implements ISendJob {
   private status = SendStatus.WAITING;
   private canCancel = false;
   constructor(
-    protected readonly typeOrmService: TypeOrmService,
+    private readonly entityManger: EntityManager,
     protected readonly storageService: StorageService,
     public readonly jobOwner: ISendJobOwner,
     private readonly mail: Mail,
@@ -65,7 +67,7 @@ export class SendJob implements ISendJob {
     try {
       this.status = SendStatus.SENDING;
       this.jobOwner.onQueueChange();
-      const mailConfig = await this.typeOrmService
+      const mailConfig = await this.entityManger
         .getRepository<MailConfig>(EntityMailConfig)
         .findOne(this.mail.fromConfigId);
       if (!mailConfig?.smtp) {
@@ -97,6 +99,7 @@ export class SendJob implements ISendJob {
       requiresAuth: mailConfig.smtp.requiresAuth,
       ignoreTLS: !mailConfig.smtp.requireTLS || false,
       requireTLS: mailConfig.smtp.requireTLS || false,
+      connectionTimeout: mailConfig.smtp.timeout * 1000, //单位是毫秒
       auth: {
         user: mailConfig.smtp.account,
         pass: decypt(mailConfig.smtp.password, CRYPTO_KEY),
@@ -107,12 +110,13 @@ export class SendJob implements ISendJob {
     console.log('哈哈', option, message.to[0]);
 
     const attachments = [];
-    for (const attachment of message.draftAttachments || []) {
+    for (const attachment of message.attachments || []) {
       const fileUrlOrPath = await this.storageService.fileLocalPath(
-        attachment.rxMedia?.path,
+        attachment.path,
+        attachment.bucket,
       );
       attachments.push({
-        filename: attachment.rxMedia.name,
+        filename: attachment.fileName,
         path: fileUrlOrPath?.startsWith('http') ? undefined : fileUrlOrPath,
         href: fileUrlOrPath?.startsWith('http') ? fileUrlOrPath : undefined,
       });
@@ -120,20 +124,32 @@ export class SendJob implements ISendJob {
     // send mail with defined transport object
     const info = await transporter.sendMail({
       from: `"${mailConfig.sendName}" <${mailConfig.address}>`, // sender address
+      replyTo: `"${mailConfig.sendName}" <${
+        mailConfig.smtp?.replyTo || mailConfig.address
+      }>`,
       to: message.to, // list of receivers
       cc: message.cc,
       bcc: message.bcc,
       subject: message.subject, // Subject line
       text: message.text, // plain text body
-      html: message.html, // html body
+      html: message.html
+        ?.replace(RX_MAIL_SIGN_ID, 'rx-mailer-' + _.uniqueId())
+        .replace(RX_MAIL_TO_ID, 'rx-mailer-' + _.uniqueId()), //删掉邮件编辑用的id
       attachments: attachments,
+      inReplyTo: message.inReplyTo,
+      references: message.references,
     });
 
-    console.log('Message sent: %s', info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    await this.entityManger.getRepository<Mail>(EntityMail).save({
+      id: message.id,
+      inMailBox: MailBoxType.LOCAL_SENT,
+      messageId: info.messageId,
+    });
 
-    // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    this.jobOwner.emit({
+      type: MailerSendEventType.sentOneMail,
+      mailId: message.id,
+      mailSubject: message.subject,
+    });
   }
 }

@@ -9,6 +9,7 @@ import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { POP3Client } from './poplib';
 import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailerReceiveEventType } from './receive-event';
+import { DEFAULT_TIME_OUT } from 'src/util/consts';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 
@@ -16,6 +17,7 @@ export class Pop3Job extends ReceiveJob {
   private readonly logger = new Logger('Mailer');
 
   private client: any;
+  private connecting = false;
 
   constructor(
     protected readonly typeOrmService: TypeOrmService,
@@ -49,6 +51,7 @@ export class Pop3Job extends ReceiveJob {
   abort(): void {
     this.isAborted = true;
     this.client?.quit();
+    console.debug('pop3 abort');
   }
 
   receive(): void {
@@ -57,10 +60,18 @@ export class Pop3Job extends ReceiveJob {
       type: MailerReceiveEventType.connect,
       message: 'connecting to mail server ...',
     });
+    this.connecting = true;
 
+    setTimeout(() => {
+      if (this.connecting) {
+        this.connecting = false;
+        console.log('Connect time out');
+        this.error('Connect time out');
+      }
+    }, (config.timeout || DEFAULT_TIME_OUT) * 1000);
     const client = new POP3Client(config.port, config.host, {
       tlserrs: false,
-      enabletls: true,
+      enabletls: config.ssl,
       debug: false,
     });
     this.client = client;
@@ -71,7 +82,8 @@ export class Pop3Job extends ReceiveJob {
     });
 
     client.on('connect', (data) => {
-      console.log('connect:', data);
+      this.connecting = false;
+      console.debug('connect:', data);
       this.emit({
         type: MailerReceiveEventType.login,
         message: 'Logging ...',
@@ -124,7 +136,7 @@ export class Pop3Job extends ReceiveJob {
     });
 
     const retrOne = () => {
-      if (this.abort) {
+      if (this.isAborted) {
         client.quit();
         return;
       }

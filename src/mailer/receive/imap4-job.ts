@@ -13,32 +13,32 @@ import { MailerReceiveEventType } from './receive-event';
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;
 
-function getMailSrouceBox(imap4Folder: { value: string; label: string }) {
-  if (imap4Folder.value === Imap4Folder.InBoxToInBox) {
+function getMailSrouceBox(imap4Folder: string) {
+  if (imap4Folder === Imap4Folder.InBoxToInBox) {
     return MailBoxType.INBOX;
   }
-  if (imap4Folder.value === Imap4Folder.SentBoxToSentBox) {
+  if (imap4Folder === Imap4Folder.SentBoxToSentBox) {
     return MailBoxType.SENT;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToInBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToInBox) {
     return MailBoxType.JUNK;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToSpamBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToSpamBox) {
     return MailBoxType.JUNK;
   }
 }
 
-function getMailTargetBox(imap4Folder: { value: string; label: string }) {
-  if (imap4Folder.value === Imap4Folder.InBoxToInBox) {
+function getMailTargetBox(imap4Folder: string) {
+  if (imap4Folder === Imap4Folder.InBoxToInBox) {
     return MailBoxType.INBOX;
   }
-  if (imap4Folder.value === Imap4Folder.SentBoxToSentBox) {
+  if (imap4Folder === Imap4Folder.SentBoxToSentBox) {
     return MailBoxType.SENT;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToInBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToInBox) {
     return MailBoxType.INBOX;
   }
-  if (imap4Folder.value === Imap4Folder.SpamBoxToSpamBox) {
+  if (imap4Folder === Imap4Folder.SpamBoxToSpamBox) {
     return MailBoxType.JUNK;
   }
 }
@@ -81,7 +81,7 @@ export class Imap4Job extends ReceiveJob {
   ) {
     if (!buffer || !parsedMail || !uidl) {
       //还没有解析完，返回
-      console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
+      //console.debug(`邮件未解析完:${this.mailAddress}-${mailBox}`);
       return;
     }
     this.saveMail(buffer, parsedMail, uidl, mailBox, size)
@@ -108,7 +108,8 @@ export class Imap4Job extends ReceiveJob {
       password: decypt(this.imap4Config.password, CRYPTO_KEY),
       host: this.imap4Config.host,
       port: this.imap4Config.port,
-      tls: true,
+      tls: this.imap4Config.ssl,
+      connTimeout: this.imap4Config.timeout * 1000,
       //debug: console.error,
     });
 
@@ -223,6 +224,9 @@ export class Imap4Job extends ReceiveJob {
       bodies: [''],
     });
     f.on('message', (msg /*, seqno*/) => {
+      if (this.isAborted) {
+        return;
+      }
       let uid = '';
       let parsedMail;
       let mailData;
@@ -299,6 +303,7 @@ export class Imap4Job extends ReceiveJob {
   abort() {
     try {
       this.isAborted = true;
+      console.debug('Imap4终止, isAborted:' + this.isAborted);
       this.client?.end();
     } catch (error) {
       const errorMsg = 'Abort error:' + error;

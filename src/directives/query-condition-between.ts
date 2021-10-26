@@ -11,7 +11,7 @@ export class QueryConditionBetweenDirective extends QueryConditionDirective {
 
   static directiveName = 'between';
 
-  getWhereStatement(): [string, any] {
+  getAndWhereStatement(): [string, any] {
     const field = this.field;
     const value = this.value;
     if (!value || !value.length || value.length < 2) {

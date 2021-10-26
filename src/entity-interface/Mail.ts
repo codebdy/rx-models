@@ -1,6 +1,5 @@
 import { Attachment } from './Attachment';
 import { MailIdentifier } from './MailIdentifier';
-import { DraftAttachment } from './DraftAttachment';
 import { RxUser } from './RxUser';
 import { MailLabel } from './MailLabel';
 import { MailPriority } from './MailPriority';
@@ -8,9 +7,8 @@ import { MailBoxType } from './MailBoxType';
 import { SendStatus } from './SendStatus';
 import { AddressItem } from './AddressItem';
 
-
 export const EntityMail = 'Mail';
-export interface Mail  {
+export interface Mail {
   id?: number;
   subject?: string;
   from?: AddressItem;
@@ -28,7 +26,7 @@ export interface Mail  {
   inMailBox: MailBoxType;
   showAsOriginal?: boolean;
   fromAddress?: string;
-  seen?: boolean;
+  unRead?: boolean;
   answered?: boolean;
   deleted?: boolean;
   forwarded?: boolean;
@@ -45,9 +43,9 @@ export interface Mail  {
   isPlainText?: boolean;
   headers?: any;
   receivedAddress?: string;
+  toAddress?: string;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];
   identifier?: MailIdentifier;
-  draftAttachments?: DraftAttachment[];
 }

@@ -61,9 +61,10 @@ export function parseWhereSql(
         const arr = operands[0]?.split('.');
         let modelAlias = ownerMeta.alias;
         if (arr && arr.length > 1) {
-          const relation = ownerMeta.findRelatiOrFailed(arr[0]);
+          const relationName = arr.pop();
+          const relation = ownerMeta.findRelatiOrFailed(arr.join('.'));
           if (relation) {
-            operands[0] = arr[1];
+            operands[0] = relationName;
             modelAlias = relation.alias;
           }
         }
@@ -77,6 +78,10 @@ export function parseWhereSql(
 
         if (operatorValue === 'IN') {
           return `${operands[0]} ${operatorValue} (:...${paramName})`;
+        }
+
+        if (operatorValue === 'LIKE') {
+          return `LOWER(${operands[0]}) ${operatorValue} LOWER(:${paramName})`;
         }
         return `${operands[0]} ${operatorValue} :${paramName}`;
     }

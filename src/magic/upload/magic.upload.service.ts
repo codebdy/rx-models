@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 //import * as sharp from 'sharp';
 import { StorageService } from 'src/storage/storage.service';
-import { FOLDER_UPLOADS } from 'src/util/consts';
+import { BUCKET_UPLOADS } from 'src/util/consts';
 
 @Injectable()
 export class MagicUploadService {
   constructor(private readonly storageService: StorageService) {}
 
   async saveFile(file: Express.Multer.File, fileName: string) {
-    await this.storageService.checkAndCreateBucket(FOLDER_UPLOADS);
-    await this.storageService.putFile(fileName, file, FOLDER_UPLOADS);
+    await this.storageService.checkAndCreateBucket(BUCKET_UPLOADS);
+    await this.storageService.putFile(fileName, file, BUCKET_UPLOADS);
   }
 
   /*async saveThumbnail(file: Express.Multer.File) {

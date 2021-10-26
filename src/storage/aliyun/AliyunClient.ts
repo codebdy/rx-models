@@ -88,6 +88,10 @@ export class AliyunClient implements StorageClient {
     });
     return url;
   }
+
+  async fileUrl(path: string, bucket: string) {
+    return await this.fileLocalPath(path, bucket);
+  }
   //客户端上传OSS用的TOKEN，本方法暂时没用
   /*  async creatUploadsOperateToken() {
     await this.checkAndCreateBucket(FOLDER_UPLOADS);

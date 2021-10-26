@@ -1,3 +1,5 @@
+import { MailBoxType } from 'src/entity-interface/MailBoxType';
+
 export enum MailerReceiveEventType {
   error = 'error',
   checkStorage = 'checkStorage',
@@ -16,8 +18,7 @@ export enum MailerReceiveEventType {
   finished = 'finished',
   aborted = 'aborted',
   openMailBox = 'openMailBox',
-  receivedOneMailToInbox = 'receivedOneMailToInbox',
-  receivedOneMailToSpam = 'receivedOneMailToSpam',
+  receivedOneMail = 'receivedOneMail',
 }
 
 export interface MailerReceiveEvent {
@@ -29,4 +30,5 @@ export interface MailerReceiveEvent {
   mailAddress?: string;
   name?: string;
   subject?: string;
+  inMailbox?: MailBoxType;
 }

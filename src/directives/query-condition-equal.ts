@@ -11,7 +11,7 @@ export class QueryConditionEqualDirective extends QueryConditionDirective {
 
   static directiveName = 'equal';
 
-  getWhereStatement(): [string, any] {
+  getAndWhereStatement(): [string, any] {
     const paramName = 'param' + createId();
     let paramValue = this.value;
     if (this.value?.toString().startsWith('$me.')) {

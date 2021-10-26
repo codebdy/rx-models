@@ -90,4 +90,24 @@ export class DiskClient implements StorageClient {
 
     return DISK_STORAGE_PATH + nameWithBucket;
   }
+
+  async fileUrl(path: string, bucket: string) {
+    const fileName = DISK_STORAGE_PATH + bucket + '/' + path;
+
+    const nameWithBucket = bucket + '/' + path;
+    const publicStoragePath = DISK_STORAGE_PUBLIC_PATH + nameWithBucket;
+    const publicFileUrl =
+      this.host + DISK_STORAGE_PUBLIC_URL_BASE + nameWithBucket;
+
+    await this.checkAndCreateDir(dirname(publicStoragePath));
+    if (PlatformTools.fileExist(publicStoragePath)) {
+      return publicFileUrl;
+    }
+
+    if (PlatformTools.fileExist(fileName)) {
+      fs.writeFileSync(publicStoragePath, fs.readFileSync(fileName));
+      return publicFileUrl;
+    }
+    return '';
+  }
 }

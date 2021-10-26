@@ -6,9 +6,9 @@ import { AbilityService } from 'src/magic/ability.service';
 import { QueryDirectiveService } from 'src/directive/query-directive.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
-import { makeNotEffectCountQueryBuilder } from './traverser/make-not-effect-count-query-builder';
+import { makeDirectivesQueryBuilder } from './traverser/make-directives-query-builder';
 import { makeRelationsBuilder } from './traverser/make-relations-builder';
-import { makeEffectCountQueryBuilder } from './traverser/make-effect-count-query-builder';
+//import { makeEffectCountQueryBuilder } from './traverser/make-effect-count-query-builder';
 import { filterResult } from './traverser/filter-result';
 import { StorageService } from 'src/storage/storage.service';
 
@@ -37,7 +37,7 @@ export class MagicQuery {
       .getRepository(meta.entity)
       .createQueryBuilder(meta.alias);
 
-    makeNotEffectCountQueryBuilder(meta, qb);
+    makeDirectivesQueryBuilder(meta, qb);
     makeRelationsBuilder(
       [...meta.relations, ...meta.addonRelations],
       qb,
@@ -48,7 +48,7 @@ export class MagicQuery {
       return { totalCount, data: [] };
     }
 
-    makeEffectCountQueryBuilder(meta, qb, this.magicService.me);
+    //makeEffectCountQueryBuilder(meta, qb, this.magicService.me);
 
     if (meta.fetchString === TOKEN_GET_MANY) {
       const count = await qb.getCount();
@@ -63,7 +63,7 @@ export class MagicQuery {
       }
     }
 
-    //console.debug('SQL:', qb.getSql());
+    console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
     const result =
       meta.fetchString === TOKEN_GET_MANY

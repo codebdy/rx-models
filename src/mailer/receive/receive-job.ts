@@ -12,7 +12,7 @@ import {
 } from 'src/entity-interface/MailIdentifier';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
-import { BUCKET_MAILS, FOLDER_ATTACHMENTS } from 'src/util/consts';
+import { BUCKET_MAILS, FOLEDER_ATTACHMENTS } from 'src/util/consts';
 import { getExt } from 'src/util/get-ext';
 import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailTeller } from './mail-teller';
@@ -109,9 +109,8 @@ export abstract class ReceiveJob implements IReceiveJob {
     }
     for (let i = 0; i < passedMail.attachments?.length; i++) {
       const attachementObj = passedMail.attachments[i];
-      const path = `${
-        this.mailAddress
-      }/${FOLDER_ATTACHMENTS}/${uidl}-${i}.${getExt(attachementObj.filename)}`;
+      const ext = getExt(attachementObj.filename);
+      const path = `${this.mailAddress}/${FOLEDER_ATTACHMENTS}/${uidl}-${i}.${ext}`;
       if (attachementObj.related) {
         //可能不需要保存
         continue;
@@ -129,12 +128,14 @@ export abstract class ReceiveJob implements IReceiveJob {
             mimeType: attachementObj.contentType,
             size: attachementObj.size,
             path: path,
+            bucket: BUCKET_MAILS,
           }),
       );
     }
 
     let fromOldCustomer = false;
     const fromAddress = passedMail.from?.value[0]?.address;
+    const toAddress = passedMail.to?.value[0]?.address;
     fromOldCustomer = !!(await this.typeOrmService
       .getRepository<MailConfig>(EntityMailConfig)
       .findOne({ address: fromAddress }));
@@ -156,18 +157,23 @@ export abstract class ReceiveJob implements IReceiveJob {
         date: passedMail.date,
         messageId: passedMail.messageId,
         inReplyTo: passedMail.inReplyTo,
-        replyTo: passedMail.replyTo,
+        replyTo: passedMail.replyTo?.value,
         references: passedMail.references,
-        html: passedMail.html,
-        text: passedMail.text,
+        html: passedMail.html ? passedMail.html : null,
+        text: passedMail.text ? passedMail.text : null,
         priority: passedMail.priority,
         owner: { id: this.accountId },
         inMailBox: mailBox,
         fromAddress: fromAddress,
+        toAddress: toAddress,
         attachments: attachments,
         fromOldCustomer: fromOldCustomer,
         size: size,
         receivedAddress: this.mailAddress,
+        unRead:
+          mailBox === MailBoxType.INBOX || mailBox === MailBoxType.JUNK
+            ? true
+            : undefined,
       });
     await this.typeOrmService
       .getRepository<MailIdentifier>(EntityMailIdentifier)
@@ -178,6 +184,12 @@ export abstract class ReceiveJob implements IReceiveJob {
         mail: mail,
         fromBox: mailBox,
       });
+    this.emit({
+      type: MailerReceiveEventType.receivedOneMail,
+      message: 'Recevied one mail',
+      subject: passedMail.subject,
+      inMailbox: mailBox,
+    });
   }
 
   continue(): void {

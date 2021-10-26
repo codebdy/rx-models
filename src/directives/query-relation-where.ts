@@ -2,20 +2,20 @@ import { DirectiveType } from 'src/directive/directive-type';
 import { QueryRelationDirective } from 'src/directive/query/query.relation-directive';
 //import { parseOnSql } from 'src/magic-meta/query/parse-on-sql';
 
-export class QueryModelOnDirective extends QueryRelationDirective {
+export class QueryModelWhereDirective extends QueryRelationDirective {
   static description = `
-    Relation on directive.
-    该指令目前不能正常使用。
+    Relation where directive.
+    本方法暂未实现
   `;
 
   static version = '1.0';
 
   static directiveType = DirectiveType.QUERY_RELATION_DIRECTIVE;
 
-  static directiveName = 'on';
+  static directiveName = 'where';
 
   //getAndWhereStatement(): [string, any] | void {
     //const sql = parseOnSql(this.directiveMeta.value, this.relationMeta);
-    //return [sql, {}];
+  //  return [sql, {}];
   //}
 }

@@ -1,7 +1,7 @@
 import { RxUser } from 'src/entity-interface/RxUser';
 import { QueryEntityMeta } from 'src/magic-meta/query/query.entity-meta';
 import { SelectQueryBuilder } from 'typeorm';
-import { getDirectivesWhereStatement } from './get-directives-where-statement';
+import { getDirectivesAndWhereStatement } from './get-directives-and-where-statement';
 import { makeAbilitiesQueryBuilder } from './make-abilities-query-builder';
 
 export function makeEffectCountQueryBuilder(
@@ -16,7 +16,7 @@ export function makeEffectCountQueryBuilder(
       directives.push(directive);
     }
   }
-  const [sql, params] = getDirectivesWhereStatement(directives);
+  const [sql, params] = getDirectivesAndWhereStatement(directives);
   sql && qb.andWhere(sql, params);
   qb = makeAbilitiesQueryBuilder(meta, qb, me);
   return qb;

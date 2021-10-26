@@ -158,7 +158,9 @@ export class MagicQueryParser {
       keyWithoutAt === TOKEN_ORDER_BY ||
       keyStr.startsWith('@')
     ) {
-      this.parseEntityOrRelationDirective(keyWithoutAt, jsonUnit, meta);
+      // 处理多个重名指令的情况，比如@fakeRelation(1), @fakeRelation(2)
+      const directiveName = new DirectiveMeta(keyWithoutAt).name;
+      this.parseEntityOrRelationDirective(directiveName, jsonUnit, meta);
     } else {
       //剩下的全是条件行
       if (jsonUnit.key.split('.').length > 1) {

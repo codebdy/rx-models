@@ -1,7 +1,7 @@
 import { Mail } from 'src/entity-interface/Mail';
 import { SendStatus } from 'src/entity-interface/SendStatus';
 import { StorageService } from 'src/storage/storage.service';
-import { TypeOrmService } from 'src/typeorm/typeorm.service';
+import { EntityManager } from 'typeorm';
 import { EVENT_MAIL_SENDING_EVENT } from '../consts';
 import { MailerClientsPool } from '../mailer.clients-pool';
 import { ISendJob } from './i-send-job';
@@ -18,7 +18,7 @@ export class SendTask implements ISendJobOwner {
   private aborted = false;
   private errorJobs: ISendJob[] = [];
   constructor(
-    private readonly typeOrmService: TypeOrmService,
+    private readonly entityManger: EntityManager,
     private readonly storageService: StorageService,
     private readonly clientsPool: MailerClientsPool,
     private readonly tasksPool: ISendTasksPool,
@@ -63,7 +63,7 @@ export class SendTask implements ISendJobOwner {
   nextJob(): ISendJob | undefined {
     if (this.mails.length) {
       this.currentJob = new SendJob(
-        this.typeOrmService,
+        this.entityManger,
         this.storageService,
         this,
         this.mails.pop(),
