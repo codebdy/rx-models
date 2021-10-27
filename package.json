@@ -47,6 +47,7 @@
     "rxjs": "^7.3.0",
     "sharp": "^0.28.3",
     "sql-where-parser": "^2.2.1",
+    "striptags": "^3.2.0",
     "tokenize-this": "^1.4.2",
     "typeorm": "^0.2.32",
     "uuid": "^8.3.2"
