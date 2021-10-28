@@ -129,14 +129,13 @@ export class MagicPost {
 
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
+      const relationInstances = await this.processRelationGroup(
+        filterdInstanceMeta,
+        relationShip,
+        entityManger,
+      );
       filterdInstanceMeta.savedRelations[relationKey] =
-        relationShip.ids.length === 0 && relationShip.entities.length === 0
-          ? null
-          : await this.processRelationGroup(
-              filterdInstanceMeta,
-              relationShip,
-              entityManger,
-            );
+        relationInstances.length === 0 ? null : relationInstances;
     }
     const repository = entityManger.getRepository(filterdInstanceMeta.entity);
     let entity: any = repository.create();
