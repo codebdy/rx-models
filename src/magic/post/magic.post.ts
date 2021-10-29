@@ -110,7 +110,11 @@ export class MagicPost {
     entityManger: EntityManager,
     instanceGroup: InstanceMetaCollection | RelationMetaCollection,
   ) {
-    if (JSON.stringify(instanceMeta.meta) === '{}') {
+    if (
+      JSON.stringify(instanceMeta.meta) === '{}' &&
+      (!instanceMeta.relations ||
+        JSON.stringify(instanceMeta.relations) === '{}')
+    ) {
       throw new Error('Provided instance is emperty!');
     }
     //如果是新创建，需要检查create权限
