@@ -44,6 +44,7 @@ export interface Mail {
   headers?: any;
   receivedAddress?: string;
   toAddress?: string;
+  htmlAsText?: string;
   owner?: RxUser;
   labels?: MailLabel[];
   attachments?: Attachment[];

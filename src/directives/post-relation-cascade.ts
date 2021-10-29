@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DirectiveType } from 'src/directive/directive-type';
 import { PostDirective } from 'src/directive/post/post.directive';
 import { InstanceMeta } from 'src/magic-meta/post/instance.meta';
 import { RelationMetaCollection } from 'src/magic-meta/post/relation.meta.colletion';
-import { EntityManager } from 'typeorm';
 
 export class PostRelationCascadeDirective extends PostDirective {
   static description = `删除关联时，级联删除关联对象`;

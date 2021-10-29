@@ -110,6 +110,13 @@ export class MagicPost {
     entityManger: EntityManager,
     instanceGroup: InstanceMetaCollection | RelationMetaCollection,
   ) {
+    if (
+      JSON.stringify(instanceMeta.meta) === '{}' &&
+      (!instanceMeta.relations ||
+        JSON.stringify(instanceMeta.relations) === '{}')
+    ) {
+      throw new Error('Provided instance is emperty!');
+    }
     //如果是新创建，需要检查create权限
     if (!instanceMeta.meta?.id && !this.magicService.me.isSupper) {
       this.validateCreate(instanceMeta);
@@ -129,14 +136,13 @@ export class MagicPost {
 
     for (const relationKey in relations) {
       const relationShip: RelationMetaCollection = relations[relationKey];
+      const relationInstances = await this.processRelationGroup(
+        filterdInstanceMeta,
+        relationShip,
+        entityManger,
+      );
       filterdInstanceMeta.savedRelations[relationKey] =
-        relationShip.ids.length === 0 && relationShip.entities.length === 0
-          ? null
-          : await this.processRelationGroup(
-              filterdInstanceMeta,
-              relationShip,
-              entityManger,
-            );
+        relationInstances.length === 0 ? null : relationInstances;
     }
     const repository = entityManger.getRepository(filterdInstanceMeta.entity);
     let entity: any = repository.create();

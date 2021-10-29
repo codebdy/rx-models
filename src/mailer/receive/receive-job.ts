@@ -145,6 +145,8 @@ export abstract class ReceiveJob implements IReceiveJob {
         .getRepository<EmailAddress>(EntityEmailAddress)
         .findOne({ address: fromAddress }));
     }
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const striptags = require('striptags');
 
     const mail = await this.typeOrmService
       .getRepository<Mail>(EntityMail)
@@ -161,6 +163,7 @@ export abstract class ReceiveJob implements IReceiveJob {
         references: passedMail.references,
         html: passedMail.html ? passedMail.html : null,
         text: passedMail.text ? passedMail.text : null,
+        htmlAsText: striptags(passedMail.html),
         priority: passedMail.priority,
         owner: { id: this.accountId },
         inMailBox: mailBox,

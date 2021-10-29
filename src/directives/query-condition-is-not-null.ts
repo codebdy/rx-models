@@ -1,7 +1,7 @@
 import { DirectiveType } from 'src/directive/directive-type';
 import { QueryConditionDirective } from 'src/directive/query/query.condition-directive';
 
-export class QueryConditionEqualDirective extends QueryConditionDirective {
+export class QueryConditionIsNotNullDirective extends QueryConditionDirective {
   static description = `Condition isNotNull directive.`;
 
   static version = '1.0';
