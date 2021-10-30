@@ -31,7 +31,7 @@ export class MagicUpdate {
           .createQueryBuilder()
           .update(meta.entity)
           .set(meta.columns)
-          .where('id IN (:...ids)', { ids: meta.ids })
+          .whereInIds(meta.ids)
           .execute();
         result[meta.entity] = await this.magicService.query({
           entity: meta.entity,

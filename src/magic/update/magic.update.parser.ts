@@ -1,5 +1,3 @@
-import { parseUpdateRelationsFromWhere } from 'src/magic-meta/update/parse-condition-relations-from-where';
-import { UpdateEntityOrRelationMeta } from 'src/magic-meta/update/update.entity-or-relation-meta';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { SchemaService } from 'src/schema/schema.service';
 import { UpdateMeta } from '../../magic-meta/update/update.meta';
@@ -33,18 +31,12 @@ export class MagicUpdateParser {
     const updateMeta = new UpdateMeta();
 
     updateMeta.entityMeta = entityMeta;
-    updateMeta.rootMeta = new UpdateEntityOrRelationMeta(entityMeta);
     for (const keyStr in json) {
       const value = json[keyStr];
       if (keyStr.trim().toLowerCase() === TOKEN_IDS) {
         updateMeta.ids = value;
-      }
-      if (keyStr.replace('@', '').trim() === TOKEN_WHERE) {
-        parseUpdateRelationsFromWhere(
-          updateMeta.rootMeta,
-          value,
-          this.schemaService,
-        );
+      } else if (keyStr.replace('@', '').trim() === TOKEN_WHERE) {
+        updateMeta.whereSQL = value;
       } else {
         updateMeta.columns[keyStr] = value;
       }
