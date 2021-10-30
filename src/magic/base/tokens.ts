@@ -16,3 +16,6 @@ export const TOKEN_IDS = 'ids';
 export const TOKEN_FAKE_RELATION = 'fakeRelation';
 export const TOKEN_RELATION_NAME = 'relationName';
 export const TOKEN_LINKE_FIELDS = 'linkFields';
+
+export const TOKEN_UPDATE = 'update';
+export const TOKEN_DELETE = 'delete';
