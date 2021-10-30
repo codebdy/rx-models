@@ -222,7 +222,8 @@ export class MagicController {
    *    "RxApp":{
    *      "name":"xx",
    *      "email":"yy",
-   *      "ids":[2,3,5]
+   *      "ids":[2,3,5],
+   *      "where":...
    *    },
    *    "RxAuth":{
    *      ...
