@@ -31,7 +31,7 @@ export function parseUpdateRelationsFromWhere(
 
     const arr = operands[0]?.split('.');
     if (arr?.length > 1) {
-      arr.splice(0, arr?.length - 1);
+      arr.splice(arr?.length - 1, 1);
       const roleName = arr.join('.');
       addRelation(roleName, rootMeta, schemaService);
     }
