@@ -1,4 +1,4 @@
-import { UpdateConditionRelation } from './update-condition-relation';
+import { UpdateEntityMeta } from './update.entity-meta';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SqlWhereParser = require('sql-where-parser');
@@ -11,7 +11,7 @@ export function parseUpdateRelationsFromWhere(sql: string) {
     );
   }
 
-  const relationMap = new Map<string, UpdateConditionRelation>();
+  const rootMeta = new UpdateEntityMeta();
 
   const parser = new SqlWhereParser();
   //const relations: AddonRelationInfo[] = [];
@@ -43,5 +43,5 @@ export function parseUpdateRelationsFromWhere(sql: string) {
 
   parser.parse(sql, evaluator);
 
-  return relationMap;
+  return rootMeta;
 }
