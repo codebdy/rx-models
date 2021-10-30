@@ -16,10 +16,7 @@ export function parseUpdateRelationsFromWhere(
     );
   }
 
-  //const rootMeta = new UpdateEntityOrRelationMeta();
-
   const parser = new SqlWhereParser();
-  //const relations: AddonRelationInfo[] = [];
   const evaluator = (operatorValue, operands) => {
     if (operatorValue === OPERATOR_UNARY_MINUS) {
       operatorValue = '-';
@@ -34,19 +31,33 @@ export function parseUpdateRelationsFromWhere(
 
     const arr = operands[0]?.split('.');
     if (arr?.length > 1) {
-      const [relationName, fieldName] = arr;
-      /*const relation = relations.find(
-        (relation) => relation.name === relationName,
-      );
-      if (relation) {
-        relation.fields.push(fieldName);
-      } else {
-        relations.push({ name: relationName, fields: [fieldName] });
-      }*/
+      arr.splice(0, arr?.length - 1);
+      const roleName = arr.join('.');
+      addRelation(roleName, rootMeta, schemaService);
     }
   };
 
   parser.parse(sql, evaluator);
+}
 
-  return undefined;
+function addRelation(
+  relationString: string,
+  parentMeta: UpdateEntityOrRelationMeta,
+  schemaService: SchemaService,
+) {
+  const [relationName, ...leftStrArr] = relationString.split('.');
+  const leftString = leftStrArr.join('.');
+  const entityMetaOfRelation = schemaService.getRelationEntityMetaOrFailed(
+    relationName,
+    parentMeta.entity,
+  );
+  let relation = parentMeta.findRelation(relationName);
+  if (!relation) {
+    relation = new UpdateEntityOrRelationMeta(entityMetaOfRelation);
+    relation.roleName = relationName;
+    parentMeta.relations.push(relation);
+  }
+  if (leftString) {
+    addRelation(leftString, relation, schemaService);
+  }
 }
