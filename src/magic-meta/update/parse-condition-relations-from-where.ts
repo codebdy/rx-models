@@ -1,17 +1,22 @@
+import { SchemaService } from 'src/schema/schema.service';
 import { UpdateEntityOrRelationMeta } from './update.entity-or-relation-meta';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SqlWhereParser = require('sql-where-parser');
 const OPERATOR_UNARY_MINUS = Symbol('-');
 
-export function parseUpdateRelationsFromWhere(sql: string) {
+export function parseUpdateRelationsFromWhere(
+  rootMeta: UpdateEntityOrRelationMeta,
+  sql: string,
+  schemaService: SchemaService,
+) {
   if (!sql) {
     throw new Error(
       'Not assign sql statement to where directive or expression',
     );
   }
 
-  const rootMeta = new UpdateEntityOrRelationMeta();
+  //const rootMeta = new UpdateEntityOrRelationMeta();
 
   const parser = new SqlWhereParser();
   //const relations: AddonRelationInfo[] = [];
@@ -43,5 +48,5 @@ export function parseUpdateRelationsFromWhere(sql: string) {
 
   parser.parse(sql, evaluator);
 
-  return rootMeta;
+  return undefined;
 }

@@ -8,7 +8,8 @@ export class UpdateEntityOrRelationMeta {
   parentEntityMeta: UpdateEntityOrRelationMeta;
   roleName: string;
 
-  constructor() {
+  constructor(entityMeta: EntityMeta) {
+    this.entityMeta = entityMeta;
     this.id = createId();
   }
 
@@ -48,12 +49,12 @@ export class UpdateEntityOrRelationMeta {
     );
   }
 
-  addRelation(relationString: string) {
+  /*  addRelation(relationString: string, entityMeta: EntityMeta) {
     const [relationName, ...leftStrArr] = relationString.split('.');
     const leftString = leftStrArr.join('.');
     let relation = this.findRelation(relationName);
     if (relation) {
-      relation = new UpdateEntityOrRelationMeta();
+      relation = new UpdateEntityOrRelationMeta(entityMeta);
       relation.parentEntityMeta = this;
       relation.roleName = relationName;
       this.relations.push(relation);
@@ -61,5 +62,5 @@ export class UpdateEntityOrRelationMeta {
     if (leftString) {
       relation.addRelation(leftString);
     }
-  }
+  }*/
 }
