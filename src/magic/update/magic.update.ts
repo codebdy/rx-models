@@ -22,6 +22,29 @@ export class MagicUpdate {
     ).parse(json);
     const result = {} as any;
     for (const meta of metas) {
+      let where = meta.whereSQL;
+      if (meta.ids?.length) {
+        const sql =
+          meta.ids.length > 1
+            ? ` id in(${meta.ids.join(',')})`
+            : `id = ${meta.ids[0]}`;
+        if (where) {
+          where = where + ' and ' + sql;
+        } else {
+          where = sql;
+        }
+      }
+
+      const queryData = await this.magicService.query({
+        entity: meta.entity,
+        select: ['id'],
+        where: where,
+      });
+
+      meta.ids = queryData?.data?.map((one: { id: number }) => one.id);
+
+      console.log('哈哈哈', queryData, meta.ids);
+
       if (!this.magicService.me.isSupper) {
         await this.validateUpdate(meta);
       }
@@ -33,14 +56,18 @@ export class MagicUpdate {
           .set(meta.columns)
           .whereInIds(meta.ids)
           .execute();
-        result[meta.entity] = await this.magicService.query({
-          entity: meta.entity,
-          select: this.getUpdatColumnNames(meta),
-          where:
-            meta.ids.length > 1
-              ? `id in(${meta.ids.join(',')})`
-              : `id = ${meta.ids[0]}`,
-        });
+        if (meta.ids.length <= 100) {
+          result[meta.entity] = await this.magicService.query({
+            entity: meta.entity,
+            select: this.getUpdatColumnNames(meta),
+            where:
+              meta.ids.length > 1
+                ? `id in(${meta.ids.join(',')})`
+                : `id = ${meta.ids[0]}`,
+          });
+        } else {
+          result['message'] = `${meta.ids.length} updated`;
+        }
       }
     }
     return result;
