@@ -1,5 +1,5 @@
 import { SchemaService } from 'src/schema/schema.service';
-import { ModelUpdateMeta } from '../../magic-meta/update/model.update.meta';
+import { UpdateMeta } from '../../magic-meta/update/update.meta';
 import { AbilityService } from '../ability.service';
 export class MagicUpdateParser {
   constructor(
@@ -8,7 +8,7 @@ export class MagicUpdateParser {
   ) {}
 
   async parse(json: any) {
-    const metas: ModelUpdateMeta[] = [];
+    const metas: UpdateMeta[] = [];
     for (const keyStr in json) {
       const entityMeta = this.schemaService.getEntityMetaOrFailed(
         keyStr.trim(),
@@ -17,7 +17,7 @@ export class MagicUpdateParser {
         entityMeta.uuid,
       );
       const expand = await this.abilityService.isEntityExpand(entityMeta.uuid);
-      const updateMeta = new ModelUpdateMeta(entityMeta, json[keyStr]);
+      const updateMeta = new UpdateMeta(entityMeta, json[keyStr]);
       updateMeta.abilities = abilities;
       updateMeta.expandFieldForAuth = expand;
       metas.push(updateMeta);

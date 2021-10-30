@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { ModelUpdateMeta } from 'src/magic-meta/update/model.update.meta';
+import { UpdateMeta } from 'src/magic-meta/update/update.meta';
 import { AbilityService } from 'src/magic/ability.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
@@ -46,7 +46,7 @@ export class MagicUpdate {
     return result;
   }
 
-  private getUpdatColumnNames(updateMeta: ModelUpdateMeta) {
+  private getUpdatColumnNames(updateMeta: UpdateMeta) {
     const columnNames = [];
     for (const columnName in updateMeta.columns) {
       columnNames.push(columnName);
@@ -54,7 +54,7 @@ export class MagicUpdate {
     return columnNames;
   }
 
-  private async validateUpdate(updateMeta: ModelUpdateMeta) {
+  private async validateUpdate(updateMeta: UpdateMeta) {
     const entityAbility = updateMeta.abilities.find(
       (ability) => ability.columnUuid === null,
     );

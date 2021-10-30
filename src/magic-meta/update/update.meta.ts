@@ -1,7 +1,7 @@
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { TOKEN_IDS } from '../../magic/base/tokens';
-export class ModelUpdateMeta {
+export class UpdateMeta {
   private _ids: number[] = [];
   columns: any = {};
   entityMeta: EntityMeta;
