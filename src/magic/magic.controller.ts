@@ -147,7 +147,9 @@ export class MagicController {
    *        ],
    *       "author":null,
    *      }
-   *    ]
+   *    ],
+   *    "@update":...,
+   *    "@delete":...,
    * }
    * @returns
    */
