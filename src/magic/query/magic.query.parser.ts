@@ -20,6 +20,26 @@ import {
   TOKEN_WHERE,
 } from '../base/tokens';
 
+export function createAddonRelation(
+  relationStr: string,
+  meta: QueryEntityMeta,
+  schemaService: SchemaService,
+) {
+  const [relationName, ...leftArr] = relationStr.split('.');
+  const relation = new QueryRelationMeta();
+  relation.entityMeta = schemaService.getRelationEntityMetaOrFailed(
+    relationName,
+    meta.entity,
+  );
+  relation.name = relationName;
+  relation.parentEntityMeta = meta;
+  meta.addAddOnRelation(relation);
+  if (leftArr?.length) {
+    return createAddonRelation(leftArr.join('.'), relation, schemaService);
+  }
+  return relation;
+}
+
 export class MagicQueryParser {
   private rootMeta: QueryRootMeta;
   constructor(
@@ -89,24 +109,12 @@ export class MagicQueryParser {
     for (const ability of meta.abilities) {
       if (ability.expression) {
         const relationInfos = parseRelationsFromWhereSql(ability.expression);
-        meta.addonRelationInfos.push(...relationInfos);
+        //meta.addonRelationInfos.push(...relationInfos);
         for (const relationInfo of relationInfos) {
-          this.createAddonRelation(relationInfo.name, meta);
+          createAddonRelation(relationInfo.name, meta, this.schemaService);
         }
       }
     }
-  }
-
-  private createAddonRelation(relationName: string, meta: QueryEntityMeta) {
-    const relation = new QueryRelationMeta();
-    relation.entityMeta = this.schemaService.getRelationEntityMetaOrFailed(
-      relationName,
-      meta.entity,
-    );
-    relation.name = relationName;
-    relation.parentEntityMeta = meta;
-    meta.addAddOnRelation(relation);
-    return relation;
   }
 
   async parseOtherMeta(json: any, meta: QueryEntityMeta) {
@@ -116,10 +124,13 @@ export class MagicQueryParser {
       await this.parseOneLine(jsonUnit, meta, keyStr.trim());
     }
     for (const relationCondition of meta.relationConditions) {
-      const [relationName, fieldName] = relationCondition.key.split('.');
+      const arr = relationCondition.key.split('.');
+      const fieldName = arr[arr.length - 1];
+      arr.splice(arr.length - 1, 1);
+      const relationName = arr.join('.');
       let relation = meta.findRelation(relationName);
       if (!relation) {
-        relation = this.createAddonRelation(relationName, meta);
+        relation = createAddonRelation(relationName, meta, this.schemaService);
       }
 
       this.parseConditionDirective(

@@ -2,7 +2,7 @@ import { QueryDirective } from 'src/directive/query/query.directive';
 import { DirectiveType } from 'src/directive/directive-type';
 import { parseWhereSql } from 'src/magic-meta/query/parse-where-sql';
 import { parseRelationsFromWhereSql } from 'src/magic-meta/query/parse-relations-from-where-sql';
-import { QueryRelationMeta } from 'src/magic-meta/query/query.relation-meta';
+import { createAddonRelation } from 'src/magic/query/magic.query.parser';
 
 export class QueryEntityWhereDirective extends QueryDirective {
   static description = `
@@ -19,8 +19,11 @@ export class QueryEntityWhereDirective extends QueryDirective {
     const meta = this.rootMeta;
     //添加条件用到的关联
     const relationInfos = parseRelationsFromWhereSql(this.directiveMeta.value);
-    meta.addonRelationInfos.push(...relationInfos);
+    //meta.addonRelationInfos.push(...relationInfos);
     for (const relationInfo of relationInfos) {
+      createAddonRelation(relationInfo.name, meta, this.schemaService);
+    }
+    /*for (const relationInfo of relationInfos) {
       const relation = new QueryRelationMeta();
       relation.entityMeta = this.schemaService.getRelationEntityMetaOrFailed(
         relationInfo.name,
@@ -31,7 +34,7 @@ export class QueryEntityWhereDirective extends QueryDirective {
       if (!meta.relations.find((rela) => rela.name === relation.name)) {
         meta.addAddOnRelation(relation);
       }
-    }
+    }*/
 
     return parseWhereSql(
       this.directiveMeta.value,

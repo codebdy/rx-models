@@ -3,7 +3,7 @@ import { RxAbility } from 'src/entity-interface/RxAbility';
 import { JsonUnit } from 'src/magic/base/json-unit';
 import { EntityMeta } from 'src/schema/graph-meta-interface/entity-meta';
 import { createId } from 'src/util/create-id';
-import { AddonRelationInfo } from './addon-relation-info';
+//import { AddonRelationInfo } from './addon-relation-info';
 import { QueryRelationMeta } from './query.relation-meta';
 
 export class QueryEntityMeta {
@@ -14,7 +14,7 @@ export class QueryEntityMeta {
   addonRelations: QueryRelationMeta[] = [];
   directives: QueryDirective[] = [];
   //附加关联用到的字段，如果查询中不包含这些字段，需要在结果中滤除
-  addonRelationInfos: AddonRelationInfo[] = [];
+  //addonRelationInfos: AddonRelationInfo[] = [];
   //展开，对每个属性进行设置
   expandFieldForAuth = false;
   //当前登录用户，Entity对应的Abiltity
@@ -62,11 +62,23 @@ export class QueryEntityMeta {
     this.directives.push(directive);
   }
 
-  findRelation(relationName: string): QueryRelationMeta {
+  findRelationOnce(relationName: string): QueryRelationMeta {
     for (const relationMeta of [...this.relations, ...this.addonRelations]) {
       if (relationMeta.name === relationName) {
         return relationMeta;
       }
+    }
+  }
+
+  findRelation(relationString: string): QueryRelationMeta {
+    const [relationName, ...leftStrArr] = relationString.split('.');
+    const leftString = leftStrArr.join('.');
+    const relation = this.findRelationOnce(relationName);
+    if (relation) {
+      if (leftString) {
+        return relation.findRelation(leftString);
+      }
+      return relation;
     }
   }
 
@@ -75,14 +87,9 @@ export class QueryEntityMeta {
    * @param relationString 格式relationName.otherName.otherName
    * @returns
    */
-  findRelatiOrFailed(relationString: string): QueryRelationMeta {
-    const [relationName, ...leftStrArr] = relationString.split('.');
-    const leftString = leftStrArr.join('.');
-    const relation = this.findRelation(relationName);
+  findRelationOrFailed(relationString: string): QueryRelationMeta {
+    const relation = this.findRelation(relationString);
     if (relation) {
-      if (leftString) {
-        return relation.findRelatiOrFailed(leftString);
-      }
       return relation;
     }
     throw new Error(

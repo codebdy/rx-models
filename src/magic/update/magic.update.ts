@@ -43,8 +43,6 @@ export class MagicUpdate {
 
       meta.ids = queryData?.data?.map((one: { id: number }) => one.id);
 
-      console.log('哈哈哈', queryData, meta.ids);
-
       if (!this.magicService.me.isSupper) {
         await this.validateUpdate(meta);
       }
