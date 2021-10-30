@@ -50,21 +50,21 @@ export class UpdateEntityMeta {
    * @returns
    */
   findRelatiOrFailed(relationString: string): UpdateRelationMeta {
-    const [relationName, leftString] = relationString.split('.');
+    const [relationName, ...leftString] = relationString.split('.');
     const relation = this.findRelation(relationName);
     if (relation) {
       if (leftString) {
-        return relation.findRelatiOrFailed(leftString);
+        return relation.findRelatiOrFailed(leftString.join('.'));
       }
       return relation;
     }
     throw new Error(
-      `Please add relation ${relationString} of ${this.entity} to query meta`,
+      `No relation ${relationString} of ${this.entity} to query meta`,
     );
   }
 
   addRelation(relationString: string) {
-    const [relationName, leftString] = relationString.split('.');
+    const [relationName, ...leftString] = relationString.split('.');
     let relation = this.findRelation(relationName);
     if (relation) {
       relation = new UpdateRelationMeta();
@@ -73,7 +73,7 @@ export class UpdateEntityMeta {
       this.relations.push(relation);
     }
     if (leftString) {
-      relation.addRelation(leftString);
+      relation.addRelation(leftString.join('.'));
     }
   }
 }

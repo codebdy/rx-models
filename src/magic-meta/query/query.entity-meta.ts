@@ -76,11 +76,11 @@ export class QueryEntityMeta {
    * @returns
    */
   findRelatiOrFailed(relationString: string): QueryRelationMeta {
-    const [relationName, leftString] = relationString.split('.');
+    const [relationName, ...leftString] = relationString.split('.');
     const relation = this.findRelation(relationName);
     if (relation) {
       if (leftString) {
-        return relation.findRelatiOrFailed(leftString);
+        return relation.findRelatiOrFailed(leftString.join('.'));
       }
       return relation;
     }
