@@ -62,4 +62,18 @@ export class UpdateEntityMeta {
       `Please add relation ${relationString} of ${this.entity} to query meta`,
     );
   }
+
+  addRelation(relationString: string) {
+    const [relationName, leftString] = relationString.split('.');
+    let relation = this.findRelation(relationName);
+    if (relation) {
+      relation = new UpdateRelationMeta();
+      relation.parentEntityMeta = this;
+      relation.name = relationName;
+      this.relations.push(relation);
+    }
+    if (leftString) {
+      relation.addRelation(leftString);
+    }
+  }
 }
