@@ -26,5 +26,3 @@ export const CONFIG_KEY_STORAGE = 'storage';
 export const DEFAULT_TIME_OUT = 30;
 
 export const CRYPTO_KEY = 'LiRuXin';
-export const CHANNEL_MAILER = '/mailer';
-export const CHANNEL_RX_EVENT = '/rx-event';
