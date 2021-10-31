@@ -12,6 +12,7 @@ import { MagicQuery } from './query/magic.query';
 import { MagicUpdate } from './update/magic.update';
 import { StorageService } from 'src/storage/storage.service';
 import { MailerSendService } from 'src/mailer/send/mailer.send.service';
+import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
 
 /**
  * 操作数据库通用类，所有数据库操作都应该通过该类进行，因为该类负责权限控制
@@ -28,6 +29,7 @@ export class MagicInstanceService implements MagicService {
     public readonly schemaService: SchemaService,
     public readonly storageService: StorageService,
     protected readonly mailerSendService: MailerSendService,
+    protected readonly rxEventGateway: RxEventGateway,
   ) {}
 
   get me() {

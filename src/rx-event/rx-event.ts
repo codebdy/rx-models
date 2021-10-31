@@ -7,4 +7,5 @@ export interface RxEvent {
   eventType: RxEventType;
   entity: string;
   fields?: string[];
+  ownerId?: number;
 }
