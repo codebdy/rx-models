@@ -48,8 +48,8 @@ export class MagicPost {
       );
       savedInstances[instanceGroup.entity] = data;
 
-      //异步函数，但是不需要等待
-      this.emitEvent(
+      //异步函数
+      await this.emitEvent(
         instanceGroup.entity,
         instanceGroup.isSingle ? [data] : data,
       );
