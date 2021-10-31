@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MagicService } from 'src/magic-meta/magic.service';
-import { ModelUpdateMeta } from 'src/magic-meta/update/model.update.meta';
+import { UpdateMeta } from 'src/magic-meta/update/update.meta';
 import { AbilityService } from 'src/magic/ability.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
@@ -22,6 +22,27 @@ export class MagicUpdate {
     ).parse(json);
     const result = {} as any;
     for (const meta of metas) {
+      let where = meta.whereSQL;
+      if (meta.ids?.length) {
+        const sql =
+          meta.ids.length > 1
+            ? ` id in(${meta.ids.join(',')})`
+            : `id = ${meta.ids[0]}`;
+        if (where) {
+          where = where + ' and ' + sql;
+        } else {
+          where = sql;
+        }
+      }
+
+      const queryData = await this.magicService.query({
+        entity: meta.entity,
+        select: ['id'],
+        where: where,
+      });
+
+      meta.ids = queryData?.data?.map((one: { id: number }) => one.id);
+
       if (!this.magicService.me.isSupper) {
         await this.validateUpdate(meta);
       }
@@ -31,22 +52,26 @@ export class MagicUpdate {
           .createQueryBuilder()
           .update(meta.entity)
           .set(meta.columns)
-          .where('id IN (:...ids)', { ids: meta.ids })
+          .whereInIds(meta.ids)
           .execute();
-        result[meta.entity] = await this.magicService.query({
-          entity: meta.entity,
-          select: this.getUpdatColumnNames(meta),
-          where:
-            meta.ids.length > 1
-              ? `id in(${meta.ids.join(',')})`
-              : `id = ${meta.ids[0]}`,
-        });
+        if (meta.ids.length <= 100) {
+          result[meta.entity] = await this.magicService.query({
+            entity: meta.entity,
+            select: this.getUpdatColumnNames(meta),
+            where:
+              meta.ids.length > 1
+                ? `id in(${meta.ids.join(',')})`
+                : `id = ${meta.ids[0]}`,
+          });
+        } else {
+          result['message'] = `${meta.ids.length} updated`;
+        }
       }
     }
     return result;
   }
 
-  private getUpdatColumnNames(updateMeta: ModelUpdateMeta) {
+  private getUpdatColumnNames(updateMeta: UpdateMeta) {
     const columnNames = [];
     for (const columnName in updateMeta.columns) {
       columnNames.push(columnName);
@@ -54,7 +79,7 @@ export class MagicUpdate {
     return columnNames;
   }
 
-  private async validateUpdate(updateMeta: ModelUpdateMeta) {
+  private async validateUpdate(updateMeta: UpdateMeta) {
     const entityAbility = updateMeta.abilities.find(
       (ability) => ability.columnUuid === null,
     );

@@ -27,7 +27,9 @@ export function parseRelationsFromWhereSql(sql: string): AddonRelationInfo[] {
 
     const arr = operands[0]?.split('.');
     if (arr?.length > 1) {
-      const [relationName, fieldName] = arr;
+      const fieldName = arr[arr.length - 1];
+      arr.splice(arr.length - 1, 1);
+      const relationName = arr.join('.');
       const relation = relations.find(
         (relation) => relation.name === relationName,
       );

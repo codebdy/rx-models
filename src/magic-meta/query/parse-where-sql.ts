@@ -62,7 +62,7 @@ export function parseWhereSql(
         let modelAlias = ownerMeta.alias;
         if (arr && arr.length > 1) {
           const relationName = arr.pop();
-          const relation = ownerMeta.findRelatiOrFailed(arr.join('.'));
+          const relation = ownerMeta.findRelationOrFailed(arr.join('.'));
           if (relation) {
             operands[0] = relationName;
             modelAlias = relation.alias;

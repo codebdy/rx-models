@@ -33,6 +33,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { StorageService } from 'src/storage/storage.service';
 import { RxBaseService } from 'src/rxbase/rxbase.service';
 import { MailerSendService } from 'src/mailer/send/mailer.send.service';
+import { TOKEN_DELETE, TOKEN_UPDATE } from './base/tokens';
 
 @Controller()
 export class MagicController {
@@ -146,7 +147,9 @@ export class MagicController {
    *        ],
    *       "author":null,
    *      }
-   *    ]
+   *    ],
+   *    "@update":...,
+   *    "@delete":...,
    * }
    * @returns
    */
@@ -163,7 +166,33 @@ export class MagicController {
             entityManger,
             req.user,
           );
-          result = await entityService.post(body || {});
+          //处理穿越的update跟delete
+          const postJSJON = {} as any;
+          let updateJson: any;
+          let deleteJson: any;
+          for (const key in body || {}) {
+            if (key.trim().startsWith('@')) {
+              const actionName = key.replace('@', '').trim();
+              if (actionName === TOKEN_UPDATE) {
+                updateJson = body[key];
+              } else if (actionName === TOKEN_DELETE) {
+                deleteJson = body[key];
+              } else {
+                throw new Error('Not find cross action at root');
+              }
+            } else {
+              postJSJON[key] = body[key];
+            }
+          }
+          result = await entityService.post(postJSJON);
+
+          if (updateJson) {
+            result['@' + TOKEN_UPDATE] = await entityService.update(updateJson);
+          }
+
+          if (deleteJson) {
+            result['@' + TOKEN_DELETE] = await entityService.delete(deleteJson);
+          }
         },
       );
       return result;
@@ -222,7 +251,8 @@ export class MagicController {
    *    "RxApp":{
    *      "name":"xx",
    *      "email":"yy",
-   *      "ids":[2,3,5]
+   *      "ids":[2,3,5],
+   *      "where":...
    *    },
    *    "RxAuth":{
    *      ...
