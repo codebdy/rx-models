@@ -1,5 +1,5 @@
 export enum RxEventType {
-  InstanceCreated = 'InstanceCreated',
+  InstancePost = 'InstancePost',
   InstanceUpdated = 'InstanceUpdated',
   InstanceDeleted = 'InstanceDeleted',
 }

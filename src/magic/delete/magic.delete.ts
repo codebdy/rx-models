@@ -6,6 +6,7 @@ import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { AbilityType } from 'src/entity-interface/AbilityType';
+import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
 
 export class MagicDelete {
   constructor(
@@ -14,6 +15,7 @@ export class MagicDelete {
     private readonly deleteDirectiveService: DeleteDirectiveService,
     public readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
+    protected readonly rxEventGateway: RxEventGateway,
   ) {}
 
   async delete(json: any) {

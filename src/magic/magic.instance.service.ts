@@ -55,6 +55,7 @@ export class MagicInstanceService implements MagicService {
       this.schemaService,
       this,
       this.mailerSendService,
+      this.rxEventGateway,
     ).post(json);
   }
 
@@ -65,6 +66,7 @@ export class MagicInstanceService implements MagicService {
       this.deleteDirectiveService,
       this.schemaService,
       this,
+      this.rxEventGateway,
     ).delete(json);
   }
 
@@ -74,6 +76,7 @@ export class MagicInstanceService implements MagicService {
       this.schemaService,
       this.abilityService,
       this,
+      this.rxEventGateway,
     ).update(json);
   }
 

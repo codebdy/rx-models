@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { UpdateMeta } from 'src/magic-meta/update/update.meta';
 import { AbilityService } from 'src/magic/ability.service';
+import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
 import { MagicUpdateParser } from './magic.update.parser';
@@ -13,6 +14,7 @@ export class MagicUpdate {
     private readonly schemaService: SchemaService,
     private readonly abilityService: AbilityService,
     private readonly magicService: MagicService,
+    protected readonly rxEventGateway: RxEventGateway,
   ) {}
 
   async update(json: any) {
