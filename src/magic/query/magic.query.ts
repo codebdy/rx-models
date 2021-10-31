@@ -31,7 +31,6 @@ export class MagicQuery {
       this.abilityService,
       this.storageService,
     );
-
     const meta = await parser.parse(json);
     const qb = this.entityManager
       .getRepository(meta.entity)
@@ -47,14 +46,12 @@ export class MagicQuery {
     if (meta.fetchString === TOKEN_COUNT) {
       return { totalCount, data: [] };
     }
-
     //makeEffectCountQueryBuilder(meta, qb, this.magicService.me);
-
     if (meta.fetchString === TOKEN_GET_MANY) {
-      const count = await qb.getCount();
+      //const count = await qb.getCount();
       const LIMIT_COUNT = 1000;
       if (
-        (meta.maxCount === undefined && count > LIMIT_COUNT) ||
+        (meta.maxCount === undefined && totalCount > LIMIT_COUNT) ||
         meta.maxCount > LIMIT_COUNT
       ) {
         throw new Error(
@@ -62,7 +59,6 @@ export class MagicQuery {
         );
       }
     }
-
     //console.debug('SQL:', qb.getSql());
     const data = (await qb[meta.fetchString]()) as any;
     const result =
