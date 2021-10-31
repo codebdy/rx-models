@@ -5,9 +5,9 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { MailConfig } from 'src/entity-interface/MailConfig';
+import { CHANNEL_MAILER } from 'src/util/consts';
 //import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import {
-  CHANNEL_MAILER,
   EVENT_CANCEL_RECEIVE,
   EVENT_RECEIVEMAILS,
   EVENT_REGISTER_MAIL_CLIENT,

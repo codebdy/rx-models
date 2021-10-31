@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { decypt } from 'src/util/cropt-js';
-import { CRYPTO_KEY } from '../consts';
 import { ReceiveJob } from './receive-job';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { StorageService } from 'src/storage/storage.service';
@@ -9,7 +8,7 @@ import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { POP3Client } from './poplib';
 import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailerReceiveEventType } from './receive-event';
-import { DEFAULT_TIME_OUT } from 'src/util/consts';
+import { CRYPTO_KEY, DEFAULT_TIME_OUT } from 'src/util/consts';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const simpleParser = require('mailparser').simpleParser;
 

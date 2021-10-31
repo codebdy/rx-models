@@ -2,7 +2,7 @@ import { AddressItem } from 'src/entity-interface/AddressItem';
 import { EntityMail, Mail } from 'src/entity-interface/Mail';
 import { EntityMailConfig, MailConfig } from 'src/entity-interface/MailConfig';
 import { StorageService } from 'src/storage/storage.service';
-import { CRYPTO_KEY, RX_MAIL_SIGN_ID, RX_MAIL_TO_ID } from '../consts';
+import { RX_MAIL_SIGN_ID, RX_MAIL_TO_ID } from '../consts';
 import { decypt } from 'src/util/cropt-js';
 import { SendStatus } from 'src/entity-interface/SendStatus';
 import { ISendJob } from './i-send-job';
@@ -12,6 +12,7 @@ import { MailerSendEventType } from './send-event';
 import { MailBoxType } from 'src/entity-interface/MailBoxType';
 import { EntityManager } from 'typeorm';
 import _ from 'lodash';
+import { CRYPTO_KEY } from 'src/util/consts';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 
