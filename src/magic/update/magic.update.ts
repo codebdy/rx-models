@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MagicService } from 'src/magic-meta/magic.service';
 import { UpdateMeta } from 'src/magic-meta/update/update.meta';
 import { AbilityService } from 'src/magic/ability.service';
+import { RxEventType } from 'src/rx-event/rx-event';
 import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
 import { SchemaService } from 'src/schema/schema.service';
 import { EntityManager } from 'typeorm';
@@ -68,9 +69,24 @@ export class MagicUpdate {
         } else {
           result['message'] = `${meta.ids.length} updated`;
         }
+
+        await this.emitEvent(meta.entity, Object.keys(meta.columns), meta.ids);
       }
     }
     return result;
+  }
+
+  private async emitEvent(entity: string, fields: string[], ids: number[]) {
+    const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
+    if (entityMeta.eventable) {
+      this.rxEventGateway.broadcastEvent({
+        eventType: RxEventType.InstanceUpdated,
+        fields: fields,
+        entity: entity,
+        ownerId: this.magicService.me.id,
+        ids: ids,
+      });
+    }
   }
 
   private getUpdatColumnNames(updateMeta: UpdateMeta) {
