@@ -8,4 +8,5 @@ export interface RxEvent {
   entity: string;
   fields?: string[];
   ownerId?: number;
+  ids?: number[];
 }

@@ -76,6 +76,7 @@ export class MagicPost {
           fields: Object.keys(instance),
           entity: entity,
           ownerId: ownerId,
+          ids: [instance.id],
         });
       }
     }
