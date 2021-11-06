@@ -7,6 +7,7 @@ import { MagicService } from 'src/magic-meta/magic.service';
 import { SchemaService } from 'src/schema/schema.service';
 import { AbilityType } from 'src/entity-interface/AbilityType';
 import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
+import { RxEventType } from 'src/rx-event/rx-event';
 
 export class MagicDelete {
   constructor(
@@ -32,8 +33,21 @@ export class MagicDelete {
     ).parse(json);
     for (const meta of deleteMetas) {
       deletedInstances[meta.entity] = await this.deleteOne(meta);
+      await this.emitEvent(meta.entity, deletedInstances[meta.entity]);
     }
     return deletedInstances;
+  }
+
+  private async emitEvent(entity: string, ids: number[]) {
+    const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
+    if (entityMeta.eventable) {
+      this.rxEventGateway.broadcastEvent({
+        eventType: RxEventType.InstanceDeleted,
+        entity: entity,
+        ownerId: this.magicService.me?.id,
+        ids: ids,
+      });
+    }
   }
 
   private getCombinationRelationNames(entityName: string) {
