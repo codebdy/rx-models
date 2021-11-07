@@ -28,9 +28,8 @@ export class MagicDeleteParser {
       deleteMeta.abilities = abilities;
 
       for (const directiveMeta of jsonUnit.directives) {
-        const DirectiveClass = this.deleteDirectiveService.findDirectiveOrFailed(
-          directiveMeta.name,
-        );
+        const DirectiveClass =
+          this.deleteDirectiveService.findDirectiveOrFailed(directiveMeta.name);
         deleteMeta.directives.push(
           new DirectiveClass(directiveMeta, this.magicService),
         );

@@ -19,3 +19,5 @@ export const TOKEN_LINKE_FIELDS = 'linkFields';
 
 export const TOKEN_UPDATE = 'update';
 export const TOKEN_DELETE = 'delete';
+
+export const TOKEN_SOFT = 'soft';

@@ -135,7 +135,7 @@ export class MagicDelete {
       meta.entity,
     );
 
-    if (relationMetas && relationMetas.length > 0) {
+    if (relationMetas && relationMetas.length > 0 && !meta.isSoft) {
       for (const instance of instances) {
         for (const relationMeta of relationMetas) {
           //解除所有关联关系，防止外键约束
@@ -145,13 +145,16 @@ export class MagicDelete {
       }
     }
 
-    if (combinationInstances) {
+    if (combinationInstances && !meta.isSoft) {
       await this.magicService.delete(combinationInstances);
     }
 
-    meta.ids &&
-      meta.ids.length > 0 &&
-      (await entityRepository.delete(meta.ids));
+    if (meta.ids && meta.ids.length > 0) {
+      meta.isSoft
+        ? await entityRepository.softDelete(meta.ids)
+        : await entityRepository.delete(meta.ids);
+    }
+
     return instances.map((entity: any) => entity.id);
   }
 

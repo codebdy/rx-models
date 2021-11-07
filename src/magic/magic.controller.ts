@@ -209,7 +209,7 @@ export class MagicController {
   /**
    * 通用删除接口，语法示例：
    * {
-   *    "RxApp @cascade(pages, auths)":[2,3,5],
+   *    "RxApp @cascade(pages, auths) @soft":[2,3,5],
    *    "RxAuth":7
    * }
    * @returns
