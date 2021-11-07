@@ -4,6 +4,7 @@ import { MagicService } from 'src/magic-meta/magic.service';
 import { DeleteDirectiveService } from 'src/directive/delete-directive.service';
 import { AbilityService } from '../ability.service';
 import { SchemaService } from 'src/schema/schema.service';
+import { TOKEN_SOFT } from '../base/tokens';
 
 export class MagicDeleteParser {
   constructor(
@@ -28,11 +29,15 @@ export class MagicDeleteParser {
       deleteMeta.abilities = abilities;
 
       for (const directiveMeta of jsonUnit.directives) {
-        const DirectiveClass =
-          this.deleteDirectiveService.findDirectiveOrFailed(directiveMeta.name);
-        deleteMeta.directives.push(
-          new DirectiveClass(directiveMeta, this.magicService),
-        );
+        if (directiveMeta.name !== TOKEN_SOFT) {
+          const DirectiveClass =
+            this.deleteDirectiveService.findDirectiveOrFailed(
+              directiveMeta.name,
+            );
+          deleteMeta.directives.push(
+            new DirectiveClass(directiveMeta, this.magicService),
+          );
+        }
       }
 
       deleteMetas.push(deleteMeta);
