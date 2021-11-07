@@ -7,7 +7,6 @@ import {
   Post,
   UseGuards,
   Request,
-  //UseInterceptors,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -23,9 +22,6 @@ import { sleep } from 'src/util/sleep';
 import { EntityManager } from 'typeorm';
 import { MagicInstanceService } from './magic.instance.service';
 import { RxUser } from 'src/entity-interface/RxUser';
-//import { diskStorage } from 'multer';
-//import { FileInterceptor } from '@nestjs/platform-express';
-//import { fileFilter, fileName } from './upload/file-upload.utils';
 import { MagicUploadService } from './upload/magic.upload.service';
 import { getFileName, getFileType } from './upload/file-upload.utils';
 import { RxMedia } from 'src/entity-interface/RxMedia';
@@ -34,6 +30,7 @@ import { StorageService } from 'src/storage/storage.service';
 import { RxBaseService } from 'src/rxbase/rxbase.service';
 import { MailerSendService } from 'src/mailer/send/mailer.send.service';
 import { TOKEN_DELETE, TOKEN_UPDATE } from './base/tokens';
+import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
 
 @Controller()
 export class MagicController {
@@ -47,6 +44,7 @@ export class MagicController {
     protected readonly storageService: StorageService,
     private readonly baseService: RxBaseService,
     protected readonly mailerSendService: MailerSendService,
+    protected readonly rxEventGateway: RxEventGateway,
   ) {}
 
   /**
@@ -211,7 +209,7 @@ export class MagicController {
   /**
    * 通用删除接口，语法示例：
    * {
-   *    "RxApp @cascade(pages, auths)":[2,3,5],
+   *    "RxApp @cascade(pages, auths) @soft":[2,3,5],
    *    "RxAuth":7
    * }
    * @returns
@@ -370,6 +368,7 @@ export class MagicController {
       this.schemaService,
       this.storageService,
       this.mailerSendService,
+      this.rxEventGateway,
     );
   }
 }

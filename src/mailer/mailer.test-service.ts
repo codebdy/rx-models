@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { SmtpConfig } from 'src/entity-interface/SmtpConfig';
-import { DEFAULT_TIME_OUT } from 'src/util/consts';
+import { CRYPTO_KEY, DEFAULT_TIME_OUT } from 'src/util/consts';
 import { decypt } from 'src/util/cropt-js';
-import { CRYPTO_KEY } from './consts';
 import { POP3Client } from './receive/poplib';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');

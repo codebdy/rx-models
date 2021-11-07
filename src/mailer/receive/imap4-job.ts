@@ -5,10 +5,10 @@ import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { StorageService } from 'src/storage/storage.service';
 import { TypeOrmService } from 'src/typeorm/typeorm.service';
 import { decypt } from 'src/util/cropt-js';
-import { CRYPTO_KEY } from '../consts';
 import { ReceiveJob } from './receive-job';
 import { IReceiveJobOwner } from './i-receive-job-owner';
 import { MailerReceiveEventType } from './receive-event';
+import { CRYPTO_KEY } from 'src/util/consts';
 
 const Imap = require('imap');
 const simpleParser = require('mailparser').simpleParser;

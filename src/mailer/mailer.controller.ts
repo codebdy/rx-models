@@ -9,7 +9,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { MailReceiveConfig } from 'src/entity-interface/MailReceiveConfig';
 import { SmtpConfig } from 'src/entity-interface/SmtpConfig';
-import { CRYPTO_KEY } from './consts';
+import { CRYPTO_KEY } from 'src/util/consts';
 import { MailerTestService } from './mailer.test-service';
 import { MailerSendService } from './send/mailer.send.service';
 

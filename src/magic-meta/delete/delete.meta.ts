@@ -1,6 +1,7 @@
 import { DeleteDirective } from 'src/directive/delete/delete.directive';
 import { RxAbility } from 'src/entity-interface/RxAbility';
 import { JsonUnit } from 'src/magic/base/json-unit';
+import { TOKEN_SOFT } from 'src/magic/base/tokens';
 
 export class DeleteMeta {
   private _jsonUnit: JsonUnit;
@@ -21,6 +22,9 @@ export class DeleteMeta {
       : [this._jsonUnit.value];
   }
 
+  get isSoft() {
+    return !!this._jsonUnit.getDirective(TOKEN_SOFT);
+  }
   /*get cascades() {
     const cascadeCommand = this._jsonUnit.getCommand(TOKEN_CASCADE);
     return cascadeCommand ? cascadeCommand.value : undefined;

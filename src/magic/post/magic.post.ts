@@ -9,6 +9,8 @@ import { InstanceMeta } from '../../magic-meta/post/instance.meta';
 import { MagicPostParser } from './magic.post.parser';
 import { AbilityType } from 'src/entity-interface/AbilityType';
 import { MailerSendService } from 'src/mailer/send/mailer.send.service';
+import { RxEventGateway } from 'src/rx-event/rx-event.gateway';
+import { RxEventType } from 'src/rx-event/rx-event';
 
 export class MagicPost {
   constructor(
@@ -18,10 +20,11 @@ export class MagicPost {
     private readonly schemaService: SchemaService,
     private readonly magicService: MagicService,
     protected readonly mailerSendService: MailerSendService,
+    protected readonly rxEventGateway: RxEventGateway,
   ) {}
 
   async post(json: any) {
-    const savedEntites = {};
+    const savedInstances = {};
     const instances = await new MagicPostParser(
       this.entityManager,
       this.postDirectiveService,
@@ -39,12 +42,44 @@ export class MagicPost {
       throw new Error('Demo account can not change data');
     }
     for (const instanceGroup of instances) {
-      savedEntites[instanceGroup.entity] = await this.saveInstanceGroup(
+      const data = await this.saveInstanceGroup(
         instanceGroup,
         this.entityManager,
       );
+      savedInstances[instanceGroup.entity] = data;
+
+      //异步函数
+      await this.emitEvent(
+        instanceGroup.entity,
+        instanceGroup.isSingle ? [data] : data,
+      );
     }
-    return savedEntites;
+    return savedInstances;
+  }
+
+  private async emitEvent(entity: string, instances: any[]) {
+    const entityMeta = this.schemaService.getEntityMetaOrFailed(entity);
+    if (entityMeta.eventable) {
+      for (const instance of instances) {
+        let ownerId = instance.owner?.id;
+        if (!ownerId) {
+          const instanceWithOwner = await this.magicService.query({
+            entity: entity,
+            id: instance.id,
+            '@getOne': true,
+            owner: {},
+          });
+          ownerId = instanceWithOwner.data?.owner?.id;
+        }
+        this.rxEventGateway.broadcastEvent({
+          eventType: RxEventType.InstancePost,
+          fields: Object.keys(instance),
+          entity: entity,
+          ownerId: ownerId,
+          ids: [instance.id],
+        });
+      }
+    }
   }
 
   private async saveInstanceGroup(

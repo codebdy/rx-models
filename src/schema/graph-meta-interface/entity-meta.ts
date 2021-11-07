@@ -13,4 +13,5 @@ export interface EntityMeta {
   tableName?: string;
   entityType?: EntityType;
   columns: ColumnMeta[];
+  eventable?: boolean;
 }
