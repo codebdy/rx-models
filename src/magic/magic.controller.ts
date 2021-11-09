@@ -340,7 +340,7 @@ export class MagicController {
             !modelData.folder || modelData.folder === 'null'
               ? null
               : modelData.folder;
-
+          model.owner = modelData.owner;
           result = await entityService.post({ [entityName]: model });
         },
       );
