@@ -1,4 +1,5 @@
 {
+  "id": 47,
   "uuid": "system-package-1",
   "name": "System",
   "entities": [
@@ -21,7 +22,8 @@
         {
           "uuid": "system-column-1-5",
           "name": "loginName",
-          "type": "String"
+          "type": "String",
+          "unique": true
         },
         {
           "uuid": "system-column-1-6",
@@ -51,6 +53,7 @@
           "uuid": "system-column-1-10",
           "name": "status",
           "type": "Enum",
+          "nullable": true,
           "typeEnityUuid": "13f069cf-0e7c-42be-9b75-7bb2a2325ae9"
         },
         {
@@ -482,6 +485,31 @@
           "nullable": true
         }
       ]
+    },
+    {
+      "uuid": "704d5aeb-2626-4cfc-bbaa-f6d8d78ab721",
+      "name": "RxUserConfig",
+      "columns": [
+        {
+          "uuid": "933942b7-cfec-4b25-90c7-61622440bc53",
+          "name": "id",
+          "type": "Number",
+          "primary": true,
+          "generated": true
+        },
+        {
+          "uuid": "b53ad436-fd24-4ffa-bb9b-f80dda99a131",
+          "name": "name",
+          "type": "String",
+          "nullable": true
+        },
+        {
+          "uuid": "7b782a3c-b36a-472e-af2b-fb2f360d4bf2",
+          "name": "value",
+          "type": "simple-json",
+          "nullable": true
+        }
+      ]
     }
   ],
   "diagrams": [
@@ -544,6 +572,13 @@
           "y": 390,
           "width": 180,
           "height": 150
+        },
+        {
+          "id": "704d5aeb-2626-4cfc-bbaa-f6d8d78ab721",
+          "x": -139.99999999999966,
+          "y": 485,
+          "width": 180,
+          "height": 140
         }
       ],
       "edges": [
@@ -744,6 +779,18 @@
             "offset": 60,
             "angle": 0
           }
+        },
+        {
+          "id": "644f820d-e6a7-401e-b850-a38e71cb6b90",
+          "vertices": [],
+          "roleOnSourcePosition": {
+            "distance": 40,
+            "offset": 20
+          },
+          "roleOnTargetPosition": {
+            "distance": -40,
+            "offset": 20
+          }
         }
       ]
     },
@@ -887,7 +934,8 @@
       "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
       "roleOnSource": "children",
       "roleOnTarget": "parent",
-      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
+      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "combination": "onTarget"
     },
     {
       "uuid": "6826ab16-43a6-4737-8871-83e6819a6345",
@@ -895,8 +943,9 @@
       "sourceId": "system-entity-1",
       "targetId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
       "roleOnSource": "mediaFolders",
-      "roleOnTarget": "user",
-      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4"
+      "roleOnTarget": "owner",
+      "ownerId": "c15e0b77-cad5-4a00-bf18-7699c48a45d4",
+      "combination": "onSource"
     },
     {
       "uuid": "259c17a5-803a-462c-953c-938bbc2836c4",
@@ -913,7 +962,7 @@
       "sourceId": "system-entity-1",
       "targetId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7",
       "roleOnSource": "medias",
-      "roleOnTarget": "user",
+      "roleOnTarget": "owner",
       "ownerId": "085d7203-ea1b-4a2a-b4d7-f8d604cfa2a7"
     },
     {
@@ -942,6 +991,15 @@
       "roleOnSource": "roles",
       "roleOnTarget": "belongsToDepartment",
       "ownerId": "system-entity-2"
+    },
+    {
+      "uuid": "644f820d-e6a7-401e-b850-a38e71cb6b90",
+      "relationType": "one-to-many",
+      "sourceId": "system-entity-1",
+      "targetId": "704d5aeb-2626-4cfc-bbaa-f6d8d78ab721",
+      "roleOnSource": "rxUserConfigs",
+      "roleOnTarget": "owner",
+      "ownerId": "704d5aeb-2626-4cfc-bbaa-f6d8d78ab721"
     }
   ],
   "status": "SYNCED"
