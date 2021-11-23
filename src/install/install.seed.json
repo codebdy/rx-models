@@ -975,15 +975,6 @@
       "ownerId": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9"
     },
     {
-      "uuid": "16607071-1216-4509-9d67-92e282c281ad",
-      "relationType": "many-to-many",
-      "sourceId": "system-entity-2",
-      "targetId": "d7962e95-3c07-44a1-8aa4-37ebcbdd6b60",
-      "roleOnSource": "rxAuths",
-      "roleOnTarget": "assignToRoles",
-      "ownerId": "d7962e95-3c07-44a1-8aa4-37ebcbdd6b60"
-    },
-    {
       "uuid": "cfe4c03d-3427-4eb1-b192-8569fce4b3ab",
       "relationType": "one-to-many",
       "sourceId": "e0d67e4e-f12f-4f45-bd33-6fc073413cf9",
