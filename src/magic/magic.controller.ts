@@ -99,7 +99,10 @@ export class MagicController {
   async query(@Request() req, @Param('jsonStr') jsonStr: string) {
     try {
       this.baseService.setHost('//' + req.headers.host);
-      await sleep(500);
+      if (process.env.NODE_ENV !== 'production') {
+        await sleep(500);
+      }
+
       let result: QueryResult;
       console.time(jsonStr);
       await this.typeormSerivce.connection.transaction(
@@ -155,7 +158,9 @@ export class MagicController {
   @Post('post')
   async post(@Request() req, @Body() body: any) {
     try {
-      await sleep(500);
+      if (process.env.NODE_ENV !== 'production') {
+        await sleep(500);
+      }
       console.debug('Post JSON', body);
       let result: any;
       await this.typeormSerivce.connection.transaction(
@@ -218,7 +223,9 @@ export class MagicController {
   @Post('delete')
   async deleteModels(@Request() req, @Body() body: any) {
     try {
-      await sleep(500);
+      if (process.env.NODE_ENV !== 'production') {
+        await sleep(500);
+      }
       console.debug(body);
       let result: any;
       await this.typeormSerivce.connection.transaction(
@@ -262,7 +269,9 @@ export class MagicController {
   @Post('update')
   async update(@Request() req, @Body() body: any) {
     try {
-      await sleep(500);
+      if (process.env.NODE_ENV !== 'production') {
+        await sleep(500);
+      }
       console.debug(body);
       let result: any;
       await this.typeormSerivce.connection.transaction(
@@ -314,7 +323,9 @@ export class MagicController {
     @Body() body: any,
   ) {
     try {
-      await sleep(500);
+      if (process.env.NODE_ENV !== 'production') {
+        await sleep(500);
+      }
       let result: any;
       if (!file) {
         throw new Error('no file to upload!');
