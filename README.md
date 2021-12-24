@@ -6,6 +6,7 @@
   <p align="center"><a href="https://rxdrag.com" target="_blank">rxModels</a> 是一个低代码后端服务，基于业务模型生成后端，提供通用查询JSON接口</p>
     <p align="center">
 
+# 本项目计划重构为Java版，可能不再维护
 
 演示地址：https://rxmodels-client.rxdrag.com/login
 
