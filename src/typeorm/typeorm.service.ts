@@ -20,7 +20,7 @@ const CONNECTION_WITH_SCHEMA_NAME = 'WithSchema';
 export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
   private readonly _logger = new Logger('TypeOrmWithSchemaService');
   private _connection?: Connection;
-  private _connectionNumber = 1;
+  //private _connectionNumber = 1;
 
   constructor(private readonly schemaService: SchemaService) {}
 
@@ -37,7 +37,7 @@ export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
       entities: this.schemaService.entitySchemas.map(
         (schema) => new EntitySchema<any>(schema),
       ),
-      name: CONNECTION_WITH_SCHEMA_NAME + this._connectionNumber,
+      name: CONNECTION_WITH_SCHEMA_NAME, // + this._connectionNumber,
       synchronize: true,
     });
   }
@@ -52,11 +52,13 @@ export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
 
   //会关闭旧连接，并且以新名字创建一个新连接
   async restart() {
-    this.closeConection();
-    this._connectionNumber++;
+    await this.closeConection();
+    //this._connectionNumber++;
     //重新加载模式
     this.schemaService.reload();
     await this.createConnection();
+
+    console.debug('Restart success!');
   }
 
   async onModuleInit() {
@@ -65,7 +67,7 @@ export class TypeOrmService implements OnModuleInit, OnApplicationShutdown {
   }
 
   async onApplicationShutdown() {
-    this.closeConection();
+    await this.closeConection();
   }
 
   private async closeConection() {
